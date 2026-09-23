@@ -1,482 +1,485 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { calculateCompliance } from './domain/compliance';
+import { analyzeTimeline } from './domain/shifts';
+import { generateDemoData } from './domain/demo';
 import {
+  changeActivity,
+  deleteEntriesInRange,
+  drivingAdjustmentBounds,
+  setLastBreakDuration,
+} from './domain/entries';
+import { buildJournal, type JournalShift } from './domain/journal';
+import { applyLiveShiftEdit, carveRest, type LiveShiftEdit } from './domain/shiftEdit';
+import type {
   ActivityEntry,
   ActivityType,
   DriverSettings,
-  JournalDay,
-} from './types/tacho';
+  InfringementCategory,
+  ManualShift,
+  RestKind,
+  ShiftMeta,
+} from './domain/types';
+import { I18nProvider, dictFor } from './i18n';
 import {
+  clearAppData,
+  defaultSettings,
   loadEntries,
-  saveEntries,
+  loadManualShifts,
   loadSettings,
+  loadShiftMeta,
+  saveEntries,
+  saveManualShifts,
   saveSettings,
-  initialSampleWeeks,
-} from './utils/storage';
-import { calculateCompliance } from './utils/compliance';
-import { playWarningChime, playViolationAlarm } from './utils/audio';
+  saveShiftMeta,
+} from './storage';
+import { playViolationAlarm, playWarningChime } from './utils/audio';
 
-import { CockpitMain } from './components/CockpitMain';
-import { JournalView } from './components/JournalView';
-import { SettingsView } from './components/SettingsView';
-import { MoreView } from './components/MoreView';
 import { GuideView } from './components/GuideView';
+import { JournalView } from './components/JournalView';
+import { MainView } from './components/MainView';
+import { MoreView } from './components/MoreView';
+import { PrintReport } from './components/PrintReport';
+import { SettingsView } from './components/SettingsView';
+import { DateTimeSheet } from './components/pickers';
+import { BreakSheet } from './components/sheets/BreakSheet';
+import { CardSheet } from './components/sheets/CardSheet';
+import { CountrySheet } from './components/sheets/CountrySheet';
+import { DriveEditSheet } from './components/sheets/DriveEditSheet';
+import { ExportSheet, type PrintJob } from './components/sheets/ExportSheet';
+import { PaywallSheet } from './components/sheets/PaywallSheet';
+import { ShiftSheet } from './components/sheets/ShiftSheet';
+import { WeeklyRestSheet } from './components/sheets/WeeklyRestSheet';
+import { WorkdaySheet } from './components/sheets/WorkdaySheet';
 
-// Modals
-import { CountryPickerModal } from './components/modals/CountryPickerModal';
-import { LimitBreakModal } from './components/modals/LimitBreakModal';
-import { LimitWorkdayModal } from './components/modals/LimitWorkdayModal';
-import { LimitWeeklyRestModal } from './components/modals/LimitWeeklyRestModal';
-import { ShiftModal } from './components/modals/ShiftModal';
-import { TimeEditModal } from './components/modals/TimeEditModal';
-import { ExportModal } from './components/modals/ExportModal';
-import { PaywallModal } from './components/modals/PaywallModal';
-import { TachoPrintoutModal } from './components/TachoPrintoutModal';
+type Tab = 'main' | 'journal' | 'settings' | 'more' | 'guide';
+type Overlay =
+  | null
+  | 'country'
+  | 'break'
+  | 'workday'
+  | 'shiftStart'
+  | 'weeklyRest'
+  | 'driveEdit'
+  | 'card'
+  | 'export'
+  | 'paywall'
+  | { shift: JournalShift | null; presetRest?: RestKind };
 
-type MainTab = 'main' | 'journal' | 'settings' | 'more' | 'guide';
+const CATEGORY_SETTING: Record<InfringementCategory, keyof DriverSettings> = {
+  break: 'notifyBreak',
+  driving: 'notifyDrivingLimit',
+  shiftEnd: 'notifyShiftEnd',
+  weeklyRest: 'notifyShiftEnd',
+  card: 'notifyCardReading',
+};
+
+function useResolvedTheme(theme: DriverSettings['theme']) {
+  const [systemDark, setSystemDark] = useState(() => window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? true);
+  useEffect(() => {
+    const mq = window.matchMedia?.('(prefers-color-scheme: dark)');
+    if (!mq) return;
+    const onChange = () => setSystemDark(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  const resolved = theme === 'system' ? (systemDark ? 'dark' : 'light') : theme;
+  useEffect(() => {
+    document.documentElement.dataset.theme = resolved;
+  }, [resolved]);
+}
 
 export const App: React.FC = () => {
   const [settings, setSettings] = useState<DriverSettings>(loadSettings);
   const [entries, setEntries] = useState<ActivityEntry[]>(loadEntries);
-  const [weeks, setWeeks] = useState(initialSampleWeeks);
-  const [activeTab, setActiveTab] = useState<MainTab>('main');
-  const [currentTime, setCurrentTime] = useState<number>(Date.now());
+  const [manualShifts, setManualShifts] = useState<ManualShift[]>(loadManualShifts);
+  const [shiftMeta, setShiftMeta] = useState<Record<string, ShiftMeta>>(loadShiftMeta);
+  const [tab, setTab] = useState<Tab>('main');
+  const [overlay, setOverlay] = useState<Overlay>(null);
+  const [printJob, setPrintJob] = useState<PrintJob | null>(null);
+  const [now, setNow] = useState(Date.now);
 
-  // Modal states
-  const [isCountryPickerOpen, setIsCountryPickerOpen] = useState(false);
-  const [countryPickerTarget, setCountryPickerTarget] = useState<'start' | 'end'>('start');
-  const [isLimitBreakOpen, setIsLimitBreakOpen] = useState(false);
-  const [isLimitWorkdayOpen, setIsLimitWorkdayOpen] = useState(false);
-  const [isLimitWeeklyRestOpen, setIsLimitWeeklyRestOpen] = useState(false);
-  const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
-  const [editingShift, setEditingShift] = useState<JournalDay | null>(null);
-  const [editingWeekId, setEditingWeekId] = useState<string | null>(null);
-  const [isTimeEditOpen, setIsTimeEditOpen] = useState(false);
-  const [isExportOpen, setIsExportOpen] = useState(false);
-  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
-  const [isPrintoutOpen, setIsPrintoutOpen] = useState(false);
-
-  // Audio chimes
-  const prevViolationCount = useRef<number>(0);
-  const prevWarningCount = useRef<number>(0);
-
-  // Sync settings and entries
-  useEffect(() => {
-    saveSettings(settings);
-  }, [settings]);
+  useEffect(() => saveSettings(settings), [settings]);
+  useEffect(() => saveEntries(entries), [entries]);
+  useEffect(() => saveManualShifts(manualShifts), [manualShifts]);
+  useEffect(() => saveShiftMeta(shiftMeta), [shiftMeta]);
 
   useEffect(() => {
-    saveEntries(entries);
-  }, [entries]);
-
-  // Live timer tick every second
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(Date.now());
-    }, 1000);
+    const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Compute live compliance metrics
-  const metrics = calculateCompliance(entries, settings, currentTime);
-
-  // Sound alert trigger
+  useResolvedTheme(settings.theme);
   useEffect(() => {
-    if (!settings.soundEnabled) return;
-    const violations = metrics.infringements.filter((i) => i.severity === 'violation');
-    const warnings = metrics.infringements.filter((i) => i.severity === 'warning');
+    document.documentElement.lang = settings.language === 'ua' ? 'uk' : settings.language;
+  }, [settings.language]);
 
-    if (violations.length > prevViolationCount.current) {
-      playViolationAlarm();
-    } else if (warnings.length > prevWarningCount.current) {
-      playWarningChime();
+  const metrics = useMemo(
+    () => calculateCompliance({ entries, manualShifts, settings, now }),
+    [entries, manualShifts, settings, now],
+  );
+  const journal = useMemo(
+    () => buildJournal({ timeline: metrics.timeline, manualShifts, meta: shiftMeta, crewMode: settings.crewMode, now }),
+    [metrics.timeline, manualShifts, shiftMeta, settings.crewMode, now],
+  );
+
+  // Новая смена получает страну начала из настроек
+  const currentShiftId = metrics.shift?.id;
+  useEffect(() => {
+    if (currentShiftId && !shiftMeta[currentShiftId]) {
+      setShiftMeta((m) => ({ ...m, [currentShiftId]: { startCountry: settings.defaultCountry } }));
     }
+  }, [currentShiftId, shiftMeta, settings.defaultCountry]);
 
-    prevViolationCount.current = violations.length;
-    prevWarningCount.current = warnings.length;
-  }, [metrics.infringements, settings.soundEnabled]);
+  // Звук — только для новых предупреждений включённых категорий
+  const heard = useRef<Set<string> | null>(null);
+  useEffect(() => {
+    const enabled = metrics.infringements.filter((i) => i.severity !== 'info' && settings[CATEGORY_SETTING[i.category]]);
+    const keys = new Set(enabled.map((i) => `${i.severity}:${i.key}`));
+    const prev = heard.current;
+    heard.current = keys;
+    if (!prev || !settings.soundEnabled) return;
+    const fresh = enabled.filter((i) => !prev.has(`${i.severity}:${i.key}`));
+    if (fresh.some((i) => i.severity === 'violation')) playViolationAlarm();
+    else if (fresh.length) playWarningChime();
+  }, [metrics.infringements, settings]);
 
-  // Current active mode
-  const activeEntry = entries.find((e) => e.endTime === null);
-  const currentActivity: ActivityType = activeEntry ? activeEntry.activity : 'DRIVE';
-
-  const handleChangeActivity = (newActivity: ActivityType) => {
-    const now = Date.now();
-    let updatedEntries = [...entries];
-
-    // Close existing
-    updatedEntries = updatedEntries.map((e) => {
-      if (e.endTime === null) {
-        return { ...e, endTime: now };
-      }
-      return e;
-    });
-
-    // Start new
-    const newEntry: ActivityEntry = {
-      id: `act-${now}`,
-      activity: newActivity,
-      startTime: now,
-      endTime: null,
-      vehiclePlate: settings.vehiclePlate,
-      location: settings.startCountry || 'PL',
+  // Печать отчёта: только отчёт, затем возврат к приложению
+  useEffect(() => {
+    if (!printJob) return;
+    const done = () => {
+      document.body.classList.remove('printing');
+      setPrintJob(null);
     };
+    document.body.classList.add('printing');
+    window.addEventListener('afterprint', done, { once: true });
+    // Даём отчёту отрисоваться; setTimeout срабатывает и в фоновой вкладке
+    const id = window.setTimeout(() => window.print(), 50);
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener('afterprint', done);
+      document.body.classList.remove('printing');
+    };
+  }, [printJob]);
 
-    updatedEntries.push(newEntry);
-    setEntries(updatedEntries);
+  const updateSettings = (patch: Partial<DriverSettings>) => setSettings((s) => ({ ...s, ...patch }));
+
+  const selectActivity = (activity: ActivityType, extra: { dayEnd?: boolean } = {}) => {
+    const at = Date.now();
+    setNow(at);
+    setEntries((prev) =>
+      changeActivity(prev, activity, at, {
+        location: countryTarget ? shiftMeta[countryTarget.id]?.startCountry : settings.defaultCountry,
+        ...(settings.ferryModeActive ? { ferry: true } : {}),
+        ...extra,
+      }),
+    );
   };
 
-  const handleUpdateSettings = (newPartial: Partial<DriverSettings>) => {
-    setSettings((prev) => ({ ...prev, ...newPartial }));
-  };
+  // Страны на главном: текущая смена, а во время отдыха после неё — только что закончившаяся
+  const lastShift = metrics.timeline.shifts[metrics.timeline.shifts.length - 1];
+  const countryTarget = metrics.shift ?? (metrics.offDutyRest ? lastShift : null) ?? null;
+  const countries = countryTarget
+    ? {
+        start: shiftMeta[countryTarget.id]?.startCountry ?? settings.defaultCountry,
+        end: shiftMeta[countryTarget.id]?.endCountry ?? null,
+      }
+    : { start: settings.defaultCountry, end: null };
 
-  const handleSaveShift = (savedShift: JournalDay, targetWeekId: string | null) => {
-    setWeeks((prevWeeks) => {
-      return prevWeeks.map((week) => {
-        const isTarget = targetWeekId ? week.id === targetWeekId : week.id === prevWeeks[0]?.id;
-        if (!isTarget) return week;
-
-        const dayExists = week.days.some((d) => d.id === savedShift.id);
-        let newDays: JournalDay[];
-        if (dayExists) {
-          newDays = week.days.map((d) => (d.id === savedShift.id ? savedShift : d));
-        } else {
-          newDays = [savedShift, ...week.days];
-        }
-
-        const totalDriveMins = newDays.reduce((acc, d) => {
-          const parts = d.drive.split(':');
-          const h = parseInt(parts[0] || '0', 10);
-          const m = parseInt(parts[1] || '0', 10);
-          return acc + h * 60 + m;
-        }, 0);
-
-        return {
-          ...week,
-          days: newDays,
-          driveMinutes: totalDriveMins,
-        };
-      });
-    });
-
-    if (savedShift.startCountry) {
-      handleUpdateSettings({
-        startCountry: savedShift.startCountry,
-        endCountry: savedShift.endCountry,
-      });
+  const setCountries = (v: { start: string; end: string | null }) => {
+    if (countryTarget) {
+      setShiftMeta((m) => ({
+        ...m,
+        [countryTarget.id]: { ...m[countryTarget.id], startCountry: v.start, endCountry: v.end ?? undefined },
+      }));
+      if (v.end) updateSettings({ defaultCountry: v.end });
+    } else {
+      updateSettings({ defaultCountry: v.start });
     }
   };
 
-  const handleDeleteShift = (shiftId: string, targetWeekId: string | null) => {
-    setWeeks((prevWeeks) => {
-      return prevWeeks.map((week) => {
-        const contains = week.days.some((d) => d.id === shiftId);
-        if (!contains) return week;
-
-        const newDays = week.days.filter((d) => d.id !== shiftId);
-        const totalDriveMins = newDays.reduce((acc, d) => {
-          const parts = d.drive.split(':');
-          const h = parseInt(parts[0] || '0', 10);
-          const m = parseInt(parts[1] || '0', 10);
-          return acc + h * 60 + m;
-        }, 0);
-
-        return {
-          ...week,
-          days: newDays,
-          driveMinutes: totalDriveMins,
-        };
-      });
-    });
+  const loadDemo = () => {
+    const demo = generateDemoData(Date.now());
+    setEntries(demo.entries);
+    setShiftMeta(demo.meta);
+    setManualShifts([]);
+    setTab('main');
   };
 
-  const handleClearData = () => {
-    localStorage.clear();
-    setSettings(loadSettings());
-    setEntries(loadEntries());
-    setWeeks(initialSampleWeeks);
+  const clearData = () => {
+    clearAppData();
+    setSettings({ ...defaultSettings, language: settings.language });
+    setEntries([]);
+    setManualShifts([]);
+    setShiftMeta({});
   };
+
+  const deleteShift = (shift: JournalShift) => {
+    if (shift.source === 'manual') {
+      setManualShifts((list) => list.filter((m) => m.id !== shift.id));
+    } else {
+      setEntries((prev) => deleteEntriesInRange(prev, shift.start, shift.end));
+      setShiftMeta(({ [shift.id]: _, ...rest }) => rest);
+    }
+  };
+
+  // Прошлая смена из записей становится ручной: её записи и отдых после неё заменяются
+  const convertShift = (shift: JournalShift, record: ManualShift) => {
+    setEntries((prev) =>
+      carveRest(deleteEntriesInRange(prev, shift.start, shift.restEnd ?? shift.end), record.start, record.end ?? Date.now(), Date.now()),
+    );
+    setShiftMeta(({ [shift.id]: _, ...rest }) => rest);
+    setManualShifts((list) => [...list, record]);
+  };
+
+  // Ручная смена: если она попала на записанный отдых, вырезаем её из отдыха
+  const saveManualShift = (record: ManualShift) => {
+    setEntries((prev) => carveRest(prev, record.start, record.end ?? Date.now(), Date.now()));
+    setManualShifts((list) => [...list.filter((x) => x.id !== record.id), record]);
+  };
+
+  // «Живая» смена: правим записи режимов. Идентификатор смены — её начало,
+  // поэтому страны и заметки переносим на смену, получившуюся после правки.
+  const applyLiveEdit = (edit: LiveShiftEdit, meta?: ShiftMeta) => {
+    const at = Date.now();
+    const oldId = `auto-${edit.shiftStart}`;
+    const next = applyLiveShiftEdit(entries, edit, at).entries;
+    const newId = analyzeTimeline(next, at).shifts.at(-1)?.id;
+    const keep = meta ?? shiftMeta[oldId];
+    setEntries(next);
+    setShiftMeta(({ [oldId]: _, ...rest }) => (newId && keep ? { ...rest, [newId]: keep } : rest));
+    if (meta?.endCountry) updateSettings({ defaultCountry: meta.endCountry });
+  };
+
+  const allShifts = useMemo(() => journal.flatMap((w) => w.shifts), [journal]);
+  const shiftStart = metrics.shift?.start ?? null;
+  const t = dictFor(settings.language);
+
+  const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
+    {
+      id: 'main',
+      label: t.nav.main,
+      icon: <path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" />,
+    },
+    { id: 'journal', label: t.nav.journal, icon: <path d="M5 5h14M5 10h14M5 15h14M5 20h9" /> },
+    {
+      id: 'settings',
+      label: t.nav.settings,
+      icon: (
+        <>
+          <path d="M4 7h10M18 7h2M4 17h4M12 17h8" />
+          <circle cx="16" cy="7" r="2" />
+          <circle cx="10" cy="17" r="2" />
+        </>
+      ),
+    },
+    {
+      id: 'more',
+      label: t.nav.more,
+      icon: (
+        <>
+          <circle cx="5" cy="12" r="1.2" />
+          <circle cx="12" cy="12" r="1.2" />
+          <circle cx="19" cy="12" r="1.2" />
+        </>
+      ),
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#070808] flex items-center justify-center font-sans antialiased text-[#EDEBE6]">
-      {/* 412dp Mobile Container */}
-      <div className="w-full max-w-[412px] h-screen max-h-screen sm:h-[880px] sm:max-h-[920px] bg-[#111315] relative flex flex-col sm:rounded-[36px] sm:border sm:border-[#2A2E33] sm:shadow-2xl overflow-hidden">
-        
-        {/* Scrollable Page Content Area */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden relative flex flex-col overscroll-contain">
-          {activeTab === 'main' && (
-            <CockpitMain
+    <I18nProvider lang={settings.language}>
+      <div className="min-h-dvh bg-page flex items-center justify-center text-fg antialiased">
+        <div className="w-full max-w-[412px] h-dvh sm:h-[880px] sm:max-h-[95dvh] bg-bg relative flex flex-col sm:rounded-[36px] sm:border sm:border-line sm:shadow-2xl overflow-hidden">
+          <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain">
+            {tab === 'main' && (
+              <MainView
+                metrics={metrics}
+                settings={settings}
+                countries={countries}
+                isEmpty={entries.length === 0 && manualShifts.length === 0}
+                onSelectActivity={selectActivity}
+                onOpenCountryPicker={() => setOverlay('country')}
+                onOpenBreak={() => setOverlay('break')}
+                onOpenWorkday={() => setOverlay('workday')}
+                onOpenWeeklyRest={() => setOverlay('weeklyRest')}
+                onOpenDriveEdit={() => setOverlay('driveEdit')}
+                onOpenCard={() => setOverlay('card')}
+                onLoadDemo={loadDemo}
+              />
+            )}
+            {tab === 'journal' && (
+              <JournalView
+                weeks={journal}
+                now={now}
+                onOpenShift={(shift) => setOverlay({ shift })}
+                onOpenExport={() => setOverlay('export')}
+              />
+            )}
+            {tab === 'settings' && (
+              <SettingsView
+                settings={settings}
+                onUpdate={updateSettings}
+                onOpenExport={() => setOverlay('export')}
+                onOpenPaywall={() => setOverlay('paywall')}
+                onLoadDemo={loadDemo}
+                onClearData={clearData}
+              />
+            )}
+            {tab === 'more' && (
+              <MoreView
+                settings={settings}
+                onOpenPaywall={() => setOverlay('paywall')}
+                onOpenExport={() => setOverlay('export')}
+                onOpenGuide={() => setTab('guide')}
+              />
+            )}
+            {tab === 'guide' && <GuideView onBack={() => setTab('more')} />}
+          </main>
+
+          {tab !== 'guide' && (
+            <nav aria-label={t.nav.label} className="shrink-0 h-20 px-2 pt-2.5 pb-3.5 bg-surface border-t border-surface2 grid grid-cols-4 z-30">
+              {tabs.map((item) => {
+                const active = tab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    aria-current={active ? 'page' : undefined}
+                    onClick={() => setTab(item.id)}
+                    className={`flex flex-col items-center gap-1 text-[12px] font-semibold ${active ? 'text-fg' : 'text-muted hover:text-fg'}`}
+                  >
+                    <span className={`w-[60px] h-8 flex items-center justify-center rounded-full ${active ? 'bg-drive text-on-accent' : ''}`}>
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill={item.id === 'more' ? 'currentColor' : 'none'}
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        {item.icon}
+                      </svg>
+                    </span>
+                    {item.label}
+                  </button>
+                );
+              })}
+            </nav>
+          )}
+
+          {overlay === 'country' && (
+            <CountrySheet
+              start={countries.start}
+              end={countries.end}
+              initialTarget="start"
+              onChange={setCountries}
+              onClose={() => setOverlay(null)}
+            />
+          )}
+          {overlay === 'break' && (
+            <BreakSheet
+              metrics={metrics}
+              entries={entries}
+              onStartBreak={() => selectActivity('REST')}
+              onSetDuration={(minutes) =>
+                shiftStart !== null && setEntries((prev) => setLastBreakDuration(prev, shiftStart, minutes, Date.now()))
+              }
+              onClose={() => setOverlay(null)}
+            />
+          )}
+          {overlay === 'workday' && (
+            <WorkdaySheet
               metrics={metrics}
               settings={settings}
-              activeActivity={currentActivity}
-              onSelectActivity={handleChangeActivity}
-              onOpenCountryPicker={() => {
-                setCountryPickerTarget('start');
-                setIsCountryPickerOpen(true);
-              }}
-              onOpenLimitBreak={() => setIsLimitBreakOpen(true)}
-              onOpenLimitWorkday={() => setIsLimitWorkdayOpen(true)}
-              onOpenLimitWeeklyRest={() => setIsLimitWeeklyRestOpen(true)}
-              onOpenTimeEdit={() => setIsTimeEditOpen(true)}
-              onOpenPaywall={() => setIsPaywallOpen(true)}
+              country={countries.start}
+              onChangeStart={() => setOverlay('shiftStart')}
+              onEndDay={() => selectActivity('REST', { dayEnd: true })}
+              onClose={() => setOverlay(null)}
             />
           )}
-
-          {activeTab === 'journal' && (
-            <JournalView
-              weeks={weeks}
-              onOpenShiftModal={(day, weekId) => {
-                setEditingShift(day || null);
-                setEditingWeekId(weekId || weeks[0]?.id || null);
-                setIsShiftModalOpen(true);
-              }}
-              onOpenExportModal={() => setIsExportOpen(true)}
+          {overlay === 'shiftStart' && shiftStart !== null && (
+            <DateTimeSheet
+              start={shiftStart}
+              end={null}
+              initialTab="start"
+              max={now}
+              onSave={(v) => applyLiveEdit({ shiftStart, restStart: null, newStart: v.start })}
+              onClose={() => setOverlay(null)}
             />
           )}
-
-          {activeTab === 'settings' && (
-            <SettingsView
+          {overlay === 'weeklyRest' && (
+            <WeeklyRestSheet
+              metrics={metrics}
               settings={settings}
-              onUpdateSettings={handleUpdateSettings}
-              onOpenExportModal={() => setIsExportOpen(true)}
-              onOpenPaywall={() => setIsPaywallOpen(true)}
-              onClearData={handleClearData}
+              onStartRest={() => selectActivity('REST', { dayEnd: true })}
+              onAddManually={() => {
+                setTab('journal');
+                setOverlay({ shift: null, presetRest: 'weekly' });
+              }}
+              onClose={() => setOverlay(null)}
             />
           )}
-
-          {activeTab === 'more' && (
-            <MoreView
+          {overlay === 'driveEdit' && (
+            <DriveEditSheet
+              computedMinutes={metrics.dailyDriveMinutes}
+              bounds={shiftStart !== null ? drivingAdjustmentBounds(entries, shiftStart, now) : null}
+              onSave={(delta) => shiftStart !== null && applyLiveEdit({ shiftStart, restStart: null, driveDelta: delta })}
+              onClose={() => setOverlay(null)}
+            />
+          )}
+          {overlay === 'card' && (
+            <CardSheet
+              lastRead={settings.lastCardReadTimestamp}
+              onMarkToday={() => updateSettings({ lastCardReadTimestamp: Date.now() })}
+              onClose={() => setOverlay(null)}
+            />
+          )}
+          {overlay === 'export' && (
+            <ExportSheet
+              weeks={journal}
+              entries={entries}
               settings={settings}
-              onOpenPaywall={() => setIsPaywallOpen(true)}
-              onOpenExportModal={() => setIsExportOpen(true)}
-              onOpenGuide={() => setActiveTab('guide')}
+              now={now}
+              onOpenPaywall={() => setOverlay('paywall')}
+              onPrint={setPrintJob}
+              onClose={() => setOverlay((o) => (o === 'export' ? null : o))}
             />
           )}
-
-          {activeTab === 'guide' && (
-            <GuideView onBack={() => setActiveTab('more')} />
+          {overlay === 'paywall' && (
+            <PaywallSheet
+              isPremium={settings.isPremium}
+              onUpgrade={() => updateSettings({ isPremium: true })}
+              onClose={() => setOverlay(null)}
+            />
           )}
-        </main>
-
-        {/* Bottom Navigation Bar (Permanently anchored at the bottom of the screen, separate from page) */}
-        {activeTab !== 'guide' && (
-          <nav
-            aria-label="Основная навигация"
-            className="shrink-0 h-20 px-2 pt-2.5 pb-3.5 bg-[#1A1D20] border-t border-[#262A2F] grid grid-cols-4 z-30 select-none shadow-[0_-4px_20px_rgba(0,0,0,0.6)]"
-          >
-            {/* 1. Главная */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('main')}
-              className={`flex flex-col items-center gap-1 text-[12px] font-semibold transition-all ${
-                activeTab === 'main' ? 'text-[#EDEBE6] font-bold' : 'text-[#A3A8AE] hover:text-[#EDEBE6]'
-              }`}
-            >
-              <span
-                className={`w-[60px] h-8 flex items-center justify-center transition-all ${
-                  activeTab === 'main'
-                    ? 'rounded-full bg-[#F3B33D] text-[#111315]'
-                    : 'text-[#A3A8AE]'
-                }`}
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-                  <path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" />
-                </svg>
-              </span>
-              Главная
-            </button>
-
-            {/* 2. Журнал */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('journal')}
-              className={`flex flex-col items-center gap-1 text-[12px] font-semibold transition-all ${
-                activeTab === 'journal' ? 'text-[#EDEBE6] font-bold' : 'text-[#A3A8AE] hover:text-[#EDEBE6]'
-              }`}
-            >
-              <span
-                className={`w-[60px] h-8 flex items-center justify-center transition-all ${
-                  activeTab === 'journal'
-                    ? 'rounded-full bg-[#F3B33D] text-[#111315]'
-                    : 'text-[#A3A8AE]'
-                }`}
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M5 5h14M5 10h14M5 15h14M5 20h9" />
-                </svg>
-              </span>
-              Журнал
-            </button>
-
-            {/* 3. Настройки */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('settings')}
-              className={`flex flex-col items-center gap-1 text-[12px] font-semibold transition-all ${
-                activeTab === 'settings' ? 'text-[#EDEBE6] font-bold' : 'text-[#A3A8AE] hover:text-[#EDEBE6]'
-              }`}
-            >
-              <span
-                className={`w-[60px] h-8 flex items-center justify-center transition-all ${
-                  activeTab === 'settings'
-                    ? 'rounded-full bg-[#F3B33D] text-[#111315]'
-                    : 'text-[#A3A8AE]'
-                }`}
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M4 7h10M18 7h2M4 17h4M12 17h8" />
-                  <circle cx="16" cy="7" r="2" />
-                  <circle cx="10" cy="17" r="2" />
-                </svg>
-              </span>
-              Настройки
-            </button>
-
-            {/* 4. Ещё */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('more')}
-              className={`flex flex-col items-center gap-1 text-[12px] font-semibold transition-all ${
-                activeTab === 'more' ? 'text-[#EDEBE6] font-bold' : 'text-[#A3A8AE] hover:text-[#EDEBE6]'
-              }`}
-            >
-              <span
-                className={`w-[60px] h-8 flex items-center justify-center transition-all ${
-                  activeTab === 'more'
-                    ? 'rounded-full bg-[#F3B33D] text-[#111315]'
-                    : 'text-[#A3A8AE]'
-                }`}
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                  <circle cx="5" cy="12" r="1.8" />
-                  <circle cx="12" cy="12" r="1.8" />
-                  <circle cx="19" cy="12" r="1.8" />
-                </svg>
-              </span>
-              Ещё
-            </button>
-          </nav>
-        )}
-
-        {/* Modals & Dialogs */}
-
-        {/* Country Picker */}
-        {isCountryPickerOpen && (
-          <CountryPickerModal
-            startCountry={settings.startCountry || 'PL'}
-            endCountry={settings.endCountry || 'PL'}
-            onSelectCountry={(type: 'start' | 'end', countryCode: string) => {
-              if (type === 'start') {
-                handleUpdateSettings({ startCountry: countryCode });
-              } else {
-                handleUpdateSettings({ endCountry: countryCode });
-              }
-              setIsCountryPickerOpen(false);
-            }}
-            onClose={() => setIsCountryPickerOpen(false)}
-          />
-        )}
-
-        {/* Limit Break Modal */}
-        {isLimitBreakOpen && (
-          <LimitBreakModal
-            metrics={metrics}
-            onClose={() => setIsLimitBreakOpen(false)}
-            onStartBreak={() => handleChangeActivity('REST')}
-          />
-        )}
-
-        {/* Limit Workday Modal */}
-        {isLimitWorkdayOpen && (
-          <LimitWorkdayModal
-            metrics={metrics}
-            settings={settings}
-            onClose={() => setIsLimitWorkdayOpen(false)}
-            onEndDay={() => handleChangeActivity('REST')}
-          />
-        )}
-
-        {/* Limit Weekly Rest Modal */}
-        {isLimitWeeklyRestOpen && (
-          <LimitWeeklyRestModal
-            onClose={() => setIsLimitWeeklyRestOpen(false)}
-            onStartRest={() => handleChangeActivity('REST')}
-          />
-        )}
-
-        {/* Time Edit Modal */}
-        {isTimeEditOpen && (
-          <TimeEditModal
-            initialMinutes={metrics.dailyDriveMinutes || 235}
-            onClose={() => setIsTimeEditOpen(false)}
-            onSave={(newMins) => {
-              // Adjust the last driving entry
-              const now = Date.now();
-              const updated = entries.map((e, idx) => {
-                if (idx === entries.length - 1 && e.activity === 'DRIVE') {
-                  return { ...e, startTime: now - newMins * 60 * 1000 };
-                }
-                return e;
-              });
-              setEntries(updated);
-            }}
-          />
-        )}
-
-        {/* Shift Modal */}
-        {isShiftModalOpen && (
-          <ShiftModal
-            shift={editingShift}
-            defaultCountry={settings.startCountry || 'PL'}
-            onClose={() => {
-              setIsShiftModalOpen(false);
-              setEditingShift(null);
-              setEditingWeekId(null);
-            }}
-            onSaveShift={(savedShift) => {
-              handleSaveShift(savedShift, editingWeekId);
-            }}
-            onDeleteShift={(shiftId) => {
-              handleDeleteShift(shiftId, editingWeekId);
-            }}
-          />
-        )}
-
-        {/* Export Modal */}
-        {isExportOpen && (
-          <ExportModal
-            entries={entries}
-            settings={settings}
-            onClose={() => setIsExportOpen(false)}
-            onOpenPaywall={() => {
-              setIsExportOpen(false);
-              setIsPaywallOpen(true);
-            }}
-          />
-        )}
-
-        {/* Paywall Modal */}
-        {isPaywallOpen && (
-          <PaywallModal
-            onClose={() => setIsPaywallOpen(false)}
-            onUpgrade={() => {
-              handleUpdateSettings({ isPremium: true });
-              alert('Premium успешно активирован!');
-            }}
-          />
-        )}
-
-        {/* 24h Digital Tachograph Printout Modal */}
-        {isPrintoutOpen && (
-          <TachoPrintoutModal
-            entries={entries}
-            settings={settings}
-            metrics={metrics}
-            language={settings.language}
-            onClose={() => setIsPrintoutOpen(false)}
-          />
-        )}
-
+          {overlay !== null && typeof overlay === 'object' && (
+            <ShiftSheet
+              shift={overlay.shift}
+              manual={overlay.shift?.source === 'manual' ? manualShifts.find((m) => m.id === overlay.shift!.id) : undefined}
+              presetRest={overlay.presetRest}
+              allShifts={allShifts}
+              driveBounds={overlay.shift?.live ? drivingAdjustmentBounds(entries, overlay.shift.start, now) : null}
+              defaultCountry={settings.defaultCountry}
+              now={now}
+              onSaveManual={saveManualShift}
+              onSaveMeta={(id, meta) => setShiftMeta((all) => ({ ...all, [id]: meta }))}
+              onConvert={convertShift}
+              onApplyLive={applyLiveEdit}
+              onDelete={deleteShift}
+              onClose={() => setOverlay(null)}
+            />
+          )}
+        </div>
       </div>
-    </div>
+
+      {printJob &&
+        createPortal(
+          <PrintReport job={printJob} weeks={journal} settings={settings} now={now} />,
+          document.getElementById('print-root')!,
+        )}
+    </I18nProvider>
   );
 };

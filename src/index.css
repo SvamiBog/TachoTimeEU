@@ -1,56 +1,115 @@
 @import "tailwindcss";
 
+/*
+ * Токены дизайна: docs/design/tokens.json. Тёмная тема по умолчанию,
+ * светлая — через <html data-theme="light">. В компонентах использовать
+ * только классы на этих токенах (bg-surface, text-muted, bg-drive …), без hex.
+ */
+:root {
+  --tt-page: #070808;
+  --tt-bg: #111315;
+  --tt-surface: #1a1d20;
+  --tt-surface2: #262a2f;
+  --tt-line: #2a2e33;
+  --tt-fg: #edebe6;
+  --tt-muted: #a3a8ae;
+  --tt-chip-fg: #c9cdd2;
+  --tt-selected: #2f343a;
+  --tt-drive: #f3b33d;
+  --tt-rest: #4fbf9f;
+  --tt-work: #ee8b5a;
+  --tt-poa: #86a8f0;
+  --tt-on-accent: #111315;
+  --tt-rest-bg: #16261f;
+  --tt-rest-fg: #9fe3ce;
+  --tt-warn-bg: #2b2415;
+  --tt-warn-fg: #f7d38a;
+  --tt-err-bg: #2e1818;
+  --tt-err-fg: #ff9c94;
+  --tt-danger-line: #5a2a27;
+  --tt-switch-off: #3a3f45;
+  --tt-scrim: #070808;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --tt-page: #d6d2c9;
+  --tt-bg: #f4f2ee;
+  --tt-surface: #ffffff;
+  --tt-surface2: #ece9e3;
+  --tt-line: #e4e0d8;
+  --tt-fg: #15171a;
+  --tt-muted: #5e636a;
+  --tt-chip-fg: #3f444b;
+  --tt-selected: #ffffff;
+  --tt-drive: #d48a00;
+  --tt-rest: #1f8a6c;
+  --tt-work: #c9562c;
+  --tt-poa: #3d64c9;
+  --tt-on-accent: #15171a;
+  --tt-rest-bg: #dcf1e9;
+  --tt-rest-fg: #145c48;
+  --tt-warn-bg: #fff1d1;
+  --tt-warn-fg: #7a4b00;
+  --tt-err-bg: #fde4e1;
+  --tt-err-fg: #a8261c;
+  --tt-danger-line: #f0c4bf;
+  --tt-switch-off: #d6d2c9;
+  --tt-scrim: #8a8680;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-page: var(--tt-page);
+  --color-bg: var(--tt-bg);
+  --color-surface: var(--tt-surface);
+  --color-surface2: var(--tt-surface2);
+  --color-line: var(--tt-line);
+  --color-fg: var(--tt-fg);
+  --color-muted: var(--tt-muted);
+  --color-chip-fg: var(--tt-chip-fg);
+  --color-selected: var(--tt-selected);
+  --color-drive: var(--tt-drive);
+  --color-rest: var(--tt-rest);
+  --color-work: var(--tt-work);
+  --color-poa: var(--tt-poa);
+  --color-on-accent: var(--tt-on-accent);
+  --color-rest-bg: var(--tt-rest-bg);
+  --color-rest-fg: var(--tt-rest-fg);
+  --color-warn-bg: var(--tt-warn-bg);
+  --color-warn-fg: var(--tt-warn-fg);
+  --color-err-bg: var(--tt-err-bg);
+  --color-err-fg: var(--tt-err-fg);
+  --color-danger-line: var(--tt-danger-line);
+  --color-switch-off: var(--tt-switch-off);
+  --color-scrim: var(--tt-scrim);
+
+  --font-sans: 'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
 @layer base {
-  :root {
-    --bg-app: #111315;
-    --surface-app: #1A1D20;
-    --surface2-app: #262A2F;
-    --line-app: #2A2E33;
-    --text-app: #EDEBE6;
-    --text-sec-app: #A3A8AE;
-    --color-drive: #F3B33D;
-    --color-rest: #4FBF9F;
-    --color-work: #EE8B5A;
-    --color-poa: #86A8F0;
-    --color-warn-bg: #2B2415;
-    --color-warn-text: #F7D38A;
-    --color-err-bg: #2E1818;
-    --color-err-text: #FF9C94;
-  }
-
-  .theme-light {
-    --bg-app: #F4F2EE;
-    --surface-app: #FFFFFF;
-    --surface2-app: #ECE9E3;
-    --line-app: #E4E0D8;
-    --text-app: #15171A;
-    --text-sec-app: #5E636A;
-    --color-drive: #D48A00;
-    --color-rest: #1F8A6C;
-    --color-work: #C9562C;
-    --color-poa: #3D64C9;
-    --color-warn-bg: #FFF1D1;
-    --color-warn-text: #7A4B00;
-    --color-err-bg: #FDE4E1;
-    --color-err-text: #A8261C;
-  }
-
   body {
-    font-family: 'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--bg-app);
-    color: var(--text-app);
+    font-family: var(--font-sans);
+    background-color: var(--tt-page);
+    color: var(--tt-fg);
     margin: 0;
-    padding: 0;
   }
 
-  .font-mono-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-feature-settings: 'tnum' 1;
-    font-variant-numeric: tabular-nums;
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
   }
 }
 
-/* Custom scrollbars for clean driver mobile experience */
+@utility font-mono-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -59,6 +118,27 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2A2E33;
+  background: var(--tt-line);
   border-radius: 3px;
+}
+
+/* Печать отчёта: видим только отчёт, приложение скрыто */
+#print-root {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  body {
+    background: #fff;
+  }
+  body.printing #root {
+    display: none;
+  }
+  body.printing #print-root {
+    display: block;
+  }
 }

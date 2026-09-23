@@ -1,226 +1,186 @@
 import React, { useState } from 'react';
-import { Download, Plus, Bed, ChevronDown } from 'lucide-react';
-import { JournalWeek, JournalDay } from '../types/tacho';
+import { Bed, ChevronDown, Download, Plus } from 'lucide-react';
+import type { JournalShift, JournalWeek, Level } from '../domain/journal';
+import { LIMITS } from '../domain/limits';
+import { useI18n } from '../i18n';
+import { Chip, LimitBar } from './ui';
 
-interface JournalViewProps {
-  onOpenShiftModal: (day?: JournalDay, weekId?: string) => void;
-  onOpenExportModal: () => void;
+interface Props {
   weeks: JournalWeek[];
+  onOpenShift: (shift: JournalShift | null) => void;
+  onOpenExport: () => void;
+  now: number;
 }
 
-export const JournalView: React.FC<JournalViewProps> = ({
-  onOpenShiftModal,
-  onOpenExportModal,
-  weeks,
-}) => {
-  const [showOlderWeek, setShowOlderWeek] = useState(false);
+const LEVEL_CHIP: Record<Level, string> = {
+  ok: 'bg-surface2 text-fg',
+  warn: 'bg-warn-bg text-warn-fg',
+  bad: 'bg-err-bg text-err-fg',
+};
+
+const hasViolation = (s: JournalShift) => Object.values(s.levels).includes('bad');
+
+export const JournalView: React.FC<Props> = ({ weeks, onOpenShift, onOpenExport, now }) => {
+  const { t, fmt } = useI18n();
+  // Текущая и прошлая недели раскрыты, более старые — свёрнуты
+  const [expanded, setExpanded] = useState<Set<number>>(() => new Set(weeks.slice(0, 2).map((w) => w.start)));
+  const toggle = (start: number) =>
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(start)) next.delete(start);
+      else next.add(start);
+      return next;
+    });
+  const empty = weeks.every((w) => w.shifts.length === 0 && w.weeklyRests.length === 0);
 
   return (
-    <div className="relative flex flex-col gap-3 pb-28 text-[#EDEBE6]">
-      
-      {/* Top Header */}
+    <div className="relative flex flex-col gap-3 pb-6 min-h-full">
       <header className="h-16 px-5 flex items-center justify-between">
         <div className="flex flex-col">
-          <h1 className="text-[20px] font-bold tracking-tight">Журнал</h1>
-          <span className="text-[12px] text-[#A3A8AE]">Сентябрь 2026</span>
+          <h1 className="text-[18px] font-bold tracking-tight">{t.journal.title}</h1>
+          <span className="text-[12px] text-muted">{fmt.monthYear(now)}</span>
         </div>
         <button
-          onClick={onOpenExportModal}
-          className="w-10 h-10 rounded-full flex items-center justify-center text-[#EDEBE6] hover:bg-[#1A1D20] transition-colors"
+          type="button"
+          onClick={onOpenExport}
+          aria-label={t.journal.export}
+          className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-surface"
         >
           <Download className="w-5 h-5" />
         </button>
       </header>
 
-      {/* Weeks list */}
-      <div className="flex flex-col gap-3">
-        {weeks.map((week) => {
-          const driveH = Math.floor(week.driveMinutes / 60);
-          const driveM = week.driveMinutes % 60;
-          const fortnightH = Math.floor(week.fortnightMinutes / 60);
-          const fortnightM = week.fortnightMinutes % 60;
-          const drivePct = Math.min(100, (week.driveMinutes / week.driveLimitMinutes) * 100);
+      {empty && <p className="mx-6 text-[14px] leading-relaxed text-muted">{t.journal.empty}</p>}
 
+      {weeks.map((week) => {
+        const open = expanded.has(week.start);
+        const bad = week.shifts.filter(hasViolation).length;
+        if (!open) {
           return (
-            <section
-              key={week.id}
-              className="mx-4 bg-[#1A1D20] rounded-[24px] overflow-hidden border border-[#262A2F]/40 shadow-sm"
+            <button
+              key={week.start}
+              type="button"
+              onClick={() => toggle(week.start)}
+              aria-expanded={false}
+              className="mx-4 min-h-14 px-4 py-3 rounded-[20px] bg-surface flex items-center justify-between gap-3 text-left"
             >
-              {/* Week Summary Header */}
-              <div className="p-4 flex flex-col gap-2.5">
-                <div className="flex items-baseline justify-between">
-                  <h2 className="text-[15px] font-bold">{week.title}</h2>
-                  {week.isCurrent && (
-                    <span className="text-[12px] font-bold px-2 py-0.5 rounded-[8px] bg-[#2B2415] text-[#F7D38A]">
-                      текущая
-                    </span>
-                  )}
-                </div>
-
-                <div className="h-1.5 rounded-full bg-[#2A2E33] overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-[#F3B33D]"
-                    style={{ width: `${drivePct}%` }}
-                  />
-                </div>
-
-                <div className="flex justify-between text-[13px] text-[#A3A8AE]">
-                  <span>
-                    Вождение{' '}
-                    <b className="font-mono-num text-[#EDEBE6]">
-                      {driveH}:{driveM.toString().padStart(2, '0')}
-                    </b>{' '}
-                    из 56
-                  </span>
-                  <span>
-                    За 2 нед.{' '}
-                    <b className="font-mono-num text-[#EDEBE6]">
-                      {fortnightH}:{fortnightM.toString().padStart(2, '0')}
-                    </b>{' '}
-                    из 90
-                  </span>
-                </div>
-              </div>
-
-              {/* Days List */}
-              <div className="divide-y divide-[#262A2F]">
-                {week.days.map((d) => {
-                  const isLive = d.timeRange.includes('сейчас') || d.timeRange.includes('идёт');
-                  return (
-                    <div
-                      key={d.id}
-                      onClick={() => onOpenShiftModal(d, week.id)}
-                      className="p-3.5 px-4 grid grid-cols-[44px_1fr] gap-3 cursor-pointer hover:bg-[#262A2F]/40 transition-colors"
-                    >
-                      {/* DOW & Day Number */}
-                      <div className="flex flex-col items-center justify-center">
-                        <span className="text-[12px] text-[#A3A8AE] uppercase font-semibold">
-                          {d.dow}
-                        </span>
-                        <span className="font-mono-num text-[20px] font-bold leading-tight">
-                          {d.day}
-                        </span>
-                      </div>
-
-                      {/* Details & 3 chips */}
-                      <div className="flex flex-col gap-2">
-                        <div className="flex justify-between items-center text-[14px]">
-                          <span className="font-semibold text-[#EDEBE6]">{d.place}</span>
-                          <span
-                            className={`font-mono-num text-[13px] font-bold ${
-                              isLive ? 'text-[#F3B33D]' : 'text-[#A3A8AE]'
-                            }`}
-                          >
-                            {d.timeRange}
-                          </span>
-                        </div>
-
-                        {/* 3 Metric Chips */}
-                        <div className="grid grid-cols-3 gap-1.5">
-                          {/* Drive Chip */}
-                          <div
-                            className="p-1.5 px-2 rounded-[10px] flex flex-col"
-                            style={{
-                              backgroundColor: d.driveBg || '#262A2F',
-                              color: d.driveFg || '#EDEBE6',
-                            }}
-                          >
-                            <span className="text-[11px] opacity-75">Вождение</span>
-                            <span className="font-mono-num text-[15px] font-bold">
-                              {d.drive}
-                            </span>
-                          </div>
-
-                          {/* Shift Chip */}
-                          <div
-                            className="p-1.5 px-2 rounded-[10px] flex flex-col"
-                            style={{
-                              backgroundColor: d.shiftBg || '#262A2F',
-                              color: d.shiftFg || '#EDEBE6',
-                            }}
-                          >
-                            <span className="text-[11px] opacity-75">Смена</span>
-                            <span className="font-mono-num text-[15px] font-bold">
-                              {d.shift}
-                            </span>
-                          </div>
-
-                          {/* Rest Chip */}
-                          <div
-                            className="p-1.5 px-2 rounded-[10px] flex flex-col"
-                            style={{
-                              backgroundColor: d.restBg || '#262A2F',
-                              color: d.restFg || '#EDEBE6',
-                            }}
-                          >
-                            <span className="text-[11px] opacity-75">Отдых</span>
-                            <span className="font-mono-num text-[15px] font-bold">
-                              {d.rest}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-
-                {/* Weekly Rest Card if present */}
-                {week.weeklyRest && (
-                  <div className="p-3.5 px-4 flex items-center gap-3 bg-[#16261F] text-[#9FE3CE]">
-                    <Bed className="w-5 h-5 text-[#4FBF9F] shrink-0" />
-                    <div className="flex-1 flex flex-col">
-                      <span className="text-[14px] font-semibold">{week.weeklyRest.type}</span>
-                      <span className="font-mono-num text-[12px] text-[#A3A8AE]">
-                        {week.weeklyRest.range}
-                      </span>
-                    </div>
-                    <span className="font-mono-num text-[17px] font-bold">
-                      {week.weeklyRest.duration}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </section>
+              <span className="flex flex-col">
+                <span className="text-[15px] font-bold">{fmt.weekRange(week.start)}</span>
+                <span className="text-[12px] text-muted">{t.journal.olderSummary(week.shifts.length, bad)}</span>
+              </span>
+              <span className="flex items-center gap-2 text-[13px] text-muted">
+                {t.journal.driveShort} <b className="font-mono-num text-fg">{fmt.hm(week.driveMinutes)}</b>
+                <ChevronDown className="w-4 h-4" />
+              </span>
+            </button>
           );
-        })}
+        }
+        return (
+          <section key={week.start} className="mx-4 bg-surface rounded-[24px] overflow-hidden">
+            <button
+              type="button"
+              onClick={() => toggle(week.start)}
+              aria-expanded
+              className="w-full p-4 flex flex-col gap-2.5 text-left"
+            >
+              <span className="flex items-center justify-between">
+                <span className="text-[15px] font-bold">{fmt.weekRange(week.start)}</span>
+                {week.isCurrent ? <Chip tone="warn">{t.journal.current}</Chip> : <ChevronDown className="w-4 h-4 rotate-180 text-muted" />}
+              </span>
+              <LimitBar
+                value={week.driveMinutes}
+                max={LIMITS.weeklyDrive}
+                tone={week.driveMinutes > LIMITS.weeklyDrive ? 'bad' : 'drive'}
+              />
+              <span className="flex justify-between text-[13px] text-muted">
+                <span>
+                  {t.journal.driveOf} <b className="font-mono-num text-fg">{fmt.hm(week.driveMinutes)}</b> {t.journal.of56}
+                </span>
+                <span>
+                  {t.journal.fortnight}{' '}
+                  <b className={`font-mono-num ${week.fortnightMinutes > LIMITS.fortnightDrive ? 'text-err-fg' : 'text-fg'}`}>
+                    {fmt.hm(week.fortnightMinutes)}
+                  </b>{' '}
+                  {t.journal.of90}
+                </span>
+              </span>
+            </button>
 
-        {/* Older week toggle */}
-        <button
-          onClick={() => setShowOlderWeek(!showOlderWeek)}
-          className="mx-4 h-14 px-4 rounded-[20px] bg-[#1A1D20] text-[#EDEBE6] flex items-center justify-between border border-[#2A2E33] hover:border-[#F3B33D]/40 transition-colors"
-        >
-          <span className="text-[15px] font-bold">7–13 сентября</span>
-          <div className="flex items-center gap-2">
-            <span className="text-[13px] text-[#A3A8AE]">
-              вождение <b className="font-mono-num text-[#EDEBE6]">41:10</b>
-            </span>
-            <ChevronDown
-              className={`w-4 h-4 text-[#A3A8AE] transition-transform ${
-                showOlderWeek ? 'rotate-180' : ''
-              }`}
-            />
-          </div>
-        </button>
+            <div className="divide-y divide-surface2 border-t border-surface2">
+              {week.shifts.map((s) => (
+                <ShiftRow key={s.id} shift={s} onClick={() => onOpenShift(s)} />
+              ))}
+              {week.weeklyRests.map((r) => (
+                <div key={r.start} className="p-3.5 px-4 flex items-center gap-3 bg-rest-bg text-rest-fg">
+                  <Bed className="w-5 h-5 text-rest shrink-0" />
+                  <span className="flex-1 flex flex-col">
+                    <span className="text-[14px] font-semibold">{t.journal.weeklyRestCard(t.common.restStatus[r.status])}</span>
+                    <span className="font-mono-num text-[12px] text-muted">
+                      {fmt.dateTime(r.start)} → {r.end !== null ? fmt.dateTime(r.end) : t.common.now}
+                    </span>
+                  </span>
+                  <span className="font-mono-num text-[17px] font-bold">{fmt.hm(r.minutes)}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })}
 
-        {showOlderWeek && (
-          <div className="mx-4 p-4 rounded-[20px] bg-[#1A1D20] text-[13px] text-[#A3A8AE] border border-[#262A2F] text-center">
-            Всего за неделю 41 ч 10 мин вождения · 5 смен без нарушений.
-          </div>
-        )}
-      </div>
-
-      {/* Floating Action Button «+ Смена» */}
-      <div className="sticky bottom-4 mr-4 self-end z-20 pointer-events-auto mt-2">
+      <div className="sticky bottom-4 mr-4 self-end z-20 mt-auto pt-2">
         <button
           type="button"
-          onClick={() => onOpenShiftModal(undefined, weeks[0]?.id)}
-          className="h-14 px-5 rounded-[18px] bg-[#F3B33D] hover:bg-[#e0a232] text-[#111315] flex items-center gap-2 font-bold text-[15px] shadow-2xl active:scale-95 transition-all"
+          onClick={() => onOpenShift(null)}
+          aria-label={t.journal.addShiftAria}
+          className="h-14 px-5 rounded-[18px] bg-drive text-on-accent flex items-center gap-2 font-bold text-[15px] shadow-2xl active:scale-95 transition-transform"
         >
           <Plus className="w-5 h-5 stroke-[2.5]" />
-          <span>Смена</span>
+          {t.journal.addShift}
         </button>
       </div>
-
     </div>
   );
 };
+
+const ShiftRow: React.FC<{ shift: JournalShift; onClick: () => void }> = ({ shift: s, onClick }) => {
+  const { t, fmt } = useI18n();
+  const live = s.end === null;
+  const restValue =
+    s.rest.kind === 'none'
+      ? '—'
+      : s.rest.kind === 'weekly'
+        ? t.journal.weeklyShort
+        : fmt.hm(s.rest.minutes);
+
+  return (
+    <button type="button" onClick={onClick} className="w-full p-3.5 px-4 grid grid-cols-[44px_1fr] gap-3 text-left hover:bg-surface2/40">
+      <span className="flex flex-col items-center justify-center">
+        <span className="text-[12px] text-muted uppercase font-semibold">{fmt.weekdayShort(s.start)}</span>
+        <span className="font-mono-num text-[20px] font-bold leading-tight">{new Date(s.start).getDate()}</span>
+      </span>
+      <span className="flex flex-col gap-2 min-w-0">
+        <span className="flex justify-between items-center gap-2 text-[14px]">
+          <span className="font-semibold truncate">
+            {s.startCountry ? t.common.route(s.startCountry, s.endCountry) : '—'}
+            {s.source === 'manual' && <span className="ml-2 text-[11px] font-normal text-muted">{t.journal.manual}</span>}
+          </span>
+          <span className={`font-mono-num text-[13px] font-bold shrink-0 ${live ? 'text-drive' : 'text-muted'}`}>
+            {fmt.time(s.start)} → {live ? t.common.ongoing : fmt.time(s.end!)}
+          </span>
+        </span>
+        <span className="grid grid-cols-3 gap-1.5">
+          <Metric label={t.common.drive} value={fmt.hm(s.driveMinutes)} level={s.levels.drive} />
+          <Metric label={t.journal.shift} value={fmt.hm(s.spanMinutes)} level={s.levels.span} />
+          <Metric label={t.common.rest} value={restValue} level={s.rest.ongoing ? 'ok' : s.levels.rest} rest={s.rest.ongoing} />
+        </span>
+      </span>
+    </button>
+  );
+};
+
+const Metric: React.FC<{ label: string; value: string; level: Level; rest?: boolean }> = ({ label, value, level, rest }) => (
+  <span className={`p-1.5 px-2 rounded-[10px] flex flex-col ${rest ? 'bg-rest-bg text-rest-fg' : LEVEL_CHIP[level]}`}>
+    <span className="text-[11px] opacity-75">{label}</span>
+    <span className="font-mono-num text-[15px] font-bold">{value}</span>
+  </span>
+);
