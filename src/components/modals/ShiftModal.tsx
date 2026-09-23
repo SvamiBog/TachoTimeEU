@@ -7,6 +7,7 @@ import {
   Clock,
   ChevronRight,
   ChevronDown,
+  AlertCircle,
 } from 'lucide-react';
 import { JournalDay } from '../../types/tacho';
 import { CountryPickerModal } from './CountryPickerModal';
@@ -21,6 +22,13 @@ interface ShiftModalProps {
   onDeleteShift?: (shiftId: string) => void;
 }
 
+const getCurrentTimeFormatted = () => {
+  const d = new Date();
+  const h = d.getHours().toString().padStart(2, '0');
+  const m = d.getMinutes().toString().padStart(2, '0');
+  return `${h}:${m}`;
+};
+
 export const ShiftModal: React.FC<ShiftModalProps> = ({
   shift,
   defaultCountry = 'PL',
@@ -30,56 +38,90 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
 }) => {
   const isEditing = !!shift;
 
-  // Initial State derived from existing shift or new shift defaults
+  // Determine initial rest type:
+  // If editing an existing shift that was ongoing ("none"), keep "none".
+  // Otherwise, default to 'daily'.
+  const initialRestType: 'none' | 'daily' | 'weekly' =
+    shift?.restType ?? (isEditing && shift?.timeRange?.includes('сейчас') ? 'none' : 'daily');
+
+  const [restType, setRestType] = useState<'none' | 'daily' | 'weekly'>(initialRestType);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Countries:
+  // When restType is 'none', endCountry should be '—' (not recorded)
   const [startCountry, setStartCountry] = useState(
     shift?.startCountry || defaultCountry || 'PL'
   );
   const [endCountry, setEndCountry] = useState(
-    shift?.endCountry || (isEditing ? 'PL' : '—')
+    initialRestType === 'none'
+      ? '—'
+      : shift?.endCountry || (isEditing && shift?.endCountry !== '—' ? shift.endCountry : '—')
   );
 
-  const [startDay, setStartDay] = useState<number>(shift?.day ?? 22);
+  // Dates & Times:
+  const [startDay, setStartDay] = useState<number>(shift?.day ?? 23);
   const [startTime, setStartTime] = useState<string>(
-    shift?.startTime ?? (isEditing ? '06:30' : '07:00')
+    shift?.startTime ?? (isEditing ? '06:49' : '07:00')
   );
 
-  const [endDay, setEndDay] = useState<number>(shift?.day ?? 22);
+  const [endDay, setEndDay] = useState<number>(shift?.day ?? 23);
   const [endTime, setEndTime] = useState<string>(
-    shift?.endTime ?? (isEditing ? '19:10' : '18:00')
+    initialRestType === 'none'
+      ? ''
+      : shift?.endTime ?? (isEditing ? '19:10' : getCurrentTimeFormatted())
   );
 
+  // Driving metrics:
   const [dailyDrive, setDailyDrive] = useState<string>(
-    shift?.drive ?? (isEditing ? '8:55' : '7:30')
+    shift?.drive ?? (isEditing ? '8:55' : '4:30')
   );
   const [continuousDrive, setContinuousDrive] = useState<string>(
     shift?.continuousDrive ?? '2:05'
   );
 
-  const [restType, setRestType] = useState<'none' | 'daily' | 'weekly'>(
-    shift?.restType ?? 'daily'
-  );
+  // Rest details:
   const [splitRest, setSplitRest] = useState<boolean>(shift?.splitRest ?? false);
   const [restDuration, setRestDuration] = useState<string>(
-    shift?.rest ?? (isEditing ? '11:39' : '11:00')
+    shift?.rest && shift.rest !== '—' ? shift.rest : '11:00'
   );
   const [notes, setNotes] = useState<string>(shift?.notes ?? '');
 
   // Sub-modals
-  const [countryPickerTarget, setCountryPickerTarget] = useState<
-    'start' | 'end' | null
-  >(null);
-  const [showDateTimeModal, setShowDateTimeModal] = useState<
-    'start' | 'end' | null
-  >(null);
-  const [timeEditTarget, setTimeEditTarget] = useState<
-    'daily' | 'continuous' | null
-  >(null);
+  const [countryPickerTarget, setCountryPickerTarget] = useState<'start' | 'end' | null>(null);
+  const [showDateTimeModal, setShowDateTimeModal] = useState<'start' | 'end' | null>(null);
+  const [timeEditTarget, setTimeEditTarget] = useState<'daily' | 'continuous' | null>(null);
 
-  // Compute shift duration between startTime and endTime
+  // Handle rest type switching
+  const handleSelectRestType = (type: 'none' | 'daily' | 'weekly') => {
+    setRestType(type);
+    setErrorMessage(null);
+
+    if (type === 'none') {
+      // Clear end country and end time as required
+      setEndCountry('—');
+      setEndTime('');
+    } else {
+      // When choosing daily or weekly:
+      // Set end time to current time if empty or switching from 'none'
+      if (!endTime || endTime === '') {
+        setEndTime(getCurrentTimeFormatted());
+      }
+      if (!endDay) {
+        setEndDay(startDay);
+      }
+    }
+  };
+
+  // Compute shift duration between startTime and endTime (or now if ongoing)
   const shiftDuration = useMemo(() => {
     try {
       const [sh, sm] = startTime.split(':').map((n) => parseInt(n, 10));
-      const [eh, em] = endTime.split(':').map((n) => parseInt(n, 10));
+      const targetEndTime =
+        restType === 'none' || !endTime || endTime === ''
+          ? getCurrentTimeFormatted()
+          : endTime;
+
+      const [eh, em] = targetEndTime.split(':').map((n) => parseInt(n, 10));
       let startTotal = sh * 60 + sm;
       let endTotal = eh * 60 + em;
       if (endDay > startDay) {
@@ -94,7 +136,7 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
     } catch {
       return shift?.shift || '12:40';
     }
-  }, [startTime, endTime, startDay, endDay, shift]);
+  }, [startTime, endTime, startDay, endDay, restType, shift]);
 
   // Compute Day of Week label for startDay
   const dowLabel = useMemo(() => {
@@ -118,38 +160,89 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
     return `${fullDows[dowIdx]}, ${startDay} сентября`;
   }, [startDay]);
 
+  // Save Shift handler with user-requested validations
   const handleSave = () => {
+    setErrorMessage(null);
+
+    // 1. If "Не начат" (restType === 'none'):
+    // End time and end country are cleared and not recorded.
+    if (restType === 'none') {
+      const saved: JournalDay = {
+        id: shift?.id || `shift-${Date.now()}`,
+        dow: dowLabel,
+        day: startDay,
+        place: `${startCountry} → в пути`,
+        timeRange: `${startTime} — сейчас`,
+        drive: dailyDrive,
+        continuousDrive,
+        shift: shiftDuration,
+        rest: '—',
+        startCountry,
+        endCountry: '—',
+        startDate: `${dowLabel}, ${startDay.toString().padStart(2, '0')}.09`,
+        startTime,
+        endDate: undefined,
+        endTime: undefined,
+        restType: 'none',
+        splitRest: false,
+        restStatus: undefined,
+        notes,
+        driveFg: '#F3B33D',
+        driveBg: '#2B2415',
+        shiftFg: '#EDEBE6',
+        shiftBg: '#262A2F',
+        restFg: '#A3A8AE',
+        restBg: '#262A2F',
+      };
+
+      onSaveShift(saved);
+      onClose();
+      return;
+    }
+
+    // 2. If "Суточный" or "Недельный":
+    // The user MUST specify the end country. If missing, do NOT save and request country.
+    if (!endCountry || endCountry === '—' || endCountry.trim() === '') {
+      setErrorMessage('Пожалуйста, укажите конечную страну смены');
+      setCountryPickerTarget('end');
+      return;
+    }
+
+    // Ensure end time is recorded (defaults to current time if missing)
+    const finalEndTime =
+      endTime && endTime.trim() !== '' ? endTime : getCurrentTimeFormatted();
+
     const saved: JournalDay = {
       id: shift?.id || `shift-${Date.now()}`,
       dow: dowLabel,
       day: startDay,
-      place: `${startCountry} → ${endCountry === '—' ? startCountry : endCountry}`,
-      timeRange: `${startTime} — ${endTime}`,
+      place: `${startCountry} → ${endCountry}`,
+      timeRange: `${startTime} — ${finalEndTime}`,
       drive: dailyDrive,
       continuousDrive,
       shift: shiftDuration,
-      rest: restDuration,
+      rest: restDuration && restDuration !== '—' ? restDuration : '11:00',
       startCountry,
       endCountry,
       startDate: `${dowLabel}, ${startDay.toString().padStart(2, '0')}.09`,
       startTime,
       endDate: `${dowLabel}, ${endDay.toString().padStart(2, '0')}.09`,
-      endTime,
+      endTime: finalEndTime,
       restType,
       splitRest,
       restStatus:
         restType === 'daily'
-          ? parseInt(restDuration.split(':')[0] || '11', 10) >= 11
+          ? parseInt((restDuration || '11').split(':')[0] || '11', 10) >= 11
             ? 'полный'
             : 'сокращённый'
-          : undefined,
+          : 'полный',
       notes,
       driveFg: '#EDEBE6',
       driveBg: '#262A2F',
       shiftFg: '#EDEBE6',
       shiftBg: '#262A2F',
-      restFg: restType !== 'none' ? '#4FBF9F' : '#A3A8AE',
-      restBg: restType !== 'none' ? '#16261F' : '#262A2F',
+      restFg: '#4FBF9F',
+      restBg: '#16261F',
     };
 
     onSaveShift(saved);
@@ -187,6 +280,14 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
         </button>
       </header>
 
+      {/* Validation Alert Banner */}
+      {errorMessage && (
+        <div className="mx-4 mt-3 p-3.5 rounded-[18px] bg-[#3B1C1A] border border-[#FF5252] text-[#FFB4AB] text-[13px] flex items-center gap-2.5 shadow-lg animate-pulse">
+          <AlertCircle className="w-5 h-5 text-[#FF5252] shrink-0" />
+          <span className="font-semibold">{errorMessage}</span>
+        </div>
+      )}
+
       {/* Main Content Body */}
       <div className="flex-1 flex flex-col gap-5 py-4 pb-20">
         
@@ -203,7 +304,7 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
               <div className="p-4 flex flex-col gap-2.5">
                 <span className="text-[13px] text-[#A3A8AE]">Начало</span>
                 
-                {/* Country Badge */}
+                {/* Start Country Badge */}
                 <button
                   type="button"
                   onClick={() => setCountryPickerTarget('start')}
@@ -241,41 +342,85 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
 
               {/* End Column */}
               <div className="p-4 flex flex-col gap-2.5">
-                <span className="text-[13px] text-[#A3A8AE]">Конец</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] text-[#A3A8AE]">Конец</span>
+                  {restType === 'none' && (
+                    <span className="text-[11px] font-semibold text-[#F3B33D] px-1.5 py-0.5 rounded bg-[#2B2415]">
+                      В пути
+                    </span>
+                  )}
+                </div>
 
-                {/* Country Badge */}
-                <button
-                  type="button"
-                  onClick={() => setCountryPickerTarget('end')}
-                  className="self-start h-10 px-3.5 rounded-full border border-[#3A3F45] bg-[#111315] hover:border-[#F3B33D] flex items-center gap-1.5 font-mono-num text-[14px] font-bold text-[#EDEBE6] transition-colors"
-                >
-                  <span>{endCountry}</span>
-                  <ChevronDown className="w-4 h-4 text-[#A3A8AE]" />
-                </button>
+                {/* End Country Badge */}
+                {restType === 'none' ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Prompt user to switch to daily rest or pick country
+                      handleSelectRestType('daily');
+                      setCountryPickerTarget('end');
+                    }}
+                    className="self-start h-10 px-3.5 rounded-full border border-[#3A3F45]/50 bg-[#111315]/60 text-[#6B7178] hover:text-[#EDEBE6] hover:border-[#F3B33D] flex items-center gap-1.5 font-mono-num text-[14px] font-bold transition-colors"
+                  >
+                    <span>—</span>
+                    <ChevronDown className="w-4 h-4 text-[#6B7178]" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCountryPickerTarget('end');
+                      setErrorMessage(null);
+                    }}
+                    className={`self-start h-10 px-3.5 rounded-full border flex items-center gap-1.5 font-mono-num text-[14px] font-bold transition-all ${
+                      endCountry === '—' || !endCountry
+                        ? 'border-[#FF5252] bg-[#3B1C1A]/60 text-[#FFB4AB] hover:bg-[#3B1C1A]'
+                        : 'border-[#3A3F45] bg-[#111315] text-[#EDEBE6] hover:border-[#F3B33D]'
+                    }`}
+                  >
+                    <span>{endCountry === '—' || !endCountry ? 'Выбрать' : endCountry}</span>
+                    <ChevronDown className="w-4 h-4 text-[#A3A8AE]" />
+                  </button>
+                )}
 
-                {/* Date & Time Selectors */}
+                {/* End Date & Time Selectors */}
                 <div className="flex flex-col gap-1.5 mt-1">
-                  <button
-                    type="button"
-                    onClick={() => setShowDateTimeModal('end')}
-                    className="h-11 px-3 rounded-[12px] bg-[#111315] hover:bg-[#262A2F] flex items-center gap-2 text-[#EDEBE6] transition-colors"
-                  >
-                    <Calendar className="w-4 h-4 text-[#A3A8AE] shrink-0" />
-                    <span className="text-[14px] font-semibold">
-                      {dowLabel}, {endDay.toString().padStart(2, '0')}.09
-                    </span>
-                  </button>
+                  {restType === 'none' ? (
+                    <>
+                      <div className="h-11 px-3 rounded-[12px] bg-[#111315]/50 flex items-center gap-2 text-[#6B7178]">
+                        <Calendar className="w-4 h-4 text-[#4A4F55] shrink-0" />
+                        <span className="text-[14px]">Не указано</span>
+                      </div>
+                      <div className="h-11 px-3 rounded-[12px] bg-[#111315]/50 flex items-center gap-2 text-[#F3B33D]">
+                        <Clock className="w-4 h-4 text-[#F3B33D] shrink-0" />
+                        <span className="text-[13px] font-bold">Сейчас (идёт)</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setShowDateTimeModal('end')}
+                        className="h-11 px-3 rounded-[12px] bg-[#111315] hover:bg-[#262A2F] flex items-center gap-2 text-[#EDEBE6] transition-colors"
+                      >
+                        <Calendar className="w-4 h-4 text-[#A3A8AE] shrink-0" />
+                        <span className="text-[14px] font-semibold">
+                          {dowLabel}, {endDay.toString().padStart(2, '0')}.09
+                        </span>
+                      </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setShowDateTimeModal('end')}
-                    className="h-11 px-3 rounded-[12px] bg-[#111315] hover:bg-[#262A2F] flex items-center gap-2 text-[#EDEBE6] transition-colors"
-                  >
-                    <Clock className="w-4 h-4 text-[#A3A8AE] shrink-0" />
-                    <span className="font-mono-num text-[16px] font-bold">
-                      {endTime}
-                    </span>
-                  </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowDateTimeModal('end')}
+                        className="h-11 px-3 rounded-[12px] bg-[#111315] hover:bg-[#262A2F] flex items-center gap-2 text-[#EDEBE6] transition-colors"
+                      >
+                        <Clock className="w-4 h-4 text-[#A3A8AE] shrink-0" />
+                        <span className="font-mono-num text-[16px] font-bold">
+                          {endTime || getCurrentTimeFormatted()}
+                        </span>
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -284,9 +429,14 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
             {/* Shift Duration Row */}
             <div className="min-h-13 px-4 border-t border-[#262A2F] flex items-center justify-between">
               <span className="text-[15px] font-semibold">Длительность смены</span>
-              <span className="font-mono-num text-[17px] font-bold text-[#A3A8AE]">
-                {shiftDuration}
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-mono-num text-[17px] font-bold text-[#EDEBE6]">
+                  {shiftDuration}
+                </span>
+                {restType === 'none' && (
+                  <span className="text-[12px] font-bold text-[#F3B33D]">(сейчас)</span>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -356,10 +506,10 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
                     <button
                       key={r}
                       type="button"
-                      onClick={() => setRestType(r)}
+                      onClick={() => handleSelectRestType(r)}
                       className={`h-10 rounded-[12px] text-[14px] font-semibold transition-all ${
                         isPicked
-                          ? 'bg-[#2F343A] text-[#EDEBE6]'
+                          ? 'bg-[#2F343A] text-[#EDEBE6] shadow-sm'
                           : 'text-[#A3A8AE] hover:text-[#EDEBE6]'
                       }`}
                     >
@@ -409,7 +559,9 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
                     {restDuration}
                   </span>
                   <span className="text-[12px] font-bold px-2 py-0.5 rounded-[8px] bg-[#16261F] text-[#9FE3CE]">
-                    полный
+                    {parseInt((restDuration || '11').split(':')[0] || '11', 10) >= 11
+                      ? 'полный'
+                      : 'сокращённый'}
                   </span>
                 </div>
               </div>
@@ -465,13 +617,14 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
       {/* Country Picker Submodal */}
       {countryPickerTarget && (
         <CountryPickerModal
-          startCountry={startCountry}
-          endCountry={endCountry}
+          startCountry={startCountry || ''}
+          endCountry={endCountry && endCountry !== '—' ? endCountry : ''}
           onSelectCountry={(type, code) => {
             if (countryPickerTarget === 'start') {
               setStartCountry(code);
             } else {
               setEndCountry(code);
+              setErrorMessage(null);
             }
             setCountryPickerTarget(null);
           }}
@@ -486,7 +639,7 @@ export const ShiftModal: React.FC<ShiftModalProps> = ({
           startDay={startDay}
           startTime={startTime}
           endDay={endDay}
-          endTime={endTime}
+          endTime={endTime || getCurrentTimeFormatted()}
           onClose={() => setShowDateTimeModal(null)}
           onSave={({ startDay: sD, startTime: sT, endDay: eD, endTime: eT }) => {
             setStartDay(sD);

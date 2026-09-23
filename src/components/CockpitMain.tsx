@@ -176,99 +176,121 @@ export const CockpitMain: React.FC<CockpitMainProps> = ({
 
       </section>
 
-      {/* 4 Large Mode Buttons (Height 88px, Radius 20px) */}
-      <div className="mx-4 grid grid-cols-2 gap-2.5">
+      {/* 4 Mode Buttons in a single row (Height 88px, Radius 20px) */}
+      <div className="mx-4 grid grid-cols-4 gap-2">
         
         {/* Вождение */}
         <button
           type="button"
           onClick={() => onSelectActivity('DRIVE')}
-          className={`h-[88px] rounded-[20px] p-3 flex flex-col justify-between transition-all active:scale-[0.98] ${
+          className={`h-[88px] rounded-[20px] p-1 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 border ${
             activeActivity === 'DRIVE'
-              ? 'bg-[#F3B33D] text-[#111315] shadow-lg shadow-[#F3B33D]/20 font-bold'
-              : 'bg-[#1A1D20] text-[#EDEBE6] border border-[#2A2E33] hover:border-[#F3B33D]/50'
+              ? 'bg-[#F3B33D] text-[#111315] border-[#F3B33D] shadow-lg shadow-[#F3B33D]/20 font-bold'
+              : 'bg-[#1A1D20] text-[#EDEBE6] border-[#2A2E33] hover:border-[#F3B33D]/50'
           }`}
         >
-          <div className="flex items-center justify-between w-full">
-            {/* Steering wheel icon */}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="9" />
-              <circle cx="12" cy="12" r="2.5" />
-              <path d="M3 12h6.5M14.5 12H21" />
-            </svg>
-            {activeActivity === 'DRIVE' && (
-              <span className="w-2 h-2 rounded-full bg-[#111315]" />
-            )}
-          </div>
-          <span className="text-[16px] font-bold text-left">Вождение</span>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="shrink-0"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <circle cx="12" cy="12" r="2.2" />
+            <path d="M3 12h6.8M14.2 12H21" />
+          </svg>
+          <span className="text-[12px] sm:text-[13px] font-semibold text-center leading-tight">
+            Вождение
+          </span>
         </button>
 
         {/* Отдых */}
         <button
           type="button"
           onClick={() => onSelectActivity('REST')}
-          className={`h-[88px] rounded-[20px] p-3 flex flex-col justify-between transition-all active:scale-[0.98] ${
+          className={`h-[88px] rounded-[20px] p-1 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 border ${
             activeActivity === 'REST'
-              ? 'bg-[#4FBF9F] text-[#0E2A22] shadow-lg shadow-[#4FBF9F]/20 font-bold'
-              : 'bg-[#1A1D20] text-[#EDEBE6] border border-[#2A2E33] hover:border-[#4FBF9F]/50'
+              ? 'bg-[#4FBF9F] text-[#0E2A22] border-[#4FBF9F] shadow-lg shadow-[#4FBF9F]/20 font-bold'
+              : 'bg-[#1A1D20] text-[#EDEBE6] border-[#2A2E33] hover:border-[#4FBF9F]/50'
           }`}
         >
-          <div className="flex items-center justify-between w-full">
-            {/* Bed icon */}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 5v14M4 13h16v6" />
-            </svg>
-            {activeActivity === 'REST' && (
-              <span className="w-2 h-2 rounded-full bg-[#0E2A22]" />
-            )}
-          </div>
-          <span className="text-[16px] font-bold text-left">Отдых</span>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="shrink-0"
+          >
+            <path d="M4 5v14M4 13h16v6" />
+          </svg>
+          <span className="text-[12px] sm:text-[13px] font-semibold text-center leading-tight">
+            Отдых
+          </span>
         </button>
 
-        {/* Другая работа */}
+        {/* Работа */}
         <button
           type="button"
           onClick={() => onSelectActivity('WORK')}
-          className={`h-[88px] rounded-[20px] p-3 flex flex-col justify-between transition-all active:scale-[0.98] ${
+          className={`h-[88px] rounded-[20px] p-1 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 border ${
             activeActivity === 'WORK'
-              ? 'bg-[#EE8B5A] text-[#111315] shadow-lg shadow-[#EE8B5A]/20 font-bold'
-              : 'bg-[#1A1D20] text-[#EDEBE6] border border-[#2A2E33] hover:border-[#EE8B5A]/50'
+              ? 'bg-[#EE8B5A] text-[#111315] border-[#EE8B5A] shadow-lg shadow-[#EE8B5A]/20 font-bold'
+              : 'bg-[#1A1D20] text-[#EDEBE6] border-[#2A2E33] hover:border-[#EE8B5A]/50'
           }`}
         >
-          <div className="flex items-center justify-between w-full">
-            {/* Crossed hammers icon */}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-              <path d="M6 18L16.5 7.5M18 18L7.5 7.5" />
-              <path d="M14 5l5 5M5 10l5-5" />
-            </svg>
-            {activeActivity === 'WORK' && (
-              <span className="w-2 h-2 rounded-full bg-[#111315]" />
-            )}
-          </div>
-          <span className="text-[16px] font-bold text-left">Работа</span>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            className="shrink-0"
+          >
+            <path d="M6 18L16.5 7.5M18 18L7.5 7.5" />
+            <path d="M14 5l5 5M5 10l5-5" />
+          </svg>
+          <span className="text-[12px] sm:text-[13px] font-semibold text-center leading-tight">
+            Работа
+          </span>
         </button>
 
         {/* Готовность */}
         <button
           type="button"
           onClick={() => onSelectActivity('POA')}
-          className={`h-[88px] rounded-[20px] p-3 flex flex-col justify-between transition-all active:scale-[0.98] ${
+          className={`h-[88px] rounded-[20px] p-1 flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 border ${
             activeActivity === 'POA'
-              ? 'bg-[#86A8F0] text-[#111315] shadow-lg shadow-[#86A8F0]/20 font-bold'
-              : 'bg-[#1A1D20] text-[#EDEBE6] border border-[#2A2E33] hover:border-[#86A8F0]/50'
+              ? 'bg-[#86A8F0] text-[#111315] border-[#86A8F0] shadow-lg shadow-[#86A8F0]/20 font-bold'
+              : 'bg-[#1A1D20] text-[#EDEBE6] border-[#2A2E33] hover:border-[#86A8F0]/50'
           }`}
         >
-          <div className="flex items-center justify-between w-full">
-            {/* Box diagonal icon */}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-              <rect x="4" y="4" width="16" height="16" rx="2" />
-              <path d="M4 20L20 4" />
-            </svg>
-            {activeActivity === 'POA' && (
-              <span className="w-2 h-2 rounded-full bg-[#111315]" />
-            )}
-          </div>
-          <span className="text-[16px] font-bold text-left">Готовность</span>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinejoin="round"
+            className="shrink-0"
+          >
+            <rect x="4" y="4" width="16" height="16" rx="2" />
+            <path d="M4 20L20 4" />
+          </svg>
+          <span className="text-[12px] sm:text-[13px] font-semibold text-center leading-tight">
+            Готовность
+          </span>
         </button>
 
       </div>

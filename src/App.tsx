@@ -199,10 +199,10 @@ export const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#070808] flex items-center justify-center font-sans antialiased text-[#EDEBE6]">
       {/* 412dp Mobile Container */}
-      <div className="w-full max-w-[412px] min-h-screen sm:min-h-[880px] sm:max-h-[920px] bg-[#111315] relative flex flex-col sm:rounded-[36px] sm:border sm:border-[#2A2E33] sm:shadow-2xl overflow-x-hidden overflow-y-auto">
+      <div className="w-full max-w-[412px] h-screen max-h-screen sm:h-[880px] sm:max-h-[920px] bg-[#111315] relative flex flex-col sm:rounded-[36px] sm:border sm:border-[#2A2E33] sm:shadow-2xl overflow-hidden">
         
-        {/* Main View Area */}
-        <div className="flex-1 flex flex-col">
+        {/* Scrollable Page Content Area */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden relative flex flex-col overscroll-contain">
           {activeTab === 'main' && (
             <CockpitMain
               metrics={metrics}
@@ -255,13 +255,13 @@ export const App: React.FC = () => {
           {activeTab === 'guide' && (
             <GuideView onBack={() => setActiveTab('more')} />
           )}
-        </div>
+        </main>
 
-        {/* Bottom Navigation Bar (Height 80px, 4 items) */}
+        {/* Bottom Navigation Bar (Permanently anchored at the bottom of the screen, separate from page) */}
         {activeTab !== 'guide' && (
           <nav
             aria-label="Основная навигация"
-            className="sticky bottom-0 h-20 px-2 pt-2.5 pb-3.5 bg-[#1A1D20]/95 backdrop-blur-md border-t border-[#262A2F] grid grid-cols-4 z-30"
+            className="shrink-0 h-20 px-2 pt-2.5 pb-3.5 bg-[#1A1D20] border-t border-[#262A2F] grid grid-cols-4 z-30 select-none shadow-[0_-4px_20px_rgba(0,0,0,0.6)]"
           >
             {/* 1. Главная */}
             <button
