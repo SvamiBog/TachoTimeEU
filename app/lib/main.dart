@@ -17,8 +17,9 @@ Future<void> main() async {
     FlutterError.presentError(details);
     crash.recordError(details.exception, details.stack ?? StackTrace.empty);
   };
+  // Необработанные асинхронные ошибки не роняют приложение — не fatal.
   PlatformDispatcher.instance.onError = (error, stack) {
-    crash.recordError(error, stack, fatal: true);
+    crash.recordError(error, stack);
     return true;
   };
 

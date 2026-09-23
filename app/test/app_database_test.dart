@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show OrderingTerm;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -31,6 +32,34 @@ void main() {
     expect(row.startUtc, start);
     expect(row.startUtc.isUtc, isTrue);
     expect(row.endUtc, isNull);
+  });
+
+  test('локальное время приводится к UTC и сортируется верно', () async {
+    final now = DateTime.utc(2026, 9, 23, 12);
+    Future<void> put(DateTime start) => db
+        .into(db.activityPeriods)
+        .insert(
+          ActivityPeriodsCompanion.insert(
+            mode: DriverMode.driving,
+            startUtc: start,
+            utcOffsetMinutes: 0,
+            source: EntrySource.live,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+    // 08:00Z и 07:30Z, записанное как локальное время (в любом поясе).
+    await put(DateTime.utc(2026, 9, 23, 8));
+    await put(DateTime.utc(2026, 9, 23, 7, 30).toLocal());
+
+    final rows = await (db.select(
+      db.activityPeriods,
+    )..orderBy([(t) => OrderingTerm.asc(t.startUtc)])).get();
+    expect(rows.map((r) => r.startUtc), [
+      DateTime.utc(2026, 9, 23, 7, 30),
+      DateTime.utc(2026, 9, 23, 8),
+    ]);
+    expect(rows.every((r) => r.startUtc.isUtc), isTrue);
   });
 
   test('настройка перезаписывается по ключу', () async {

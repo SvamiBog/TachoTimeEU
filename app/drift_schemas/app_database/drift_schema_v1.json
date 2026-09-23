@@ -53,7 +53,11 @@
             "customConstraints": null,
             "default_dart": null,
             "default_client_dart": null,
-            "dsl_features": []
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const UtcDateTimeConverter()",
+              "dart_type_name": "DateTime"
+            }
           },
           {
             "name": "end_utc",
@@ -63,7 +67,11 @@
             "customConstraints": null,
             "default_dart": null,
             "default_client_dart": null,
-            "dsl_features": []
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const UtcDateTimeConverter()",
+              "dart_type_name": "DateTime"
+            }
           },
           {
             "name": "utc_offset_minutes",
@@ -107,7 +115,11 @@
             "customConstraints": null,
             "default_dart": null,
             "default_client_dart": null,
-            "dsl_features": []
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const UtcDateTimeConverter()",
+              "dart_type_name": "DateTime"
+            }
           },
           {
             "name": "updated_at",
@@ -117,7 +129,11 @@
             "customConstraints": null,
             "default_dart": null,
             "default_client_dart": null,
-            "dsl_features": []
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const UtcDateTimeConverter()",
+              "dart_type_name": "DateTime"
+            }
           }
         ],
         "is_virtual": false,
@@ -157,7 +173,11 @@
             "customConstraints": null,
             "default_dart": null,
             "default_client_dart": null,
-            "dsl_features": []
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const UtcDateTimeConverter()",
+              "dart_type_name": "DateTime"
+            }
           },
           {
             "name": "end_utc",
@@ -167,7 +187,11 @@
             "customConstraints": null,
             "default_dart": null,
             "default_client_dart": null,
-            "dsl_features": []
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const UtcDateTimeConverter()",
+              "dart_type_name": "DateTime"
+            }
           },
           {
             "name": "start_country",
@@ -251,7 +275,11 @@
             "customConstraints": null,
             "default_dart": null,
             "default_client_dart": null,
-            "dsl_features": []
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const UtcDateTimeConverter()",
+              "dart_type_name": "DateTime"
+            }
           }
         ],
         "is_virtual": false,

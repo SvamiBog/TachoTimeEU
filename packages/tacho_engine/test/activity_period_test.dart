@@ -26,23 +26,49 @@ void main() {
       );
     });
 
-    test('время не в UTC отклоняется', () {
+    test('начало не в UTC отклоняется', () {
       expect(
         () => ActivityPeriod(
           mode: DriverMode.driving,
           start: DateTime(2026, 9, 23, 6, 49),
         ),
-        throwsA(isA<AssertionError>()),
+        throwsArgumentError,
+      );
+    });
+
+    test('конец не в UTC отклоняется', () {
+      expect(
+        () => ActivityPeriod(
+          mode: DriverMode.driving,
+          start: t0,
+          end: DateTime(2026, 9, 23, 9),
+        ),
+        throwsArgumentError,
+      );
+    });
+
+    test('конец раньше начала отклоняется', () {
+      expect(
+        () => ActivityPeriod(
+          mode: DriverMode.driving,
+          start: t0,
+          end: t0.subtract(const Duration(minutes: 1)),
+        ),
+        throwsArgumentError,
       );
     });
   });
 
   group('DriverMode', () {
-    test('рабочие режимы — вождение и другая работа', () {
-      expect(DriverMode.values.where((m) => m.isWork), [
+    test('рабочее время — вождение и другая работа', () {
+      expect(DriverMode.values.where((m) => m.isWorkingTime), [
         DriverMode.driving,
         DriverMode.otherWork,
       ]);
+    });
+
+    test('смену прерывает только отдых', () {
+      expect(DriverMode.values.where((m) => m.isRest), [DriverMode.rest]);
     });
   });
 }

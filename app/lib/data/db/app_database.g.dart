@@ -31,26 +31,24 @@ class $ActivityPeriodsTable extends ActivityPeriods
         type: DriftSqlType.string,
         requiredDuringInsert: true,
       ).withConverter<DriverMode>($ActivityPeriodsTable.$convertermode);
-  static const VerificationMeta _startUtcMeta = const VerificationMeta(
-    'startUtc',
-  );
   @override
-  late final GeneratedColumn<DateTime> startUtc = GeneratedColumn<DateTime>(
-    'start_utc',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _endUtcMeta = const VerificationMeta('endUtc');
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> startUtc =
+      GeneratedColumn<DateTime>(
+        'start_utc',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ActivityPeriodsTable.$converterstartUtc);
   @override
-  late final GeneratedColumn<DateTime> endUtc = GeneratedColumn<DateTime>(
-    'end_utc',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime?, DateTime> endUtc =
+      GeneratedColumn<DateTime>(
+        'end_utc',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      ).withConverter<DateTime?>($ActivityPeriodsTable.$converterendUtcn);
   static const VerificationMeta _utcOffsetMinutesMeta = const VerificationMeta(
     'utcOffsetMinutes',
   );
@@ -80,28 +78,24 @@ class $ActivityPeriodsTable extends ActivityPeriods
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
   @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> createdAt =
+      GeneratedColumn<DateTime>(
+        'created_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ActivityPeriodsTable.$convertercreatedAt);
   @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> updatedAt =
+      GeneratedColumn<DateTime>(
+        'updated_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ActivityPeriodsTable.$converterupdatedAt);
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -129,20 +123,6 @@ class $ActivityPeriodsTable extends ActivityPeriods
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('start_utc')) {
-      context.handle(
-        _startUtcMeta,
-        startUtc.isAcceptableOrUnknown(data['start_utc']!, _startUtcMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_startUtcMeta);
-    }
-    if (data.containsKey('end_utc')) {
-      context.handle(
-        _endUtcMeta,
-        endUtc.isAcceptableOrUnknown(data['end_utc']!, _endUtcMeta),
-      );
-    }
     if (data.containsKey('utc_offset_minutes')) {
       context.handle(
         _utcOffsetMinutesMeta,
@@ -159,22 +139,6 @@ class $ActivityPeriodsTable extends ActivityPeriods
         _noteMeta,
         note.isAcceptableOrUnknown(data['note']!, _noteMeta),
       );
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -195,13 +159,17 @@ class $ActivityPeriodsTable extends ActivityPeriods
           data['${effectivePrefix}mode'],
         )!,
       ),
-      startUtc: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}start_utc'],
-      )!,
-      endUtc: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}end_utc'],
+      startUtc: $ActivityPeriodsTable.$converterstartUtc.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}start_utc'],
+        )!,
+      ),
+      endUtc: $ActivityPeriodsTable.$converterendUtcn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}end_utc'],
+        ),
       ),
       utcOffsetMinutes: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -217,14 +185,18 @@ class $ActivityPeriodsTable extends ActivityPeriods
         DriftSqlType.string,
         data['${effectivePrefix}note'],
       ),
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
-      )!,
+      createdAt: $ActivityPeriodsTable.$convertercreatedAt.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}created_at'],
+        )!,
+      ),
+      updatedAt: $ActivityPeriodsTable.$converterupdatedAt.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}updated_at'],
+        )!,
+      ),
     );
   }
 
@@ -235,8 +207,18 @@ class $ActivityPeriodsTable extends ActivityPeriods
 
   static JsonTypeConverter2<DriverMode, String, String> $convertermode =
       const EnumNameConverter<DriverMode>(DriverMode.values);
+  static TypeConverter<DateTime, DateTime> $converterstartUtc =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime, DateTime> $converterendUtc =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime?, DateTime?> $converterendUtcn =
+      NullAwareTypeConverter.wrap($converterendUtc);
   static JsonTypeConverter2<EntrySource, String, String> $convertersource =
       const EnumNameConverter<EntrySource>(EntrySource.values);
+  static TypeConverter<DateTime, DateTime> $convertercreatedAt =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime, DateTime> $converterupdatedAt =
+      const UtcDateTimeConverter();
 }
 
 class ActivityPeriodRow extends DataClass
@@ -275,9 +257,15 @@ class ActivityPeriodRow extends DataClass
         $ActivityPeriodsTable.$convertermode.toSql(mode),
       );
     }
-    map['start_utc'] = Variable<DateTime>(startUtc);
+    {
+      map['start_utc'] = Variable<DateTime>(
+        $ActivityPeriodsTable.$converterstartUtc.toSql(startUtc),
+      );
+    }
     if (!nullToAbsent || endUtc != null) {
-      map['end_utc'] = Variable<DateTime>(endUtc);
+      map['end_utc'] = Variable<DateTime>(
+        $ActivityPeriodsTable.$converterendUtcn.toSql(endUtc),
+      );
     }
     map['utc_offset_minutes'] = Variable<int>(utcOffsetMinutes);
     {
@@ -288,8 +276,16 @@ class ActivityPeriodRow extends DataClass
     if (!nullToAbsent || note != null) {
       map['note'] = Variable<String>(note);
     }
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
+    {
+      map['created_at'] = Variable<DateTime>(
+        $ActivityPeriodsTable.$convertercreatedAt.toSql(createdAt),
+      );
+    }
+    {
+      map['updated_at'] = Variable<DateTime>(
+        $ActivityPeriodsTable.$converterupdatedAt.toSql(updatedAt),
+      );
+    }
     return map;
   }
 
@@ -527,10 +523,14 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
       );
     }
     if (startUtc.present) {
-      map['start_utc'] = Variable<DateTime>(startUtc.value);
+      map['start_utc'] = Variable<DateTime>(
+        $ActivityPeriodsTable.$converterstartUtc.toSql(startUtc.value),
+      );
     }
     if (endUtc.present) {
-      map['end_utc'] = Variable<DateTime>(endUtc.value);
+      map['end_utc'] = Variable<DateTime>(
+        $ActivityPeriodsTable.$converterendUtcn.toSql(endUtc.value),
+      );
     }
     if (utcOffsetMinutes.present) {
       map['utc_offset_minutes'] = Variable<int>(utcOffsetMinutes.value);
@@ -544,10 +544,14 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
       map['note'] = Variable<String>(note.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
+      map['created_at'] = Variable<DateTime>(
+        $ActivityPeriodsTable.$convertercreatedAt.toSql(createdAt.value),
+      );
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+      map['updated_at'] = Variable<DateTime>(
+        $ActivityPeriodsTable.$converterupdatedAt.toSql(updatedAt.value),
+      );
     }
     return map;
   }
@@ -587,26 +591,24 @@ class $ShiftsTable extends Shifts with TableInfo<$ShiftsTable, ShiftRow> {
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _startUtcMeta = const VerificationMeta(
-    'startUtc',
-  );
   @override
-  late final GeneratedColumn<DateTime> startUtc = GeneratedColumn<DateTime>(
-    'start_utc',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _endUtcMeta = const VerificationMeta('endUtc');
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> startUtc =
+      GeneratedColumn<DateTime>(
+        'start_utc',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ShiftsTable.$converterstartUtc);
   @override
-  late final GeneratedColumn<DateTime> endUtc = GeneratedColumn<DateTime>(
-    'end_utc',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime?, DateTime> endUtc =
+      GeneratedColumn<DateTime>(
+        'end_utc',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      ).withConverter<DateTime?>($ShiftsTable.$converterendUtcn);
   static const VerificationMeta _startCountryMeta = const VerificationMeta(
     'startCountry',
   );
@@ -672,20 +674,6 @@ class $ShiftsTable extends Shifts with TableInfo<$ShiftsTable, ShiftRow> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('start_utc')) {
-      context.handle(
-        _startUtcMeta,
-        startUtc.isAcceptableOrUnknown(data['start_utc']!, _startUtcMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_startUtcMeta);
-    }
-    if (data.containsKey('end_utc')) {
-      context.handle(
-        _endUtcMeta,
-        endUtc.isAcceptableOrUnknown(data['end_utc']!, _endUtcMeta),
-      );
-    }
     if (data.containsKey('start_country')) {
       context.handle(
         _startCountryMeta,
@@ -727,13 +715,17 @@ class $ShiftsTable extends Shifts with TableInfo<$ShiftsTable, ShiftRow> {
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      startUtc: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}start_utc'],
-      )!,
-      endUtc: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}end_utc'],
+      startUtc: $ShiftsTable.$converterstartUtc.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}start_utc'],
+        )!,
+      ),
+      endUtc: $ShiftsTable.$converterendUtcn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}end_utc'],
+        ),
       ),
       startCountry: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -754,6 +746,13 @@ class $ShiftsTable extends Shifts with TableInfo<$ShiftsTable, ShiftRow> {
   $ShiftsTable createAlias(String alias) {
     return $ShiftsTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DateTime, DateTime> $converterstartUtc =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime, DateTime> $converterendUtc =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime?, DateTime?> $converterendUtcn =
+      NullAwareTypeConverter.wrap($converterendUtc);
 }
 
 class ShiftRow extends DataClass implements Insertable<ShiftRow> {
@@ -775,9 +774,15 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['start_utc'] = Variable<DateTime>(startUtc);
+    {
+      map['start_utc'] = Variable<DateTime>(
+        $ShiftsTable.$converterstartUtc.toSql(startUtc),
+      );
+    }
     if (!nullToAbsent || endUtc != null) {
-      map['end_utc'] = Variable<DateTime>(endUtc);
+      map['end_utc'] = Variable<DateTime>(
+        $ShiftsTable.$converterendUtcn.toSql(endUtc),
+      );
     }
     map['start_country'] = Variable<String>(startCountry);
     if (!nullToAbsent || endCountry != null) {
@@ -963,10 +968,14 @@ class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
       map['id'] = Variable<int>(id.value);
     }
     if (startUtc.present) {
-      map['start_utc'] = Variable<DateTime>(startUtc.value);
+      map['start_utc'] = Variable<DateTime>(
+        $ShiftsTable.$converterstartUtc.toSql(startUtc.value),
+      );
     }
     if (endUtc.present) {
-      map['end_utc'] = Variable<DateTime>(endUtc.value);
+      map['end_utc'] = Variable<DateTime>(
+        $ShiftsTable.$converterendUtcn.toSql(endUtc.value),
+      );
     }
     if (startCountry.present) {
       map['start_country'] = Variable<String>(startCountry.value);
@@ -1013,18 +1022,15 @@ class $CardDownloadsTable extends CardDownloads
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _downloadedAtUtcMeta = const VerificationMeta(
-    'downloadedAtUtc',
-  );
   @override
-  late final GeneratedColumn<DateTime> downloadedAtUtc =
-      GeneratedColumn<DateTime>(
-        'downloaded_at_utc',
-        aliasedName,
-        false,
-        type: DriftSqlType.dateTime,
-        requiredDuringInsert: true,
-      );
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime>
+  downloadedAtUtc = GeneratedColumn<DateTime>(
+    'downloaded_at_utc',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  ).withConverter<DateTime>($CardDownloadsTable.$converterdownloadedAtUtc);
   @override
   List<GeneratedColumn> get $columns => [id, downloadedAtUtc];
   @override
@@ -1042,17 +1048,6 @@ class $CardDownloadsTable extends CardDownloads
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('downloaded_at_utc')) {
-      context.handle(
-        _downloadedAtUtcMeta,
-        downloadedAtUtc.isAcceptableOrUnknown(
-          data['downloaded_at_utc']!,
-          _downloadedAtUtcMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_downloadedAtUtcMeta);
-    }
     return context;
   }
 
@@ -1066,10 +1061,12 @@ class $CardDownloadsTable extends CardDownloads
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      downloadedAtUtc: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}downloaded_at_utc'],
-      )!,
+      downloadedAtUtc: $CardDownloadsTable.$converterdownloadedAtUtc.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}downloaded_at_utc'],
+        )!,
+      ),
     );
   }
 
@@ -1077,6 +1074,9 @@ class $CardDownloadsTable extends CardDownloads
   $CardDownloadsTable createAlias(String alias) {
     return $CardDownloadsTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DateTime, DateTime> $converterdownloadedAtUtc =
+      const UtcDateTimeConverter();
 }
 
 class CardDownloadRow extends DataClass implements Insertable<CardDownloadRow> {
@@ -1087,7 +1087,11 @@ class CardDownloadRow extends DataClass implements Insertable<CardDownloadRow> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['downloaded_at_utc'] = Variable<DateTime>(downloadedAtUtc);
+    {
+      map['downloaded_at_utc'] = Variable<DateTime>(
+        $CardDownloadsTable.$converterdownloadedAtUtc.toSql(downloadedAtUtc),
+      );
+    }
     return map;
   }
 
@@ -1188,7 +1192,11 @@ class CardDownloadsCompanion extends UpdateCompanion<CardDownloadRow> {
       map['id'] = Variable<int>(id.value);
     }
     if (downloadedAtUtc.present) {
-      map['downloaded_at_utc'] = Variable<DateTime>(downloadedAtUtc.value);
+      map['downloaded_at_utc'] = Variable<DateTime>(
+        $CardDownloadsTable.$converterdownloadedAtUtc.toSql(
+          downloadedAtUtc.value,
+        ),
+      );
     }
     return map;
   }
@@ -1480,15 +1488,17 @@ class $$ActivityPeriodsTableFilterComposer
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
 
-  ColumnFilters<DateTime> get startUtc => $composableBuilder(
-    column: $table.startUtc,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get startUtc =>
+      $composableBuilder(
+        column: $table.startUtc,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
-  ColumnFilters<DateTime> get endUtc => $composableBuilder(
-    column: $table.endUtc,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<DateTime?, DateTime, DateTime> get endUtc =>
+      $composableBuilder(
+        column: $table.endUtc,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<int> get utcOffsetMinutes => $composableBuilder(
     column: $table.utcOffsetMinutes,
@@ -1506,15 +1516,17 @@ class $$ActivityPeriodsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get createdAt =>
+      $composableBuilder(
+        column: $table.createdAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get updatedAt =>
+      $composableBuilder(
+        column: $table.updatedAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 }
 
 class $$ActivityPeriodsTableOrderingComposer
@@ -1587,10 +1599,10 @@ class $$ActivityPeriodsTableAnnotationComposer
   GeneratedColumnWithTypeConverter<DriverMode, String> get mode =>
       $composableBuilder(column: $table.mode, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get startUtc =>
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get startUtc =>
       $composableBuilder(column: $table.startUtc, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get endUtc =>
+  GeneratedColumnWithTypeConverter<DateTime?, DateTime> get endUtc =>
       $composableBuilder(column: $table.endUtc, builder: (column) => column);
 
   GeneratedColumn<int> get utcOffsetMinutes => $composableBuilder(
@@ -1604,10 +1616,10 @@ class $$ActivityPeriodsTableAnnotationComposer
   GeneratedColumn<String> get note =>
       $composableBuilder(column: $table.note, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get createdAt =>
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get updatedAt =>
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 }
 
@@ -1755,15 +1767,17 @@ class $$ShiftsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get startUtc => $composableBuilder(
-    column: $table.startUtc,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get startUtc =>
+      $composableBuilder(
+        column: $table.startUtc,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
-  ColumnFilters<DateTime> get endUtc => $composableBuilder(
-    column: $table.endUtc,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<DateTime?, DateTime, DateTime> get endUtc =>
+      $composableBuilder(
+        column: $table.endUtc,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<String> get startCountry => $composableBuilder(
     column: $table.startCountry,
@@ -1833,10 +1847,10 @@ class $$ShiftsTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get startUtc =>
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get startUtc =>
       $composableBuilder(column: $table.startUtc, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get endUtc =>
+  GeneratedColumnWithTypeConverter<DateTime?, DateTime> get endUtc =>
       $composableBuilder(column: $table.endUtc, builder: (column) => column);
 
   GeneratedColumn<String> get startCountry => $composableBuilder(
@@ -1969,9 +1983,10 @@ class $$CardDownloadsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get downloadedAtUtc => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime>
+  get downloadedAtUtc => $composableBuilder(
     column: $table.downloadedAtUtc,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 }
 
@@ -2007,10 +2022,11 @@ class $$CardDownloadsTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get downloadedAtUtc => $composableBuilder(
-    column: $table.downloadedAtUtc,
-    builder: (column) => column,
-  );
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get downloadedAtUtc =>
+      $composableBuilder(
+        column: $table.downloadedAtUtc,
+        builder: (column) => column,
+      );
 }
 
 class $$CardDownloadsTableTableManager

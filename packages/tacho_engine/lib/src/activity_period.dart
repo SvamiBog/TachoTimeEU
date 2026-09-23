@@ -4,12 +4,24 @@ import 'package:tacho_engine/src/driver_mode.dart';
 /// Непрерывный отрезок времени в одном режиме.
 ///
 /// Время хранится в UTC. Открытый период (текущий режим) имеет [end] == null.
+/// Инварианты проверяются всегда, а не через assert: в release-сборке
+/// Flutter assert вырезаются, а ошибка во времени ломает все лимиты.
 @immutable
 class ActivityPeriod {
-  new({required this.mode, required this.start, this.end})
-    : assert(start.isUtc, 'start должен быть в UTC'),
-      assert(end == null || end.isUtc, 'end должен быть в UTC'),
-      assert(end == null || !end.isBefore(start), 'end раньше start');
+  new({required this.mode, required this.start, this.end}) {
+    if (!start.isUtc) {
+      throw ArgumentError.value(start, 'start', 'должно быть в UTC');
+    }
+    final end = this.end;
+    if (end != null) {
+      if (!end.isUtc) {
+        throw ArgumentError.value(end, 'end', 'должно быть в UTC');
+      }
+      if (end.isBefore(start)) {
+        throw ArgumentError.value(end, 'end', 'раньше start ($start)');
+      }
+    }
+  }
 
   final DriverMode mode;
   final DateTime start;

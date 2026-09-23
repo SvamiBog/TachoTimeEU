@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachotime/data/db/tables.dart';
+import 'package:tachotime/data/db/utc_date_time_converter.dart';
 
 part 'app_database.g.dart';
 

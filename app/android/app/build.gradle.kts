@@ -34,11 +34,14 @@ android {
 
     signingConfigs {
         if (keystoreProperties.isNotEmpty()) {
+            fun required(key: String): String =
+                keystoreProperties.getProperty(key)
+                    ?: throw GradleException("android/key.properties: не задан $key")
             create("release") {
-                keyAlias = keystoreProperties.getProperty("keyAlias")
-                keyPassword = keystoreProperties.getProperty("keyPassword")
-                storeFile = file(keystoreProperties.getProperty("storeFile"))
-                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = required("keyAlias")
+                keyPassword = required("keyPassword")
+                storeFile = file(required("storeFile"))
+                storePassword = required("storePassword")
             }
         }
     }
@@ -46,7 +49,12 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.findByName("release")
-                ?: signingConfigs.getByName("debug")
+                ?: signingConfigs.getByName("debug").also {
+                    logger.warn(
+                        "android/key.properties не найден: release подписан debug-ключом, " +
+                            "в Google Play такую сборку загрузить нельзя",
+                    )
+                }
         }
     }
 }
