@@ -1,351 +1,272 @@
 import React, { useState } from 'react';
-import { ChevronRight, Trash2, Sparkles, Check, Globe } from 'lucide-react';
-import { AppTheme, DriverSettings, SupportedLanguage } from '../types/tacho';
+import { Check, ChevronRight, Globe, Sparkles, Trash2 } from 'lucide-react';
+import type { AppTheme, CardAlertDays, CrewMode, DriverSettings, LeadMinutes } from '../domain/types';
+import { LANGUAGES, languageName, useI18n } from '../i18n';
+import { Card, Chip, ConfirmSheet, Pills, SectionTitle, Segmented, Sheet, Switch } from './ui';
 
-interface SettingsViewProps {
+interface Props {
   settings: DriverSettings;
-  onUpdateSettings: (newSettings: Partial<DriverSettings>) => void;
-  onOpenExportModal: () => void;
+  onUpdate: (s: Partial<DriverSettings>) => void;
+  onOpenExport: () => void;
   onOpenPaywall: () => void;
+  onLoadDemo: () => void;
   onClearData: () => void;
 }
 
-export const SettingsView: React.FC<SettingsViewProps> = ({
-  settings,
-  onUpdateSettings,
-  onOpenExportModal,
-  onOpenPaywall,
-  onClearData,
-}) => {
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
-
-  const languages: { code: SupportedLanguage; label: string }[] = [
-    { code: 'ru', label: 'Русский' },
-    { code: 'ua', label: 'Українська' },
-    { code: 'pl', label: 'Polski' },
-    { code: 'en', label: 'English' },
-    { code: 'de', label: 'Deutsch' },
-  ];
-
-  const currentLanguageLabel =
-    languages.find((l) => l.code === settings.language)?.label || 'Русский';
+export const SettingsView: React.FC<Props> = ({ settings, onUpdate, onOpenExport, onOpenPaywall, onLoadDemo, onClearData }) => {
+  const { t } = useI18n();
+  const [sheet, setSheet] = useState<null | 'language' | 'demo' | 'clear'>(null);
 
   return (
-    <div className="flex flex-col gap-3 pb-28 text-[#EDEBE6]">
-      
-      {/* Header */}
+    <div className="flex flex-col gap-3 pb-8">
       <header className="h-16 px-5 flex items-center">
-        <h1 className="text-[20px] font-bold tracking-tight">Настройки</h1>
+        <h1 className="text-[18px] font-bold tracking-tight">{t.settings.title}</h1>
       </header>
 
-      {/* Section: ОБЩЕЕ */}
-      <h2 className="mx-6 mt-1 text-[13px] font-bold tracking-wider uppercase text-[#A3A8AE]">
-        Общее
-      </h2>
-
-      <div className="mx-4 bg-[#1A1D20] rounded-[24px] overflow-hidden divide-y divide-[#262A2F] border border-[#262A2F]/40 shadow-sm">
-        
-        {/* Language Button */}
+      <SectionTitle className="mt-1">{t.settings.general}</SectionTitle>
+      <Card>
         <button
-          onClick={() => setShowLanguageModal(true)}
-          className="w-full min-h-14 p-4 flex items-center justify-between text-left hover:bg-[#262A2F]/40 transition-colors"
+          type="button"
+          onClick={() => setSheet('language')}
+          className="w-full min-h-14 p-4 flex items-center justify-between text-left hover:bg-surface2/40"
         >
-          <span className="text-[15px] font-semibold">Язык</span>
-          <div className="flex items-center gap-2">
-            <span className="text-[14px] text-[#A3A8AE]">{currentLanguageLabel}</span>
-            <ChevronRight className="w-4 h-4 text-[#A3A8AE]" />
-          </div>
+          <span className="text-[15px] font-semibold">{t.settings.language}</span>
+          <span className="flex items-center gap-2 text-[14px] text-muted">
+            {languageName(settings.language)}
+            <ChevronRight className="w-4 h-4" />
+          </span>
         </button>
-
-        {/* Theme Picker */}
         <div className="p-4 flex flex-col gap-2.5">
-          <span className="text-[15px] font-semibold">Оформление</span>
-          <div className="grid grid-cols-3 gap-1 p-1 rounded-[16px] bg-[#111315]">
-            {(['system', 'light', 'dark'] as AppTheme[]).map((th) => {
-              const labels = { system: 'Система', light: 'Светлая', dark: 'Тёмная' };
-              const isSelected = settings.theme === th;
-              return (
-                <button
-                  key={th}
-                  onClick={() => onUpdateSettings({ theme: th })}
-                  className={`h-10 rounded-[12px] text-[14px] font-semibold transition-all ${
-                    isSelected
-                      ? 'bg-[#2F343A] text-[#EDEBE6]'
-                      : 'text-[#A3A8AE] hover:text-[#EDEBE6]'
-                  }`}
-                >
-                  {labels[th]}
-                </button>
-              );
-            })}
-          </div>
+          <span className="text-[15px] font-semibold">{t.settings.theme}</span>
+          <Segmented<AppTheme>
+            options={[
+              { value: 'system', label: t.settings.themeSystem },
+              { value: 'light', label: t.settings.themeLight },
+              { value: 'dark', label: t.settings.themeDark },
+            ]}
+            value={settings.theme}
+            onChange={(theme) => onUpdate({ theme })}
+          />
         </div>
+      </Card>
 
-      </div>
+      <SectionTitle>{t.settings.driver}</SectionTitle>
+      <Card>
+        <TextRow label={t.settings.driverName} value={settings.driverName} onChange={(driverName) => onUpdate({ driverName })} />
+        <TextRow
+          label={t.settings.driverCard}
+          value={settings.driverCardNumber}
+          onChange={(driverCardNumber) => onUpdate({ driverCardNumber })}
+          mono
+        />
+        <TextRow label={t.settings.vehicle} value={settings.vehiclePlate} onChange={(vehiclePlate) => onUpdate({ vehiclePlate })} mono />
+        <TextRow label={t.settings.company} value={settings.companyName} onChange={(companyName) => onUpdate({ companyName })} />
+      </Card>
+      <p className="mx-6 -mt-1 text-[12px] text-muted">{t.settings.driverHint}</p>
 
-      {/* Section: ПРАВИЛА */}
-      <h2 className="mx-6 mt-4 text-[13px] font-bold tracking-wider uppercase text-[#A3A8AE]">
-        Правила
-      </h2>
-
-      <div className="mx-4 bg-[#1A1D20] rounded-[24px] overflow-hidden border border-[#262A2F]/40 shadow-sm">
-        <div className="p-4 flex items-center justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <span className="text-[15px] font-semibold">Пакет мобильности</span>
-            <span className="text-[13px] leading-relaxed text-[#A3A8AE]">
-              Два сокращённых недельных отдыха подряд при международных перевозках
-            </span>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            onClick={() =>
-              onUpdateSettings({ mobilityPackageEnabled: !settings.mobilityPackageEnabled })
-            }
-            className={`w-[52px] h-[32px] p-1 rounded-full transition-colors flex shrink-0 ${
-              settings.mobilityPackageEnabled
-                ? 'bg-[#F3B33D] justify-end'
-                : 'bg-[#3A3F45] justify-start'
-            }`}
-          >
-            <span
-              className={`w-6 h-6 rounded-full ${
-                settings.mobilityPackageEnabled ? 'bg-[#111315]' : 'bg-[#A3A8AE]'
-              }`}
-            />
-          </button>
-        </div>
-      </div>
-
-      {/* Section: УВЕДОМЛЕНИЯ */}
-      <h2 className="mx-6 mt-4 text-[13px] font-bold tracking-wider uppercase text-[#A3A8AE]">
-        Уведомления
-      </h2>
-
-      <div className="mx-4 bg-[#1A1D20] rounded-[24px] overflow-hidden divide-y divide-[#262A2F] border border-[#262A2F]/40 shadow-sm">
-        
-        {/* Warning lead time */}
+      <SectionTitle>{t.settings.rules}</SectionTitle>
+      <Card>
+        <SwitchRow
+          title={t.settings.mobility}
+          hint={t.settings.mobilityHint}
+          checked={settings.mobilityPackageEnabled}
+          onChange={(mobilityPackageEnabled) => onUpdate({ mobilityPackageEnabled })}
+        />
         <div className="p-4 flex flex-col gap-2.5">
-          <div className="flex flex-col">
-            <span className="text-[15px] font-semibold">Предупреждать о лимитах</span>
-            <span className="text-[13px] text-[#A3A8AE]">Перерыв, конец дня, вождение</span>
-          </div>
-          <div className="flex gap-2">
-            {[15, 30, 60].map((min) => {
-              const isSelected = settings.notifyLeadMinutes === min;
-              const label = min === 60 ? '1 час' : `${min} мин`;
-              return (
-                <button
-                  key={min}
-                  onClick={() => onUpdateSettings({ notifyLeadMinutes: min as any })}
-                  className={`h-10 px-4 rounded-full text-[14px] font-semibold border transition-all ${
-                    isSelected
-                      ? 'bg-[#F3B33D] text-[#111315] border-[#F3B33D]'
-                      : 'bg-transparent text-[#EDEBE6] border-[#3A3F45] hover:bg-[#262A2F]'
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
+          <span className="flex flex-col">
+            <span className="text-[15px] font-semibold">{t.settings.crew}</span>
+            <span className="text-[13px] text-muted">{t.settings.teamHint}</span>
+          </span>
+          <Segmented<CrewMode>
+            options={[
+              { value: 'SOLO', label: t.settings.solo },
+              { value: 'TEAM', label: t.settings.team },
+            ]}
+            value={settings.crewMode}
+            onChange={(crewMode) => onUpdate({ crewMode })}
+          />
         </div>
+        <SwitchRow
+          title={t.settings.ferry}
+          hint={t.settings.ferryHint}
+          checked={settings.ferryModeActive}
+          onChange={(ferryModeActive) => onUpdate({ ferryModeActive })}
+        />
+      </Card>
 
-        {/* Switch: Break */}
-        <div className="min-h-14 px-4 py-3 flex items-center justify-between">
-          <span className="text-[15px] font-medium">Перерыв</span>
-          <button
-            type="button"
-            role="switch"
-            onClick={() => onUpdateSettings({ notifyBreak: !settings.notifyBreak })}
-            className={`w-[52px] h-[32px] p-1 rounded-full transition-colors flex shrink-0 ${
-              settings.notifyBreak ? 'bg-[#F3B33D] justify-end' : 'bg-[#3A3F45] justify-start'
-            }`}
-          >
-            <span
-              className={`w-6 h-6 rounded-full ${
-                settings.notifyBreak ? 'bg-[#111315]' : 'bg-[#A3A8AE]'
-              }`}
-            />
-          </button>
+      <SectionTitle>{t.settings.notifications}</SectionTitle>
+      <Card>
+        <div className="p-4 flex flex-col gap-2.5">
+          <span className="flex flex-col">
+            <span className="text-[15px] font-semibold">{t.settings.warnAbout}</span>
+            <span className="text-[13px] text-muted">{t.settings.warnAboutHint}</span>
+          </span>
+          <Pills<LeadMinutes>
+            options={([15, 30, 60] as const).map((m) => ({ value: m, label: t.settings.lead(m) }))}
+            value={settings.notifyLeadMinutes}
+            onChange={(notifyLeadMinutes) => onUpdate({ notifyLeadMinutes })}
+          />
         </div>
-
-        {/* Switch: End of shift */}
-        <div className="min-h-14 px-4 py-3 flex items-center justify-between">
-          <span className="text-[15px] font-medium">Конец рабочего дня</span>
-          <button
-            type="button"
-            role="switch"
-            onClick={() => onUpdateSettings({ notifyShiftEnd: !settings.notifyShiftEnd })}
-            className={`w-[52px] h-[32px] p-1 rounded-full transition-colors flex shrink-0 ${
-              settings.notifyShiftEnd ? 'bg-[#F3B33D] justify-end' : 'bg-[#3A3F45] justify-start'
-            }`}
-          >
-            <span
-              className={`w-6 h-6 rounded-full ${
-                settings.notifyShiftEnd ? 'bg-[#111315]' : 'bg-[#A3A8AE]'
-              }`}
-            />
-          </button>
-        </div>
-
-        {/* Switch: Driving limit */}
-        <div className="min-h-14 px-4 py-3 flex items-center justify-between">
-          <span className="text-[15px] font-medium">Лимит вождения</span>
-          <button
-            type="button"
-            role="switch"
-            onClick={() =>
-              onUpdateSettings({ notifyDrivingLimit: !settings.notifyDrivingLimit })
-            }
-            className={`w-[52px] h-[32px] p-1 rounded-full transition-colors flex shrink-0 ${
-              settings.notifyDrivingLimit ? 'bg-[#F3B33D] justify-end' : 'bg-[#3A3F45] justify-start'
-            }`}
-          >
-            <span
-              className={`w-6 h-6 rounded-full ${
-                settings.notifyDrivingLimit ? 'bg-[#111315]' : 'bg-[#A3A8AE]'
-              }`}
-            />
-          </button>
-        </div>
-
-        {/* Card reading group */}
+        <SwitchRow title={t.settings.notifyBreak} checked={settings.notifyBreak} onChange={(notifyBreak) => onUpdate({ notifyBreak })} />
+        <SwitchRow
+          title={t.settings.notifyShiftEnd}
+          checked={settings.notifyShiftEnd}
+          onChange={(notifyShiftEnd) => onUpdate({ notifyShiftEnd })}
+        />
+        <SwitchRow
+          title={t.settings.notifyDriving}
+          checked={settings.notifyDrivingLimit}
+          onChange={(notifyDrivingLimit) => onUpdate({ notifyDrivingLimit })}
+        />
         <div className="p-4 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="text-[15px] font-medium">Считывание карты</span>
-              <span className="text-[13px] text-[#A3A8AE]">Каждые 28 дней</span>
-            </div>
-            <button
-              type="button"
-              role="switch"
-              onClick={() =>
-                onUpdateSettings({ notifyCardReading: !settings.notifyCardReading })
-              }
-              className={`w-[52px] h-[32px] p-1 rounded-full transition-colors flex shrink-0 ${
-                settings.notifyCardReading ? 'bg-[#F3B33D] justify-end' : 'bg-[#3A3F45] justify-start'
-              }`}
-            >
-              <span
-                className={`w-6 h-6 rounded-full ${
-                  settings.notifyCardReading ? 'bg-[#111315]' : 'bg-[#A3A8AE]'
-                }`}
-              />
-            </button>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <span className="text-[13px] text-[#A3A8AE]">Предупредить за</span>
-            <div className="flex gap-2">
-              {[3, 7, 14].map((d) => {
-                const isSelected = settings.cardReadingAlertDays === d;
-                return (
-                  <button
-                    key={d}
-                    onClick={() => onUpdateSettings({ cardReadingAlertDays: d as any })}
-                    className={`h-10 px-4 rounded-full text-[14px] font-semibold border transition-all ${
-                      isSelected
-                        ? 'bg-[#F3B33D] text-[#111315] border-[#F3B33D]'
-                        : 'bg-transparent text-[#EDEBE6] border-[#3A3F45] hover:bg-[#262A2F]'
-                    }`}
-                  >
-                    {d} дней
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Section: ДАННЫЕ */}
-      <h2 className="mx-6 mt-4 text-[13px] font-bold tracking-wider uppercase text-[#A3A8AE]">
-        Данные
-      </h2>
-
-      <div className="mx-4 bg-[#1A1D20] rounded-[24px] overflow-hidden divide-y divide-[#262A2F] border border-[#262A2F]/40 shadow-sm">
-        
-        {/* Export Report */}
-        <button
-          onClick={onOpenExportModal}
-          className="w-full min-h-14 p-4 flex items-center justify-between text-left hover:bg-[#262A2F]/40 transition-colors"
-        >
-          <span className="text-[15px] font-semibold">Экспорт отчёта</span>
-          <div className="flex items-center gap-2">
-            <span className="text-[13px] text-[#A3A8AE]">PDF · CSV</span>
-            <ChevronRight className="w-4 h-4 text-[#A3A8AE]" />
-          </div>
-        </button>
-
-        {/* Cloud sync / Backup */}
-        <button
-          onClick={onOpenPaywall}
-          className="w-full min-h-14 p-4 flex items-center justify-between text-left hover:bg-[#262A2F]/40 transition-colors"
-        >
-          <span className="text-[15px] font-semibold">Синхронизация и резервная копия</span>
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] font-bold px-2 py-0.5 rounded-[8px] bg-[#F3B33D] text-[#111315]">
-              Premium
+          <div className="flex items-center justify-between gap-4">
+            <span className="flex flex-col">
+              <span className="text-[15px] font-semibold">{t.settings.notifyCard}</span>
+              <span className="text-[13px] text-muted">{t.settings.cardEvery}</span>
             </span>
-            <ChevronRight className="w-4 h-4 text-[#A3A8AE]" />
+            <Switch
+              checked={settings.notifyCardReading}
+              onChange={(notifyCardReading) => onUpdate({ notifyCardReading })}
+              label={t.settings.notifyCard}
+            />
           </div>
-        </button>
+          <span className="text-[13px] text-muted">{t.settings.warnBefore}</span>
+          <Pills<CardAlertDays>
+            options={([3, 7, 14] as const).map((d) => ({ value: d, label: t.common.days(d) }))}
+            value={settings.cardReadingAlertDays}
+            onChange={(cardReadingAlertDays) => onUpdate({ cardReadingAlertDays })}
+          />
+        </div>
+        <SwitchRow
+          title={t.settings.sound}
+          hint={t.settings.soundHint}
+          checked={settings.soundEnabled}
+          onChange={(soundEnabled) => onUpdate({ soundEnabled })}
+        />
+      </Card>
 
-        {/* Clear Data */}
+      <SectionTitle>{t.settings.data}</SectionTitle>
+      <Card>
+        <NavRow label={t.settings.export} onClick={onOpenExport} trailing="PDF · CSV" />
+        <NavRow
+          label={t.settings.sync}
+          onClick={onOpenPaywall}
+          trailing={<Chip tone="neutral">{t.common.soon}</Chip>}
+        />
+        <NavRow
+          label={t.settings.loadDemo}
+          onClick={() => setSheet('demo')}
+          icon={<Sparkles className="w-5 h-5 text-drive shrink-0" />}
+        />
         <button
-          onClick={() => {
-            if (window.confirm('Вы действительно хотите очистить все данные смен и восстановить образец?')) {
-              onClearData();
-            }
-          }}
-          className="w-full min-h-14 p-4 flex items-center gap-3 text-left text-[#FF8F87] hover:bg-[#5A2A27]/20 transition-colors font-semibold text-[15px]"
+          type="button"
+          onClick={() => setSheet('clear')}
+          className="w-full min-h-14 p-4 flex items-center gap-3 text-left text-err-fg hover:bg-err-bg font-semibold text-[15px]"
         >
           <Trash2 className="w-5 h-5 shrink-0" />
-          <span>Очистить все данные</span>
+          {t.settings.clear}
         </button>
+      </Card>
 
-      </div>
-
-      {/* Language Picker Sheet */}
-      {showLanguageModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
-          <div className="bg-[#1A1D20] text-[#EDEBE6] border-t sm:border border-[#2A2E33] rounded-t-[28px] sm:rounded-[28px] w-full max-w-[412px] p-4 flex flex-col gap-2 shadow-2xl">
-            <div className="flex items-center justify-between pb-2 border-b border-[#262A2F]">
-              <div className="flex items-center gap-2">
-                <Globe className="w-5 h-5 text-[#F3B33D]" />
-                <h3 className="text-[17px] font-bold">Выберите язык</h3>
-              </div>
-              <button
-                onClick={() => setShowLanguageModal(false)}
-                className="text-[#A3A8AE] hover:text-[#EDEBE6] text-[14px]"
-              >
-                Закрыть
-              </button>
-            </div>
-
-            <div className="divide-y divide-[#262A2F]">
-              {languages.map((l) => (
-                <button
-                  key={l.code}
-                  onClick={() => {
-                    onUpdateSettings({ language: l.code });
-                    setShowLanguageModal(false);
-                  }}
-                  className="w-full py-3.5 px-3 flex items-center justify-between text-left hover:bg-[#262A2F] rounded-[12px] transition-colors"
-                >
-                  <span className="text-[15px] font-medium">{l.label}</span>
-                  {settings.language === l.code && (
-                    <Check className="w-5 h-5 text-[#F3B33D]" />
-                  )}
-                </button>
-              ))}
-            </div>
+      {sheet === 'language' && (
+        <Sheet onClose={() => setSheet(null)} label={t.settings.chooseLanguage}>
+          <div className="p-4 flex items-center justify-between border-b border-surface2">
+            <span className="flex items-center gap-2">
+              <Globe className="w-5 h-5 text-drive" />
+              <h3 className="text-[17px] font-bold">{t.settings.chooseLanguage}</h3>
+            </span>
+            <button type="button" onClick={() => setSheet(null)} className="min-h-11 px-2 text-[14px] text-muted hover:text-fg">
+              {t.common.close}
+            </button>
           </div>
-        </div>
+          <div className="p-2 pb-6">
+            {LANGUAGES.map((lang) => (
+              <button
+                key={lang}
+                type="button"
+                lang={lang === 'ua' ? 'uk' : lang}
+                onClick={() => {
+                  onUpdate({ language: lang });
+                  setSheet(null);
+                }}
+                className="w-full min-h-14 px-4 flex items-center justify-between text-left rounded-[12px] hover:bg-surface2"
+              >
+                <span className="text-[15px] font-medium">{languageName(lang)}</span>
+                {settings.language === lang && <Check className="w-5 h-5 text-drive" />}
+              </button>
+            ))}
+          </div>
+        </Sheet>
       )}
-
+      {sheet === 'demo' && (
+        <ConfirmSheet
+          title={t.settings.loadDemoTitle}
+          text={t.settings.loadDemoText}
+          confirmLabel={t.settings.loadDemo}
+          cancelLabel={t.common.cancel}
+          onConfirm={onLoadDemo}
+          onClose={() => setSheet(null)}
+        />
+      )}
+      {sheet === 'clear' && (
+        <ConfirmSheet
+          title={t.settings.clearTitle}
+          text={t.settings.clearText}
+          confirmLabel={t.common.delete}
+          cancelLabel={t.common.cancel}
+          danger
+          onConfirm={onClearData}
+          onClose={() => setSheet(null)}
+        />
+      )}
     </div>
   );
 };
+
+const SwitchRow: React.FC<{ title: string; hint?: string; checked: boolean; onChange: (v: boolean) => void }> = ({
+  title,
+  hint,
+  checked,
+  onChange,
+}) => (
+  <div className="min-h-14 p-4 flex items-center justify-between gap-4">
+    <span className="flex flex-col gap-0.5">
+      <span className="text-[15px] font-semibold">{title}</span>
+      {hint && <span className="text-[13px] leading-relaxed text-muted">{hint}</span>}
+    </span>
+    <Switch checked={checked} onChange={onChange} label={title} />
+  </div>
+);
+
+const NavRow: React.FC<{ label: string; onClick: () => void; trailing?: React.ReactNode; icon?: React.ReactNode }> = ({
+  label,
+  onClick,
+  trailing,
+  icon,
+}) => (
+  <button type="button" onClick={onClick} className="w-full min-h-14 p-4 flex items-center gap-3 text-left hover:bg-surface2/40">
+    {icon}
+    <span className="flex-1 text-[15px] font-semibold">{label}</span>
+    {typeof trailing === 'string' ? <span className="text-[13px] text-muted">{trailing}</span> : trailing}
+    <ChevronRight className="w-4 h-4 text-muted" />
+  </button>
+);
+
+const TextRow: React.FC<{ label: string; value: string; onChange: (v: string) => void; mono?: boolean }> = ({
+  label,
+  value,
+  onChange,
+  mono,
+}) => (
+  <label className="min-h-14 px-4 py-2 flex items-center justify-between gap-3">
+    <span className="text-[15px] font-semibold shrink-0">{label}</span>
+    <input
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="—"
+      className={`min-w-0 flex-1 h-11 text-right bg-transparent outline-none placeholder:text-muted focus:text-drive ${
+        mono ? 'font-mono-num' : ''
+      } text-[15px]`}
+    />
+  </label>
+);

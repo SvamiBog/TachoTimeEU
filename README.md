@@ -1,39 +1,60 @@
 # TachoTimeEU
 
-European Driver Tachograph & Driving Hours Regulation Assistant according to **Regulation (EC) No 561/2006**, **Regulation (EU) 165/2014**, and the **EU Mobility Package I**.
+European driver hours assistant according to **Regulation (EC) No 561/2006**, the **AETR Agreement**, **Regulation (EU) 165/2014** and the **EU Mobility Package I**.
 
-Designed for professional European truck, coach, and commercial transport drivers (HGV / LGV / PSV) to monitor compliance in real time and prevent costly roadside infringements.
+Built for professional truck and coach drivers: switch the activity mode, and the app keeps the log and shows in real time how much driving and working time is left before each limit.
+
+This repository contains the **web prototype** (React). The production app is planned in Flutter — see `CLAUDE.md` and `docs/roadmap.md`.
 
 ## Features
 
-- **Smart Tachograph HUD (Cockpit)**:
-  - 4 one-tap standard activity buttons with official pictograms: **Drive** (⛟), **Work** (⚒), **POA** (⊠), and **Rest/Break** (🛏).
-  - Real-time stopwatch and live UTC clock.
-  - Continuous driving countdown (4h 30m maximum) with split break tracking (15m + 30m rule).
-  - Daily driving limits countdown (9h standard / 10h extended with weekly allowance tracking).
-  - Shift duty duration and 24h rest window deadline calculator.
-  - Weekly (56h) and Fortnightly (90h) driving progress meters.
-  - Solo Driver and Multi-Manning (Team Crew / 30h window) modes.
-  - Ferry / Train crossing mode (Article 9 interruption tracking).
-- **24-Hour Visual Tachograph Timeline**:
-  - Color-coded activity ribbon mapping every minute of the 24-hour cycle.
-- **Compliance & Infringement Engine**:
-  - Instant detection of continuous driving overages, missed breaks, daily driving limit violations, and shift window overages with direct EC 561/2006 article citations.
-- **Synthesized Web Audio Alerts**:
-  - 15-minute advance break warning chime and violation alerts.
-- **Shift & Route Planner (Simulator)**:
-  - Build multi-stop trip itineraries and test break placements before departure.
-- **Tachograph 24h Thermal Printout Simulation**:
-  - Standard EU format printout with technical driver/vehicle header, activity summary, infringements, Article 12 derogation notes, and signature lines.
-- **Activity History & Export**:
-  - Full activity log with manual entry editing, JSON backup, and CSV export.
-- **Multilingual Support**:
-  - English, Deutsch, Polski, Español, Français, Română, and Nederlands.
+- **Cockpit** — four one-tap activity buttons with tachograph pictograms (driving, rest, other work, availability). Tapping the active mode again does nothing, so a break is never split by accident.
+- **Limits calculated from the log**, not typed in:
+  - continuous driving 4:30 and the 45 min break, including the split 15 + 30 in the correct order;
+  - daily driving 9 h / 10 h with the two weekly extensions counted automatically;
+  - working day 13 h / 15 h (21 h for multi-manning) and the 24 h / 30 h daily-rest window;
+  - weekly 56 h and two-week 90 h driving (weeks from Monday 00:00 UTC, as on the tachograph);
+  - reduced daily rests since the last weekly rest, split daily rest 3 + 9;
+  - working week 144 h, reduced weekly rest availability and compensation;
+  - ferry / train interruptions of the daily rest (Art. 9);
+  - driver card download every 28 days.
+- **Warnings and infringements** on screen with article references; optional sound per category.
+- **Log** — weeks and shifts built from the activity records plus shifts added manually; highlights for 10 h driving, 13+ h working day and reduced rest.
+- **Corrections** — adjust daily driving, the current or last break and the shift start; edits take time from the neighbouring record, so records never overlap.
+- **Export** — CSV for the selected period and a printable report for inspection (save as PDF from the print dialog).
+- **Five languages** — Russian, Ukrainian, Polish, English, German.
+- **Dark and light themes** built on the design tokens from `docs/design/tokens.json`.
 
-## Tech Stack
+All data is stored locally in the browser (`localStorage`). There is no account or sync yet.
 
-- React 19 + TypeScript
-- Vite
-- Tailwind CSS
-- Web Audio API
-- Lucide React Icons
+## Run
+
+```bash
+npm install
+npm run dev
+```
+
+Open http://localhost:3000. To check on a phone in the same network: `npm run dev -- --host`.
+
+```bash
+npm test        # rule engine tests (Vitest)
+npm run lint    # TypeScript check
+npm run build   # production build
+```
+
+## Structure
+
+```
+src/domain/     rule engine: timeline, shifts, limits, edits, journal, report — no React
+src/i18n/       dictionaries (ru is the source; others are type-checked against it)
+src/components/ screens and bottom sheets
+src/storage.ts  localStorage persistence
+```
+
+## Tech stack
+
+React 19, TypeScript, Vite, Tailwind CSS 4, Vitest, Lucide icons.
+
+## Disclaimer
+
+TachoTime helps plan driving and rest time but does not replace the tachograph and is not legal advice.

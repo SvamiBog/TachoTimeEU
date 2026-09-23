@@ -16,28 +16,6 @@ function getAudioContext(): AudioContext | null {
   return audioCtx;
 }
 
-export function playKeypressTone(): void {
-  try {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 key click
-    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start();
-    osc.stop(ctx.currentTime + 0.05);
-  } catch (e) {
-    console.debug('Audio play skipped', e);
-  }
-}
-
 export function playWarningChime(): void {
   try {
     const ctx = getAudioContext();

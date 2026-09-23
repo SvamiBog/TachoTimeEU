@@ -5,6 +5,11 @@ Thumbs.db
 .vscode/
 *.iml
 
+# Node / Vite (веб-прототип)
+node_modules/
+dist/
+*.local
+
 # Flutter / Dart
 .dart_tool/
 .flutter-plugins
