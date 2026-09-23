@@ -1,36 +1,39 @@
-# TachoTime
+# TachoTimeEU
 
-Мобильное приложение для водителей международных перевозок в ЕС: учёт вождения, работы, готовности и отдыха по Регламенту (ЕС) 561/2006 и Соглашению ЕСТР (AETR).
+European Driver Tachograph & Driving Hours Regulation Assistant according to **Regulation (EC) No 561/2006**, **Regulation (EU) 165/2014**, and the **EU Mobility Package I**.
 
-- Платформы: Android (основная, экран 412 dp), iOS
-- Стек: Flutter
-- Монетизация: подписка Premium — €5/мес, €30/год
-- Статус: дизайн готов (вариант A «Кокпит»), начинается Фаза 0 — фундамент
+Designed for professional European truck, coach, and commercial transport drivers (HGV / LGV / PSV) to monitor compliance in real time and prevent costly roadside infringements.
 
-## Структура репозитория
+## Features
 
-```
-README.md              — этот файл
-CLAUDE.md              — контекст проекта для ИИ-ассистента (Claude Code и др.)
-docs/
-  roadmap.md           — дорожная карта: 9 фаз, 23 задачи
-  domain/
-    eu-561-rules.md    — правила режима труда и отдыха, которые считает приложение
-  design/
-    README.md          — спецификация дизайна: экраны, токены, компоненты
-    tokens.json        — дизайн-токены (цвета, шрифты, радиусы, отступы)
-    flutter/
-      app_colors.dart  — токены в виде Dart-кода для Flutter
-    screens/*.png      — скриншоты всех 18 макетов
-    source/*.dc.html   — исходная разметка макетов (справочно)
-app/                   — Flutter-проект (появится в Фазе 0)
-```
+- **Smart Tachograph HUD (Cockpit)**:
+  - 4 one-tap standard activity buttons with official pictograms: **Drive** (⛟), **Work** (⚒), **POA** (⊠), and **Rest/Break** (🛏).
+  - Real-time stopwatch and live UTC clock.
+  - Continuous driving countdown (4h 30m maximum) with split break tracking (15m + 30m rule).
+  - Daily driving limits countdown (9h standard / 10h extended with weekly allowance tracking).
+  - Shift duty duration and 24h rest window deadline calculator.
+  - Weekly (56h) and Fortnightly (90h) driving progress meters.
+  - Solo Driver and Multi-Manning (Team Crew / 30h window) modes.
+  - Ferry / Train crossing mode (Article 9 interruption tracking).
+- **24-Hour Visual Tachograph Timeline**:
+  - Color-coded activity ribbon mapping every minute of the 24-hour cycle.
+- **Compliance & Infringement Engine**:
+  - Instant detection of continuous driving overages, missed breaks, daily driving limit violations, and shift window overages with direct EC 561/2006 article citations.
+- **Synthesized Web Audio Alerts**:
+  - 15-minute advance break warning chime and violation alerts.
+- **Shift & Route Planner (Simulator)**:
+  - Build multi-stop trip itineraries and test break placements before departure.
+- **Tachograph 24h Thermal Printout Simulation**:
+  - Standard EU format printout with technical driver/vehicle header, activity summary, infringements, Article 12 derogation notes, and signature lines.
+- **Activity History & Export**:
+  - Full activity log with manual entry editing, JSON backup, and CSV export.
+- **Multilingual Support**:
+  - English, Deutsch, Polski, Español, Français, Română, and Nederlands.
 
-## Ссылки
+## Tech Stack
 
-- Кликабельный прототип (холст, 18 артбордов): https://claude.ai/artifact/JwAsjzmgjLTLzp9qCZJgeZ
-- Интерактивный трекер дорожной карты: https://claude.ai/code/artifact/e5d7383e-477d-4580-8c8e-a9008bfe1598
-
-## Дисклеймер
-
-TachoTime помогает планировать время, но не заменяет тахограф и не является юридической консультацией.
+- React 19 + TypeScript
+- Vite
+- Tailwind CSS
+- Web Audio API
+- Lucide React Icons

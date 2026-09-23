@@ -1,0 +1,8 @@
+{
+  "name": "TachoTimeEU",
+  "description": "EU Driver Tachograph & Hours Regulation Assistant (EC 561/2006). Real-time driving timers, break tracking, shift planning, and compliance infringements monitor.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
