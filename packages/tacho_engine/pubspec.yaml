@@ -1,0 +1,15 @@
+name: tacho_engine
+description: >-
+  Регуляторный движок TachoTime: таймеры и лимиты по Регламенту (ЕС) 561/2006
+  и ЕСТР. Чистый Dart, без зависимостей от Flutter.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.4
+
+dev_dependencies:
+  test: ^1.25.6
+  very_good_analysis: ^11.0.0
+dependencies:
+  meta: ^1.19.0

@@ -5,17 +5,20 @@
 
 ## Стек и решения
 - Flutter (Android + iOS). Основной таргет — Android, экран 412 dp.
-- Offline-first: все данные локально (Drift или Isar), облако — опционально, в Фазе 6.
-- State management: Riverpod или Bloc — решение принимается в Фазе 0, зафиксировать здесь.
+- Offline-first: все данные локально в **Drift** (SQLite), облако — опционально, в Фазе 6. Все даты в БД и движке — UTC.
+- State management: **Riverpod** (решено в Фазе 0).
+- Линтер: `very_good_analysis`, CI требует `--fatal-infos`.
+- Раскладка: `app/` — Flutter-приложение (`lib/core`, `lib/data`, `lib/features`), `packages/tacho_engine/` — движок. Подробности — `app/README.md`.
+- Окружения dev/staging/prod — через `--dart-define-from-file=env/<env>.json`.
 - Покупки: RevenueCat (или нативный Billing/StoreKit) — Фаза 5.
 - Аккаунт необязателен.
 
 ## Главное правило кода
-Регуляторный движок (таймеры 561/2006) — чистый Dart без зависимостей от Flutter и UI, покрыт юнит-тестами на кейсах из регламента. Это критический путь проекта. Правила: `docs/domain/eu-561-rules.md`.
+Регуляторный движок (таймеры 561/2006) — чистый Dart без зависимостей от Flutter и UI, покрыт юнит-тестами на кейсах из регламента. Живёт в `packages/tacho_engine` (CI и pre-commit запрещают там `package:flutter`). Это критический путь проекта. Правила: `docs/domain/eu-561-rules.md`.
 
 ## Дизайн
 - Спецификация: `docs/design/README.md`, скриншоты: `docs/design/screens/`.
-- Цвета, шрифты и радиусы брать только из `docs/design/tokens.json` / `app_colors.dart`, не хардкодить hex в виджетах.
+- Цвета, шрифты и радиусы брать только из `app/lib/core/theme/` (`context.colors`, `AppTextStyles`, `AppRadius`, `AppSize`, `AppSpacing`), не хардкодить hex в виджетах. Источник значений — `docs/design/tokens.json`, при изменении обновлять оба места.
 - Тёмная тема по умолчанию, светлая — по настройке.
 - Шрифты: Onest (интерфейс), JetBrains Mono (всё время и цифры).
 - Цвет = режим: вождение — янтарный, отдых — зелёный, работа — оранжевый, готовность — голубой.

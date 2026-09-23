@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.47.5'
+
+jobs:
+  engine:
+    name: Движок (tacho_engine)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/tacho_engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Движок не зависит от Flutter
+        run: |
+          if grep -rnE "package:flutter|dart:ui" lib test; then
+            echo "tacho_engine должен оставаться чистым Dart" >&2
+            exit 1
+          fi
+      - run: dart pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: dart analyze --fatal-infos
+      - run: dart test
+
+  app:
+    name: Приложение
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Сгенерированный код актуален
+        run: |
+          dart run build_runner build
+          git diff --exit-code -- lib
+      - run: dart format --output=none --set-exit-if-changed lib test
+      - run: flutter analyze --fatal-infos
+      - run: flutter test
+
+  build-android:
+    name: Сборка Android
+    needs: [engine, app]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      - name: Debug APK (dev)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run: flutter build apk --debug --dart-define-from-file=env/dev.json
+
+      - name: Ключ подписи из секретов
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "Секрет ANDROID_KEYSTORE_BASE64 не задан — релиз не будет подписан" >&2
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > android/upload.jks
+          cat > android/key.properties <<EOF
+          storeFile=../upload.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PASSWORD
+          EOF
+
+      - name: Release AAB (prod)
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        run: flutter build appbundle --release --dart-define-from-file=env/prod.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-${{ github.sha }}
+          path: |
+            app/build/app/outputs/flutter-apk/*.apk
+            app/build/app/outputs/bundle/release/*.aab
+          if-no-files-found: error

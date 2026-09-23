@@ -6,7 +6,7 @@ Android, экран 412 dp. Тёмная тема по умолчанию, св�
 Живой кликабельный прототип: https://claude.ai/artifact/JwAsjzmgjLTLzp9qCZJgeZ
 
 - `tokens.json` — все токены (цвета, типографика, радиусы, отступы).
-- `flutter/app_colors.dart` — те же токены для Flutter (ThemeExtension + buildTheme).
+- Те же токены для Flutter — в `app/lib/core/theme/` (`app_colors.dart`, `app_tokens.dart`, `app_typography.dart`, `app_theme.dart`).
 - `screens/` — скриншоты всех макетов (2x). Отрисованы запасным системным шрифтом, в приложении — Onest и JetBrains Mono.
 - `source/` — исходная разметка макетов (`.dc.html`) и `canvas.json` с раскладкой холста. Файлы — справочные: в них точные тексты, отступы, цвета и логика состояний. Для просмотра используйте ссылку на прототип выше.
 

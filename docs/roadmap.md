@@ -10,19 +10,19 @@ Flutter, соответствие EU/AETR для дальнобойщиков. �
   - [ ] Финальное название приложения (TachoTime / TachoHours / MyTacho / TachoGo)
   - [ ] Уточнить «индийский язык» (хинди?)
   - [ ] Зафиксировать PRD v1.1 как baseline
-- [ ] **Инициализация Flutter-проекта**
-  - [ ] Таргеты Android/iOS
-  - [ ] State management (Riverpod/Bloc) и слоистая архитектура
-  - [ ] Линтер, форматирование, pre-commit хуки
+- [x] **Инициализация Flutter-проекта**
+  - [x] Таргеты Android/iOS
+  - [x] State management (Riverpod) и слоистая архитектура
+  - [x] Линтер, форматирование, pre-commit хуки
 - [ ] **Инфраструктура и DevOps**
-  - [ ] CI/CD для debug/release
-  - [ ] Окружения dev/staging/prod
-  - [ ] Crash reporting (Sentry/Crashlytics)
-  - [ ] Аналитика (Firebase Analytics/Amplitude)
-- [ ] **Локальное хранилище**
-  - [ ] Схема БД (сессии, отдых, настройки)
-  - [ ] Офлайн-first БД (Drift/Isar)
-  - [ ] Миграции схемы
+  - [x] CI/CD для debug/release (подпись релиза — после создания ключа)
+  - [x] Окружения dev/staging/prod (dart-define; отдельные applicationId — вместе с Firebase/Sentry)
+  - [ ] Crash reporting (Sentry/Crashlytics) — есть интерфейс, провайдер не выбран
+  - [ ] Аналитика (Firebase Analytics/Amplitude) — есть интерфейс, провайдер не выбран
+- [x] **Локальное хранилище**
+  - [x] Схема БД (сессии, отдых, настройки)
+  - [x] Офлайн-first БД (Drift)
+  - [x] Миграции схемы
 
 ## Фаза 1 — Регуляторный движок (3–5 нед.) · критический путь
 - [ ] **Модель состояний водителя**
