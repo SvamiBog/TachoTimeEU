@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Download, Plus, Bed, ChevronDown } from 'lucide-react';
-import { JournalWeek } from '../types/tacho';
+import { JournalWeek, JournalDay } from '../types/tacho';
 
 interface JournalViewProps {
-  onOpenShiftModal: () => void;
+  onOpenShiftModal: (day?: JournalDay, weekId?: string) => void;
   onOpenExportModal: () => void;
   weeks: JournalWeek[];
 }
@@ -89,7 +89,7 @@ export const JournalView: React.FC<JournalViewProps> = ({
                   return (
                     <div
                       key={d.id}
-                      onClick={onOpenShiftModal}
+                      onClick={() => onOpenShiftModal(d, week.id)}
                       className="p-3.5 px-4 grid grid-cols-[44px_1fr] gap-3 cursor-pointer hover:bg-[#262A2F]/40 transition-colors"
                     >
                       {/* DOW & Day Number */}
@@ -212,7 +212,7 @@ export const JournalView: React.FC<JournalViewProps> = ({
       {/* Floating Action Button «+ Смена» */}
       <button
         type="button"
-        onClick={onOpenShiftModal}
+        onClick={() => onOpenShiftModal(undefined, weeks[0]?.id)}
         className="fixed right-6 bottom-24 h-14 px-5 rounded-[18px] bg-[#F3B33D] hover:bg-[#e0a232] text-[#111315] flex items-center gap-2 font-bold text-[15px] shadow-2xl active:scale-95 transition-all z-20"
       >
         <Plus className="w-5 h-5 stroke-[2.5]" />

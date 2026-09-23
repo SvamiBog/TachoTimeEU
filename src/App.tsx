@@ -3,6 +3,7 @@ import {
   ActivityEntry,
   ActivityType,
   DriverSettings,
+  JournalDay,
 } from './types/tacho';
 import {
   loadEntries,
@@ -47,6 +48,8 @@ export const App: React.FC = () => {
   const [isLimitWorkdayOpen, setIsLimitWorkdayOpen] = useState(false);
   const [isLimitWeeklyRestOpen, setIsLimitWeeklyRestOpen] = useState(false);
   const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
+  const [editingShift, setEditingShift] = useState<JournalDay | null>(null);
+  const [editingWeekId, setEditingWeekId] = useState<string | null>(null);
   const [isTimeEditOpen, setIsTimeEditOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isPaywallOpen, setIsPaywallOpen] = useState(false);
@@ -126,6 +129,66 @@ export const App: React.FC = () => {
     setSettings((prev) => ({ ...prev, ...newPartial }));
   };
 
+  const handleSaveShift = (savedShift: JournalDay, targetWeekId: string | null) => {
+    setWeeks((prevWeeks) => {
+      return prevWeeks.map((week) => {
+        const isTarget = targetWeekId ? week.id === targetWeekId : week.id === prevWeeks[0]?.id;
+        if (!isTarget) return week;
+
+        const dayExists = week.days.some((d) => d.id === savedShift.id);
+        let newDays: JournalDay[];
+        if (dayExists) {
+          newDays = week.days.map((d) => (d.id === savedShift.id ? savedShift : d));
+        } else {
+          newDays = [savedShift, ...week.days];
+        }
+
+        const totalDriveMins = newDays.reduce((acc, d) => {
+          const parts = d.drive.split(':');
+          const h = parseInt(parts[0] || '0', 10);
+          const m = parseInt(parts[1] || '0', 10);
+          return acc + h * 60 + m;
+        }, 0);
+
+        return {
+          ...week,
+          days: newDays,
+          driveMinutes: totalDriveMins,
+        };
+      });
+    });
+
+    if (savedShift.startCountry) {
+      handleUpdateSettings({
+        startCountry: savedShift.startCountry,
+        endCountry: savedShift.endCountry,
+      });
+    }
+  };
+
+  const handleDeleteShift = (shiftId: string, targetWeekId: string | null) => {
+    setWeeks((prevWeeks) => {
+      return prevWeeks.map((week) => {
+        const contains = week.days.some((d) => d.id === shiftId);
+        if (!contains) return week;
+
+        const newDays = week.days.filter((d) => d.id !== shiftId);
+        const totalDriveMins = newDays.reduce((acc, d) => {
+          const parts = d.drive.split(':');
+          const h = parseInt(parts[0] || '0', 10);
+          const m = parseInt(parts[1] || '0', 10);
+          return acc + h * 60 + m;
+        }, 0);
+
+        return {
+          ...week,
+          days: newDays,
+          driveMinutes: totalDriveMins,
+        };
+      });
+    });
+  };
+
   const handleClearData = () => {
     localStorage.clear();
     setSettings(loadSettings());
@@ -161,7 +224,11 @@ export const App: React.FC = () => {
           {activeTab === 'journal' && (
             <JournalView
               weeks={weeks}
-              onOpenShiftModal={() => setIsShiftModalOpen(true)}
+              onOpenShiftModal={(day, weekId) => {
+                setEditingShift(day || null);
+                setEditingWeekId(weekId || weeks[0]?.id || null);
+                setIsShiftModalOpen(true);
+              }}
               onOpenExportModal={() => setIsExportOpen(true)}
             />
           )}
@@ -358,15 +425,18 @@ export const App: React.FC = () => {
         {/* Shift Modal */}
         {isShiftModalOpen && (
           <ShiftModal
-            startCountry={settings.startCountry || 'PL'}
-            endCountry={settings.endCountry || 'PL'}
-            onOpenCountryPicker={() => {
-              setCountryPickerTarget('start');
-              setIsCountryPickerOpen(true);
+            shift={editingShift}
+            defaultCountry={settings.startCountry || 'PL'}
+            onClose={() => {
+              setIsShiftModalOpen(false);
+              setEditingShift(null);
+              setEditingWeekId(null);
             }}
-            onClose={() => setIsShiftModalOpen(false)}
-            onSaveShift={(startC, endC, note) => {
-              handleUpdateSettings({ startCountry: startC, endCountry: endC });
+            onSaveShift={(savedShift) => {
+              handleSaveShift(savedShift, editingWeekId);
+            }}
+            onDeleteShift={(shiftId) => {
+              handleDeleteShift(shiftId, editingWeekId);
             }}
           />
         )}
