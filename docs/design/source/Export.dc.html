@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Экспорт отчёта</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#070808;font-family:'Onest',sans-serif;color:#EDEBE6}
+a{color:#F3B33D}a:hover{color:#FFD27A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 412px; height: 915px; box-sizing: border-box; background: #070808; color: #EDEBE6; font-family: 'Onest', sans-serif; display: flex; flex-direction: column; justify-content: flex-end;">
+
+<a href="Journal.dc.html" aria-label="Закрыть" style="flex-grow: 1; display: block;"></a>
+
+<section role="dialog" aria-label="Экспорт отчёта" style="padding: 12px 20px 24px; border-radius: 28px 28px 0 0; background: #1A1D20; display: flex; flex-direction: column; gap: 18px;">
+<div aria-hidden="true" style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #3A3F45;"></div>
+<div style="display: flex; align-items: center; gap: 10px;">
+<h1 style="margin: 0; flex-grow: 1; font-size: 20px; font-weight: 700;">Экспорт отчёта</h1>
+<span style="font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #F3B33D; color: #111315;">Premium</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Период</span>
+<div role="group" aria-label="Период" style="display: flex; flex-wrap: wrap; gap: 8px;">
+<sc-for list="{{periods}}" as="p" hint-placeholder-count="4">
+<button type="button" aria-pressed="{{p.pressed}}" onClick="{{p.pick}}" style="height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid {{p.border}}; background: {{p.bg}}; color: {{p.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{p.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #111315;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A3A8AE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;">{{range}}</span>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Формат</span>
+<div role="group" aria-label="Формат" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: #111315;">
+<button type="button" aria-pressed="{{pdf.pressed}}" onClick="{{pdf.pick}}" style="height: 44px; border: none; border-radius: 12px; background: {{pdf.bg}}; color: {{pdf.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">PDF · для инспекции</button>
+<button type="button" aria-pressed="{{csv.pressed}}" onClick="{{csv.pick}}" style="height: 44px; border: none; border-radius: 12px; background: {{csv.bg}}; color: {{csv.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">CSV · таблица</button>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 16px;">
+<span style="flex-grow: 1; font-size: 15px; font-weight: 600;">Страны и заметки</span>
+<button type="button" role="switch" aria-checked="{{notes.checked}}" aria-label="Страны и заметки" onClick="{{notes.toggle}}" style="width: 52px; height: 32px; flex-shrink: 0; padding: 4px; box-sizing: border-box; border: none; border-radius: 16px; background: {{notes.bg}}; display: flex; justify-content: {{notes.jc}}; cursor: pointer;"><span style="width: 24px; height: 24px; border-radius: 12px; background: {{notes.knob}};"></span></button>
+</div>
+
+<button type="button" style="height: 56px; border: none; border-radius: 18px; background: #F3B33D; color: #111315; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 16px; font-weight: 700; cursor: pointer;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
+Создать отчёт
+</button>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":412,"height":915}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const period = s.period || 'd28';
+    const fmt = s.fmt || 'pdf';
+    const notes = s.notes !== false;
+    const ranges = { w1: '21.09 — 23.09', w2: '14.09 — 23.09', d28: '26.08 — 23.09', custom: 'Выбрать даты' };
+    const labels = { w1: 'Эта неделя', w2: '2 недели', d28: '28 дней', custom: 'Свой период' };
+    const f = (id) => ({ pressed: fmt === id ? 'true' : 'false', bg: fmt === id ? '#2F343A' : 'transparent', fg: fmt === id ? '#EDEBE6' : '#A3A8AE', pick: () => this.setState({ fmt: id }) });
+    return {
+      periods: ['w1', 'w2', 'd28', 'custom'].map((id) => ({ label: labels[id], pressed: period === id ? 'true' : 'false', bg: period === id ? '#F3B33D' : 'transparent', fg: period === id ? '#111315' : '#EDEBE6', border: period === id ? '#F3B33D' : '#3A3F45', pick: () => this.setState({ period: id }) })),
+      range: ranges[period],
+      pdf: f('pdf'), csv: f('csv'),
+      notes: { checked: notes ? 'true' : 'false', bg: notes ? '#F3B33D' : '#3A3F45', knob: notes ? '#111315' : '#A3A8AE', jc: notes ? 'flex-end' : 'flex-start', toggle: () => this.setState({ notes: !notes }) }
+    };
+  }
+}
+</script>
+</body>
+</html>

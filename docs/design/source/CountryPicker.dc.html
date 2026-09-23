@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Выбор страны</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#070808;font-family:'Onest',sans-serif;color:#EDEBE6}
+a{color:#F3B33D}a:hover{color:#FFD27A}
+button,input{font-family:inherit}
+input::placeholder{color:#8C9197}
+</style>
+</helmet>
+<div style="width: 412px; height: 915px; box-sizing: border-box; background: #070808; color: #EDEBE6; font-family: 'Onest', sans-serif; display: flex; flex-direction: column;">
+
+<a href="Main.dc.html" aria-label="Закрыть" style="height: 72px; flex-shrink: 0; display: block;"></a>
+
+<section role="dialog" aria-label="Выбор страны" style="flex-grow: 1; min-height: 0; padding: 12px 0 0; border-radius: 28px 28px 0 0; background: #1A1D20; display: flex; flex-direction: column; gap: 14px; overflow: hidden;">
+<div aria-hidden="true" style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #3A3F45;"></div>
+<div role="tablist" aria-label="Какая страна" style="margin: 0 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: #111315;">
+<button type="button" role="tab" aria-selected="{{tabStart.sel}}" onClick="{{tabStart.pick}}" style="height: 40px; border: none; border-radius: 12px; background: {{tabStart.bg}}; color: {{tabStart.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">Начало · PL</button>
+<button type="button" role="tab" aria-selected="{{tabEnd.sel}}" onClick="{{tabEnd.pick}}" style="height: 40px; border: none; border-radius: 12px; background: {{tabEnd.bg}}; color: {{tabEnd.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">Конец · —</button>
+</div>
+
+<label style="margin: 0 20px; height: 48px; padding: 0 14px; border-radius: 14px; background: #111315; display: flex; align-items: center; gap: 10px;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A3A8AE" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M16 16l4 4"></path></svg>
+<input type="search" aria-label="Поиск страны" placeholder="Страна или код" style="flex-grow: 1; min-width: 0; height: 44px; border: none; outline: none; background: transparent; color: #EDEBE6; font-size: 15px;">
+</label>
+
+<div style="margin: 0 20px; display: flex; flex-direction: column; gap: 8px;">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Недавние</span>
+<div style="display: flex; gap: 8px;">
+<sc-for list="{{recent}}" as="r" hint-placeholder-count="3">
+<button type="button" onClick="{{r.pick}}" style="height: 40px; min-width: 56px; padding: 0 14px; border-radius: 20px; border: 1px solid {{r.border}}; background: {{r.bg}}; color: {{r.fg}}; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; cursor: pointer;">{{r.code}}</button>
+</sc-for>
+</div>
+</div>
+
+<div role="listbox" aria-label="Страны" style="flex-grow: 1; min-height: 0; overflow: hidden; border-top: 1px solid #262A2F;">
+<sc-for list="{{list}}" as="c" hint-placeholder-count="10">
+<button type="button" role="option" aria-selected="{{c.sel}}" onClick="{{c.pick}}" style="width: 100%; height: 56px; padding: 0 20px; border: none; border-bottom: 1px solid #22262A; background: {{c.bg}}; color: #EDEBE6; display: flex; align-items: center; gap: 14px; text-align: left; cursor: pointer;">
+<span style="width: 44px; height: 30px; border-radius: 8px; background: #262A2F; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;">{{c.code}}</span>
+<span style="flex-grow: 1; font-size: 15px; font-weight: 500;">{{c.name}}</span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.check}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+</button>
+</sc-for>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":412,"height":915}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const tab = s.tab || 'start';
+    const sel = s.sel || 'PL';
+    const pick = (code) => () => this.setState({ sel: code });
+    const countries = [
+      ['A', 'Австрия'], ['B', 'Бельгия'], ['BG', 'Болгария'], ['CH', 'Швейцария'], ['CZ', 'Чехия'],
+      ['D', 'Германия'], ['DK', 'Дания'], ['E', 'Испания'], ['F', 'Франция'], ['I', 'Италия'],
+      ['LT', 'Литва'], ['NL', 'Нидерланды'], ['PL', 'Польша'], ['SK', 'Словакия']
+    ];
+    const t = (id) => ({ sel: tab === id ? 'true' : 'false', bg: tab === id ? '#2F343A' : 'transparent', fg: tab === id ? '#EDEBE6' : '#A3A8AE', pick: () => this.setState({ tab: id }) });
+    return {
+      tabStart: t('start'), tabEnd: t('end'),
+      recent: ['PL', 'D', 'CZ'].map((code) => ({ code, pick: pick(code), bg: sel === code ? '#F3B33D' : 'transparent', fg: sel === code ? '#111315' : '#EDEBE6', border: sel === code ? '#F3B33D' : '#3A3F45' })),
+      list: countries.map(([code, name]) => ({ code, name, pick: pick(code), sel: sel === code ? 'true' : 'false', bg: sel === code ? '#23272B' : 'transparent', check: sel === code ? '#F3B33D' : 'transparent' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

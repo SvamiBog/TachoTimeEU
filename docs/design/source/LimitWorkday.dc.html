@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Рабочий день</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#111315;font-family:'Onest',sans-serif;color:#EDEBE6}
+a{color:#F3B33D}a:hover{color:#FFD27A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 412px; height: 915px; box-sizing: border-box; background: #111315; color: #EDEBE6; font-family: 'Onest', sans-serif; display: flex; flex-direction: column;">
+
+<header style="height: 64px; box-sizing: border-box; padding: 8px 12px 8px 4px; display: flex; align-items: center; gap: 4px;">
+<a href="Main.dc.html" aria-label="Назад" style="width: 48px; height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #EDEBE6;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+<h1 style="margin: 0; flex-grow: 1; font-size: 18px; font-weight: 700;">Рабочий день</h1>
+</header>
+
+<section style="margin: 8px 16px 0; padding: 20px; background: #1A1D20; border-radius: 28px; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; align-items: baseline; gap: 10px;">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 52px; font-weight: 700; line-height: 1;">4:48</span>
+<span style="font-size: 15px; color: #A3A8AE;">из 13:00</span>
+</div>
+<div style="position: relative; height: 10px; border-radius: 5px; background: #2A2E33;">
+<div style="position: absolute; left: 0; top: 0; height: 10px; width: 32%; border-radius: 5px; background: #EDEBE6;"></div>
+<div style="position: absolute; left: 86.7%; top: -4px; width: 2px; height: 18px; border-radius: 1px; background: #A3A8AE;"></div>
+</div>
+<div style="display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #A3A8AE;">
+<span>0</span><span style="margin-left: auto; margin-right: 22px;">13 ч</span><span>15 ч</span>
+</div>
+</section>
+
+<h2 style="margin: 24px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Сегодня, ср 23.09</h2>
+<div style="margin: 0 16px; background: #1A1D20; border-radius: 24px; overflow: hidden; flex-shrink: 0;">
+<div style="min-height: 64px; padding: 12px 16px; box-sizing: border-box; display: flex; align-items: center; gap: 14px;">
+<span style="width: 10px; height: 10px; border-radius: 5px; background: #EDEBE6; flex-shrink: 0;"></span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Начало смены</span><span style="font-size: 13px; color: #A3A8AE;">PL</span></span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700;">06:49</span>
+</div>
+<div style="min-height: 64px; padding: 12px 16px; box-sizing: border-box; border-top: 1px solid #262A2F; display: flex; align-items: center; gap: 14px;">
+<span style="width: 10px; height: 10px; border-radius: 5px; border: 2px solid #EDEBE6; box-sizing: border-box; flex-shrink: 0;"></span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">13 ч — обычный день</span><span style="font-size: 13px; color: #A3A8AE;">затем полный отдых 11 ч · ещё 8:12</span></span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700;">19:49</span>
+</div>
+<div style="min-height: 64px; padding: 12px 16px; box-sizing: border-box; border-top: 1px solid #262A2F; display: flex; align-items: center; gap: 14px;">
+<span style="width: 10px; height: 10px; border-radius: 5px; border: 2px solid #A3A8AE; box-sizing: border-box; flex-shrink: 0;"></span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">15 ч — удлинённый день</span><span style="font-size: 13px; color: #A3A8AE;">затем сокращённый отдых 9 ч · осталось ×3</span></span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: #A3A8AE;">21:49</span>
+</div>
+</div>
+
+<div style="margin: 16px 16px 0; padding: 14px 16px; border-radius: 16px; background: #1A1D20; display: flex; gap: 12px; font-size: 14px; line-height: 1.45; color: #C9CDD2;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A3A8AE" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8v.2"></path></svg>
+<span>Суточный отдых должен закончиться в пределах 24 часов от начала смены. Сокращённый отдых 9 ч можно брать не больше трёх раз между недельными отдыхами.</span>
+</div>
+
+<a href="Shift.dc.html" style="margin: auto 16px 24px; height: 56px; border-radius: 18px; border: 1px solid #3A3F45; color: #EDEBE6; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-size: 15px; font-weight: 600;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+Изменить начало смены
+</a>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":412,"height":915}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

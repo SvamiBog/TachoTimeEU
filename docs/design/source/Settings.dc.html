@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Настройки</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#111315;font-family:'Onest',sans-serif;color:#EDEBE6}
+a{color:#F3B33D}a:hover{color:#FFD27A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 412px; height: 1420px; box-sizing: border-box; background: #111315; color: #EDEBE6; font-family: 'Onest', sans-serif; display: flex; flex-direction: column;">
+
+<header style="height: 64px; box-sizing: border-box; padding: 8px 20px; display: flex; align-items: center;">
+<h1 style="margin: 0; font-size: 18px; font-weight: 700;">Настройки</h1>
+</header>
+
+<h2 style="margin: 12px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Общее</h2>
+<div style="margin: 0 16px; background: #1A1D20; border-radius: 24px; overflow: hidden; flex-shrink: 0;">
+<button type="button" style="width: 100%; min-height: 56px; padding: 0 16px; border: none; background: transparent; color: #EDEBE6; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer;">
+<span style="flex-grow: 1; font-size: 15px; font-weight: 600;">Язык</span>
+<span style="font-size: 14px; color: #A3A8AE;">Русский</span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A3A8AE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</button>
+<div style="padding: 12px 16px 16px; border-top: 1px solid #262A2F; display: flex; flex-direction: column; gap: 10px;">
+<span style="font-size: 15px; font-weight: 600;">Оформление</span>
+<div role="group" aria-label="Оформление" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: #111315;">
+<button type="button" aria-pressed="{{th.system.pressed}}" onClick="{{th.system.pick}}" style="height: 40px; border: none; border-radius: 12px; background: {{th.system.bg}}; color: {{th.system.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">Система</button>
+<button type="button" aria-pressed="{{th.light.pressed}}" onClick="{{th.light.pick}}" style="height: 40px; border: none; border-radius: 12px; background: {{th.light.bg}}; color: {{th.light.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">Светлая</button>
+<button type="button" aria-pressed="{{th.dark.pressed}}" onClick="{{th.dark.pick}}" style="height: 40px; border: none; border-radius: 12px; background: {{th.dark.bg}}; color: {{th.dark.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">Тёмная</button>
+</div>
+</div>
+</div>
+
+<h2 style="margin: 24px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Правила</h2>
+<div style="margin: 0 16px; background: #1A1D20; border-radius: 24px; overflow: hidden; flex-shrink: 0;">
+<div style="padding: 16px; display: flex; align-items: center; gap: 16px;">
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 15px; font-weight: 600;">Пакет мобильности</span>
+<span style="font-size: 13px; line-height: 1.4; color: #A3A8AE;">Два сокращённых недельных отдыха подряд при международных перевозках</span>
+</div>
+<button type="button" role="switch" aria-checked="{{mp.checked}}" aria-label="Пакет мобильности" onClick="{{mp.toggle}}" style="width: 52px; height: 32px; flex-shrink: 0; padding: 4px; box-sizing: border-box; border: none; border-radius: 16px; background: {{mp.bg}}; display: flex; justify-content: {{mp.jc}}; cursor: pointer;"><span style="width: 24px; height: 24px; border-radius: 12px; background: {{mp.knob}};"></span></button>
+</div>
+</div>
+
+<h2 style="margin: 24px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Уведомления</h2>
+<div style="margin: 0 16px; background: #1A1D20; border-radius: 24px; overflow: hidden; flex-shrink: 0;">
+<div style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px;">
+<span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Предупреждать о лимитах</span><span style="font-size: 13px; color: #A3A8AE;">Перерыв, конец дня, вождение</span></span>
+<div role="group" aria-label="Предупреждать заранее" style="display: flex; gap: 8px;">
+<button type="button" aria-pressed="{{lead.m15.pressed}}" onClick="{{lead.m15.pick}}" style="height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid {{lead.m15.border}}; background: {{lead.m15.bg}}; color: {{lead.m15.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">15 мин</button>
+<button type="button" aria-pressed="{{lead.m30.pressed}}" onClick="{{lead.m30.pick}}" style="height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid {{lead.m30.border}}; background: {{lead.m30.bg}}; color: {{lead.m30.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">30 мин</button>
+<button type="button" aria-pressed="{{lead.m60.pressed}}" onClick="{{lead.m60.pick}}" style="height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid {{lead.m60.border}}; background: {{lead.m60.bg}}; color: {{lead.m60.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">1 час</button>
+</div>
+</div>
+<sc-for list="{{notif}}" as="n" hint-placeholder-count="3">
+<div style="min-height: 56px; padding: 0 16px; border-top: 1px solid #262A2F; display: flex; align-items: center; gap: 16px;">
+<span style="flex-grow: 1; font-size: 15px; font-weight: 500;">{{n.label}}</span>
+<button type="button" role="switch" aria-checked="{{n.checked}}" aria-label="{{n.label}}" onClick="{{n.toggle}}" style="width: 52px; height: 32px; flex-shrink: 0; padding: 4px; box-sizing: border-box; border: none; border-radius: 16px; background: {{n.bg}}; display: flex; justify-content: {{n.jc}}; cursor: pointer;"><span style="width: 24px; height: 24px; border-radius: 12px; background: {{n.knob}};"></span></button>
+</div>
+</sc-for>
+<div style="padding: 14px 16px 16px; border-top: 1px solid #262A2F; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 500;">Считывание карты</span><span style="font-size: 13px; color: #A3A8AE;">Каждые 28 дней</span></span>
+<button type="button" role="switch" aria-checked="{{card.checked}}" aria-label="Считывание карты" onClick="{{card.toggle}}" style="width: 52px; height: 32px; flex-shrink: 0; padding: 4px; box-sizing: border-box; border: none; border-radius: 16px; background: {{card.bg}}; display: flex; justify-content: {{card.jc}}; cursor: pointer;"><span style="width: 24px; height: 24px; border-radius: 12px; background: {{card.knob}};"></span></button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<span style="font-size: 13px; color: #A3A8AE;">Предупредить за</span>
+<div role="group" aria-label="Предупредить о считывании карты за" style="display: flex; gap: 8px;">
+<sc-for list="{{cardDays}}" as="c" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{c.label}}</button>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+
+<h2 style="margin: 24px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Данные</h2>
+<div style="margin: 0 16px 24px; background: #1A1D20; border-radius: 24px; overflow: hidden; flex-shrink: 0;">
+<a href="Export.dc.html" style="min-height: 56px; padding: 0 16px; display: flex; align-items: center; gap: 12px; text-decoration: none; color: #EDEBE6;">
+<span style="flex-grow: 1; font-size: 15px; font-weight: 600;">Экспорт отчёта</span>
+<span style="font-size: 13px; color: #A3A8AE;">PDF · CSV</span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A3A8AE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</a>
+<a href="Paywall.dc.html" style="min-height: 56px; padding: 0 16px; border-top: 1px solid #262A2F; display: flex; align-items: center; gap: 12px; text-decoration: none; color: #EDEBE6;">
+<span style="flex-grow: 1; font-size: 15px; font-weight: 600;">Синхронизация и резервная копия</span>
+<span style="font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #F3B33D; color: #111315;">Premium</span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A3A8AE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</a>
+<button type="button" style="width: 100%; min-height: 56px; padding: 0 16px; border: none; border-top: 1px solid #262A2F; background: transparent; color: #FF8F87; display: flex; align-items: center; gap: 12px; text-align: left; font-size: 15px; font-weight: 600; cursor: pointer;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"></path></svg>
+Очистить все данные
+</button>
+</div>
+
+<nav aria-label="Основная навигация" style="margin-top: auto; height: 80px; box-sizing: border-box; padding: 10px 8px 14px; background: #1A1D20; border-top: 1px solid #262A2F; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));">
+<a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #A3A8AE; font-size: 12px; font-weight: 600;">
+<span style="width: 60px; height: 32px; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg></span>
+Главная
+</a>
+<a href="Journal.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #A3A8AE; font-size: 12px; font-weight: 600;">
+<span style="width: 60px; height: 32px; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5h14M5 10h14M5 15h14M5 20h9"></path></svg></span>
+Журнал
+</a>
+<a href="Settings.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #EDEBE6; font-size: 12px; font-weight: 700;">
+<span style="width: 60px; height: 32px; border-radius: 16px; background: #F3B33D; color: #111315; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></span>
+Настройки
+</a>
+<a href="More.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #A3A8AE; font-size: 12px; font-weight: 600;">
+<span style="width: 60px; height: 32px; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="19" cy="12" r="1.8"></circle></svg></span>
+Ещё
+</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":412,"height":1420}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const theme = s.theme || 'dark';
+    const days = s.days || 'd7';
+    const lead = s.lead || 'm30';
+    const flags = Object.assign({ mp: true, n1: true, n2: true, n3: true, n4: true }, s.flags || {});
+    const flip = (k) => () => this.setState({ flags: Object.assign({}, flags, { [k]: !flags[k] }) });
+    const sw = (k) => {
+      const on = !!flags[k];
+      return { checked: on ? 'true' : 'false', bg: on ? '#F3B33D' : '#3A3F45', knob: on ? '#111315' : '#A3A8AE', jc: on ? 'flex-end' : 'flex-start', toggle: flip(k) };
+    };
+    const seg = (id) => ({ pressed: theme === id ? 'true' : 'false', bg: theme === id ? '#2F343A' : 'transparent', fg: theme === id ? '#EDEBE6' : '#A3A8AE', pick: () => this.setState({ theme: id }) });
+    const chip = (id) => ({ pressed: lead === id ? 'true' : 'false', bg: lead === id ? '#F3B33D' : 'transparent', fg: lead === id ? '#111315' : '#EDEBE6', border: lead === id ? '#F3B33D' : '#3A3F45', pick: () => this.setState({ lead: id }) });
+    const labels = { n1: 'Перерыв', n2: 'Конец рабочего дня', n3: 'Лимит вождения' };
+    const dayLabels = { d3: '3 дня', d7: '7 дней', d14: '14 дней' };
+    return {
+      th: { system: seg('system'), light: seg('light'), dark: seg('dark') },
+      mp: sw('mp'),
+      lead: { m15: chip('m15'), m30: chip('m30'), m60: chip('m60') },
+      notif: ['n1', 'n2', 'n3'].map((k) => Object.assign({ label: labels[k] }, sw(k))),
+      card: sw('n4'),
+      cardDays: ['d3', 'd7', 'd14'].map((id) => ({ label: dayLabels[id], pressed: days === id ? 'true' : 'false', bg: days === id ? '#F3B33D' : 'transparent', fg: days === id ? '#111315' : '#EDEBE6', border: days === id ? '#F3B33D' : '#3A3F45', pick: () => this.setState({ days: id }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

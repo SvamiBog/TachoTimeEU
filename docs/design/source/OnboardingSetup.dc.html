@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Онбординг — настройка</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#111315;font-family:'Onest',sans-serif;color:#EDEBE6}
+a{color:#F3B33D}a:hover{color:#FFD27A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 412px; height: 915px; box-sizing: border-box; padding: 0 0 24px; background: #111315; color: #EDEBE6; font-family: 'Onest', sans-serif; display: flex; flex-direction: column;">
+
+<header style="height: 64px; box-sizing: border-box; padding: 8px 4px; display: flex; align-items: center;">
+<a href="Onboarding.dc.html" aria-label="Назад" style="width: 48px; height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #EDEBE6;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+</header>
+
+<div style="padding: 0 24px; display: flex; flex-direction: column; gap: 8px;">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.02em;">Настроим под вас</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.45; color: #A3A8AE;">Всё это можно поменять позже в настройках.</p>
+</div>
+
+<h2 style="margin: 24px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Тахограф в машине</h2>
+<div role="radiogroup" aria-label="Тахограф" style="margin: 0 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+<button type="button" role="radio" aria-checked="{{digital.checked}}" onClick="{{digital.pick}}" style="min-height: 112px; padding: 16px; border-radius: 20px; border: 2px solid {{digital.border}}; background: #1A1D20; color: #EDEBE6; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; text-align: left; cursor: pointer;">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M7 10h5M7 14h3"></path></svg>
+<span style="font-size: 16px; font-weight: 700;">Цифровой</span>
+</button>
+<button type="button" role="radio" aria-checked="{{analog.checked}}" onClick="{{analog.pick}}" style="min-height: 112px; padding: 16px; border-radius: 20px; border: 2px solid {{analog.border}}; background: #1A1D20; color: #EDEBE6; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; text-align: left; cursor: pointer;">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 3v3M21 12h-3"></path></svg>
+<span style="font-size: 16px; font-weight: 700;">Аналоговый</span>
+</button>
+</div>
+
+<h2 style="margin: 24px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Правила</h2>
+<div style="margin: 0 16px; padding: 16px; background: #1A1D20; border-radius: 24px; display: flex; align-items: center; gap: 16px;">
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 15px; font-weight: 600;">Пакет мобильности</span>
+<span style="font-size: 13px; line-height: 1.4; color: #A3A8AE;">Включите, если ездите по международным рейсам</span>
+</div>
+<button type="button" role="switch" aria-checked="{{mp.checked}}" aria-label="Пакет мобильности" onClick="{{mp.toggle}}" style="width: 52px; height: 32px; flex-shrink: 0; padding: 4px; box-sizing: border-box; border: none; border-radius: 16px; background: {{mp.bg}}; display: flex; justify-content: {{mp.jc}}; cursor: pointer;"><span style="width: 24px; height: 24px; border-radius: 12px; background: {{mp.knob}};"></span></button>
+</div>
+
+<h2 style="margin: 24px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Уведомления</h2>
+<div style="margin: 0 16px; padding: 16px; background: #1A1D20; border-radius: 24px; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; gap: 14px;">
+<span style="width: 44px; height: 44px; border-radius: 14px; background: #262A2F; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EDEBE6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 20.5h4"></path></svg></span>
+<span style="font-size: 14px; line-height: 1.45; color: #C9CDD2;">Предупредим за 30 минут до перерыва и конца рабочего дня — даже когда приложение закрыто.</span>
+</div>
+<button type="button" style="height: 48px; border-radius: 16px; border: 1px solid #3A3F45; background: transparent; color: #EDEBE6; font-size: 15px; font-weight: 600; cursor: pointer;">Разрешить уведомления</button>
+</div>
+
+<div aria-label="Шаг 2 из 2" style="margin: auto 24px 20px; display: flex; gap: 6px;">
+<span style="width: 6px; height: 6px; border-radius: 3px; background: #3A3F45;"></span>
+<span style="width: 24px; height: 6px; border-radius: 3px; background: #F3B33D;"></span>
+</div>
+<a href="Main.dc.html" style="margin: 0 16px; height: 56px; border-radius: 18px; background: #F3B33D; color: #111315; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; font-weight: 700;">Готово</a>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":412,"height":915}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const t = s.t || 'digital';
+    const mp = s.mp !== false;
+    const opt = (id) => ({ checked: t === id ? 'true' : 'false', border: t === id ? '#F3B33D' : '#2A2E33', pick: () => this.setState({ t: id }) });
+    return {
+      digital: opt('digital'), analog: opt('analog'),
+      mp: { checked: mp ? 'true' : 'false', bg: mp ? '#F3B33D' : '#3A3F45', knob: mp ? '#111315' : '#A3A8AE', jc: mp ? 'flex-end' : 'flex-start', toggle: () => this.setState({ mp: !mp }) }
+    };
+  }
+}
+</script>
+</body>
+</html>

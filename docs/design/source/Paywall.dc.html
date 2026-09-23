@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>TachoTime Premium</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#111315;font-family:'Onest',sans-serif;color:#EDEBE6}
+a{color:#F3B33D}a:hover{color:#FFD27A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 412px; height: 960px; box-sizing: border-box; background: #111315; color: #EDEBE6; font-family: 'Onest', sans-serif; display: flex; flex-direction: column;">
+
+<header style="height: 64px; box-sizing: border-box; padding: 8px 4px; display: flex; align-items: center; justify-content: flex-end;">
+<a href="More.dc.html" aria-label="Закрыть" style="width: 48px; height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #EDEBE6;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+</header>
+
+<div style="padding: 0 24px; display: flex; flex-direction: column; gap: 12px;">
+<span style="width: 64px; height: 64px; border-radius: 20px; background: #F3B33D; color: #111315; display: flex; align-items: center; justify-content: center;">
+<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.2 5.6L20 11l-5.8 2.4L12 19l-2.2-5.6L4 11l5.8-2.4z"></path></svg>
+</span>
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15;">TachoTime Premium</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.45; color: #A3A8AE;">Всё для спокойной проверки на дороге и работы без потери данных.</p>
+</div>
+
+<ul style="margin: 20px 16px 0; padding: 8px 0; list-style: none; background: #1A1D20; border-radius: 24px;">
+<li style="padding: 12px 16px; display: flex; gap: 14px; align-items: flex-start;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F3B33D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+<span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Отчёт PDF и CSV</span><span style="font-size: 13px; color: #A3A8AE;">Для инспектора и работодателя</span></span>
+</li>
+<li style="padding: 12px 16px; display: flex; gap: 14px; align-items: flex-start;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F3B33D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+<span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Уведомления о лимитах</span><span style="font-size: 13px; color: #A3A8AE;">Перерыв, конец дня, считывание карты</span></span>
+</li>
+<li style="padding: 12px 16px; display: flex; gap: 14px; align-items: flex-start;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F3B33D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+<span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Синхронизация и резервная копия</span><span style="font-size: 13px; color: #A3A8AE;">Данные не пропадут при смене телефона</span></span>
+</li>
+<li style="padding: 12px 16px; display: flex; gap: 14px; align-items: flex-start;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F3B33D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+<span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Полная история журнала</span><span style="font-size: 13px; color: #A3A8AE;">Без ограничения по времени</span></span>
+</li>
+</ul>
+
+<div role="radiogroup" aria-label="Тариф" style="margin: 16px 16px 0; display: flex; flex-direction: column; gap: 8px;">
+<button type="button" role="radio" aria-checked="{{year.checked}}" onClick="{{year.pick}}" style="position: relative; min-height: 72px; padding: 0 16px; border-radius: 20px; border: 2px solid {{year.border}}; background: #1A1D20; color: #EDEBE6; display: flex; align-items: center; gap: 14px; text-align: left; cursor: pointer;">
+<span style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 11px; border: 2px solid {{year.ring}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span style="width: 10px; height: 10px; border-radius: 5px; background: {{year.dot}};"></span></span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 16px; font-weight: 700;">Год</span><span style="font-size: 13px; color: #A3A8AE;">€2,50 в месяц</span></span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700;">€30</span>
+<span style="position: absolute; top: -10px; right: 16px; padding: 3px 8px; border-radius: 8px; background: #F3B33D; color: #111315; font-size: 12px; font-weight: 700;">−50%</span>
+</button>
+<button type="button" role="radio" aria-checked="{{month.checked}}" onClick="{{month.pick}}" style="min-height: 72px; padding: 0 16px; border-radius: 20px; border: 2px solid {{month.border}}; background: #1A1D20; color: #EDEBE6; display: flex; align-items: center; gap: 14px; text-align: left; cursor: pointer;">
+<span style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 11px; border: 2px solid {{month.ring}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span style="width: 10px; height: 10px; border-radius: 5px; background: {{month.dot}};"></span></span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 16px; font-weight: 700;">Месяц</span><span style="font-size: 13px; color: #A3A8AE;">Отмена в любой момент</span></span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700;">€5</span>
+</button>
+</div>
+
+<div style="margin: auto 16px 20px; display: flex; flex-direction: column; gap: 12px; align-items: stretch;">
+<button type="button" style="height: 56px; border: none; border-radius: 18px; background: #F3B33D; color: #111315; font-size: 16px; font-weight: 700; cursor: pointer;">Оформить Premium</button>
+<button type="button" style="height: 44px; border: none; background: transparent; color: #EDEBE6; font-size: 14px; font-weight: 600; cursor: pointer;">Восстановить покупки</button>
+<p style="margin: 0; font-size: 12px; line-height: 1.45; color: #A3A8AE; text-align: center;">Подписка продлевается автоматически. Отменить можно в Google Play в любое время.</p>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":412,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const plan = s.plan || 'year';
+    const opt = (id) => ({ checked: plan === id ? 'true' : 'false', border: plan === id ? '#F3B33D' : '#2A2E33', ring: plan === id ? '#F3B33D' : '#5A6068', dot: plan === id ? '#F3B33D' : 'transparent', pick: () => this.setState({ plan: id }) });
+    return { year: opt('year'), month: opt('month') };
+  }
+}
+</script>
+</body>
+</html>

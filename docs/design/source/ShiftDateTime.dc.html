@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Начало смены — дата и время</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#070808;font-family:'Onest',sans-serif;color:#EDEBE6}
+a{color:#F3B33D}a:hover{color:#FFD27A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 412px; height: 915px; box-sizing: border-box; background: #070808; color: #EDEBE6; font-family: 'Onest', sans-serif; display: flex; flex-direction: column; justify-content: flex-end;">
+
+<a href="Shift.dc.html" aria-label="Закрыть" style="flex-grow: 1; display: block;"></a>
+
+<section role="dialog" aria-label="Начало смены" style="flex-shrink: 0; padding: 12px 20px 24px; border-radius: 28px 28px 0 0; background: #1A1D20; display: flex; flex-direction: column; gap: 14px;">
+<div aria-hidden="true" style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #3A3F45;"></div>
+
+<div role="tablist" aria-label="Что меняем" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: #111315;">
+<button type="button" role="tab" aria-selected="{{tabStart.sel}}" onClick="{{tabStart.pick}}" style="height: 44px; border: none; border-radius: 12px; background: {{tabStart.bg}}; color: {{tabStart.fg}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer;"><span style="font-size: 12px; font-weight: 600;">Начало</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;">{{startLabel}}</span></button>
+<button type="button" role="tab" aria-selected="{{tabEnd.sel}}" onClick="{{tabEnd.pick}}" style="height: 44px; border: none; border-radius: 12px; background: {{tabEnd.bg}}; color: {{tabEnd.fg}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer;"><span style="font-size: 12px; font-weight: 600;">Конец</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;">22.09 · 19:10</span></button>
+</div>
+
+<div style="display: flex; align-items: center; gap: 4px;">
+<h2 style="margin: 0; flex-grow: 1; font-size: 17px; font-weight: 700;">Сентябрь 2026</h2>
+<button type="button" aria-label="Предыдущий месяц" style="width: 44px; height: 44px; border: none; border-radius: 22px; background: transparent; color: #EDEBE6; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<button type="button" aria-label="Следующий месяц" disabled="{{yes}}" style="width: 44px; height: 44px; border: none; border-radius: 22px; background: transparent; color: #4A4F55; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px;">
+<span style="height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #A3A8AE;">Пн</span>
+<span style="height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #A3A8AE;">Вт</span>
+<span style="height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #A3A8AE;">Ср</span>
+<span style="height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #A3A8AE;">Чт</span>
+<span style="height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #A3A8AE;">Пт</span>
+<span style="height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #A3A8AE;">Сб</span>
+<span style="height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #A3A8AE;">Вс</span>
+<sc-for list="{{cells}}" as="c" hint-placeholder-count="35">
+<button type="button" aria-label="{{c.aria}}" aria-pressed="{{c.pressed}}" disabled="{{c.disabled}}" onClick="{{c.pick}}" style="height: 44px; padding: 0; border: 1.5px solid {{c.ring}}; border-radius: 22px; background: {{c.bg}}; color: {{c.fg}}; font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; cursor: pointer;">{{c.label}}</button>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px; border-top: 1px solid #262A2F;">
+<span style="padding-top: 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Время</span>
+<div role="group" aria-label="Время начала" style="position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 20px minmax(0, 1fr); align-items: center;">
+<div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 40px; height: 48px; border-radius: 14px; background: #262A2F;"></div>
+<div style="position: relative; display: flex; flex-direction: column; align-items: center;">
+<span style="height: 40px; display: flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 20px; color: #6B7178;">05</span>
+<span style="height: 48px; display: flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700;">06</span>
+<span style="height: 40px; display: flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 20px; color: #6B7178;">07</span>
+</div>
+<span style="position: relative; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700;">:</span>
+<div style="position: relative; display: flex; flex-direction: column; align-items: center;">
+<span style="height: 40px; display: flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 20px; color: #6B7178;">29</span>
+<span style="height: 48px; display: flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700;">30</span>
+<span style="height: 40px; display: flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 20px; color: #6B7178;">31</span>
+</div>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+<a href="Shift.dc.html" style="height: 56px; border-radius: 18px; border: 1px solid #3A3F45; color: #EDEBE6; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 15px; font-weight: 600;">Отмена</a>
+<a href="Shift.dc.html" style="height: 56px; border-radius: 18px; background: #F3B33D; color: #111315; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 15px; font-weight: 700;">Готово</a>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":412,"height":915}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const tab = s.tab || 'start';
+    const day = s.day || 22;
+    const today = 23;
+    const cells = [];
+    // Сентябрь 2026 начинается во вторник: одна пустая клетка перед 1-м числом
+    for (let i = 0; i < 35; i++) {
+      const d = i;
+      if (d < 1 || d > 30) {
+        cells.push({ label: '', aria: 'Пусто', pressed: 'false', disabled: true, bg: 'transparent', fg: 'transparent', ring: 'transparent', pick: null });
+        continue;
+      }
+      const sel = d === day, future = d > today, isToday = d === today;
+      cells.push({
+        label: String(d), aria: d + ' сентября', pressed: sel ? 'true' : 'false', disabled: future,
+        bg: sel ? '#F3B33D' : 'transparent',
+        fg: sel ? '#111315' : (future ? '#4A4F55' : '#EDEBE6'),
+        ring: isToday && !sel ? '#A3A8AE' : 'transparent',
+        pick: future ? null : () => this.setState({ day: d })
+      });
+    }
+    const t = (id) => ({ sel: tab === id ? 'true' : 'false', bg: tab === id ? '#2F343A' : 'transparent', fg: tab === id ? '#EDEBE6' : '#A3A8AE', pick: () => this.setState({ tab: id }) });
+    return {
+      yes: true,
+      cells,
+      tabStart: t('start'), tabEnd: t('end'),
+      startLabel: String(day).padStart(2, '0') + '.09 · 06:30'
+    };
+  }
+}
+</script>
+</body>
+</html>

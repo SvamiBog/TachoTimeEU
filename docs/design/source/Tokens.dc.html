@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Дизайн-система TachoTime</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#111315;font-family:'Onest',sans-serif;color:#EDEBE6}
+a{color:#F3B33D}a:hover{color:#FFD27A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1320px; height: 1320px; box-sizing: border-box; padding: 56px; background: #111315; color: #EDEBE6; font-family: 'Onest', sans-serif; display: flex; flex-direction: column; gap: 40px;">
+
+<header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<h1 style="margin: 0; font-size: 40px; font-weight: 700; letter-spacing: -0.02em;">TachoTime · дизайн-система</h1>
+<span style="font-size: 16px; color: #A3A8AE;">Android · экран 412 dp · тёмная тема по умолчанию, светлая — по настройке</span>
+</div>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #A3A8AE;">Onest + JetBrains Mono</span>
+</header>
+
+<section style="display: flex; flex-direction: column; gap: 16px;">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Цвета · тёмная / светлая</h2>
+<div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px;">
+<sc-for list="{{colors}}" as="c" hint-placeholder-count="16">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="height: 56px; border-radius: 14px; overflow: hidden; flex-shrink: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #2A2E33;">
+<span style="background: {{c.dark}};"></span>
+<span style="background: {{c.light}};"></span>
+</div>
+<span style="font-size: 13px; font-weight: 600;">{{c.name}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #A3A8AE;">{{c.dark}} / {{c.light}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px;">
+
+<section style="display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Типографика</h2>
+<div style="padding: 20px; border-radius: 24px; background: #1A1D20; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 60px; font-weight: 700; line-height: 1; color: #F3B33D;">0:35</span><span style="font-size: 12px; color: #A3A8AE;">Mono 60/700 · таймер</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 28px; font-weight: 700; letter-spacing: -0.02em;">Заголовок экрана</span><span style="font-size: 12px; color: #A3A8AE;">28/700</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 18px; font-weight: 700;">Шапка</span><span style="font-size: 12px; color: #A3A8AE;">18/700</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 15px; font-weight: 600;">Название строки</span><span style="font-size: 12px; color: #A3A8AE;">15/600</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700;">21:40</span><span style="font-size: 12px; color: #A3A8AE;">Mono 17/700 · значение</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 14px;">Основной текст</span><span style="font-size: 12px; color: #A3A8AE;">14/400</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 13px; color: #A3A8AE;">Подпись под значением</span><span style="font-size: 12px; color: #A3A8AE;">13/400</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Раздел</span><span style="font-size: 12px; color: #A3A8AE;">13/600 caps +8%</span></div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Режимы и строка лимита</h2>
+<div style="padding: 20px; border-radius: 24px; background: #111315; border: 1px solid #2A2E33; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+<span style="height: 80px; border-radius: 20px; background: #F3B33D; color: #111315; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 600;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="2.2"></circle><path d="M3 12h6.8M14.2 12H21"></path></svg>Активен</span>
+<span style="height: 80px; border-radius: 20px; border: 1px solid #2A2E33; background: #1A1D20; color: #EDEBE6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 600;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5v14M4 13h16v6"></path></svg>Обычный</span>
+<span style="height: 80px; border-radius: 20px; background: #4FBF9F; color: #111315; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 600;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5v14M4 13h16v6"></path></svg>Отдых</span>
+<span style="height: 80px; border-radius: 20px; background: #EE8B5A; color: #111315; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 600;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 18L16.5 7.5M18 18L7.5 7.5"></path><path d="M14 5l5 5M5 10l5-5"></path></svg>Работа</span>
+</div>
+<div style="padding: 16px; border-radius: 24px; background: #1A1D20; display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="font-size: 15px; font-weight: 600; flex-grow: 1;">Суточное вождение</span>
+<span style="font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 8px; background: #262A2F; color: #C9CDD2;">10 ч ×2</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700;">3:55</span>
+</div>
+<div style="position: relative; height: 6px; border-radius: 3px; background: #2A2E33;">
+<div style="position: absolute; left: 0; top: 0; height: 6px; width: 39%; border-radius: 3px; background: #F3B33D;"></div>
+<div style="position: absolute; left: 90%; top: -4px; width: 2px; height: 14px; border-radius: 1px; background: #A3A8AE;"></div>
+</div>
+<div style="display: flex; justify-content: space-between; font-size: 13px; color: #A3A8AE;"><span>9 ч: ещё 5:05</span><span>10 ч: ещё 6:05</span></div>
+</div>
+<span style="font-size: 12px; line-height: 1.5; color: #A3A8AE;">Полоса 6 dp · заливка цветом режима · риска 2×14 dp на каждом пороге</span>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Кнопки и элементы</h2>
+<div style="padding: 20px; border-radius: 24px; background: #1A1D20; display: flex; flex-direction: column; gap: 14px;">
+<span style="height: 56px; border-radius: 18px; background: #F3B33D; color: #111315; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;">Основная</span>
+<span style="height: 56px; border-radius: 18px; border: 1px solid #3A3F45; color: #EDEBE6; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600;">Вторичная</span>
+<span style="height: 56px; border-radius: 18px; border: 1px solid #5A2A27; color: #FF8F87; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600;">Опасное действие</span>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<span style="width: 52px; height: 32px; padding: 4px; box-sizing: border-box; border-radius: 16px; background: #F3B33D; display: flex; justify-content: flex-end;"><span style="width: 24px; height: 24px; border-radius: 12px; background: #111315;"></span></span>
+<span style="width: 52px; height: 32px; padding: 4px; box-sizing: border-box; border-radius: 16px; background: #3A3F45; display: flex; justify-content: flex-start;"><span style="width: 24px; height: 24px; border-radius: 12px; background: #A3A8AE;"></span></span>
+<span style="font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 8px; background: #262A2F; color: #C9CDD2;">15 ч ×3</span>
+<span style="font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 8px; background: #2B2415; color: #F7D38A;">ограничивает</span>
+<span style="font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #F3B33D; color: #111315;">Premium</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 16px; background: #2B2415; color: #F7D38A; font-size: 14px;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0;"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5v.2"></path></svg>
+Предупреждение: скоро лимит
+</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 16px; background: #2E1818; color: #FF9C94; font-size: 14px;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0;"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17v.2"></path></svg>
+Нарушение: лимит превышен
+</div>
+</div>
+</section>
+</div>
+
+<section style="display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Сетка, радиусы, состояния</h2>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;">
+<div style="padding: 18px; border-radius: 20px; background: #1A1D20; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 15px; font-weight: 600;">Отступы</span><span style="font-size: 13px; line-height: 1.5; color: #A3A8AE;">Поля экрана 16 · между карточками 8–16 · перед разделом 24–28 · внутри карточки 16</span></div>
+<div style="padding: 18px; border-radius: 20px; background: #1A1D20; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 15px; font-weight: 600;">Радиусы</span><span style="font-size: 13px; line-height: 1.5; color: #A3A8AE;">Главная карточка 28 · карточки 24 · режимы 20 · кнопки 18 · плашки 16 · значки 14 · чипы 8</span></div>
+<div style="padding: 18px; border-radius: 20px; background: #1A1D20; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 15px; font-weight: 600;">Касание</span><span style="font-size: 13px; line-height: 1.5; color: #A3A8AE;">Мин. 44 dp · строки списка 56 · кнопки 56 · режимы 88 — нажимать в перчатках</span></div>
+<div style="padding: 18px; border-radius: 20px; background: #1A1D20; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 15px; font-weight: 600;">Состояния лимита</span><span style="font-size: 13px; line-height: 1.5; color: #A3A8AE;">Норма — цвет режима · &lt; 30 мин до лимита — янтарная плашка · превышен — красная</span></div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1320,"height":1320}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const colors = [
+      { name: 'Фон', dark: '#111315', light: '#F4F2EE' },
+      { name: 'Поверхность', dark: '#1A1D20', light: '#FFFFFF' },
+      { name: 'Поверхность 2', dark: '#262A2F', light: '#ECE9E3' },
+      { name: 'Линия', dark: '#2A2E33', light: '#E4E0D8' },
+      { name: 'Текст', dark: '#EDEBE6', light: '#15171A' },
+      { name: 'Текст вторичный', dark: '#A3A8AE', light: '#5E636A' },
+      { name: 'Предупр. фон', dark: '#2B2415', light: '#FFF1D1' },
+      { name: 'Предупр. текст', dark: '#F7D38A', light: '#7A4B00' },
+      { name: 'Вождение · акцент', dark: '#F3B33D', light: '#D48A00' },
+      { name: 'Отдых', dark: '#4FBF9F', light: '#1F8A6C' },
+      { name: 'Работа', dark: '#EE8B5A', light: '#C9562C' },
+      { name: 'Готовность', dark: '#86A8F0', light: '#3D64C9' },
+      { name: 'Ошибка фон', dark: '#2E1818', light: '#FDE4E1' },
+      { name: 'Ошибка текст', dark: '#FF9C94', light: '#A8261C' },
+      { name: 'Выкл. переключатель', dark: '#3A3F45', light: '#D6D2C9' },
+      { name: 'Затемнение шторки', dark: '#070808', light: '#8A8680' }
+    ];
+    return { colors };
+  }
+}
+</script>
+</body>
+</html>

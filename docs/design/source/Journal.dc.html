@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Журнал</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#111315;font-family:'Onest',sans-serif;color:#EDEBE6}
+a{color:#F3B33D}a:hover{color:#FFD27A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="position: relative; width: 412px; height: 1320px; box-sizing: border-box; background: #111315; color: #EDEBE6; font-family: 'Onest', sans-serif; display: flex; flex-direction: column;">
+
+<header style="height: 64px; box-sizing: border-box; padding: 8px 8px 8px 20px; display: flex; align-items: center; gap: 4px;">
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;">
+<h1 style="margin: 0; font-size: 18px; font-weight: 700;">Журнал</h1>
+<span style="font-size: 12px; color: #A3A8AE;">Сентябрь 2026</span>
+</div>
+<a href="Export.dc.html" aria-label="Экспорт отчёта" style="width: 48px; height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #EDEBE6;">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
+</a>
+</header>
+
+<section style="margin: 8px 16px 0; background: #1A1D20; border-radius: 24px; overflow: hidden; flex-shrink: 0;">
+<div style="padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; align-items: baseline; justify-content: space-between;">
+<h2 style="margin: 0; font-size: 15px; font-weight: 700;">21–27 сентября</h2>
+<span style="font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 8px; background: #2B2415; color: #F7D38A;">текущая</span>
+</div>
+<div style="height: 6px; border-radius: 3px; background: #2A2E33;"><div style="height: 6px; width: 38.7%; border-radius: 3px; background: #F3B33D;"></div></div>
+<div style="display: flex; justify-content: space-between; font-size: 13px; color: #A3A8AE;">
+<span>Вождение <b style="color: #EDEBE6; font-family: 'JetBrains Mono', monospace;">21:40</b> из 56</span>
+<span>За 2 нед. <b style="color: #EDEBE6; font-family: 'JetBrains Mono', monospace;">57:14</b> из 90</span>
+</div>
+</div>
+<sc-for list="{{week1}}" as="d" hint-placeholder-count="3">
+<a href="Shift.dc.html" style="display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 14px 16px; border-top: 1px solid #262A2F; text-decoration: none; color: #EDEBE6;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 2px; padding-top: 2px;">
+<span style="font-size: 12px; color: #A3A8AE;">{{d.dow}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700;">{{d.day}}</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+<span style="font-size: 14px; font-weight: 600;">{{d.place}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{d.timeColor}};">{{d.time}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+<div style="padding: 6px 8px; border-radius: 10px; background: {{d.driveBg}}; display: flex; flex-direction: column; gap: 1px;">
+<span style="font-size: 11px; color: {{d.driveLabel}};">Вождение</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: {{d.driveFg}};">{{d.drive}}</span>
+</div>
+<div style="padding: 6px 8px; border-radius: 10px; background: {{d.shiftBg}}; display: flex; flex-direction: column; gap: 1px;">
+<span style="font-size: 11px; color: {{d.shiftLabel}};">Смена</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: {{d.shiftFg}};">{{d.shift}}</span>
+</div>
+<div style="padding: 6px 8px; border-radius: 10px; background: {{d.restBg}}; display: flex; flex-direction: column; gap: 1px;">
+<span style="font-size: 11px; color: {{d.restLabel}};">Отдых</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: {{d.restFg}};">{{d.rest}}</span>
+</div>
+</div>
+</div>
+</a>
+</sc-for>
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-top: 1px solid #262A2F; background: #16261F;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4FBF9F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><path d="M4 5v14M4 13h16v6"></path></svg>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 14px; font-weight: 600; color: #9FE3CE;">Недельный отдых · полный</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #A3A8AE;">18.09 11:20 → 21.09 06:10</span>
+</div>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: #9FE3CE;">66:50</span>
+</div>
+</section>
+
+<section style="margin: 12px 16px 0; background: #1A1D20; border-radius: 24px; overflow: hidden; flex-shrink: 0;">
+<div style="padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+<h2 style="margin: 0; font-size: 15px; font-weight: 700;">14–20 сентября</h2>
+<div style="height: 6px; border-radius: 3px; background: #2A2E33;"><div style="height: 6px; width: 63.5%; border-radius: 3px; background: #F3B33D;"></div></div>
+<div style="display: flex; justify-content: space-between; font-size: 13px; color: #A3A8AE;">
+<span>Вождение <b style="color: #EDEBE6; font-family: 'JetBrains Mono', monospace;">35:34</b> из 56</span>
+<span>За 2 нед. <b style="color: #EDEBE6; font-family: 'JetBrains Mono', monospace;">76:44</b> из 90</span>
+</div>
+</div>
+<sc-for list="{{week2}}" as="d" hint-placeholder-count="5">
+<a href="Shift.dc.html" style="display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 14px 16px; border-top: 1px solid #262A2F; text-decoration: none; color: #EDEBE6;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 2px; padding-top: 2px;">
+<span style="font-size: 12px; color: #A3A8AE;">{{d.dow}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700;">{{d.day}}</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+<span style="font-size: 14px; font-weight: 600;">{{d.place}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{d.timeColor}};">{{d.time}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+<div style="padding: 6px 8px; border-radius: 10px; background: {{d.driveBg}}; display: flex; flex-direction: column; gap: 1px;">
+<span style="font-size: 11px; color: {{d.driveLabel}};">Вождение</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: {{d.driveFg}};">{{d.drive}}</span>
+</div>
+<div style="padding: 6px 8px; border-radius: 10px; background: {{d.shiftBg}}; display: flex; flex-direction: column; gap: 1px;">
+<span style="font-size: 11px; color: {{d.shiftLabel}};">Смена</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: {{d.shiftFg}};">{{d.shift}}</span>
+</div>
+<div style="padding: 6px 8px; border-radius: 10px; background: {{d.restBg}}; display: flex; flex-direction: column; gap: 1px;">
+<span style="font-size: 11px; color: {{d.restLabel}};">Отдых</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: {{d.restFg}};">{{d.rest}}</span>
+</div>
+</div>
+</div>
+</a>
+</sc-for>
+</section>
+
+<button type="button" style="margin: 12px 16px 0; height: 56px; padding: 0 16px; border: none; border-radius: 20px; background: #1A1D20; color: #EDEBE6; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer;">
+<span style="flex-grow: 1; font-size: 15px; font-weight: 700;">7–13 сентября</span>
+<span style="font-size: 13px; color: #A3A8AE;">вождение <b style="font-family: 'JetBrains Mono', monospace; color: #EDEBE6;">41:10</b></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A3A8AE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+
+<a href="Shift.dc.html" style="position: absolute; right: 16px; bottom: 100px; height: 56px; padding: 0 20px 0 16px; border-radius: 18px; background: #F3B33D; color: #111315; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; text-decoration: none; box-shadow: 0 6px 20px rgba(0,0,0,0.45);">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+Смена
+</a>
+
+<nav aria-label="Основная навигация" style="margin-top: auto; height: 80px; box-sizing: border-box; padding: 10px 8px 14px; background: #1A1D20; border-top: 1px solid #262A2F; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));">
+<a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #A3A8AE; font-size: 12px; font-weight: 600;">
+<span style="width: 60px; height: 32px; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg></span>
+Главная
+</a>
+<a href="Journal.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #EDEBE6; font-size: 12px; font-weight: 700;">
+<span style="width: 60px; height: 32px; border-radius: 16px; background: #F3B33D; color: #111315; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5h14M5 10h14M5 15h14M5 20h9"></path></svg></span>
+Журнал
+</a>
+<a href="Settings.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #A3A8AE; font-size: 12px; font-weight: 600;">
+<span style="width: 60px; height: 32px; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></span>
+Настройки
+</a>
+<a href="More.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #A3A8AE; font-size: 12px; font-weight: 600;">
+<span style="width: 60px; height: 32px; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="19" cy="12" r="1.8"></circle></svg></span>
+Ещё
+</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":412,"height":1320}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const cell = (flag) => flag
+      ? { bg: '#2B2415', fg: '#F7D38A', label: '#D9B876' }
+      : { bg: '#202327', fg: '#EDEBE6', label: '#A3A8AE' };
+    const row = (r) => {
+      const d = cell(r.fDrive), s = cell(r.fShift), rs = cell(r.fRest);
+      return Object.assign({}, r, {
+        driveBg: d.bg, driveFg: d.fg, driveLabel: d.label,
+        shiftBg: s.bg, shiftFg: s.fg, shiftLabel: s.label,
+        restBg: rs.bg, restFg: rs.fg, restLabel: rs.label,
+        timeColor: r.live ? '#F3B33D' : '#A3A8AE'
+      });
+    };
+    const week1 = [
+      { dow: 'Ср', day: '23', place: 'PL → …', time: '06:49 → идёт', drive: '3:55', shift: '4:48', rest: '—', live: true },
+      { dow: 'Вт', day: '22', place: 'PL → PL', time: '06:30 → 19:10', drive: '8:55', shift: '12:40', rest: '11:39' },
+      { dow: 'Пн', day: '21', place: 'PL → PL', time: '06:10 → 19:00', drive: '8:50', shift: '12:50', rest: '11:30' }
+    ].map(row);
+    const week2 = [
+      { dow: 'Пт', day: '18', place: 'D → PL', time: '06:10 → 11:20', drive: '2:44', shift: '5:10', rest: 'нед.' },
+      { dow: 'Чт', day: '17', place: 'D → D', time: '04:10 → 14:30', drive: '7:05', shift: '10:20', rest: '15:40' },
+      { dow: 'Ср', day: '16', place: 'D → D', time: '05:20 → 17:00', drive: '8:15', shift: '11:40', rest: '11:10' },
+      { dow: 'Вт', day: '15', place: 'D → D', time: '06:00 → 19:50', drive: '9:40', shift: '13:50', rest: '9:30', fDrive: true, fShift: true, fRest: true },
+      { dow: 'Пн', day: '14', place: 'PL → D', time: '06:10 → 18:40', drive: '7:50', shift: '12:30', rest: '11:20' }
+    ].map(row);
+    return { week1, week2 };
+  }
+}
+</script>
+</body>
+</html>

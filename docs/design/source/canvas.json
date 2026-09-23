@@ -1,0 +1,213 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "CountryPicker.dc.html": {
+      "h": 915,
+      "is_interactive": true,
+      "title": "Выбор страны",
+      "w": 412,
+      "x": 1968,
+      "y": 2300
+    },
+    "Export.dc.html": {
+      "h": 915,
+      "is_interactive": true,
+      "title": "Экспорт отчёта",
+      "w": 412,
+      "x": 1476,
+      "y": 3960
+    },
+    "Guide.dc.html": {
+      "h": 1640,
+      "is_interactive": true,
+      "title": "Инструкция и правила",
+      "w": 412,
+      "x": 1968,
+      "y": 3960
+    },
+    "Journal.dc.html": {
+      "h": 1320,
+      "is_interactive": true,
+      "title": "Журнал",
+      "w": 412,
+      "x": 492,
+      "y": 0
+    },
+    "LimitBreak.dc.html": {
+      "h": 915,
+      "is_interactive": true,
+      "title": "Перерыв",
+      "w": 412,
+      "x": 984,
+      "y": 2300
+    },
+    "LimitWeeklyRest.dc.html": {
+      "h": 1000,
+      "is_interactive": true,
+      "title": "Недельный отдых",
+      "w": 412,
+      "x": 1476,
+      "y": 2300
+    },
+    "LimitWorkday.dc.html": {
+      "h": 915,
+      "is_interactive": true,
+      "title": "Рабочий день",
+      "w": 412,
+      "x": 0,
+      "y": 2300
+    },
+    "Main.dc.html": {
+      "h": 1830,
+      "is_interactive": true,
+      "title": "Главная",
+      "w": 412,
+      "x": 0,
+      "y": 0
+    },
+    "MainLight.dc.html": {
+      "h": 1800,
+      "is_interactive": true,
+      "title": "Главная · светлая тема",
+      "w": 412,
+      "x": 1968,
+      "y": 0
+    },
+    "More.dc.html": {
+      "h": 960,
+      "is_interactive": true,
+      "title": "Ещё",
+      "w": 412,
+      "x": 1476,
+      "y": 0
+    },
+    "Onboarding.dc.html": {
+      "h": 915,
+      "is_interactive": true,
+      "title": "Онбординг · 1",
+      "w": 412,
+      "x": 0,
+      "y": 3960
+    },
+    "OnboardingSetup.dc.html": {
+      "h": 915,
+      "is_interactive": true,
+      "title": "Онбординг · 2",
+      "w": 412,
+      "x": 492,
+      "y": 3960
+    },
+    "Paywall.dc.html": {
+      "h": 960,
+      "is_interactive": true,
+      "title": "Premium",
+      "w": 412,
+      "x": 984,
+      "y": 3960
+    },
+    "Settings.dc.html": {
+      "h": 1420,
+      "is_interactive": true,
+      "title": "Настройки",
+      "w": 412,
+      "x": 984,
+      "y": 0
+    },
+    "Shift.dc.html": {
+      "h": 1240,
+      "is_interactive": true,
+      "title": "Смена (редактирование)",
+      "w": 412,
+      "x": 2460,
+      "y": 2300
+    },
+    "TimeEdit.dc.html": {
+      "h": 915,
+      "is_interactive": true,
+      "title": "Корректировка времени",
+      "w": 412,
+      "x": 492,
+      "y": 2300
+    },
+    "Tokens.dc.html": {
+      "h": 1320,
+      "title": "Дизайн-система",
+      "w": 1320,
+      "x": 0,
+      "y": 6020
+    },
+    "ShiftDateTime.dc.html": {
+      "x": 2952,
+      "y": 2300,
+      "w": 412,
+      "h": 915,
+      "title": "Смена · дата и время",
+      "is_interactive": true
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-09-23T11:21:19Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "t1": {
+      "kind": "title1",
+      "maxW": 2380,
+      "text": "Основные экраны",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "t2": {
+      "kind": "title1",
+      "maxW": 3364,
+      "text": "Детали лимитов и редактирование",
+      "w": 240,
+      "x": 0,
+      "y": 2000
+    },
+    "t3": {
+      "kind": "title1",
+      "maxW": 2380,
+      "text": "Онбординг, Premium и сервис",
+      "w": 240,
+      "x": 0,
+      "y": 3660
+    },
+    "t4": {
+      "kind": "title1",
+      "maxW": 1320,
+      "text": "Дизайн-система",
+      "w": 240,
+      "x": 0,
+      "y": 5720
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Journal.dc.html",
+    "Settings.dc.html",
+    "More.dc.html",
+    "MainLight.dc.html",
+    "LimitWorkday.dc.html",
+    "TimeEdit.dc.html",
+    "LimitBreak.dc.html",
+    "LimitWeeklyRest.dc.html",
+    "CountryPicker.dc.html",
+    "Shift.dc.html",
+    "ShiftDateTime.dc.html",
+    "Onboarding.dc.html",
+    "OnboardingSetup.dc.html",
+    "Paywall.dc.html",
+    "Export.dc.html",
+    "Guide.dc.html",
+    "Tokens.dc.html"
+  ],
+  "pages": [],
+  "title": "TachoTime — дизайн приложения"
+}
