@@ -228,6 +228,12 @@ export const pl: Dict = {
     errOverlap: (r: string) => `Nakłada się na zmianę ${r}`,
     errRestOverlap: (r: string) => `Odpoczynek po zmianie nachodzi na zmianę ${r}`,
     errTooLong: 'Zmiana dłuższa niż 30 h — sprawdź daty',
+    errNotLast: 'Po tej zmianie są kolejne — nie może trwać teraz',
+    ongoingHint: (time: string, mode: string) =>
+      `Zmiana stanie się bieżącą i będzie trwać na ekranie głównym od ${time}. Tryb „${mode}” — jeśli teraz jest inny, przełącz go tam.`,
+    unsavedTitle: 'Zapisać zmiany?',
+    unsavedText: 'Poprawki zmiany nie zostały jeszcze zapisane.',
+    discard: 'Nie zapisuj',
   },
   picker: {
     time: 'Godzina',

@@ -105,6 +105,37 @@ export function resumeShift(entries: ActivityEntry[], restStart: number): Activi
   return kept;
 }
 
+/**
+ * Смена, добавленная из журнала как идущая («отдых не начат»), становится
+ * текущей: с её начала идут записи режимов — работа, а последние
+ * driveMinutes минут вождение. Всё, что было записано после начала, заменяется.
+ */
+export function startShiftAt(
+  entries: ActivityEntry[],
+  start: number,
+  driveMinutes: number,
+  now: number,
+  location?: string,
+): ActivityEntry[] {
+  const kept = [...entries]
+    .sort(byStart)
+    .filter((e) => e.startTime < start)
+    .map((e) => (e.endTime === null || e.endTime > start ? { ...e, endTime: start } : e));
+  const spanMinutes = Math.floor((now - start) / MINUTE);
+  const drive = Math.min(Math.max(0, driveMinutes), spanMinutes);
+  const extra = location ? { location } : {};
+  if (drive === 0 || drive === spanMinutes) {
+    return [...kept, { id: newEntryId(now), activity: drive ? 'DRIVE' : 'WORK', startTime: start, endTime: null, ...extra }];
+  }
+  // По целым минутам, чтобы сразу после сохранения не показывалось «1:59» вместо «2:00»
+  const driveFrom = Math.floor((now - drive * MINUTE) / MINUTE) * MINUTE;
+  return [
+    ...kept,
+    { id: newEntryId(now), activity: 'WORK', startTime: start, endTime: driveFrom, ...extra },
+    { id: newEntryId(now), activity: 'DRIVE', startTime: driveFrom, endTime: null },
+  ];
+}
+
 /** Смена, с которой пересекается интервал; null — пересечений нет. */
 export function findOverlap(
   shifts: JournalShift[],

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { calculateCompliance } from './compliance';
 import { changeActivity } from './entries';
 import { buildJournal } from './journal';
-import { applyLiveShiftEdit, carveRest, findOverlap } from './shiftEdit';
+import { applyLiveShiftEdit, carveRest, findOverlap, startShiftAt } from './shiftEdit';
 import { HOUR, MINUTE } from './time';
 import type { ActivityEntry, ActivityType } from './types';
 import { defaultSettings } from '../storage';
@@ -119,6 +119,30 @@ describe('день завершён', () => {
     const updated = changeActivity(entries, 'REST', NOW, { dayEnd: true });
     expect(updated).toHaveLength(3);
     expect(run(updated).shift).toBeNull();
+  });
+});
+
+describe('идущая смена из журнала', () => {
+  it('становится текущей: работа, затем вождение до сейчас', () => {
+    const entries = timeline([['DRIVE', 300], ['REST', 900]]);
+    const start = NOW - 5 * HOUR;
+    const updated = startShiftAt(entries, start, 120, NOW, 'PL');
+    const m = run(updated);
+    expect(m.shift?.start).toBe(start);
+    expect(m.currentActivity).toBe('DRIVE');
+    expect(m.dailyDriveMinutes).toBe(120);
+    expect(m.continuousDriveMinutes).toBe(120);
+  });
+
+  it('без вождения идёт другая работа, отдых до смены закрывается её началом', () => {
+    const entries = timeline([['DRIVE', 300], ['REST', 900]]);
+    const start = NOW - 2 * HOUR;
+    const updated = startShiftAt(entries, start, 0, NOW);
+    expect(updated.find((e) => e.id === 'e1')?.endTime).toBe(start);
+    const m = run(updated);
+    expect(m.currentActivity).toBe('WORK');
+    expect(m.shift?.start).toBe(start);
+    expect(m.timeline.shifts).toHaveLength(2);
   });
 });
 

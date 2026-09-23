@@ -117,7 +117,8 @@ export function Segmented<T extends string | number>({
   onChange,
   columns,
 }: {
-  options: { value: T; label: string }[];
+  /** muted — вариант сейчас не подходит, но нажать можно (покажется объяснение). */
+  options: { value: T; label: string; muted?: boolean }[];
   value: T;
   onChange: (v: T) => void;
   columns?: number;
@@ -136,7 +137,7 @@ export function Segmented<T extends string | number>({
           aria-checked={o.value === value}
           onClick={() => onChange(o.value)}
           className={`min-h-11 px-2 rounded-[12px] text-[14px] font-semibold transition-colors ${
-            o.value === value ? 'bg-selected text-fg shadow-sm' : 'text-muted hover:text-fg'
+            o.value === value ? 'bg-selected text-fg shadow-sm' : o.muted ? 'text-muted opacity-50' : 'text-muted hover:text-fg'
           }`}
         >
           {o.label}
@@ -288,15 +289,17 @@ export const ConfirmSheet: React.FC<{
   cancelLabel: string;
   danger?: boolean;
   onConfirm: () => void;
+  /** Кнопка отмены, если она должна делать не то же, что закрытие шторки. */
+  onCancel?: () => void;
   onClose: () => void;
-}> = ({ title, text, confirmLabel, cancelLabel, danger, onConfirm, onClose }) => (
+}> = ({ title, text, confirmLabel, cancelLabel, danger, onConfirm, onCancel, onClose }) => (
   <Sheet onClose={onClose} label={title}>
     <SheetHandle />
     <div className="p-5 pb-7 flex flex-col gap-4">
       <h2 className="text-[20px] font-bold">{title}</h2>
       <p className="text-[15px] leading-relaxed text-muted">{text}</p>
       <div className="grid grid-cols-2 gap-2">
-        <SecondaryButton onClick={onClose}>{cancelLabel}</SecondaryButton>
+        <SecondaryButton onClick={onCancel ?? onClose}>{cancelLabel}</SecondaryButton>
         <button
           type="button"
           onClick={() => {

@@ -10,7 +10,7 @@ import {
   setLastBreakDuration,
 } from './domain/entries';
 import { buildJournal, type JournalShift } from './domain/journal';
-import { applyLiveShiftEdit, carveRest, type LiveShiftEdit } from './domain/shiftEdit';
+import { applyLiveShiftEdit, carveRest, startShiftAt, type LiveShiftEdit } from './domain/shiftEdit';
 import type {
   ActivityEntry,
   ActivityType,
@@ -236,6 +236,26 @@ export const App: React.FC = () => {
   const saveManualShift = (record: ManualShift) => {
     setEntries((prev) => carveRest(prev, record.start, record.end ?? Date.now(), Date.now()));
     setManualShifts((list) => [...list.filter((x) => x.id !== record.id), record]);
+  };
+
+  // Смена из журнала, которая идёт сейчас, становится текущей: дальше она
+  // считается по записям режимов, как если бы режим переключили вовремя.
+  const startOngoingShift = (record: ManualShift, replacing: JournalShift | null) => {
+    const at = Date.now();
+    const base =
+      replacing?.source === 'auto' ? deleteEntriesInRange(entries, replacing.start, replacing.restEnd ?? replacing.end) : entries;
+    const next = startShiftAt(base, record.start, record.driveMinutes, at, record.startCountry);
+    const newId = `auto-${record.start}`;
+    // Если отдых перед сменой короче 9 ч, по записям это продолжение прошлой смены — её данные не трогаем
+    const isNewShift = analyzeTimeline(next, at).shifts.at(-1)?.id === newId;
+    setEntries(next);
+    if (replacing?.source === 'manual') setManualShifts((list) => list.filter((m) => m.id !== replacing.id));
+    setShiftMeta((all) => {
+      const rest = { ...all };
+      if (replacing) delete rest[replacing.id];
+      if (isNewShift) rest[newId] = { startCountry: record.startCountry, notes: record.notes || undefined };
+      return rest;
+    });
   };
 
   // «Живая» смена: правим записи режимов. Идентификатор смены — её начало,
@@ -467,6 +487,7 @@ export const App: React.FC = () => {
               onSaveManual={saveManualShift}
               onSaveMeta={(id, meta) => setShiftMeta((all) => ({ ...all, [id]: meta }))}
               onConvert={convertShift}
+              onStartOngoing={startOngoingShift}
               onApplyLive={applyLiveEdit}
               onDelete={deleteShift}
               onClose={() => setOverlay(null)}

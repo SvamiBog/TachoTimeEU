@@ -228,6 +228,12 @@ export const en: Dict = {
     errOverlap: (r: string) => `Overlaps the shift ${r}`,
     errRestOverlap: (r: string) => `The rest after the shift runs into the shift ${r}`,
     errTooLong: 'The shift is longer than 30 h — check the dates',
+    errNotLast: 'There are later shifts — this one can’t still be ongoing',
+    ongoingHint: (time: string, mode: string) =>
+      `The shift becomes the current one and continues on the main screen from ${time}. Mode “${mode}” — if you are doing something else, switch it there.`,
+    unsavedTitle: 'Save changes?',
+    unsavedText: 'Your changes to this shift are not saved yet.',
+    discard: 'Discard',
   },
   picker: {
     time: 'Time',
