@@ -1,16 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { calculateCompliance } from './domain/compliance';
+import { analyzeTimeline } from './domain/shifts';
 import { generateDemoData } from './domain/demo';
 import {
-  adjustDriving,
   changeActivity,
   deleteEntriesInRange,
   drivingAdjustmentBounds,
   setLastBreakDuration,
-  setShiftStart,
 } from './domain/entries';
 import { buildJournal, type JournalShift } from './domain/journal';
+import { applyLiveShiftEdit, carveRest, type LiveShiftEdit } from './domain/shiftEdit';
 import type {
   ActivityEntry,
   ActivityType,
@@ -164,13 +164,14 @@ export const App: React.FC = () => {
 
   const updateSettings = (patch: Partial<DriverSettings>) => setSettings((s) => ({ ...s, ...patch }));
 
-  const selectActivity = (activity: ActivityType) => {
+  const selectActivity = (activity: ActivityType, extra: { dayEnd?: boolean } = {}) => {
     const at = Date.now();
     setNow(at);
     setEntries((prev) =>
       changeActivity(prev, activity, at, {
         location: countryTarget ? shiftMeta[countryTarget.id]?.startCountry : settings.defaultCountry,
         ...(settings.ferryModeActive ? { ferry: true } : {}),
+        ...extra,
       }),
     );
   };
@@ -222,6 +223,35 @@ export const App: React.FC = () => {
     }
   };
 
+  // Прошлая смена из записей становится ручной: её записи и отдых после неё заменяются
+  const convertShift = (shift: JournalShift, record: ManualShift) => {
+    setEntries((prev) =>
+      carveRest(deleteEntriesInRange(prev, shift.start, shift.restEnd ?? shift.end), record.start, record.end ?? Date.now(), Date.now()),
+    );
+    setShiftMeta(({ [shift.id]: _, ...rest }) => rest);
+    setManualShifts((list) => [...list, record]);
+  };
+
+  // Ручная смена: если она попала на записанный отдых, вырезаем её из отдыха
+  const saveManualShift = (record: ManualShift) => {
+    setEntries((prev) => carveRest(prev, record.start, record.end ?? Date.now(), Date.now()));
+    setManualShifts((list) => [...list.filter((x) => x.id !== record.id), record]);
+  };
+
+  // «Живая» смена: правим записи режимов. Идентификатор смены — её начало,
+  // поэтому страны и заметки переносим на смену, получившуюся после правки.
+  const applyLiveEdit = (edit: LiveShiftEdit, meta?: ShiftMeta) => {
+    const at = Date.now();
+    const oldId = `auto-${edit.shiftStart}`;
+    const next = applyLiveShiftEdit(entries, edit, at).entries;
+    const newId = analyzeTimeline(next, at).shifts.at(-1)?.id;
+    const keep = meta ?? shiftMeta[oldId];
+    setEntries(next);
+    setShiftMeta(({ [oldId]: _, ...rest }) => (newId && keep ? { ...rest, [newId]: keep } : rest));
+    if (meta?.endCountry) updateSettings({ defaultCountry: meta.endCountry });
+  };
+
+  const allShifts = useMemo(() => journal.flatMap((w) => w.shifts), [journal]);
   const shiftStart = metrics.shift?.start ?? null;
   const t = dictFor(settings.language);
 
@@ -366,7 +396,7 @@ export const App: React.FC = () => {
               settings={settings}
               country={countries.start}
               onChangeStart={() => setOverlay('shiftStart')}
-              onEndDay={() => selectActivity('REST')}
+              onEndDay={() => selectActivity('REST', { dayEnd: true })}
               onClose={() => setOverlay(null)}
             />
           )}
@@ -376,7 +406,7 @@ export const App: React.FC = () => {
               end={null}
               initialTab="start"
               max={now}
-              onSave={(v) => setEntries((prev) => setShiftStart(prev, shiftStart, v.start, Date.now()))}
+              onSave={(v) => applyLiveEdit({ shiftStart, restStart: null, newStart: v.start })}
               onClose={() => setOverlay(null)}
             />
           )}
@@ -384,7 +414,7 @@ export const App: React.FC = () => {
             <WeeklyRestSheet
               metrics={metrics}
               settings={settings}
-              onStartRest={() => selectActivity('REST')}
+              onStartRest={() => selectActivity('REST', { dayEnd: true })}
               onAddManually={() => {
                 setTab('journal');
                 setOverlay({ shift: null, presetRest: 'weekly' });
@@ -396,9 +426,7 @@ export const App: React.FC = () => {
             <DriveEditSheet
               computedMinutes={metrics.dailyDriveMinutes}
               bounds={shiftStart !== null ? drivingAdjustmentBounds(entries, shiftStart, now) : null}
-              onSave={(delta) =>
-                shiftStart !== null && setEntries((prev) => adjustDriving(prev, shiftStart, delta, Date.now()).entries)
-              }
+              onSave={(delta) => shiftStart !== null && applyLiveEdit({ shiftStart, restStart: null, driveDelta: delta })}
               onClose={() => setOverlay(null)}
             />
           )}
@@ -432,10 +460,14 @@ export const App: React.FC = () => {
               shift={overlay.shift}
               manual={overlay.shift?.source === 'manual' ? manualShifts.find((m) => m.id === overlay.shift!.id) : undefined}
               presetRest={overlay.presetRest}
+              allShifts={allShifts}
+              driveBounds={overlay.shift?.live ? drivingAdjustmentBounds(entries, overlay.shift.start, now) : null}
               defaultCountry={settings.defaultCountry}
               now={now}
-              onSaveManual={(m) => setManualShifts((list) => [...list.filter((x) => x.id !== m.id), m])}
+              onSaveManual={saveManualShift}
               onSaveMeta={(id, meta) => setShiftMeta((all) => ({ ...all, [id]: meta }))}
+              onConvert={convertShift}
+              onApplyLive={applyLiveEdit}
               onDelete={deleteShift}
               onClose={() => setOverlay(null)}
             />

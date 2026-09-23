@@ -39,7 +39,6 @@ export const DriveEditSheet: React.FC<{
               onChange={setValue}
               min={base + bounds.min}
               max={base + bounds.max}
-              minuteStep={1}
             />
             <span className="text-[13px] text-muted">{t.picker.range(fmt.hm(base + bounds.min), fmt.hm(base + bounds.max))}</span>
             <div className="flex gap-2.5 p-3 rounded-[14px] bg-warn-bg text-warn-fg text-[13px] leading-relaxed">

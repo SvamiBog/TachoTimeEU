@@ -17,7 +17,6 @@ export const WorkdaySheet: React.FC<{
   const { t, fmt } = useI18n();
   const shift = m.shift;
   const team = settings.crewMode === 'TEAM';
-  const resting = m.currentActivity === 'REST';
 
   return (
     <Sheet onClose={onClose} label={t.workday.title} full>
@@ -90,7 +89,7 @@ export const WorkdaySheet: React.FC<{
         </SecondaryButton>
         <PrimaryButton
           tone="rest"
-          disabled={!shift || resting}
+          disabled={!shift}
           onClick={() => {
             onEndDay();
             onClose();

@@ -12,6 +12,8 @@ export interface Block {
   entryIds: string[];
   /** Все записи блока сделаны в режиме «паром / поезд». */
   ferry: boolean;
+  /** Водитель завершил этим отдыхом рабочий день. */
+  dayEnd: boolean;
 }
 
 export const blockMinutes = (b: Block): number => minutesBetween(b.start, b.end);
@@ -41,6 +43,7 @@ export function buildBlocks(entries: ActivityEntry[], now: number): Block[] {
       prev.open = prev.open || open;
       prev.entryIds.push(entry.id);
       prev.ferry = prev.ferry && !!entry.ferry;
+      prev.dayEnd = prev.dayEnd || !!entry.dayEnd;
       continue;
     }
     blocks.push({
@@ -50,6 +53,7 @@ export function buildBlocks(entries: ActivityEntry[], now: number): Block[] {
       open,
       entryIds: [entry.id],
       ferry: !!entry.ferry,
+      dayEnd: !!entry.dayEnd,
     });
   }
   return blocks;
@@ -62,6 +66,8 @@ export interface RestPeriod {
   /** Чистое время отдыха без прерываний. */
   restMinutes: number;
   open: boolean;
+  /** Отдых объявлен концом рабочего дня. */
+  dayEnd: boolean;
   firstBlock: number;
   lastBlock: number;
 }
@@ -120,14 +126,18 @@ export function findRestPeriods(blocks: Block[]): RestPeriod[] {
 
 function periodOf(blocks: Block[], first: number, last: number): RestPeriod {
   let restMinutes = 0;
+  let dayEnd = false;
   for (let k = first; k <= last; k++) {
-    if (blocks[k].activity === 'REST') restMinutes += blockMinutes(blocks[k]);
+    if (blocks[k].activity !== 'REST') continue;
+    restMinutes += blockMinutes(blocks[k]);
+    dayEnd = dayEnd || blocks[k].dayEnd;
   }
   return {
     start: blocks[first].start,
     end: blocks[last].end,
     restMinutes,
     open: blocks[last].open,
+    dayEnd,
     firstBlock: first,
     lastBlock: last,
   };

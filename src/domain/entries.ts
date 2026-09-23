@@ -15,10 +15,14 @@ export function changeActivity(
   entries: ActivityEntry[],
   activity: ActivityType,
   now: number,
-  extra: Pick<ActivityEntry, 'location' | 'ferry'> = {},
+  extra: Pick<ActivityEntry, 'location' | 'ferry' | 'dayEnd'> = {},
 ): ActivityEntry[] {
   const open = entries.find((e) => e.endTime === null);
-  if (open?.activity === activity) return entries;
+  if (open?.activity === activity) {
+    // «Завершить день» во время перерыва: текущий отдых становится концом дня
+    if (extra.dayEnd && !open.dayEnd) return entries.map((e) => (e === open ? { ...e, dayEnd: true } : e));
+    return entries;
+  }
 
   const closed = entries.map((e) => (e.endTime === null ? { ...e, endTime: Math.max(e.startTime, now) } : e));
   return [...closed, { id: newEntryId(now), activity, startTime: now, endTime: null, ...extra }];

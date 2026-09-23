@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { PrimaryButton, SecondaryButton, Segmented, Sheet, SheetHandle } from './ui';
 
@@ -8,13 +8,142 @@ const startOfLocalDay = (ts: number) => {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
 };
 
-/** Календарь (любой месяц) и точное время. Значение — момент в мс. */
+const ROW = 40;
+const CENTER = 56;
+
+/**
+ * Колёсико значения (макеты 07 и 12): текущее значение в центре, соседние
+ * сверху и снизу. Меняется касанием соседнего значения, протягиванием,
+ * колесом мыши и стрелками клавиатуры — шаг 1.
+ */
+export const Wheel: React.FC<{
+  value: number;
+  min: number;
+  max: number;
+  wrap?: boolean;
+  rows?: number;
+  label: string;
+  suffix?: string;
+  pad?: number;
+  onChange: (v: number) => void;
+}> = ({ value, min, max, wrap = false, rows = 1, label, suffix, pad = 2, onChange }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ y: number; value: number; moved: boolean; offset: number } | null>(null);
+  const span = max - min + 1;
+  const norm = (v: number) => (wrap ? ((((v - min) % span) + span) % span) + min : Math.min(max, Math.max(min, v)));
+  const at = (offset: number): number | null => {
+    const v = value + offset;
+    if (wrap) return norm(v);
+    return v < min || v > max ? null : v;
+  };
+  const text = (v: number) => v.toString().padStart(pad, '0');
+
+  // Колесо мыши: нужен непассивный обработчик, чтобы не прокручивать страницу
+  const latest = useRef({ value, onChange, norm });
+  latest.current = { value, onChange, norm };
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const { value: v, onChange: set, norm: n } = latest.current;
+      set(n(v + (e.deltaY > 0 ? 1 : -1)));
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      role="spinbutton"
+      tabIndex={0}
+      aria-label={label}
+      aria-valuenow={value}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      aria-valuetext={`${text(value)}${suffix ? ` ${suffix}` : ''}`}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowUp') onChange(norm(value - 1));
+        else if (e.key === 'ArrowDown') onChange(norm(value + 1));
+        else return;
+        e.preventDefault();
+      }}
+      onPointerDown={(e) => {
+        const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-offset]');
+        drag.current = { y: e.clientY, value, moved: false, offset: Number(cell?.dataset.offset ?? 0) };
+      }}
+      onPointerMove={(e) => {
+        const d = drag.current;
+        if (!d) return;
+        const dy = d.y - e.clientY;
+        if (!d.moved) {
+          if (Math.abs(dy) < 6) return;
+          // Захватываем указатель только когда начали тянуть — иначе касание
+          // соседнего значения не доходит до него
+          d.moved = true;
+          e.currentTarget.setPointerCapture(e.pointerId);
+        }
+        const next = norm(d.value + Math.round(dy / ROW));
+        if (next !== value) onChange(next);
+      }}
+      onPointerUp={() => {
+        const d = drag.current;
+        drag.current = null;
+        if (d && !d.moved && d.offset !== 0) {
+          const v = at(d.offset);
+          if (v !== null) onChange(v);
+        }
+      }}
+      onPointerCancel={() => (drag.current = null)}
+      className="relative flex flex-col items-center select-none touch-none outline-none focus-visible:ring-2 focus-visible:ring-drive rounded-[14px] cursor-ns-resize"
+    >
+      {Array.from({ length: rows * 2 + 1 }, (_, i) => i - rows).map((offset) => {
+        const v = at(offset);
+        if (offset === 0) {
+          return (
+            <div key={offset} className="flex items-baseline justify-center gap-1.5" style={{ height: CENTER, lineHeight: `${CENTER}px` }}>
+              <span className="font-mono-num text-[40px] font-bold">{text(value)}</span>
+              {suffix && <span className="text-[16px] text-muted">{suffix}</span>}
+            </div>
+          );
+        }
+        const far = Math.abs(offset) > 1;
+        return (
+          <div
+            key={offset}
+            data-offset={offset}
+            aria-hidden="true"
+            className={`w-full flex items-center justify-center font-mono-num ${far ? 'text-[20px] text-switch-off' : 'text-[26px] text-muted'}`}
+            style={{ height: ROW }}
+          >
+            {v === null ? '' : text(v)}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+/** Два колёсика с общей подсветкой центральной строки. */
+const WheelPair: React.FC<{ rows: number; children: React.ReactNode }> = ({ rows, children }) => (
+  <div className="relative grid grid-cols-[1fr_24px_1fr] items-center">
+    <div
+      aria-hidden="true"
+      className="absolute inset-x-0 rounded-[16px] bg-surface2 pointer-events-none"
+      style={{ top: rows * ROW, height: CENTER }}
+    />
+    {children}
+  </div>
+);
+
+/** Календарь (любой месяц) и время колёсиками. Значение — момент в мс. */
 export const DateTimeField: React.FC<{
   value: number;
   onChange: (ts: number) => void;
   max?: number;
 }> = ({ value, onChange, max }) => {
-  const { t, locale } = useI18n();
+  const { t, locale, fmt } = useI18n();
   const selected = new Date(value);
   const [month, setMonth] = useState(() => new Date(selected.getFullYear(), selected.getMonth(), 1));
 
@@ -23,7 +152,6 @@ export const DateTimeField: React.FC<{
     // 5 января 2026 — понедельник
     return Array.from({ length: 7 }, (_, i) => f.format(new Date(2026, 0, 5 + i)).replace('.', ''));
   }, [locale]);
-  const monthTitle = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(month);
 
   const cells: (number | null)[] = [];
   const offset = (month.getDay() + 6) % 7;
@@ -35,26 +163,27 @@ export const DateTimeField: React.FC<{
   const today = startOfLocalDay(Date.now());
   const maxDay = max !== undefined ? startOfLocalDay(max) : Infinity;
   const nextMonth = new Date(month.getFullYear(), month.getMonth() + 1, 1);
-  const hh = selected.getHours().toString().padStart(2, '0');
-  const mm = selected.getMinutes().toString().padStart(2, '0');
+  const clamp = (ts: number) => (max !== undefined ? Math.min(ts, max) : ts);
 
-  const pickDay = (day: number) => {
-    const d = new Date(value);
-    const next = new Date(month.getFullYear(), month.getMonth(), day, d.getHours(), d.getMinutes()).getTime();
-    onChange(max !== undefined ? Math.min(next, max) : next);
-  };
-  const setTime = (text: string) => {
-    const [h, m] = text.split(':').map(Number);
-    if (Number.isNaN(h) || Number.isNaN(m)) return;
-    const d = new Date(value);
-    const next = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m).getTime();
-    onChange(max !== undefined ? Math.min(next, max) : next);
+  const set = (patch: { y?: number; mo?: number; d?: number; h?: number; mi?: number }) => {
+    const c = new Date(value);
+    onChange(
+      clamp(
+        new Date(
+          patch.y ?? c.getFullYear(),
+          patch.mo ?? c.getMonth(),
+          patch.d ?? c.getDate(),
+          patch.h ?? c.getHours(),
+          patch.mi ?? c.getMinutes(),
+        ).getTime(),
+      ),
+    );
   };
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-[17px] font-bold capitalize">{monthTitle}</h3>
+        <h3 className="text-[17px] font-bold">{fmt.monthYear(month.getTime())}</h3>
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -92,7 +221,8 @@ export const DateTimeField: React.FC<{
               key={d}
               type="button"
               disabled={disabled}
-              onClick={() => pickDay(d)}
+              aria-pressed={isSelected}
+              onClick={() => set({ y: month.getFullYear(), mo: month.getMonth(), d })}
               className={`h-10 rounded-full font-mono-num text-[15px] font-bold ${
                 isSelected
                   ? 'bg-drive text-on-accent'
@@ -109,15 +239,14 @@ export const DateTimeField: React.FC<{
         })}
       </div>
 
-      <label className="flex items-center justify-between gap-3 pt-2 border-t border-surface2">
+      <div className="pt-2 border-t border-surface2 flex flex-col gap-1">
         <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-muted">{t.picker.time}</span>
-        <input
-          type="time"
-          value={`${hh}:${mm}`}
-          onChange={(e) => setTime(e.target.value)}
-          className="h-12 px-3 rounded-[14px] bg-surface2 font-mono-num text-[24px] font-bold text-fg"
-        />
-      </label>
+        <WheelPair rows={1}>
+          <Wheel label={t.common.hours} value={selected.getHours()} min={0} max={23} wrap onChange={(h) => set({ h })} />
+          <span className="relative text-center font-mono-num text-[32px] font-bold">:</span>
+          <Wheel label={t.common.minutes} value={selected.getMinutes()} min={0} max={59} wrap onChange={(mi) => set({ mi })} />
+        </WheelPair>
+      </div>
     </div>
   );
 };
@@ -171,58 +300,41 @@ export const DateTimeSheet: React.FC<{
   );
 };
 
-/** Выбор длительности: часы и минуты кнопками или вводом, в пределах [min, max]. */
+/** Длительность колёсиками часов и минут (макет 07) в пределах [min, max]. */
 export const DurationField: React.FC<{
   value: number;
   onChange: (m: number) => void;
   min?: number;
   max: number;
-  minuteStep?: number;
-}> = ({ value, onChange, min = 0, max, minuteStep = 5 }) => {
+}> = ({ value, onChange, min = 0, max }) => {
   const { t } = useI18n();
   const clamp = (v: number) => Math.min(max, Math.max(min, Math.round(v)));
   const h = Math.floor(value / 60);
   const m = Math.round(value % 60);
-
-  const column = (label: string, v: number, step: number, set: (n: number) => void, pad: number) => (
-    <div className="flex flex-col items-center gap-2 bg-bg p-3 rounded-[20px]">
-      <span className="text-[12px] text-muted font-medium">{label}</span>
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          aria-label={t.picker.minus(label)}
-          onClick={() => onChange(clamp(value - step))}
-          className="w-11 h-11 rounded-full bg-surface2 flex items-center justify-center"
-        >
-          <Minus className="w-5 h-5" />
-        </button>
-        <input
-          inputMode="numeric"
-          aria-label={label}
-          value={v.toString().padStart(pad, '0')}
-          onChange={(e) => {
-            const n = Number(e.target.value.replace(/\D/g, ''));
-            if (!Number.isNaN(n)) set(n);
-          }}
-          className="w-14 text-center bg-transparent font-mono-num text-[32px] font-bold"
-        />
-        <button
-          type="button"
-          aria-label={t.picker.plus(label)}
-          onClick={() => onChange(clamp(value + step))}
-          className="w-11 h-11 rounded-full bg-surface2 flex items-center justify-center"
-        >
-          <Plus className="w-5 h-5" />
-        </button>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="grid grid-cols-2 gap-3">
-      {column(t.common.hours, h, 60, (n) => onChange(clamp(n * 60 + m)), 1)}
-      {column(t.common.minutes, m, minuteStep, (n) => onChange(clamp(h * 60 + Math.min(59, n))), 2)}
-    </div>
+    <WheelPair rows={2}>
+      <Wheel
+        label={t.common.hours}
+        suffix={t.common.h}
+        pad={1}
+        rows={2}
+        value={h}
+        min={Math.floor(min / 60)}
+        max={Math.floor(max / 60)}
+        onChange={(nh) => onChange(clamp(nh * 60 + m))}
+      />
+      <span />
+      <Wheel
+        label={t.common.minutes}
+        suffix={t.common.min}
+        rows={2}
+        value={m}
+        min={0}
+        max={59}
+        wrap
+        onChange={(nm) => onChange(clamp(h * 60 + nm))}
+      />
+    </WheelPair>
   );
 };
 

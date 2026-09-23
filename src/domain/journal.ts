@@ -26,6 +26,13 @@ export interface JournalShift {
     status: RestStatus | null;
   };
   notes: string;
+  /**
+   * Смена «живая»: идёт сейчас или после неё идёт отдых. Её правки меняют
+   * записи режимов, остальные смены можно сохранить как ручные.
+   */
+  live: boolean;
+  /** Конец отдыха после смены (начало следующей), если он завершён. */
+  restEnd: number | null;
   /** Подсветка по дизайну: 10 ч вождения, 13+ ч смены, сокращённый отдых. */
   levels: { drive: Level; span: Level; rest: Level };
 }
@@ -81,6 +88,8 @@ export function buildJournal({ timeline, manualShifts, meta, crewMode, now }: Op
       continuousDriveAtEndMinutes: s.continuousDriveAtEnd,
       rest: { kind, minutes: r?.restMinutes ?? 0, ongoing: r?.open ?? false, split: s.splitFirstPart, status },
       notes: m.notes ?? '',
+      live: s.end === null || (r?.open ?? false),
+      restEnd: r && !r.open ? r.end : null,
       levels: { drive: driveLevel(s.driveMinutes), span: spanLevel(spanMinutes), rest: restLevel(status) },
     });
   }
@@ -108,6 +117,8 @@ export function buildJournal({ timeline, manualShifts, meta, crewMode, now }: Op
       continuousDriveAtEndMinutes: ms.continuousDriveAtEndMinutes,
       rest: { kind: ms.rest.kind, minutes: ms.rest.minutes, ongoing: false, split: ms.rest.split, status },
       notes: ms.notes,
+      live: false,
+      restEnd: ms.end !== null && ms.rest.kind !== 'none' ? ms.end + ms.rest.minutes * MINUTE : null,
       levels: { drive: driveLevel(ms.driveMinutes), span: spanLevel(spanMinutes), rest: restLevel(status) },
     });
   }
@@ -133,6 +144,13 @@ export function buildJournal({ timeline, manualShifts, meta, crewMode, now }: Op
     })),
     ...manualShifts
       .filter((ms) => ms.rest.kind === 'weekly' && ms.end !== null)
+      // Тот же отдых уже есть в записях режимов — не показываем его дважды
+      .filter(
+        (ms) =>
+          !timeline.rests.some(
+            (p) => isWeeklyRest(p) && p.start < ms.end! + ms.rest.minutes * MINUTE && (p.open ? now : p.end) > ms.end!,
+          ),
+      )
       .map((ms) => ({
         start: ms.end!,
         end: ms.end! + ms.rest.minutes * MINUTE,

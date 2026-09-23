@@ -27,8 +27,12 @@ export interface Timeline {
   current: DerivedShift | null;
 }
 
-/** Отдых, который завершает смену: суточный (≥ 9 ч) или недельный. */
-export const isShiftEndingRest = (p: RestPeriod): boolean => p.restMinutes >= LIMITS.dailyRestReduced;
+/**
+ * Отдых, который завершает смену: суточный (≥ 9 ч) или недельный, а также
+ * идущий отдых, которым водитель завершил день.
+ */
+export const isShiftEndingRest = (p: RestPeriod): boolean =>
+  p.restMinutes >= LIMITS.dailyRestReduced || (p.open && p.dayEnd);
 export const isWeeklyRest = (p: RestPeriod): boolean => p.restMinutes >= LIMITS.weeklyRestReduced;
 
 export function analyzeTimeline(entries: ActivityEntry[], now: number): Timeline {

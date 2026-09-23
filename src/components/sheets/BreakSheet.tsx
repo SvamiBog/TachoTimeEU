@@ -65,7 +65,7 @@ export const BreakSheet: React.FC<{
               <span className="text-[15px] font-semibold">
                 {info.open ? t.breakSheet.currentDuration : t.breakSheet.lastDuration}
               </span>
-              <DurationField value={duration} onChange={setDuration} min={1} max={Math.max(1, info.max)} minuteStep={1} />
+              <DurationField value={duration} onChange={setDuration} min={1} max={Math.max(1, info.max)} />
               <span className="text-[13px] text-muted">{t.picker.range('0:01', fmt.hm(info.max))}</span>
             </>
           ) : (

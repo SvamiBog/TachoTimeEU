@@ -29,6 +29,7 @@ export function makeFormatters(locale: string) {
   const weekdayShort = f({ weekday: 'short' });
   const dayMonthLong = f({ day: 'numeric', month: 'long' });
   const weekdayLong = f({ weekday: 'short', day: 'numeric', month: 'long' });
+  const weekdayFull = f({ weekday: 'long', day: 'numeric', month: 'long' });
   const monthOnly = f({ month: 'long' });
   const utcDay = f({ day: 'numeric', timeZone: 'UTC' });
   const utcDayMonth = f({ day: 'numeric', month: 'long', timeZone: 'UTC' });
@@ -48,6 +49,8 @@ export function makeFormatters(locale: string) {
     dayMonthLong: (ts: number) => dayMonthLong.format(ts),
     /** Ср, 23 сентября */
     weekdayDayMonth: (ts: number) => capitalize(weekdayLong.format(ts)),
+    /** Вторник, 22 сентября */
+    weekdayFullDayMonth: (ts: number) => capitalize(weekdayFull.format(ts)),
     /** Сентябрь 2026 */
     monthYear: (ts: number) => `${capitalize(monthOnly.format(ts))} ${new Date(ts).getFullYear()}`,
     /** ср, 23.09 */

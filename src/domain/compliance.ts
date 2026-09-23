@@ -124,7 +124,7 @@ export function calculateCompliance({ entries, manualShifts, settings, now }: Co
   const shift = timeline.current;
   const lastRest = timeline.rests[timeline.rests.length - 1];
   const offDutyRest =
-    !shift && lastRest?.open && lastRest.restMinutes >= LIMITS.dailyRestReduced
+    !shift && lastRest?.open && (lastRest.restMinutes >= LIMITS.dailyRestReduced || lastRest.dayEnd)
       ? { start: lastRest.start, minutes: lastRest.restMinutes, weekly: isWeeklyRest(lastRest) }
       : null;
 
@@ -181,8 +181,12 @@ export function calculateCompliance({ entries, manualShifts, settings, now }: Co
       });
     }
   }
+  const recordedWeekly = [...weeklyRests];
   for (const m of manualShifts) {
     if (m.rest.kind === 'weekly' && m.end !== null) {
+      const restEnd = m.end + m.rest.minutes * MINUTE;
+      // Тот же отдых уже есть в записях режимов — не считаем его дважды
+      if (recordedWeekly.some((r) => r.start < restEnd && (r.end ?? now) > m.end!)) continue;
       weeklyRests.push({
         start: m.end,
         end: m.end + m.rest.minutes * MINUTE,

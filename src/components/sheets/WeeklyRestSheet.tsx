@@ -106,7 +106,7 @@ export const WeeklyRestSheet: React.FC<{
         </SecondaryButton>
         <PrimaryButton
           tone="rest"
-          disabled={m.currentActivity === 'REST'}
+          disabled={onWeekly}
           onClick={() => {
             onStartRest();
             onClose();
