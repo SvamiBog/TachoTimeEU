@@ -1,5 +1,12 @@
 import { LIMITS } from './limits';
-import { Timeline, dailyRestStatus, isWeeklyRest, weeklyRestStatus } from './shifts';
+import {
+  Timeline,
+  dailyRestStatus,
+  isWeeklyRest,
+  restInWindow,
+  shiftRestInWindow,
+  weeklyRestStatus,
+} from './shifts';
 import { MINUTE, WEEK, minutesBetween, overlapMinutes, weekStartUtc } from './time';
 import type { CrewMode, ManualShift, RestKind, RestStatus, ShiftMeta } from './types';
 
@@ -71,7 +78,12 @@ export function buildJournal({ timeline, manualShifts, meta, crewMode, now }: Op
     const m = meta[s.id] ?? {};
     const r = s.restAfter;
     const kind: RestKind = r ? (isWeeklyRest(r) ? 'weekly' : 'daily') : 'none';
-    const status = !r || r.open ? null : kind === 'weekly' ? weeklyRestStatus(r.restMinutes) : dailyRestStatus(r.restMinutes, s.splitFirstPart);
+    const status =
+      !r || r.open
+        ? null
+        : kind === 'weekly'
+          ? weeklyRestStatus(r.restMinutes)
+          : dailyRestStatus(shiftRestInWindow(timeline.blocks, s, team), s.splitFirstPart);
     const spanMinutes = minutesBetween(s.start, s.end ?? now);
     shifts.push({
       id: s.id,
@@ -98,7 +110,7 @@ export function buildJournal({ timeline, manualShifts, meta, crewMode, now }: Op
     const spanMinutes = minutesBetween(ms.start, ms.end ?? now);
     const status =
       ms.rest.kind === 'daily'
-        ? dailyRestStatus(ms.rest.minutes, ms.rest.split)
+        ? dailyRestStatus(restInWindow(spanMinutes, ms.rest.minutes, team), ms.rest.split)
         : ms.rest.kind === 'weekly'
           ? weeklyRestStatus(ms.rest.minutes)
           : null;

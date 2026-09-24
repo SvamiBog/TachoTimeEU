@@ -6,6 +6,9 @@ import {
   computeBreakState,
   dailyRestStatus,
   isWeeklyRest,
+  restInWindow,
+  shiftRestInWindow,
+  shiftWindowMinutes,
   weeklyRestStatus,
 } from './shifts';
 import { DAY, MINUTE, WEEK, minutesBetween, overlapMinutes, weekStartUtc } from './time';
@@ -229,11 +232,12 @@ export function calculateCompliance({ entries, manualShifts, settings, now }: Co
   for (const s of timeline.shifts) {
     const r = s.restAfter;
     if (!r || r.open || r.start < since || isWeeklyRest(r)) continue;
-    if (dailyRestStatus(r.restMinutes, s.splitFirstPart) === 'reduced') reducedRestsUsed++;
+    if (dailyRestStatus(shiftRestInWindow(timeline.blocks, s, team), s.splitFirstPart) === 'reduced') reducedRestsUsed++;
   }
   for (const m of manualShifts) {
     if (m.end === null || m.end < since || m.rest.kind !== 'daily') continue;
-    if (dailyRestStatus(m.rest.minutes, m.rest.split) === 'reduced') reducedRestsUsed++;
+    const inWindow = restInWindow(minutesBetween(m.start, m.end), m.rest.minutes, team);
+    if (dailyRestStatus(inWindow, m.rest.split) === 'reduced') reducedRestsUsed++;
   }
   const reducedRestsLeft = Math.max(0, LIMITS.reducedDailyRestsBetweenWeekly - reducedRestsUsed);
 
@@ -241,7 +245,7 @@ export function calculateCompliance({ entries, manualShifts, settings, now }: Co
   const resting = currentActivity === 'REST';
   const spanEnd = resting && breakState.currentRest ? breakState.currentRest.start : now;
   const shiftMinutes = shift ? minutesBetween(shift.start, spanEnd) : 0;
-  const window = team ? LIMITS.shiftWindowTeam : LIMITS.shiftWindowSolo;
+  const window = shiftWindowMinutes(team);
   const shiftRegularLimitMinutes = team ? window - LIMITS.teamDailyRest : window - LIMITS.dailyRestRegular;
   const shiftExtendedLimitMinutes = window - LIMITS.dailyRestReduced;
   const canExtend = team || reducedRestsLeft > 0 || (shift?.splitFirstPart ?? false);
@@ -301,10 +305,12 @@ export function calculateCompliance({ entries, manualShifts, settings, now }: Co
     add('warning', 'driving', '6(3)', 'fortnightDriveSoon', { minutes: fortnightLeft });
   }
 
+  // Отдых, начатый до дедлайна, — начало недельного, если продлится 24 ч
+  const restStartedInTime = weeklyRestDeadline !== null && !!lastRest?.open && lastRest.start <= weeklyRestDeadline;
   if (weeklyRestDeadline !== null && !onWeeklyRest) {
     const left = (weeklyRestDeadline - now) / MINUTE;
-    if (left < 0) add('violation', 'weeklyRest', '8(6)', 'weeklyRestOverdue', { minutes: -left });
-    else if (left <= WEEKLY_REST_LEAD_MINUTES) add('warning', 'weeklyRest', '8(6)', 'weeklyRestSoon', { minutes: left });
+    if (left < 0 && !restStartedInTime) add('violation', 'weeklyRest', '8(6)', 'weeklyRestOverdue', { minutes: -left });
+    else if (left >= 0 && left <= WEEKLY_REST_LEAD_MINUTES) add('warning', 'weeklyRest', '8(6)', 'weeklyRestSoon', { minutes: left });
   }
 
   if (reducedRestsUsed > LIMITS.reducedDailyRestsBetweenWeekly) {

@@ -228,6 +228,12 @@ export const de: Dict = {
     errOverlap: (r: string) => `Überschneidet sich mit der Schicht ${r}`,
     errRestOverlap: (r: string) => `Die Ruhezeit nach der Schicht reicht in die Schicht ${r}`,
     errTooLong: 'Die Schicht ist länger als 30 h — Daten prüfen',
+    errNotLast: 'Danach gibt es weitere Schichten — diese kann nicht mehr laufen',
+    ongoingHint: (time: string, mode: string) =>
+      `Die Schicht wird zur aktuellen und läuft auf dem Hauptbildschirm ab ${time} weiter. Modus „${mode}“ — falls gerade ein anderer gilt, dort umschalten.`,
+    unsavedTitle: 'Änderungen speichern?',
+    unsavedText: 'Die Änderungen an der Schicht sind noch nicht gespeichert.',
+    discard: 'Verwerfen',
   },
   picker: {
     time: 'Uhrzeit',

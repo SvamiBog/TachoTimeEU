@@ -46,6 +46,8 @@ npm run build   # production build
 
 ```
 src/domain/     rule engine: timeline, shifts, limits, edits, journal, report — no React
+src/domain/tests/  rule engine tests: one file per article of 561/2006, edge cases,
+                   random logs checked against a minute-by-minute reference model
 src/i18n/       dictionaries (ru is the source; others are type-checked against it)
 src/components/ screens and bottom sheets
 src/storage.ts  localStorage persistence
