@@ -7,7 +7,9 @@
 - Flutter (Android + iOS). Основной таргет — Android, экран 412 dp.
 - Offline-first: все данные локально (Drift или Isar), облако — опционально, в Фазе 6.
 - State management: Riverpod или Bloc — решение принимается в Фазе 0, зафиксировать здесь.
-- Покупки: RevenueCat (или нативный Billing/StoreKit) — Фаза 5.
+- Покупки: RevenueCat — Фаза 5.
+- Бесплатно — только учёт режимов на главной. Premium — любые правки и добавления в журнале, выгрузка PDF/CSV, перенос на другое устройство. Защита от взлома — уровни 1–3. Подробно: `docs/premium.md`, сервер лицензий: `docs/server/license-server.md`.
+- Статус Premium — только из `EntitlementService`. Флагов `isPremium` в настройках и БД нет, `tacho_engine` о подписке не знает.
 - Аккаунт необязателен.
 
 ## Главное правило кода
@@ -29,5 +31,4 @@
 
 ## Открытые вопросы
 - Финальное название (TachoTime / TachoHours / MyTacho / TachoGo).
-- Какие функции закрыты Premium — сверить с таблицей в PRD.
 - PRD v1.1 ещё не добавлен в репозиторий (`docs/PRD.md`).
