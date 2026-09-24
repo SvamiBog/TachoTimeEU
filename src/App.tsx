@@ -164,6 +164,17 @@ export const App: React.FC = () => {
 
   const updateSettings = (patch: Partial<DriverSettings>) => setSettings((s) => ({ ...s, ...patch }));
 
+  // Бесплатно — только режимы на главной. Любая правка журнала — Premium: без него
+  // действие открывает Premium. Экраны прячут правку сами, это вторая проверка.
+  const requirePremium =
+    <A extends unknown[]>(fn: (...args: A) => void) =>
+    (...args: A) => {
+      if (settings.isPremium) fn(...args);
+      else setOverlay('paywall');
+    };
+  // Смену из журнала без Premium можно только посмотреть, новую — не добавить
+  const openShift = (shift: JournalShift | null) => setOverlay(shift || settings.isPremium ? { shift } : 'paywall');
+
   const selectActivity = (activity: ActivityType, extra: { dayEnd?: boolean } = {}) => {
     const at = Date.now();
     setNow(at);
@@ -322,7 +333,7 @@ export const App: React.FC = () => {
                 onOpenBreak={() => setOverlay('break')}
                 onOpenWorkday={() => setOverlay('workday')}
                 onOpenWeeklyRest={() => setOverlay('weeklyRest')}
-                onOpenDriveEdit={() => setOverlay('driveEdit')}
+                onOpenDriveEdit={requirePremium(() => setOverlay('driveEdit'))}
                 onOpenCard={() => setOverlay('card')}
                 onLoadDemo={loadDemo}
               />
@@ -331,7 +342,8 @@ export const App: React.FC = () => {
               <JournalView
                 weeks={journal}
                 now={now}
-                onOpenShift={(shift) => setOverlay({ shift })}
+                locked={!settings.isPremium}
+                onOpenShift={openShift}
                 onOpenExport={() => setOverlay('export')}
               />
             )}
@@ -403,11 +415,13 @@ export const App: React.FC = () => {
             <BreakSheet
               metrics={metrics}
               entries={entries}
+              locked={!settings.isPremium}
               onStartBreak={() => selectActivity('REST')}
-              onSetDuration={(minutes) =>
-                shiftStart !== null && setEntries((prev) => setLastBreakDuration(prev, shiftStart, minutes, Date.now()))
-              }
-              onClose={() => setOverlay(null)}
+              onSetDuration={requirePremium((minutes: number) => {
+                if (shiftStart !== null) setEntries((prev) => setLastBreakDuration(prev, shiftStart, minutes, Date.now()));
+              })}
+              // Сохранение без Premium открывает Premium — закрытие шторки его не сбрасывает
+              onClose={() => setOverlay((o) => (o === 'break' ? null : o))}
             />
           )}
           {overlay === 'workday' && (
@@ -415,7 +429,7 @@ export const App: React.FC = () => {
               metrics={metrics}
               settings={settings}
               country={countries.start}
-              onChangeStart={() => setOverlay('shiftStart')}
+              onChangeStart={requirePremium(() => setOverlay('shiftStart'))}
               onEndDay={() => selectActivity('REST', { dayEnd: true })}
               onClose={() => setOverlay(null)}
             />
@@ -426,7 +440,7 @@ export const App: React.FC = () => {
               end={null}
               initialTab="start"
               max={now}
-              onSave={(v) => applyLiveEdit({ shiftStart, restStart: null, newStart: v.start })}
+              onSave={requirePremium((v: { start: number }) => applyLiveEdit({ shiftStart, restStart: null, newStart: v.start }))}
               onClose={() => setOverlay(null)}
             />
           )}
@@ -435,10 +449,10 @@ export const App: React.FC = () => {
               metrics={metrics}
               settings={settings}
               onStartRest={() => selectActivity('REST', { dayEnd: true })}
-              onAddManually={() => {
+              onAddManually={requirePremium(() => {
                 setTab('journal');
                 setOverlay({ shift: null, presetRest: 'weekly' });
-              }}
+              })}
               onClose={() => setOverlay(null)}
             />
           )}
@@ -446,7 +460,9 @@ export const App: React.FC = () => {
             <DriveEditSheet
               computedMinutes={metrics.dailyDriveMinutes}
               bounds={shiftStart !== null ? drivingAdjustmentBounds(entries, shiftStart, now) : null}
-              onSave={(delta) => shiftStart !== null && applyLiveEdit({ shiftStart, restStart: null, driveDelta: delta })}
+              onSave={requirePremium((delta: number) => {
+                if (shiftStart !== null) applyLiveEdit({ shiftStart, restStart: null, driveDelta: delta });
+              })}
               onClose={() => setOverlay(null)}
             />
           )}
@@ -485,12 +501,14 @@ export const App: React.FC = () => {
               defaultCountry={settings.defaultCountry}
               crewMode={settings.crewMode}
               now={now}
-              onSaveManual={saveManualShift}
-              onSaveMeta={(id, meta) => setShiftMeta((all) => ({ ...all, [id]: meta }))}
-              onConvert={convertShift}
-              onStartOngoing={startOngoingShift}
-              onApplyLive={applyLiveEdit}
-              onDelete={deleteShift}
+              locked={!settings.isPremium}
+              onLocked={() => setOverlay('paywall')}
+              onSaveManual={requirePremium(saveManualShift)}
+              onSaveMeta={requirePremium((id: string, meta: ShiftMeta) => setShiftMeta((all) => ({ ...all, [id]: meta })))}
+              onConvert={requirePremium(convertShift)}
+              onStartOngoing={requirePremium(startOngoingShift)}
+              onApplyLive={requirePremium(applyLiveEdit)}
+              onDelete={requirePremium(deleteShift)}
               onClose={() => setOverlay(null)}
             />
           )}

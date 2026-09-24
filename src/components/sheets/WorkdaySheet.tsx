@@ -4,7 +4,7 @@ import type { ComplianceMetrics } from '../../domain/compliance';
 import { MINUTE } from '../../domain/time';
 import type { DriverSettings } from '../../domain/types';
 import { useI18n } from '../../i18n';
-import { LimitBar, PrimaryButton, SecondaryButton, Sheet, SheetHeader } from '../ui';
+import { LimitBar, PremiumLock, PrimaryButton, SecondaryButton, Sheet, SheetHeader } from '../ui';
 
 export const WorkdaySheet: React.FC<{
   metrics: ComplianceMetrics;
@@ -84,7 +84,7 @@ export const WorkdaySheet: React.FC<{
           }}
           className="flex items-center justify-center gap-2"
         >
-          <Clock className="w-4 h-4" />
+          {settings.isPremium ? <Clock className="w-4 h-4" /> : <PremiumLock label={t.common.premium} />}
           {t.workday.changeStart}
         </SecondaryButton>
         <PrimaryButton

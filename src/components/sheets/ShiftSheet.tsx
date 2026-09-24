@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { AlertCircle, ArrowLeft, Calendar, Check, ChevronDown, ChevronRight, Clock, Info, Trash2 } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Calendar, Check, ChevronDown, ChevronRight, Clock, Info, Lock, Trash2 } from 'lucide-react';
 import type { JournalShift } from '../../domain/journal';
 import { LIMITS } from '../../domain/limits';
 import { dailyRestStatus, restInWindow, weeklyRestStatus } from '../../domain/shifts';
@@ -24,6 +24,9 @@ interface Props {
   crewMode: CrewMode;
   presetRest?: RestKind;
   now: number;
+  /** Без Premium смена открыта только для просмотра: любое действие вызывает onLocked. */
+  locked: boolean;
+  onLocked: () => void;
   onSaveManual: (m: ManualShift) => void;
   /** Прошлая смена из записей стала ручной: её записи заменяются. */
   onConvert: (shift: JournalShift, m: ManualShift) => void;
@@ -78,6 +81,8 @@ export const ShiftSheet: React.FC<Props> = ({
   crewMode,
   presetRest,
   now,
+  locked,
+  onLocked,
   onSaveManual,
   onConvert,
   onStartOngoing,
@@ -135,6 +140,7 @@ export const ShiftSheet: React.FC<Props> = ({
   const [notes, setNotes] = useState(initial.notes);
   const [picker, setPicker] = useState<Picker>(null);
   const [error, setError] = useState<string | null>(null);
+  const guard = <A extends unknown[]>(fn: (...args: A) => void): ((...args: A) => void) => (locked ? onLocked : fn);
   // Сохранение ждёт, пока выберут конечную страну
   const [pendingSave, setPendingSave] = useState(false);
   // Конец и конечная страна до выбора «Не начат» — вернутся, если снова выбрать отдых
@@ -305,11 +311,11 @@ export const ShiftSheet: React.FC<Props> = ({
           </div>
           <button
             type="button"
-            onClick={() => save()}
-            aria-label={t.common.save}
+            onClick={guard(() => save())}
+            aria-label={locked ? t.common.premium : t.common.save}
             className="w-12 h-12 rounded-full flex items-center justify-center text-drive hover:bg-surface2 shrink-0"
           >
-            <Check className="w-6 h-6 stroke-[2.5]" />
+            {locked ? <Lock className="w-6 h-6" /> : <Check className="w-6 h-6 stroke-[2.5]" />}
           </button>
         </header>
         {/* Ошибка — в закреплённой шапке, чтобы её было видно при любой прокрутке */}
@@ -323,11 +329,23 @@ export const ShiftSheet: React.FC<Props> = ({
         )}
       </div>
 
-      {hint && (
-        <div className="mx-4 mt-3 p-3 rounded-[16px] bg-surface flex gap-2.5 text-[13px] leading-relaxed text-chip-fg" role="status">
-          <Info className="w-4 h-4 shrink-0 mt-0.5 text-muted" />
-          <span>{hint}</span>
-        </div>
+      {locked ? (
+        <button
+          type="button"
+          onClick={onLocked}
+          className="mx-4 mt-3 p-3 rounded-[16px] bg-surface border-[1.5px] border-drive flex items-center gap-2.5 text-left text-[13px] font-semibold hover:bg-surface2/40"
+        >
+          <Lock className="w-4 h-4 shrink-0 text-drive" />
+          <span className="flex-1">{t.shift.locked}</span>
+          <ChevronRight className="w-4 h-4 shrink-0 text-drive" />
+        </button>
+      ) : (
+        hint && (
+          <div className="mx-4 mt-3 p-3 rounded-[16px] bg-surface flex gap-2.5 text-[13px] leading-relaxed text-chip-fg" role="status">
+            <Info className="w-4 h-4 shrink-0 mt-0.5 text-muted" />
+            <span>{hint}</span>
+          </div>
+        )
       )}
 
       <div className="flex-1 flex flex-col gap-5 py-4 pb-10">
@@ -336,8 +354,8 @@ export const ShiftSheet: React.FC<Props> = ({
             <div className="grid grid-cols-2 divide-x divide-surface2">
               <div className="p-4 flex flex-col gap-2.5">
                 <span className="text-[13px] text-muted">{t.shift.start}</span>
-                <CountryButton code={startCountry} onClick={() => setPicker('country-start')} />
-                <DateButtons ts={start} onClick={() => setPicker('dates-start')} />
+                <CountryButton code={startCountry} onClick={guard(() => setPicker('country-start'))} />
+                <DateButtons ts={start} onClick={guard(() => setPicker('dates-start'))} />
               </div>
               <div className="p-4 flex flex-col gap-2.5">
                 <span className="flex items-center justify-between gap-1">
@@ -348,22 +366,22 @@ export const ShiftSheet: React.FC<Props> = ({
                   code={endCountry}
                   placeholder={t.shift.choose}
                   highlight={!!error && !endCountry && restKind !== 'none'}
-                  onClick={() => {
+                  onClick={guard(() => {
                     setError(null);
                     setPicker('country-end');
-                  }}
+                  })}
                 />
                 {end === null ? (
                   <button
                     type="button"
-                    onClick={() => selectRestKind('daily')}
+                    onClick={guard(() => selectRestKind('daily'))}
                     className="h-11 px-3 rounded-[12px] bg-bg flex items-center gap-2 text-drive text-[13px] font-bold text-left hover:bg-surface2"
                   >
                     <Clock className="w-4 h-4 shrink-0" />
                     {t.shift.nowOngoing}
                   </button>
                 ) : (
-                  <DateButtons ts={end} onClick={() => setPicker('dates-end')} />
+                  <DateButtons ts={end} onClick={guard(() => setPicker('dates-end'))} />
                 )}
               </div>
             </div>
@@ -381,13 +399,13 @@ export const ShiftSheet: React.FC<Props> = ({
             <ValueRow
               label={t.shift.perDay}
               value={fmt.hm(drive)}
-              onClick={!live || driveBounds ? () => setPicker('drive') : undefined}
+              onClick={!live || driveBounds ? guard(() => setPicker('drive')) : undefined}
             />
             <ValueRow
               label={t.shift.continuousAtEnd}
               caption={live || becomesCurrent ? t.shift.liveContinuous : undefined}
               value={fmt.hm(becomesCurrent ? drive : continuous)}
-              onClick={live || becomesCurrent ? undefined : () => setPicker('continuous')}
+              onClick={live || becomesCurrent ? undefined : guard(() => setPicker('continuous'))}
             />
             {isAuto && !timingChanged && (
               <>
@@ -409,7 +427,7 @@ export const ShiftSheet: React.FC<Props> = ({
                   { value: 'weekly', label: t.shift.restWeekly },
                 ]}
                 value={restKind}
-                onChange={selectRestKind}
+                onChange={guard(selectRestKind)}
               />
             </div>
 
@@ -419,7 +437,7 @@ export const ShiftSheet: React.FC<Props> = ({
                   <span className="text-[15px] font-semibold">{t.shift.split}</span>
                   <span className="text-[13px] text-muted">{t.shift.splitHint}</span>
                 </span>
-                <Switch checked={split} onChange={setSplit} label={t.shift.split} />
+                <Switch checked={split} onChange={guard(setSplit)} label={t.shift.split} />
               </div>
             )}
 
@@ -434,7 +452,7 @@ export const ShiftSheet: React.FC<Props> = ({
                       ? { tone: statusTone, text: t.common.restStatus[status] }
                       : undefined
                 }
-                onClick={restOngoing ? undefined : () => setPicker('rest')}
+                onClick={restOngoing ? undefined : guard(() => setPicker('rest'))}
               />
             )}
           </div>
@@ -444,6 +462,8 @@ export const ShiftSheet: React.FC<Props> = ({
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
+            readOnly={locked}
+            onClick={locked ? onLocked : undefined}
             placeholder={t.shift.notesPlaceholder}
             rows={3}
             aria-label={t.shift.notes}
@@ -454,7 +474,7 @@ export const ShiftSheet: React.FC<Props> = ({
         {!isNew && (
           <button
             type="button"
-            onClick={() => setPicker('delete')}
+            onClick={guard(() => setPicker('delete'))}
             className="mx-4 h-14 rounded-[18px] border border-danger-line text-err-fg hover:bg-err-bg flex items-center justify-center gap-2.5 text-[15px] font-semibold"
           >
             <Trash2 className="w-5 h-5" />

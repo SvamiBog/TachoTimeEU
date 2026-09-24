@@ -3,10 +3,12 @@ import { Bed, ChevronDown, Download, Plus } from 'lucide-react';
 import type { JournalShift, JournalWeek, Level } from '../domain/journal';
 import { LIMITS } from '../domain/limits';
 import { useI18n } from '../i18n';
-import { Chip, LimitBar } from './ui';
+import { Chip, LimitBar, PremiumLock } from './ui';
 
 interface Props {
   weeks: JournalWeek[];
+  /** Без Premium новую смену не добавить — на кнопке замок. */
+  locked: boolean;
   onOpenShift: (shift: JournalShift | null) => void;
   onOpenExport: () => void;
   now: number;
@@ -20,7 +22,7 @@ const LEVEL_CHIP: Record<Level, string> = {
 
 const hasViolation = (s: JournalShift) => Object.values(s.levels).includes('bad');
 
-export const JournalView: React.FC<Props> = ({ weeks, onOpenShift, onOpenExport, now }) => {
+export const JournalView: React.FC<Props> = ({ weeks, locked, onOpenShift, onOpenExport, now }) => {
   const { t, fmt } = useI18n();
   // Текущая и прошлая недели раскрыты, более старые — свёрнуты
   const [expanded, setExpanded] = useState<Set<number>>(() => new Set(weeks.slice(0, 2).map((w) => w.start)));
@@ -134,7 +136,7 @@ export const JournalView: React.FC<Props> = ({ weeks, onOpenShift, onOpenExport,
           aria-label={t.journal.addShiftAria}
           className="h-14 px-5 rounded-[18px] bg-drive text-on-accent flex items-center gap-2 font-bold text-[15px] shadow-2xl active:scale-95 transition-transform"
         >
-          <Plus className="w-5 h-5 stroke-[2.5]" />
+          {locked ? <PremiumLock label={t.common.premium} className="w-5 h-5" /> : <Plus className="w-5 h-5 stroke-[2.5]" />}
           {t.journal.addShift}
         </button>
       </div>

@@ -6,15 +6,17 @@ import { MINUTE } from '../../domain/time';
 import type { ActivityEntry } from '../../domain/types';
 import { useI18n } from '../../i18n';
 import { DurationField } from '../pickers';
-import { PrimaryButton, SecondaryButton, Sheet, SheetHeader } from '../ui';
+import { Chip, PrimaryButton, SecondaryButton, Sheet, SheetHeader } from '../ui';
 
 export const BreakSheet: React.FC<{
   metrics: ComplianceMetrics;
   entries: ActivityEntry[];
+  /** Корректировка — Premium: без него «Сохранить» ведёт на Premium. */
+  locked: boolean;
   onStartBreak: () => void;
   onSetDuration: (minutes: number) => void;
   onClose: () => void;
-}> = ({ metrics: m, entries, onStartBreak, onSetDuration, onClose }) => {
+}> = ({ metrics: m, entries, locked, onStartBreak, onSetDuration, onClose }) => {
   const { t, fmt } = useI18n();
   const info = m.shift ? lastBreakInfo(entries, m.shift.start, m.now) : null;
   const [duration, setDuration] = useState(info?.minutes ?? 0);
@@ -57,7 +59,10 @@ export const BreakSheet: React.FC<{
         </span>
       </section>
 
-      <h2 className="mx-5 mb-2 text-[13px] font-semibold tracking-[0.08em] uppercase text-muted">{t.breakSheet.correction}</h2>
+      <div className="mx-5 mb-2 flex items-center gap-2">
+        <h2 className="text-[13px] font-semibold tracking-[0.08em] uppercase text-muted">{t.breakSheet.correction}</h2>
+        {locked && <Chip tone="accent">{t.common.premium}</Chip>}
+      </div>
       <div className="mx-4 bg-surface rounded-[24px] overflow-hidden divide-y divide-surface2">
         <div className="p-4 flex flex-col gap-3">
           {info ? (
