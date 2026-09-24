@@ -483,6 +483,7 @@ export const App: React.FC = () => {
               allShifts={allShifts}
               driveBounds={overlay.shift?.live ? drivingAdjustmentBounds(entries, overlay.shift.start, now) : null}
               defaultCountry={settings.defaultCountry}
+              crewMode={settings.crewMode}
               now={now}
               onSaveManual={saveManualShift}
               onSaveMeta={(id, meta) => setShiftMeta((all) => ({ ...all, [id]: meta }))}

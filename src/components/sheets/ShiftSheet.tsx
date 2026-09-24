@@ -2,10 +2,10 @@ import React, { useMemo, useRef, useState } from 'react';
 import { AlertCircle, ArrowLeft, Calendar, Check, ChevronDown, ChevronRight, Clock, Info, Trash2 } from 'lucide-react';
 import type { JournalShift } from '../../domain/journal';
 import { LIMITS } from '../../domain/limits';
-import { dailyRestStatus, weeklyRestStatus } from '../../domain/shifts';
+import { dailyRestStatus, restInWindow, weeklyRestStatus } from '../../domain/shifts';
 import { findOverlap, type LiveShiftEdit } from '../../domain/shiftEdit';
 import { HOUR, MINUTE, minutesBetween } from '../../domain/time';
-import type { ManualShift, RestKind, ShiftMeta } from '../../domain/types';
+import type { CrewMode, ManualShift, RestKind, ShiftMeta } from '../../domain/types';
 import { useI18n } from '../../i18n';
 import { DateTimeSheet, DurationSheet } from '../pickers';
 import { Chip, ConfirmSheet, Segmented, Sheet, Switch } from '../ui';
@@ -20,6 +20,8 @@ interface Props {
   /** Пределы правки вождения «живой» смены (за счёт соседних записей). */
   driveBounds: { min: number; max: number } | null;
   defaultCountry: string;
+  /** Экипаж: окно суточного отдыха 30 ч вместо 24 ч. */
+  crewMode: CrewMode;
   presetRest?: RestKind;
   now: number;
   onSaveManual: (m: ManualShift) => void;
@@ -73,6 +75,7 @@ export const ShiftSheet: React.FC<Props> = ({
   allShifts,
   driveBounds,
   defaultCountry,
+  crewMode,
   presetRest,
   now,
   onSaveManual,
@@ -159,10 +162,10 @@ export const ShiftSheet: React.FC<Props> = ({
   const spanMinutes = minutesBetween(start, spanEnd);
   const status = useMemo(() => {
     if (restOngoing) return null;
-    if (restKind === 'daily') return dailyRestStatus(restMinutes, split);
+    if (restKind === 'daily') return dailyRestStatus(restInWindow(spanMinutes, restMinutes, crewMode === 'TEAM'), split);
     if (restKind === 'weekly') return weeklyRestStatus(restMinutes);
     return null;
-  }, [restOngoing, restKind, restMinutes, split]);
+  }, [restOngoing, restKind, restMinutes, split, spanMinutes, crewMode]);
   const statusTone = status === 'insufficient' ? 'bad' : status === 'reduced' ? 'warn' : 'rest';
 
   const rangeOf = (s: JournalShift) =>

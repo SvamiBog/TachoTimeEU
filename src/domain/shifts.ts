@@ -1,4 +1,5 @@
 import { LIMITS } from './limits';
+import { MINUTE, minutesBetween } from './time';
 import { Block, RestPeriod, blockMinutes, buildBlocks, findRestPeriods } from './timeline';
 import type { ActivityEntry, RestStatus } from './types';
 
@@ -146,7 +147,33 @@ export function computeBreakState(blocks: Block[]): BreakState {
   };
 }
 
-/** Статус суточного отдыха по его длительности. */
+/** Окно, в котором должен пройти суточный отдых: 24 ч от начала смены, экипаж — 30 ч. */
+export const shiftWindowMinutes = (team: boolean): number =>
+  team ? LIMITS.shiftWindowTeam : LIMITS.shiftWindowSolo;
+
+/**
+ * Часть суточного отдыха внутри окна от начала смены. По ст. 8(2) статус
+ * отдыха определяет именно она: смена 14 ч и отдых 12 ч — сокращённый отдых,
+ * в окне только 10 ч.
+ */
+export function restInWindow(spanMinutes: number, restMinutes: number, team: boolean): number {
+  return Math.max(0, Math.min(restMinutes, shiftWindowMinutes(team) - spanMinutes));
+}
+
+/** То же для смены из записей: прерывания отдыха на пароме в окно не входят. */
+export function shiftRestInWindow(blocks: Block[], shift: DerivedShift, team: boolean): number {
+  const rest = shift.restAfter;
+  if (!rest) return 0;
+  const windowEnd = shift.start + shiftWindowMinutes(team) * MINUTE;
+  let minutes = 0;
+  for (let k = rest.firstBlock; k <= rest.lastBlock; k++) {
+    const b = blocks[k];
+    if (b.activity === 'REST') minutes += minutesBetween(b.start, Math.min(b.end, windowEnd));
+  }
+  return minutes;
+}
+
+/** Статус суточного отдыха по его длительности (в окне — см. restInWindow). */
 export function dailyRestStatus(minutes: number, split: boolean): RestStatus {
   if (minutes >= LIMITS.dailyRestRegular) return 'full';
   if (split && minutes >= LIMITS.dailyRestSplitSecond) return 'full';
