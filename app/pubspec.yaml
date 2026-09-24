@@ -1,0 +1,29 @@
+name: tachotime
+description: "TachoTime: EU 561/2006 driving and rest time tracker"
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.4
+
+dependencies:
+  drift: ^2.35.0
+  drift_flutter: ^0.3.1
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.4.3
+  path_provider: ^2.1.6
+  tacho_engine:
+    path: ../packages/tacho_engine
+
+dev_dependencies:
+  build_runner: ^2.16.1
+  drift_dev: ^2.35.0
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^11.0.0
+
+flutter:
+  uses-material-design: true
+  # Шрифты Onest и JetBrains Mono (OFL) добавляются в assets/fonts/ —
+  # до этого используется системный шрифт.

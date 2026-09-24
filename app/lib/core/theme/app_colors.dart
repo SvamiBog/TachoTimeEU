@@ -1,12 +1,12 @@
 // Дизайн-токены TachoTime (вариант A «Кокпит»).
 // Источник: docs/design/tokens.json. При изменении токенов обновлять оба файла.
-// Переедет в app/lib/theme/ при инициализации Flutter-проекта (Фаза 0).
+// Радиусы и размеры — app_tokens.dart, типографика — app_typography.dart.
 
 import 'package:flutter/material.dart';
 
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
-  const AppColors({
+  const new({
     required this.background,
     required this.surface,
     required this.surface2,
@@ -104,25 +104,24 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? errorText,
     Color? switchOff,
     Color? scrim,
-  }) =>
-      AppColors(
-        background: background ?? this.background,
-        surface: surface ?? this.surface,
-        surface2: surface2 ?? this.surface2,
-        line: line ?? this.line,
-        text: text ?? this.text,
-        textSecondary: textSecondary ?? this.textSecondary,
-        drive: drive ?? this.drive,
-        rest: rest ?? this.rest,
-        work: work ?? this.work,
-        available: available ?? this.available,
-        warningBg: warningBg ?? this.warningBg,
-        warningText: warningText ?? this.warningText,
-        errorBg: errorBg ?? this.errorBg,
-        errorText: errorText ?? this.errorText,
-        switchOff: switchOff ?? this.switchOff,
-        scrim: scrim ?? this.scrim,
-      );
+  }) => AppColors(
+    background: background ?? this.background,
+    surface: surface ?? this.surface,
+    surface2: surface2 ?? this.surface2,
+    line: line ?? this.line,
+    text: text ?? this.text,
+    textSecondary: textSecondary ?? this.textSecondary,
+    drive: drive ?? this.drive,
+    rest: rest ?? this.rest,
+    work: work ?? this.work,
+    available: available ?? this.available,
+    warningBg: warningBg ?? this.warningBg,
+    warningText: warningText ?? this.warningText,
+    errorBg: errorBg ?? this.errorBg,
+    errorText: errorText ?? this.errorText,
+    switchOff: switchOff ?? this.switchOff,
+    scrim: scrim ?? this.scrim,
+  );
 
   @override
   AppColors lerp(ThemeExtension<AppColors>? other, double t) {
@@ -149,48 +148,7 @@ class AppColors extends ThemeExtension<AppColors> {
   }
 }
 
-/// Радиусы, dp.
-abstract final class AppRadius {
-  static const heroCard = 28.0;
-  static const card = 24.0;
-  static const modeButton = 20.0;
-  static const button = 18.0;
-  static const badge = 16.0;
-  static const icon = 14.0;
-  static const chip = 8.0;
-}
-
-/// Размеры и отступы, dp.
-abstract final class AppSize {
-  static const screenPadding = 16.0;
-  static const cardPadding = 16.0;
-  static const minTouch = 44.0;
-  static const listRow = 56.0;
-  static const button = 56.0;
-  static const modeButton = 88.0;
-  static const progressBar = 6.0;
-}
-
-/// Шрифты: Onest — интерфейс, JetBrains Mono — время и цифры.
-abstract final class AppFonts {
-  static const ui = 'Onest';
-  static const numeric = 'JetBrains Mono';
-}
-
-ThemeData buildTheme(Brightness brightness) {
-  final c = brightness == Brightness.dark ? AppColors.dark : AppColors.light;
-  return ThemeData(
-    brightness: brightness,
-    fontFamily: AppFonts.ui,
-    scaffoldBackgroundColor: c.background,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: c.drive,
-      brightness: brightness,
-      primary: c.drive,
-      surface: c.surface,
-      onSurface: c.text,
-      error: c.errorText,
-    ),
-    extensions: [c],
-  );
+extension AppColorsX on BuildContext {
+  /// Палитра текущей темы: `context.colors.drive`.
+  AppColors get colors => Theme.of(this).extension<AppColors>()!;
 }

@@ -1,0 +1,6 @@
+include: package:very_good_analysis/analysis_options.yaml
+
+linter:
+  rules:
+    # Комментарии в проекте на русском, публичный API документируем по мере стабилизации.
+    public_member_api_docs: false
