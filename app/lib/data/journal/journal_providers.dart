@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
-import 'package:tachotime/data/db/database_provider.dart';
-import 'package:tachotime/data/journal/activity_repository.dart';
-import 'package:tachotime/data/journal/card_download_repository.dart';
+import 'package:tachogo/data/db/database_provider.dart';
+import 'package:tachogo/data/journal/activity_repository.dart';
+import 'package:tachogo/data/journal/card_download_repository.dart';
 
 final activityRepositoryProvider = Provider<ActivityRepository>(
   (ref) => ActivityRepository(ref.watch(databaseProvider)),

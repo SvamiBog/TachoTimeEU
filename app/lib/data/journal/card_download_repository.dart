@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:tachotime/data/db/app_database.dart';
+import 'package:tachogo/data/db/app_database.dart';
 
 /// Считывания карты водителя: от последнего считается лимит 28 дней.
 class CardDownloadRepository {

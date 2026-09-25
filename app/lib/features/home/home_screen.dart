@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tacho_engine/tacho_engine.dart';
-import 'package:tachotime/core/theme/app_colors.dart';
-import 'package:tachotime/core/theme/app_tokens.dart';
-import 'package:tachotime/core/theme/app_typography.dart';
+import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/theme/app_tokens.dart';
+import 'package:tachogo/core/theme/app_typography.dart';
 
 /// Заглушка главного экрана до Фазы 2: проверяет тему и токены.
 class HomeScreen extends StatelessWidget {
@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('TachoTime', style: AppTextStyles.header),
+              const Text('TachoGo', style: AppTextStyles.header),
               const SizedBox(height: AppSpacing.beforeSectionMin),
               Text(
                 _format(EuLimits.continuousDriving),

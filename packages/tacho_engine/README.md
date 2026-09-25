@@ -1,6 +1,6 @@
 # tacho_engine
 
-Регуляторный движок TachoTime — чистый Dart без зависимостей от Flutter и UI.
+Регуляторный движок TachoGo — чистый Dart без зависимостей от Flutter и UI.
 Считает остатки по лимитам Регламента (ЕС) 561/2006 и ЕСТР.
 
 Правила: [`docs/domain/eu-561-rules.md`](../../docs/domain/eu-561-rules.md).

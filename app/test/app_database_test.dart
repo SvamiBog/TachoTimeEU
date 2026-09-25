@@ -2,8 +2,8 @@ import 'package:drift/drift.dart' show OrderingTerm;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
-import 'package:tachotime/data/db/app_database.dart';
-import 'package:tachotime/data/db/tables.dart';
+import 'package:tachogo/data/db/app_database.dart';
+import 'package:tachogo/data/db/tables.dart';
 
 void main() {
   late AppDatabase db;

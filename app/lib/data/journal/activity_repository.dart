@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:tacho_engine/tacho_engine.dart';
-import 'package:tachotime/data/db/app_database.dart';
-import 'package:tachotime/data/db/tables.dart';
+import 'package:tachogo/data/db/app_database.dart';
+import 'package:tachogo/data/db/tables.dart';
 
 /// Журнал режимов в БД.
 ///

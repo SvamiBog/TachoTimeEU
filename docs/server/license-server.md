@@ -82,7 +82,7 @@ openssl pkey -in license_prod_k1.pem -pubout -outform DER | tail -c 32 | base64
 | `LICENSE_SIGNING_KEY` | да | PEM PKCS#8 | раздел 2 | да |
 | `LICENSE_SIGNING_KID` | да | `k1` | раздел 2 | |
 | `LICENSE_PREVIOUS_PUBLIC_KEYS` | | `k0:<base64>` | только при смене ключа | |
-| `LICENSE_ISSUER` | да | `tachotime-license` | фиксировано | |
+| `LICENSE_ISSUER` | да | `tachogo-license` | фиксировано | |
 | `LICENSE_TTL_HOURS` | | `168` | срок токена, 7 дней | |
 | `CHALLENGE_TTL_SECONDS` | | `300` | | |
 | `INTEGRITY_MODE` | да | `enforce` | `enforce` в prod, `log` в dev | |
@@ -152,7 +152,7 @@ openssl pkey -in license_prod_k1.pem -pubout -outform DER | tail -c 32 | base64
 Привязка запроса — строка, которую считают и приложение, и сервер:
 
 ```
-binding = "tachotime-license/v1|" + challenge + "|" + installId + "|" + appUserId + "|" + platform
+binding = "tachogo-license/v1|" + challenge + "|" + installId + "|" + appUserId + "|" + platform
 ```
 
 - Android: `requestHash = base64url(SHA-256(UTF-8(binding)))` без `=` — передаётся в стандартный запрос Play Integrity.
@@ -226,7 +226,7 @@ JWT, подпись EdDSA (Ed25519).
 
 ```json
 {
-  "iss": "tachotime-license",
+  "iss": "tachogo-license",
   "sub": "$RCAnonymousID:…",
   "ins": "3f1c…",
   "plt": "android",

@@ -382,14 +382,14 @@ export const de: Dict = {
     guide: 'Anleitung und Regeln',
     feedback: 'Feedback',
     share: 'App teilen',
-    shareText: 'TachoTime — Lenk- und Ruhezeit-Timer nach EU 561/2006 und AETR',
+    shareText: 'TachoGo — Lenk- und Ruhezeit-Timer nach EU 561/2006 und AETR',
     copied: 'Link kopiert',
     privacy: 'Datenschutz',
     privacyText:
-      'TachoTime speichert Protokoll und Einstellungen nur auf diesem Gerät. Es wird nichts übertragen: der Prototyp hat kein Konto und keine Synchronisierung.',
+      'TachoGo speichert Protokoll und Einstellungen nur auf diesem Gerät. Es wird nichts übertragen: der Prototyp hat kein Konto und keine Synchronisierung.',
     about: 'Über die App',
     disclaimer:
-      'TachoTime hilft bei der Planung von Lenk- und Ruhezeiten, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung.',
+      'TachoGo hilft bei der Planung von Lenk- und Ruhezeiten, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung.',
   },
   guide: {
     title: 'Anleitung und Regeln',
@@ -412,7 +412,7 @@ export const de: Dict = {
     ],
     colors: 'Farben und Symbole',
     disclaimer:
-      'TachoTime hilft bei der Zeitplanung, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung. Maßgeblich sind die Verordnung (EG) 561/2006 und das AETR.',
+      'TachoGo hilft bei der Zeitplanung, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung. Maßgeblich sind die Verordnung (EG) 561/2006 und das AETR.',
   },
   export: {
     title: 'Bericht exportieren',
@@ -476,7 +476,7 @@ export const de: Dict = {
     markSpan: 'Arbeitstag über 13 h / 15 h',
     markRest: 'reduzierte oder zu kurze Ruhezeit',
     manual: 'manuell hinzugefügt',
-    disclaimer: 'Der Bericht beruht auf den Einträgen des Fahrers in TachoTime. Er ersetzt nicht die Daten von Fahrtenschreiber und Fahrerkarte.',
+    disclaimer: 'Der Bericht beruht auf den Einträgen des Fahrers in TachoGo. Er ersetzt nicht die Daten von Fahrtenschreiber und Fahrerkarte.',
     signature: 'Unterschrift des Fahrers',
   },
 };

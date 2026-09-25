@@ -382,14 +382,14 @@ export const en: Dict = {
     guide: 'Guide and rules',
     feedback: 'Feedback',
     share: 'Share the app',
-    shareText: 'TachoTime — driving and rest timer under EU 561/2006 and AETR',
+    shareText: 'TachoGo — driving and rest timer under EU 561/2006 and AETR',
     copied: 'Link copied',
     privacy: 'Privacy policy',
     privacyText:
-      'TachoTime keeps the log and settings on this device only. Nothing is sent anywhere: the prototype has no account or sync.',
+      'TachoGo keeps the log and settings on this device only. Nothing is sent anywhere: the prototype has no account or sync.',
     about: 'About',
     disclaimer:
-      'TachoTime helps plan driving and rest time but does not replace the tachograph and is not legal advice.',
+      'TachoGo helps plan driving and rest time but does not replace the tachograph and is not legal advice.',
   },
   guide: {
     title: 'Guide and rules',
@@ -412,7 +412,7 @@ export const en: Dict = {
     ],
     colors: 'Colours and symbols',
     disclaimer:
-      'TachoTime helps plan time but does not replace the tachograph and is not legal advice. The official rules are Regulation (EC) 561/2006 and the AETR Agreement.',
+      'TachoGo helps plan time but does not replace the tachograph and is not legal advice. The official rules are Regulation (EC) 561/2006 and the AETR Agreement.',
   },
   export: {
     title: 'Export report',
@@ -476,7 +476,7 @@ export const en: Dict = {
     markSpan: 'working day over 13 h / 15 h',
     markRest: 'reduced or insufficient rest',
     manual: 'added manually',
-    disclaimer: 'The report is based on the driver’s records in TachoTime. It does not replace tachograph and driver card data.',
+    disclaimer: 'The report is based on the driver’s records in TachoGo. It does not replace tachograph and driver card data.',
     signature: 'Driver signature',
   },
 };

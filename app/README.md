@@ -1,4 +1,4 @@
-# TachoTime — Flutter-приложение
+# TachoGo — Flutter-приложение
 
 ## Запуск
 

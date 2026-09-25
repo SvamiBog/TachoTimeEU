@@ -1,4 +1,4 @@
-package eu.tachotime.tachotime
+package eu.tachogo.tachogo
 
 import io.flutter.embedding.android.FlutterActivity
 

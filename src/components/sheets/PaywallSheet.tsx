@@ -52,7 +52,7 @@ export const PaywallSheet: React.FC<{ isPremium: boolean; onUpgrade: () => void;
         <span className="w-16 h-16 rounded-[20px] bg-drive text-on-accent flex items-center justify-center">
           <Sparkles className="w-8 h-8" />
         </span>
-        <h1 className="text-[28px] font-bold tracking-tight leading-tight">TachoTime Premium</h1>
+        <h1 className="text-[28px] font-bold tracking-tight leading-tight">TachoGo Premium</h1>
         <p className="text-[15px] leading-relaxed text-muted">{t.paywall.subtitle}</p>
       </div>
 

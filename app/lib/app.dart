@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:tachotime/core/theme/app_theme.dart';
-import 'package:tachotime/features/home/home_screen.dart';
+import 'package:tachogo/core/theme/app_theme.dart';
+import 'package:tachogo/features/home/home_screen.dart';
 
-class TachoTimeApp extends StatelessWidget {
+class TachoGoApp extends StatelessWidget {
   const new({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TachoTime',
+      title: 'TachoGo',
       debugShowCheckedModeBanner: false,
       theme: buildTheme(Brightness.light),
       darkTheme: buildTheme(Brightness.dark),

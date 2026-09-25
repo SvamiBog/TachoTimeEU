@@ -1,5 +1,5 @@
-name: tachotime
-description: "TachoTime: EU 561/2006 driving and rest time tracker"
+name: tachogo
+description: "TachoGo: EU 561/2006 driving and rest time tracker"
 publish_to: 'none'
 version: 0.1.0+1
 

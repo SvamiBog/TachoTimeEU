@@ -382,14 +382,14 @@ export const pl: Dict = {
     guide: 'Instrukcja i zasady',
     feedback: 'Opinie',
     share: 'Udostępnij aplikację',
-    shareText: 'TachoTime — licznik czasu jazdy i odpoczynku wg UE 561/2006 i AETR',
+    shareText: 'TachoGo — licznik czasu jazdy i odpoczynku wg UE 561/2006 i AETR',
     copied: 'Link skopiowany',
     privacy: 'Polityka prywatności',
     privacyText:
-      'TachoTime przechowuje dziennik i ustawienia tylko na tym urządzeniu. Nic nie jest wysyłane: prototyp nie ma konta ani synchronizacji.',
+      'TachoGo przechowuje dziennik i ustawienia tylko na tym urządzeniu. Nic nie jest wysyłane: prototyp nie ma konta ani synchronizacji.',
     about: 'O aplikacji',
     disclaimer:
-      'TachoTime pomaga planować czas jazdy i odpoczynku, ale nie zastępuje tachografu i nie jest poradą prawną.',
+      'TachoGo pomaga planować czas jazdy i odpoczynku, ale nie zastępuje tachografu i nie jest poradą prawną.',
   },
   guide: {
     title: 'Instrukcja i zasady',
@@ -412,7 +412,7 @@ export const pl: Dict = {
     ],
     colors: 'Kolory i symbole',
     disclaimer:
-      'TachoTime pomaga planować czas, ale nie zastępuje tachografu i nie jest poradą prawną. Oficjalne przepisy — rozporządzenie (WE) 561/2006 i umowa AETR.',
+      'TachoGo pomaga planować czas, ale nie zastępuje tachografu i nie jest poradą prawną. Oficjalne przepisy — rozporządzenie (WE) 561/2006 i umowa AETR.',
   },
   export: {
     title: 'Eksport raportu',
@@ -476,7 +476,7 @@ export const pl: Dict = {
     markSpan: 'dzień pracy ponad 13 h / 15 h',
     markRest: 'skrócony lub za krótki odpoczynek',
     manual: 'dodano ręcznie',
-    disclaimer: 'Raport sporządzono na podstawie wpisów kierowcy w TachoTime. Nie zastępuje danych z tachografu i karty kierowcy.',
+    disclaimer: 'Raport sporządzono na podstawie wpisów kierowcy w TachoGo. Nie zastępuje danych z tachografu i karty kierowcy.',
     signature: 'Podpis kierowcy',
   },
 };

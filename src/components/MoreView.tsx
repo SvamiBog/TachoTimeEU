@@ -19,7 +19,7 @@ export const MoreView: React.FC<Props> = ({ settings, onOpenPaywall, onOpenExpor
   const [toast, setToast] = useState<string | null>(null);
 
   const share = async () => {
-    const data = { title: 'TachoTime', text: t.more.shareText, url: window.location.href };
+    const data = { title: 'TachoGo', text: t.more.shareText, url: window.location.href };
     if (navigator.share) {
       try {
         await navigator.share(data);
@@ -54,7 +54,7 @@ export const MoreView: React.FC<Props> = ({ settings, onOpenPaywall, onOpenExpor
           <Sparkles className="w-6 h-6" />
         </span>
         <span className="flex-1 flex flex-col gap-1">
-          <span className="text-[17px] font-bold">TachoTime Premium</span>
+          <span className="text-[17px] font-bold">TachoGo Premium</span>
           <span className="text-[13px] leading-relaxed text-muted">
             {settings.isPremium ? t.more.premiumActive : t.more.premiumText}
           </span>
@@ -86,7 +86,7 @@ export const MoreView: React.FC<Props> = ({ settings, onOpenPaywall, onOpenExpor
           <span className="flex-1 text-[15px] font-semibold">{t.more.guide}</span>
           <ChevronRight className="w-4 h-4 text-muted" />
         </button>
-        <a href="mailto:support@tachotime.eu?subject=TachoTime" className={row}>
+        <a href="mailto:support@tachotime.eu?subject=TachoGo" className={row}>
           <MessageSquare className="w-5 h-5 shrink-0" />
           <span className="flex-1 text-[15px] font-semibold">{t.more.feedback}</span>
         </a>

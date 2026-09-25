@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:tacho_engine/tacho_engine.dart';
-import 'package:tachotime/data/db/utc_date_time_converter.dart';
+import 'package:tachogo/data/db/utc_date_time_converter.dart';
 
 /// Откуда взялась запись журнала.
 enum EntrySource {

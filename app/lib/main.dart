@@ -3,8 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tachotime/app.dart';
-import 'package:tachotime/core/observability/observability_providers.dart';
+import 'package:tachogo/app.dart';
+import 'package:tachogo/core/observability/observability_providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,9 +24,6 @@ Future<void> main() async {
   };
 
   runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const TachoTimeApp(),
-    ),
+    UncontrolledProviderScope(container: container, child: const TachoGoApp()),
   );
 }

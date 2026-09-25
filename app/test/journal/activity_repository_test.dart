@@ -2,12 +2,12 @@ import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
-import 'package:tachotime/data/db/app_database.dart';
-import 'package:tachotime/data/db/database_provider.dart';
-import 'package:tachotime/data/db/tables.dart';
-import 'package:tachotime/data/journal/activity_repository.dart';
-import 'package:tachotime/data/journal/card_download_repository.dart';
-import 'package:tachotime/data/journal/journal_providers.dart';
+import 'package:tachogo/data/db/app_database.dart';
+import 'package:tachogo/data/db/database_provider.dart';
+import 'package:tachogo/data/db/tables.dart';
+import 'package:tachogo/data/journal/activity_repository.dart';
+import 'package:tachogo/data/journal/card_download_repository.dart';
+import 'package:tachogo/data/journal/journal_providers.dart';
 
 void main() {
   late AppDatabase db;
