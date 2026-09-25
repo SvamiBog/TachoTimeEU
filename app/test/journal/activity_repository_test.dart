@@ -66,6 +66,56 @@ void main() {
     });
   });
 
+  group('переключение задним числом (автоопределение)', () {
+    test('режим меняется с указанного момента', () async {
+      await repo.switchMode(DriverMode.otherWork);
+      advance(const Duration(minutes: 30));
+      final movedAt = now.subtract(const Duration(seconds: 40));
+      await repo.switchMode(DriverMode.driving, at: movedAt);
+
+      final [work, driving] = await repo.periods();
+      expect(work.end, movedAt);
+      expect(driving.start, movedAt);
+    });
+
+    test('не раньше начала текущей записи', () async {
+      await repo.switchMode(DriverMode.otherWork);
+      final workStart = now;
+      advance(const Duration(minutes: 5));
+      await repo.switchMode(
+        DriverMode.driving,
+        at: workStart.subtract(const Duration(minutes: 10)),
+      );
+
+      final [work, driving] = await repo.periods();
+      expect(work.end, workStart);
+      expect(driving.start, workStart);
+    });
+
+    test('не позже текущего момента', () async {
+      await repo.switchMode(DriverMode.otherWork);
+      advance(const Duration(minutes: 5));
+      await repo.switchMode(
+        DriverMode.driving,
+        at: now.add(const Duration(hours: 1)),
+      );
+      expect((await repo.periods()).last.start, now);
+    });
+  });
+
+  test('другой движок узнаёт только о настоящих изменениях', () async {
+    var changes = 0;
+    final notifying = ActivityRepository(
+      db,
+      clock: () => now,
+      onChanged: () => changes++,
+    );
+    await notifying.switchMode(DriverMode.driving);
+    advance(const Duration(minutes: 1));
+    await notifying.switchMode(DriverMode.driving);
+    expect(changes, 1);
+  });
+
   group('«Завершить день»', () {
     test('во время вождения начинает отдых — конец дня', () async {
       await repo.switchMode(DriverMode.driving);

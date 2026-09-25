@@ -2,6 +2,7 @@
 library;
 
 export 'src/activity_period.dart';
+export 'src/auto_switch.dart';
 export 'src/compliance.dart';
 export 'src/driver_mode.dart';
 export 'src/eu_limits.dart';

@@ -1,4 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Автоопределение вождения по GPS. Фоновый доступ (ACCESS_BACKGROUND_LOCATION)
+         не запрашиваем: foreground service с типом location работает с доступом
+         «при использовании», а фоновый требует отдельного обоснования в Google Play. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <application
         android:label="TachoGo"
         android:name="${applicationName}"
@@ -30,6 +37,11 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Сервис автоопределения (flutter_foreground_task). Имя менять нельзя. -->
+        <service
+            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
+            android:foregroundServiceType="location"
+            android:exported="false" />
         <!-- PostHog поднимается из Dart только после согласия на аналитику. -->
         <meta-data
             android:name="com.posthog.posthog.AUTO_INIT"

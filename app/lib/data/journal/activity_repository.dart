@@ -9,10 +9,15 @@ import 'package:tachogo/data/db/tables.dart';
 /// слой ручных правок и проверку Premium (docs/premium.md). Логику переходов
 /// задаёт движок (`changeMode`), репозиторий только сохраняет разницу.
 class ActivityRepository {
-  new(this._db, {DateTime Function()? clock}) : _clock = clock ?? DateTime.now;
+  new(this._db, {DateTime Function()? clock, this._onChanged})
+    : _clock = clock ?? DateTime.now;
 
   final AppDatabase _db;
   final DateTime Function() _clock;
+
+  /// Вызывается после записи: сообщить другому Flutter-движку (приложению
+  /// или фоновому сервису), что журнал изменился.
+  final void Function()? _onChanged;
 
   /// Все записи журнала по возрастанию начала.
   Stream<List<ActivityPeriod>> watchPeriods() =>
@@ -22,15 +27,25 @@ class ActivityRepository {
     for (final r in await _ordered().get()) _toPeriod(r),
   ];
 
-  /// Переключает режим сейчас. Повторное нажатие на активный режим ничего
-  /// не меняет. [ferry] — водитель на пароме / поезде (ст. 9).
-  Future<void> switchMode(DriverMode mode, {bool ferry = false}) =>
-      _changeOpen((open, now) => changeMode(open, mode, now, ferry: ferry));
+  /// Переключает режим. Повторное нажатие на активный режим ничего не
+  /// меняет. [ferry] — водитель на пароме / поезде (ст. 9).
+  ///
+  /// [at] — момент переключения, если он уже прошёл: автоопределение
+  /// замечает движение с задержкой и переключает с начала движения. Момент
+  /// не позже текущего и не раньше начала текущей записи.
+  Future<void> switchMode(
+    DriverMode mode, {
+    bool ferry = false,
+    DateTime? at,
+  }) => _changeOpen(
+    (open, at) => changeMode(open, mode, at, ferry: ferry),
+    at: at,
+  );
 
   /// «Завершить день»: отдых, который сразу завершает смену. Во время
   /// перерыва текущий отдых становится концом дня.
   Future<void> endDay() => _changeOpen(
-    (open, now) => changeMode(open, DriverMode.rest, now, dayEnd: true),
+    (open, at) => changeMode(open, DriverMode.rest, at, dayEnd: true),
   );
 
   SimpleSelectStatement<$ActivityPeriodsTable, ActivityPeriodRow> _ordered() =>
@@ -42,18 +57,27 @@ class ActivityRepository {
   /// Переходы между режимами затрагивают только открытую запись, поэтому
   /// журнал целиком не читаем.
   Future<void> _changeOpen(
-    List<ActivityPeriod> Function(List<ActivityPeriod> open, DateTime now)
-    change,
-  ) => _db.transaction(() async {
-    final now = _clock().toUtc();
-    final rows = await (_db.select(
-      _db.activityPeriods,
-    )..where((t) => t.endUtc.isNull())).get();
-    final open = [for (final r in rows) _toPeriod(r)];
-    final updated = change(open, now);
-    if (identical(updated, open)) return;
-    await _save(open, updated, now, EntrySource.live);
-  });
+    List<ActivityPeriod> Function(List<ActivityPeriod> open, DateTime at)
+    change, {
+    DateTime? at,
+  }) async {
+    final changed = await _db.transaction(() async {
+      final now = _clock().toUtc();
+      final rows = await (_db.select(
+        _db.activityPeriods,
+      )..where((t) => t.endUtc.isNull())).get();
+      final open = [for (final r in rows) _toPeriod(r)];
+      var when = at == null || at.isAfter(now) ? now : at.toUtc();
+      for (final p in open) {
+        if (p.start.isAfter(when)) when = p.start;
+      }
+      final updated = change(open, when);
+      if (identical(updated, open)) return false;
+      await _save(open, updated, now, EntrySource.live);
+      return true;
+    });
+    if (changed) _onChanged?.call();
+  }
 
   /// Сохраняет разницу между [before] и [after]: записи без id вставляются,
   /// изменённые обновляются, пропавшие удаляются.
