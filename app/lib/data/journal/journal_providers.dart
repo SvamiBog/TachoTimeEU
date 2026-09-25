@@ -5,9 +5,19 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/journal/card_download_repository.dart';
+import 'package:tachogo/data/settings/settings_providers.dart';
+
+/// Сообщает другому Flutter-движку, что журнал изменился: приложение —
+/// фоновому сервису и наоборот. Задают `main.dart` и задача сервиса.
+final journalChangedCallbackProvider = Provider<void Function()?>(
+  (ref) => null,
+);
 
 final activityRepositoryProvider = Provider<ActivityRepository>(
-  (ref) => ActivityRepository(ref.watch(databaseProvider)),
+  (ref) => ActivityRepository(
+    ref.watch(databaseProvider),
+    onChanged: ref.watch(journalChangedCallbackProvider),
+  ),
 );
 
 final cardDownloadRepositoryProvider = Provider<CardDownloadRepository>(
@@ -40,10 +50,9 @@ class Clock extends Notifier<DateTime> {
   static DateTime _now() => DateTime.now().toUtc();
 }
 
-/// Настройки, от которых зависит расчёт. До экрана настроек (Фаза 2) —
-/// значения по умолчанию: один водитель, пакет мобильности, порог 30 мин.
-final complianceSettingsProvider = Provider<ComplianceSettings>(
-  (ref) => const ComplianceSettings(),
+/// Настройки, от которых зависит расчёт: экипаж, пакет мобильности, пороги.
+final complianceSettingsProvider = StreamProvider<ComplianceSettings>(
+  (ref) => ref.watch(settingsRepositoryProvider).watchComplianceSettings(),
 );
 
 /// Состояние водителя, таймеры и нарушения на текущий момент.
@@ -52,20 +61,26 @@ final complianceProvider = Provider<AsyncValue<ComplianceSnapshot>>((ref) {
   final settings = ref.watch(complianceSettingsProvider);
   final periods = ref.watch(activityPeriodsProvider);
   final lastCard = ref.watch(lastCardDownloadProvider);
-  return switch ((periods, lastCard)) {
-    (AsyncData(value: final p), AsyncData(value: final card)) => AsyncData(
-      calculateCompliance(
-        periods: p,
-        now: now,
-        settings: settings,
-        lastCardDownload: card,
-      ),
-    ),
-    (AsyncError(:final error, :final stackTrace), _) ||
+  final sources = <AsyncValue<Object?>>[settings, periods, lastCard];
+  for (final s in sources) {
+    if (s case AsyncError(:final error, :final stackTrace)) {
+      return AsyncError(error, stackTrace);
+    }
+  }
+  return switch ((settings, periods, lastCard)) {
     (
-      _,
-      AsyncError(:final error, :final stackTrace),
-    ) => AsyncError(error, stackTrace),
+      AsyncData(value: final s),
+      AsyncData(value: final p),
+      AsyncData(value: final card),
+    ) =>
+      AsyncData(
+        calculateCompliance(
+          periods: p,
+          now: now,
+          settings: s,
+          lastCardDownload: card,
+        ),
+      ),
     _ => const AsyncLoading(),
   };
 });

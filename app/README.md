@@ -36,6 +36,8 @@ data/
   settings/               — настройки «ключ — значение», согласие на аналитику
   journal/                — журнал режимов и считывания карты; complianceProvider —
                             таймеры движка, пересчёт раз в секунду (clockProvider)
+background/               — автоопределение вождения: трекер, foreground service
+                            (Android), уведомление с таймерами — docs/background.md
 features/<экран>/         — UI и провайдеры конкретного экрана
 ```
 
