@@ -11,9 +11,12 @@ enum AppEnv {
   bool get isProd => this == prod;
 }
 
-/// Конфигурация, зависящая от окружения. Секреты сюда не попадают —
+/// Конфигурация, зависящая от окружения. Ключи сервисов сюда не попадают —
 /// только в CI-секреты и локальные файлы вне git.
 abstract final class AppConfig {
-  /// DSN crash reporting; пустая строка — отчёты выключены.
+  /// DSN проекта Sentry; пустая строка — отчёты только в лог.
   static const crashReportingDsn = String.fromEnvironment('CRASH_DSN');
+
+  /// Ключ проекта PostHog; пустая строка — аналитика выключена.
+  static const analyticsKey = String.fromEnvironment('ANALYTICS_KEY');
 }

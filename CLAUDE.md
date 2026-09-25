@@ -10,6 +10,7 @@
 - Линтер: `very_good_analysis`, CI требует `--fatal-infos`.
 - Раскладка: `app/` — Flutter-приложение (`lib/core`, `lib/data`, `lib/features`), `packages/tacho_engine/` — движок. Подробности — `app/README.md`.
 - Окружения dev/staging/prod — через `--dart-define-from-file=env/<env>.json`.
+- Отчёты о падениях — Sentry (регион ЕС), аналитика — PostHog EU Cloud и только после согласия водителя. Ключи — через dart-define (`CRASH_DSN`, `ANALYTICS_KEY`), без них сервисы выключены. Подробно: `app/README.md`.
 - Покупки: RevenueCat — Фаза 5.
 - Бесплатно — только учёт режимов на главной. Premium — любые правки и добавления в журнале, выгрузка PDF/CSV, перенос на другое устройство. Защита от взлома — уровни 1–3. Подробно: `docs/premium.md`, сервер лицензий: `docs/server/license-server.md`.
 - Статус Premium — только из `EntitlementService`. Флагов `isPremium` в настройках и БД нет, `tacho_engine` о подписке не знает.

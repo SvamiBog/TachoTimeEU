@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^3.4.3
   path_provider: ^2.1.6
+  posthog_flutter: ^5.48.0
+  sentry_flutter: ^9.30.1
   tacho_engine:
     path: ../packages/tacho_engine
 
