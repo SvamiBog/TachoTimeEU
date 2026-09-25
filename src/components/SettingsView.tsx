@@ -148,11 +148,12 @@ export const SettingsView: React.FC<Props> = ({ settings, onUpdate, onOpenExport
       <SectionTitle>{t.settings.data}</SectionTitle>
       <Card>
         <NavRow label={t.settings.export} onClick={onOpenExport} trailing="PDF · CSV" />
-        <NavRow
-          label={t.settings.sync}
-          onClick={onOpenPaywall}
-          trailing={<Chip tone="neutral">{t.common.soon}</Chip>}
-        />
+        {/* Перенос — Premium; в прототипе самого переноса ещё нет */}
+        {settings.isPremium ? (
+          <NavRow label={t.settings.transfer} trailing={<Chip tone="neutral">{t.common.soon}</Chip>} />
+        ) : (
+          <NavRow label={t.settings.transfer} onClick={onOpenPaywall} trailing={<Chip tone="accent">{t.common.premium}</Chip>} />
+        )}
         <NavRow
           label={t.settings.loadDemo}
           onClick={() => setSheet('demo')}
@@ -238,19 +239,30 @@ const SwitchRow: React.FC<{ title: string; hint?: string; checked: boolean; onCh
   </div>
 );
 
-const NavRow: React.FC<{ label: string; onClick: () => void; trailing?: React.ReactNode; icon?: React.ReactNode }> = ({
+/** Без onClick — строка только показывает состояние. */
+const NavRow: React.FC<{ label: string; onClick?: () => void; trailing?: React.ReactNode; icon?: React.ReactNode }> = ({
   label,
   onClick,
   trailing,
   icon,
-}) => (
-  <button type="button" onClick={onClick} className="w-full min-h-14 p-4 flex items-center gap-3 text-left hover:bg-surface2/40">
-    {icon}
-    <span className="flex-1 text-[15px] font-semibold">{label}</span>
-    {typeof trailing === 'string' ? <span className="text-[13px] text-muted">{trailing}</span> : trailing}
-    <ChevronRight className="w-4 h-4 text-muted" />
-  </button>
-);
+}) => {
+  const body = (
+    <>
+      {icon}
+      <span className="flex-1 text-[15px] font-semibold">{label}</span>
+      {typeof trailing === 'string' ? <span className="text-[13px] text-muted">{trailing}</span> : trailing}
+    </>
+  );
+  const cls = 'w-full min-h-14 p-4 flex items-center gap-3 text-left';
+  return onClick ? (
+    <button type="button" onClick={onClick} className={`${cls} hover:bg-surface2/40`}>
+      {body}
+      <ChevronRight className="w-4 h-4 text-muted" />
+    </button>
+  ) : (
+    <div className={cls}>{body}</div>
+  );
+};
 
 const TextRow: React.FC<{ label: string; value: string; onChange: (v: string) => void; mono?: boolean }> = ({
   label,

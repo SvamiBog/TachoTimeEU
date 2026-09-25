@@ -10,7 +10,9 @@
 - Линтер: `very_good_analysis`, CI требует `--fatal-infos`.
 - Раскладка: `app/` — Flutter-приложение (`lib/core`, `lib/data`, `lib/features`), `packages/tacho_engine/` — движок. Подробности — `app/README.md`.
 - Окружения dev/staging/prod — через `--dart-define-from-file=env/<env>.json`.
-- Покупки: RevenueCat (или нативный Billing/StoreKit) — Фаза 5.
+- Покупки: RevenueCat — Фаза 5.
+- Бесплатно — только учёт режимов на главной. Premium — любые правки и добавления в журнале, выгрузка PDF/CSV, перенос на другое устройство. Защита от взлома — уровни 1–3. Подробно: `docs/premium.md`, сервер лицензий: `docs/server/license-server.md`.
+- Статус Premium — только из `EntitlementService`. Флагов `isPremium` в настройках и БД нет, `tacho_engine` о подписке не знает.
 - Аккаунт необязателен.
 
 ## Главное правило кода
@@ -32,5 +34,4 @@
 
 ## Открытые вопросы
 - Финальное название (TachoTime / TachoHours / MyTacho / TachoGo).
-- Какие функции закрыты Premium — сверить с таблицей в PRD.
 - PRD v1.1 ещё не добавлен в репозиторий (`docs/PRD.md`).

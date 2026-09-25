@@ -187,6 +187,7 @@ export const pl: Dict = {
   },
   shift: {
     newTitle: 'Nowa zmiana',
+    locked: 'Edycja dziennika jest dostępna w Premium',
     title: 'Zmiana',
     section: 'Zmiana',
     start: 'Początek',
@@ -364,7 +365,7 @@ export const pl: Dict = {
     soundHint: 'Dla ostrzeżeń włączonych powyżej',
     data: 'Dane',
     export: 'Eksport raportu',
-    sync: 'Synchronizacja i kopia zapasowa',
+    transfer: 'Przeniesienie na inny telefon',
     loadDemo: 'Wczytaj przykład',
     loadDemoTitle: 'Wczytać przykład?',
     loadDemoText: 'Dziennik zostanie zastąpiony danymi przykładowymi z dwóch tygodni.',
@@ -374,7 +375,7 @@ export const pl: Dict = {
   },
   more: {
     title: 'Więcej',
-    premiumText: 'Eksport do kontroli, synchronizacja i powiadomienia o limitach',
+    premiumText: 'Edycja dziennika, raport do kontroli i przeniesienie danych',
     premiumActive: 'Premium jest aktywne',
     account: 'Konto',
     accountHint: 'Opcjonalne · pojawi się wraz z synchronizacją',
@@ -434,10 +435,9 @@ export const pl: Dict = {
   paywall: {
     subtitle: 'Wszystko do spokojnej kontroli na drodze i pracy bez utraty danych.',
     features: [
+      { title: 'Edycja dziennika', text: 'Dodawanie, edycja i usuwanie zmian, korekta czasu' },
       { title: 'Raport PDF i CSV', text: 'Dla inspektora i pracodawcy' },
-      { title: 'Powiadomienia o limitach', text: 'Przerwa, koniec dnia, odczyt karty' },
-      { title: 'Synchronizacja i kopia zapasowa', text: 'Dane nie znikną przy zmianie telefonu' },
-      { title: 'Pełna historia dziennika', text: 'Bez limitu czasu' },
+      { title: 'Przeniesienie danych', text: 'Na nowy telefon przez kod QR' },
     ],
     year: 'Rok',
     yearHint: '2,50 € miesięcznie',

@@ -187,6 +187,7 @@ export const de: Dict = {
   },
   shift: {
     newTitle: 'Neue Schicht',
+    locked: 'Das Bearbeiten des Protokolls ist in Premium verfügbar',
     title: 'Schicht',
     section: 'Schicht',
     start: 'Beginn',
@@ -364,7 +365,7 @@ export const de: Dict = {
     soundHint: 'Für die oben aktivierten Warnungen',
     data: 'Daten',
     export: 'Bericht exportieren',
-    sync: 'Synchronisierung und Sicherung',
+    transfer: 'Auf ein anderes Handy übertragen',
     loadDemo: 'Beispiel laden',
     loadDemoTitle: 'Beispiel laden?',
     loadDemoText: 'Das Protokoll wird durch Beispieldaten für zwei Wochen ersetzt.',
@@ -374,7 +375,7 @@ export const de: Dict = {
   },
   more: {
     title: 'Mehr',
-    premiumText: 'Export für Kontrollen, Synchronisierung und Warnungen vor Grenzen',
+    premiumText: 'Protokoll bearbeiten, Bericht für Kontrollen und Datenübertragung',
     premiumActive: 'Premium ist aktiv',
     account: 'Konto',
     accountHint: 'Optional · kommt mit der Synchronisierung',
@@ -434,10 +435,9 @@ export const de: Dict = {
   paywall: {
     subtitle: 'Alles für eine entspannte Kontrolle und keinen Datenverlust.',
     features: [
+      { title: 'Protokoll bearbeiten', text: 'Schichten hinzufügen, ändern und löschen, Zeiten korrigieren' },
       { title: 'Bericht als PDF und CSV', text: 'Für Kontrolleure und Arbeitgeber' },
-      { title: 'Warnungen vor Grenzen', text: 'Pause, Tagesende, Kartenauslesen' },
-      { title: 'Synchronisierung und Sicherung', text: 'Daten bleiben beim Handywechsel erhalten' },
-      { title: 'Vollständiger Verlauf', text: 'Ohne Zeitbegrenzung' },
+      { title: 'Datenübertragung', text: 'Per QR-Code aufs neue Handy' },
     ],
     year: 'Jahr',
     yearHint: '2,50 € pro Monat',

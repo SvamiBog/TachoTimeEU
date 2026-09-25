@@ -4,7 +4,7 @@ import type { ComplianceMetrics } from '../../domain/compliance';
 import { MINUTE } from '../../domain/time';
 import type { DriverSettings } from '../../domain/types';
 import { useI18n } from '../../i18n';
-import { PrimaryButton, SecondaryButton, Sheet, SheetHeader } from '../ui';
+import { PremiumLock, PrimaryButton, SecondaryButton, Sheet, SheetHeader } from '../ui';
 
 export const WeeklyRestSheet: React.FC<{
   metrics: ComplianceMetrics;
@@ -101,7 +101,9 @@ export const WeeklyRestSheet: React.FC<{
             onClose();
             onAddManually();
           }}
+          className="flex items-center justify-center gap-2"
         >
+          {!settings.isPremium && <PremiumLock label={t.common.premium} />}
           {t.weekly.addManually}
         </SecondaryButton>
         <PrimaryButton

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, X } from 'lucide-react';
+import { ArrowLeft, Lock, X } from 'lucide-react';
 import type { ActivityType } from '../domain/types';
 
 /** Класс цвета режима: вождение — янтарный, отдых — зелёный, работа — оранжевый, готовность — голубой. */
@@ -90,6 +90,11 @@ const CHIP_TONE: Record<Tone, string> = {
 
 export const Chip: React.FC<{ tone?: Tone; children: React.ReactNode }> = ({ tone = 'neutral', children }) => (
   <span className={`text-[12px] font-semibold px-2 py-0.5 rounded-[8px] whitespace-nowrap ${CHIP_TONE[tone]}`}>{children}</span>
+);
+
+/** Замок у действия, доступного только в Premium. */
+export const PremiumLock: React.FC<{ label: string; className?: string }> = ({ label, className = 'w-4 h-4' }) => (
+  <Lock className={`shrink-0 ${className}`} role="img" aria-label={label} />
 );
 
 export const Switch: React.FC<{ checked: boolean; onChange: (v: boolean) => void; label: string }> = ({

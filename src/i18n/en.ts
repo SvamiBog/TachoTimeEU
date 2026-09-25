@@ -187,6 +187,7 @@ export const en: Dict = {
   },
   shift: {
     newTitle: 'New shift',
+    locked: 'Log editing is available in Premium',
     title: 'Shift',
     section: 'Shift',
     start: 'Start',
@@ -364,7 +365,7 @@ export const en: Dict = {
     soundHint: 'For the warnings enabled above',
     data: 'Data',
     export: 'Export report',
-    sync: 'Sync and backup',
+    transfer: 'Transfer to another phone',
     loadDemo: 'Load sample data',
     loadDemoTitle: 'Load sample data?',
     loadDemoText: 'The log will be replaced with two weeks of sample data.',
@@ -374,7 +375,7 @@ export const en: Dict = {
   },
   more: {
     title: 'More',
-    premiumText: 'Inspection export, sync and limit notifications',
+    premiumText: 'Log editing, inspection report and data transfer',
     premiumActive: 'Premium is active',
     account: 'Account',
     accountHint: 'Optional · comes with sync',
@@ -434,10 +435,9 @@ export const en: Dict = {
   paywall: {
     subtitle: 'Everything for a calm roadside check and no data loss.',
     features: [
+      { title: 'Log editing', text: 'Add, edit and delete shifts, correct times' },
       { title: 'PDF and CSV report', text: 'For inspectors and employers' },
-      { title: 'Limit notifications', text: 'Break, end of day, card download' },
-      { title: 'Sync and backup', text: 'Data survives a phone change' },
-      { title: 'Full log history', text: 'No time limit' },
+      { title: 'Data transfer', text: 'To a new phone via QR code' },
     ],
     year: 'Year',
     yearHint: '€2.50 per month',
