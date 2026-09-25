@@ -30,14 +30,30 @@ abstract final class EuLimits {
   static const workdayWithRegularRest = Duration(hours: 13);
   static const workdayWithReducedRest = Duration(hours: 15);
 
+  // Экипаж из двух водителей (ст. 8(5)): 9 ч отдыха в пределах 30 ч.
+  static const teamWorkdayWindow = Duration(hours: 30);
+  static const teamDailyRest = Duration(hours: 9);
+
+  // Паром / поезд (ст. 9(1)): полный суточный отдых можно прервать
+  // не больше двух раз, в сумме не дольше часа.
+  static const ferryMaxInterruptions = 2;
+  static const ferryMaxInterruptionTotal = Duration(hours: 1);
+
   // Недельный отдых (ст. 8.6).
   static const weeklyRestRegular = Duration(hours: 45);
   static const weeklyRestReduced = Duration(hours: 24);
   static const maxBetweenWeeklyRests = Duration(hours: 144);
+
+  /// Компенсация сокращённого недельного отдыха — до конца третьей недели
+  /// после недели, в которую он начался (ст. 8(6)).
+  static const compensationWeeks = 3;
 
   // Карта водителя: считывание не реже раза в 28 дней.
   static const cardDownloadInterval = Duration(days: 28);
 
   /// Порог предупреждения на экране: меньше 30 мин до лимита.
   static const warningThreshold = Duration(minutes: 30);
+
+  /// Предупреждение о недельном отдыхе — за сутки до конца 144 ч.
+  static const weeklyRestWarning = Duration(hours: 24);
 }

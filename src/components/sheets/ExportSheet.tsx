@@ -52,7 +52,7 @@ export const ExportSheet: React.FC<{
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `tachotime_${toInputDate(range.from)}_${toInputDate(range.to)}.csv`;
+      a.download = `tachogo_${toInputDate(range.from)}_${toInputDate(range.to)}.csv`;
       document.body.appendChild(a);
       a.click();
       a.remove();

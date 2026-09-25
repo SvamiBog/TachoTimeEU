@@ -1,4 +1,4 @@
-// Доменные типы TachoTime. Время — миллисекунды Unix (UTC).
+// Доменные типы TachoGo. Время — миллисекунды Unix (UTC).
 
 export type ActivityType = 'DRIVE' | 'WORK' | 'POA' | 'REST';
 

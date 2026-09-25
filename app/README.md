@@ -1,4 +1,4 @@
-# TachoTime — Flutter-приложение
+# TachoGo — Flutter-приложение
 
 ## Запуск
 
@@ -9,6 +9,19 @@ flutter run --dart-define-from-file=env/dev.json
 
 Окружения: `env/dev.json`, `env/staging.json`, `env/prod.json` (значение `APP_ENV`, см. `lib/core/config/app_env.dart`). Секреты в эти файлы не кладём.
 
+## Отчёты о падениях и аналитика
+
+- **Sentry** (организация в регионе ЕС) — `CrashReporter`. Включается ключом `CRASH_DSN`, без него ошибки только пишутся в лог.
+- **PostHog EU Cloud** — `Analytics`. Включается ключом `ANALYTICS_KEY` и только после согласия водителя (`SettingsRepository.setAnalyticsConsent`, переключатель — в онбординге и настройках, Фаза 2). События анонимные, без персональных данных и координат.
+
+Локально ключи передаются так:
+
+```bash
+flutter run --dart-define-from-file=env/dev.json --dart-define=CRASH_DSN=… --dart-define=ANALYTICS_KEY=…
+```
+
+В релизе по тегу CI берёт их из секретов `SENTRY_DSN` и `POSTHOG_KEY`; пустой секрет — сервис в сборке выключен.
+
 ## Структура `lib/`
 
 ```
@@ -16,10 +29,13 @@ main.dart                 — точка входа: ProviderScope, перехв
 app.dart                  — MaterialApp, темы
 core/
   config/                 — окружение и конфигурация сборки
-  observability/          — CrashReporter, Analytics (пока заглушки)
+  observability/          — CrashReporter (Sentry), Analytics (PostHog)
   theme/                  — токены дизайна: цвета, радиусы, размеры, типографика
 data/
   db/                     — Drift: таблицы, AppDatabase, провайдер
+  settings/               — настройки «ключ — значение», согласие на аналитику
+  journal/                — журнал режимов и считывания карты; complianceProvider —
+                            таймеры движка, пересчёт раз в секунду (clockProvider)
 features/<экран>/         — UI и провайдеры конкретного экрана
 ```
 

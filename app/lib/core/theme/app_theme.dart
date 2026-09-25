@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tachotime/core/theme/app_colors.dart';
-import 'package:tachotime/core/theme/app_typography.dart';
+import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/theme/app_typography.dart';
 
 ThemeData buildTheme(Brightness brightness) {
   final c = brightness == Brightness.dark ? AppColors.dark : AppColors.light;

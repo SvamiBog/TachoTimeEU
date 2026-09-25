@@ -1,4 +1,4 @@
-# TachoTimeEU
+# TachoGo
 
 European driver hours assistant according to **Regulation (EC) No 561/2006**, the **AETR Agreement**, **Regulation (EU) 165/2014** and the **EU Mobility Package I**.
 
@@ -59,4 +59,4 @@ React 19, TypeScript, Vite, Tailwind CSS 4, Vitest, Lucide icons.
 
 ## Disclaimer
 
-TachoTime helps plan driving and rest time but does not replace the tachograph and is not legal advice.
+TachoGo helps plan driving and rest time but does not replace the tachograph and is not legal advice.

@@ -54,7 +54,7 @@ export const MainView: React.FC<Props> = ({
     <div className="flex flex-col gap-3 pb-6">
       <header className="h-16 px-5 flex items-center justify-between gap-2">
         <div className="flex flex-col min-w-0">
-          <span className="text-[18px] font-bold tracking-tight">TachoTime</span>
+          <span className="text-[18px] font-bold tracking-tight">TachoGo</span>
           <span className="text-[12px] text-muted truncate">
             {shift
               ? t.main.shiftSince(fmt.weekdayDayMonth(now), fmt.time(shift.start))
