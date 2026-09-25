@@ -28,6 +28,12 @@ class ActivityPeriods extends Table {
   IntColumn get utcOffsetMinutes => integer()();
   TextColumn get source => textEnum<EntrySource>()();
   TextColumn get note => text().nullable()();
+
+  /// Отрезок записан в режиме «паром / поезд» (ст. 9 Регламента 561/2006).
+  BoolColumn get ferry => boolean().withDefault(const Constant(false))();
+
+  /// Отдых начат как конец рабочего дня («Завершить день»).
+  BoolColumn get dayEnd => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt =>
       dateTime().map(const UtcDateTimeConverter())();
   DateTimeColumn get updatedAt =>

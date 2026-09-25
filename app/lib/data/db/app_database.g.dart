@@ -78,6 +78,32 @@ class $ActivityPeriodsTable extends ActivityPeriods
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _ferryMeta = const VerificationMeta('ferry');
+  @override
+  late final GeneratedColumn<bool> ferry = GeneratedColumn<bool>(
+    'ferry',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("ferry" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _dayEndMeta = const VerificationMeta('dayEnd');
+  @override
+  late final GeneratedColumn<bool> dayEnd = GeneratedColumn<bool>(
+    'day_end',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("day_end" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   late final GeneratedColumnWithTypeConverter<DateTime, DateTime> createdAt =
       GeneratedColumn<DateTime>(
@@ -105,6 +131,8 @@ class $ActivityPeriodsTable extends ActivityPeriods
     utcOffsetMinutes,
     source,
     note,
+    ferry,
+    dayEnd,
     createdAt,
     updatedAt,
   ];
@@ -138,6 +166,18 @@ class $ActivityPeriodsTable extends ActivityPeriods
       context.handle(
         _noteMeta,
         note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('ferry')) {
+      context.handle(
+        _ferryMeta,
+        ferry.isAcceptableOrUnknown(data['ferry']!, _ferryMeta),
+      );
+    }
+    if (data.containsKey('day_end')) {
+      context.handle(
+        _dayEndMeta,
+        dayEnd.isAcceptableOrUnknown(data['day_end']!, _dayEndMeta),
       );
     }
     return context;
@@ -185,6 +225,14 @@ class $ActivityPeriodsTable extends ActivityPeriods
         DriftSqlType.string,
         data['${effectivePrefix}note'],
       ),
+      ferry: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}ferry'],
+      )!,
+      dayEnd: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}day_end'],
+      )!,
       createdAt: $ActivityPeriodsTable.$convertercreatedAt.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime,
@@ -235,6 +283,12 @@ class ActivityPeriodRow extends DataClass
   final int utcOffsetMinutes;
   final EntrySource source;
   final String? note;
+
+  /// Отрезок записан в режиме «паром / поезд» (ст. 9 Регламента 561/2006).
+  final bool ferry;
+
+  /// Отдых начат как конец рабочего дня («Завершить день»).
+  final bool dayEnd;
   final DateTime createdAt;
   final DateTime updatedAt;
   const ActivityPeriodRow({
@@ -245,6 +299,8 @@ class ActivityPeriodRow extends DataClass
     required this.utcOffsetMinutes,
     required this.source,
     this.note,
+    required this.ferry,
+    required this.dayEnd,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -276,6 +332,8 @@ class ActivityPeriodRow extends DataClass
     if (!nullToAbsent || note != null) {
       map['note'] = Variable<String>(note);
     }
+    map['ferry'] = Variable<bool>(ferry);
+    map['day_end'] = Variable<bool>(dayEnd);
     {
       map['created_at'] = Variable<DateTime>(
         $ActivityPeriodsTable.$convertercreatedAt.toSql(createdAt),
@@ -300,6 +358,8 @@ class ActivityPeriodRow extends DataClass
       utcOffsetMinutes: Value(utcOffsetMinutes),
       source: Value(source),
       note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      ferry: Value(ferry),
+      dayEnd: Value(dayEnd),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -322,6 +382,8 @@ class ActivityPeriodRow extends DataClass
         serializer.fromJson<String>(json['source']),
       ),
       note: serializer.fromJson<String?>(json['note']),
+      ferry: serializer.fromJson<bool>(json['ferry']),
+      dayEnd: serializer.fromJson<bool>(json['dayEnd']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -341,6 +403,8 @@ class ActivityPeriodRow extends DataClass
         $ActivityPeriodsTable.$convertersource.toJson(source),
       ),
       'note': serializer.toJson<String?>(note),
+      'ferry': serializer.toJson<bool>(ferry),
+      'dayEnd': serializer.toJson<bool>(dayEnd),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -354,6 +418,8 @@ class ActivityPeriodRow extends DataClass
     int? utcOffsetMinutes,
     EntrySource? source,
     Value<String?> note = const Value.absent(),
+    bool? ferry,
+    bool? dayEnd,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => ActivityPeriodRow(
@@ -364,6 +430,8 @@ class ActivityPeriodRow extends DataClass
     utcOffsetMinutes: utcOffsetMinutes ?? this.utcOffsetMinutes,
     source: source ?? this.source,
     note: note.present ? note.value : this.note,
+    ferry: ferry ?? this.ferry,
+    dayEnd: dayEnd ?? this.dayEnd,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -378,6 +446,8 @@ class ActivityPeriodRow extends DataClass
           : this.utcOffsetMinutes,
       source: data.source.present ? data.source.value : this.source,
       note: data.note.present ? data.note.value : this.note,
+      ferry: data.ferry.present ? data.ferry.value : this.ferry,
+      dayEnd: data.dayEnd.present ? data.dayEnd.value : this.dayEnd,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -393,6 +463,8 @@ class ActivityPeriodRow extends DataClass
           ..write('utcOffsetMinutes: $utcOffsetMinutes, ')
           ..write('source: $source, ')
           ..write('note: $note, ')
+          ..write('ferry: $ferry, ')
+          ..write('dayEnd: $dayEnd, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -408,6 +480,8 @@ class ActivityPeriodRow extends DataClass
     utcOffsetMinutes,
     source,
     note,
+    ferry,
+    dayEnd,
     createdAt,
     updatedAt,
   );
@@ -422,6 +496,8 @@ class ActivityPeriodRow extends DataClass
           other.utcOffsetMinutes == this.utcOffsetMinutes &&
           other.source == this.source &&
           other.note == this.note &&
+          other.ferry == this.ferry &&
+          other.dayEnd == this.dayEnd &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -434,6 +510,8 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
   final Value<int> utcOffsetMinutes;
   final Value<EntrySource> source;
   final Value<String?> note;
+  final Value<bool> ferry;
+  final Value<bool> dayEnd;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const ActivityPeriodsCompanion({
@@ -444,6 +522,8 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
     this.utcOffsetMinutes = const Value.absent(),
     this.source = const Value.absent(),
     this.note = const Value.absent(),
+    this.ferry = const Value.absent(),
+    this.dayEnd = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -455,6 +535,8 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
     required int utcOffsetMinutes,
     required EntrySource source,
     this.note = const Value.absent(),
+    this.ferry = const Value.absent(),
+    this.dayEnd = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : mode = Value(mode),
@@ -471,6 +553,8 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
     Expression<int>? utcOffsetMinutes,
     Expression<String>? source,
     Expression<String>? note,
+    Expression<bool>? ferry,
+    Expression<bool>? dayEnd,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -482,6 +566,8 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
       if (utcOffsetMinutes != null) 'utc_offset_minutes': utcOffsetMinutes,
       if (source != null) 'source': source,
       if (note != null) 'note': note,
+      if (ferry != null) 'ferry': ferry,
+      if (dayEnd != null) 'day_end': dayEnd,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -495,6 +581,8 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
     Value<int>? utcOffsetMinutes,
     Value<EntrySource>? source,
     Value<String?>? note,
+    Value<bool>? ferry,
+    Value<bool>? dayEnd,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
@@ -506,6 +594,8 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
       utcOffsetMinutes: utcOffsetMinutes ?? this.utcOffsetMinutes,
       source: source ?? this.source,
       note: note ?? this.note,
+      ferry: ferry ?? this.ferry,
+      dayEnd: dayEnd ?? this.dayEnd,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -543,6 +633,12 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
     if (note.present) {
       map['note'] = Variable<String>(note.value);
     }
+    if (ferry.present) {
+      map['ferry'] = Variable<bool>(ferry.value);
+    }
+    if (dayEnd.present) {
+      map['day_end'] = Variable<bool>(dayEnd.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(
         $ActivityPeriodsTable.$convertercreatedAt.toSql(createdAt.value),
@@ -566,6 +662,8 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
           ..write('utcOffsetMinutes: $utcOffsetMinutes, ')
           ..write('source: $source, ')
           ..write('note: $note, ')
+          ..write('ferry: $ferry, ')
+          ..write('dayEnd: $dayEnd, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1452,6 +1550,8 @@ typedef $$ActivityPeriodsTableCreateCompanionBuilder =
       required int utcOffsetMinutes,
       required EntrySource source,
       Value<String?> note,
+      Value<bool> ferry,
+      Value<bool> dayEnd,
       required DateTime createdAt,
       required DateTime updatedAt,
     });
@@ -1464,6 +1564,8 @@ typedef $$ActivityPeriodsTableUpdateCompanionBuilder =
       Value<int> utcOffsetMinutes,
       Value<EntrySource> source,
       Value<String?> note,
+      Value<bool> ferry,
+      Value<bool> dayEnd,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
     });
@@ -1513,6 +1615,16 @@ class $$ActivityPeriodsTableFilterComposer
 
   ColumnFilters<String> get note => $composableBuilder(
     column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get ferry => $composableBuilder(
+    column: $table.ferry,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get dayEnd => $composableBuilder(
+    column: $table.dayEnd,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1573,6 +1685,16 @@ class $$ActivityPeriodsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get ferry => $composableBuilder(
+    column: $table.ferry,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get dayEnd => $composableBuilder(
+    column: $table.dayEnd,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -1615,6 +1737,12 @@ class $$ActivityPeriodsTableAnnotationComposer
 
   GeneratedColumn<String> get note =>
       $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<bool> get ferry =>
+      $composableBuilder(column: $table.ferry, builder: (column) => column);
+
+  GeneratedColumn<bool> get dayEnd =>
+      $composableBuilder(column: $table.dayEnd, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<DateTime, DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -1667,6 +1795,8 @@ class $$ActivityPeriodsTableTableManager
                 Value<int> utcOffsetMinutes = const Value.absent(),
                 Value<EntrySource> source = const Value.absent(),
                 Value<String?> note = const Value.absent(),
+                Value<bool> ferry = const Value.absent(),
+                Value<bool> dayEnd = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
               }) => ActivityPeriodsCompanion(
@@ -1677,6 +1807,8 @@ class $$ActivityPeriodsTableTableManager
                 utcOffsetMinutes: utcOffsetMinutes,
                 source: source,
                 note: note,
+                ferry: ferry,
+                dayEnd: dayEnd,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),
@@ -1689,6 +1821,8 @@ class $$ActivityPeriodsTableTableManager
                 required int utcOffsetMinutes,
                 required EntrySource source,
                 Value<String?> note = const Value.absent(),
+                Value<bool> ferry = const Value.absent(),
+                Value<bool> dayEnd = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
               }) => ActivityPeriodsCompanion.insert(
@@ -1699,6 +1833,8 @@ class $$ActivityPeriodsTableTableManager
                 utcOffsetMinutes: utcOffsetMinutes,
                 source: source,
                 note: note,
+                ferry: ferry,
+                dayEnd: dayEnd,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),
