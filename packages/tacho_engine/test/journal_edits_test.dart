@@ -90,6 +90,27 @@ void main() {
   });
 
   group('корректировка суточного вождения', () {
+    // Первой записи журнала отдать время некому: журнал просто начинается
+    // позже. Дыры между записями не появляется, вождение уменьшается.
+    test('−N мин на первой записи журнала сдвигают начало журнала', () {
+      final periods = closedLog(now.subtract(const Duration(hours: 3)), [
+        drive('2:00'),
+        work('1:00'),
+      ]);
+      final open = [
+        ...periods,
+        ActivityPeriod(mode: DriverMode.rest, start: now),
+      ];
+      final r = adjustDriving(open, open.first.start, -minutes(10), now);
+      expect(r.applied, -minutes(10));
+      expectContiguous(r.periods);
+      expect(
+        sortedByStart(r.periods).first.start,
+        now.subtract(const Duration(hours: 2, minutes: 50)),
+      );
+      expect(calc(r.periods, now).timeline.shifts.single.driving, minutes(110));
+    });
+
     test('+N мин нельзя больше длины предыдущего отрезка', () {
       final periods = logUntil(now, [
         rest('11:00'),

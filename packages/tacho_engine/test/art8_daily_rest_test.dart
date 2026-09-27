@@ -258,6 +258,52 @@ void main() {
         ),
       );
     });
+
+    // 9 ч в экипаже — сокращённый отдых (ст. 4(g), 8(4)): руководство DVSA
+    // по правилам ЕС прямо относит его к лимиту трёх сокращённых.
+    test('экипаж: 9 ч отдыха — сокращённые, после трёх рабочий день 19 ч', () {
+      final periods = logUntil(now, [
+        rest('45:00'),
+        ...repeat(3, [drive('4:00'), work('8:00'), rest('9:00')]),
+        drive('4:00'),
+        work('15:01'),
+      ]);
+      final m = calc(
+        periods,
+        now,
+        settings: const ComplianceSettings(crew: CrewMode.team),
+      );
+      expect(m.reducedRestsUsed, 3);
+      expect(m.reducedRestsLeft, 0);
+      expect(m.shiftRegularLimit, const Duration(hours: 19));
+      expect(m.shiftLimit, const Duration(hours: 19));
+      expect(
+        m.infringement(InfringementType.shiftExceeded),
+        Infringement(
+          InfringementType.shiftExceeded,
+          time: minute,
+          limit: minutes(1140),
+        ),
+      );
+    });
+
+    test('экипаж: раздельный отдых 3 + 9 сохраняет 21 ч и без сокращений', () {
+      final periods = logUntil(now, [
+        rest('45:00'),
+        ...repeat(3, [drive('4:00'), work('8:00'), rest('9:00')]),
+        drive('4:00'),
+        rest('3:00'),
+        work('13:00'),
+      ]);
+      final m = calc(
+        periods,
+        now,
+        settings: const ComplianceSettings(crew: CrewMode.team),
+      );
+      expect(m.reducedRestsLeft, 0);
+      expect(m.shift?.splitFirstPart, isTrue);
+      expect(m.shiftLimit, const Duration(hours: 21));
+    });
   });
 
   group('ст. 8(4): не больше трёх сокращённых отдыхов между недельными', () {
@@ -428,6 +474,28 @@ void main() {
           rest('11:00'),
         ]);
         final done = journalShifts(log.periods, log.now).first;
+        expect(done.spanLevel, level);
+      });
+    }
+
+    for (final (span, level) in [
+      ('19:00', JournalLevel.ok),
+      ('19:01', JournalLevel.warn),
+      ('21:00', JournalLevel.warn),
+      ('21:01', JournalLevel.bad),
+    ]) {
+      test('экипаж: рабочий день $span — ${level.name}', () {
+        final log = logFrom(utc('2026-09-22 00:00'), [
+          rest('11:00'),
+          drive('4:00'),
+          work(dur(span) - minutes(240)),
+          rest('11:00'),
+        ]);
+        final done = journalShifts(
+          log.periods,
+          log.now,
+          crew: CrewMode.team,
+        ).first;
         expect(done.spanLevel, level);
       });
     }

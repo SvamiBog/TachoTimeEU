@@ -83,6 +83,32 @@ enum InfringementType {
     '8(6)',
   ),
 
+  /// Срок недельного отдыха прошёл, а отдых начат вовремя и ещё идёт: его
+  /// нельзя прерывать, пока он не станет недельным. [Infringement.time] —
+  /// сколько ещё отдыхать (до 24 ч, а если сокращённый недоступен — до 45 ч).
+  weeklyRestContinue(
+    InfringementSeverity.warning,
+    InfringementCategory.weeklyRest,
+    '8(6)',
+  ),
+
+  /// Срок компенсации сокращённого недельного отдыха меньше чем через
+  /// неделю. [Infringement.time] — сколько отдыха добавить,
+  /// [Infringement.days] — дней до срока.
+  compensationSoon(
+    InfringementSeverity.warning,
+    InfringementCategory.weeklyRest,
+    '8(6)',
+  ),
+
+  /// Компенсация не взята до конца третьей недели. [Infringement.time] —
+  /// несданный долг, [Infringement.days] — дней просрочки.
+  compensationOverdue(
+    InfringementSeverity.violation,
+    InfringementCategory.weeklyRest,
+    '8(6)',
+  ),
+
   /// Больше трёх сокращённых суточных отдыхов. [Infringement.count] — сколько
   /// использовано.
   reducedRestsExceeded(

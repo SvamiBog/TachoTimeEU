@@ -81,7 +81,8 @@ class JournalShift {
   /// 10 ч вождения — плохо, больше 9 ч — продление.
   final JournalLevel driveLevel;
 
-  /// Больше 15 ч — плохо, больше 13 ч — только при сокращённом отдыхе.
+  /// Больше 15 ч — плохо, больше 13 ч — только при сокращённом отдыхе
+  /// (экипаж — 21 ч и 19 ч).
   final JournalLevel spanLevel;
   final JournalLevel restLevel;
 }
@@ -124,15 +125,12 @@ List<JournalWeek> buildJournal({
   CrewMode crew = CrewMode.solo,
 }) {
   final manual = manualShifts.toList();
-  final team = crew == CrewMode.team;
+  final window = workdayWindow(crew);
 
+  // Один водитель: 13 ч / 15 ч, экипаж: 19 ч / 21 ч.
   JournalLevel spanLevel(Duration span) {
-    if (team) {
-      final limit = EuLimits.teamWorkdayWindow - EuLimits.teamDailyRest;
-      return span > limit ? JournalLevel.bad : JournalLevel.ok;
-    }
-    if (span > EuLimits.workdayWithReducedRest) return JournalLevel.bad;
-    return span > EuLimits.workdayWithRegularRest
+    if (span > window - EuLimits.dailyRestReduced) return JournalLevel.bad;
+    return span > window - EuLimits.dailyRestRegular
         ? JournalLevel.warn
         : JournalLevel.ok;
   }

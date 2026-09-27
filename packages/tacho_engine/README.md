@@ -59,13 +59,13 @@ dart test
 | Суточное вождение 9 ч / 10 ч дважды в неделю | 6(1) | `dailyDriving`, `dailyDrivingLimit`, `dailyDrivingRemaining`, `extensionsLeft` |
 | Недельное вождение 56 ч | 6(2) | `weeklyDriving`, `weeklyDrivingRemaining` |
 | Две недели 90 ч | 6(3) | `fortnightDriving`, `fortnightDrivingRemaining`, `fortnightLimiting` |
-| Рабочий день 13 / 15 ч (экипаж 21 ч) | 8(2) | `shiftDuration`, `shiftLimit`, `shiftRemaining`, `dailyRestDeadline` |
+| Рабочий день 13 / 15 ч (экипаж 19 / 21 ч) | 8(2), 8(5) | `shiftDuration`, `shiftLimit`, `shiftRemaining`, `dailyRestDeadline` |
 | Суточный отдых 11 / 9 ч, не больше трёх сокращённых | 8(2), 8(4) | `offDutyRest`, `dailyRestRemaining`, `reducedRestsLeft` |
 | Недельный отдых 45 / 24 ч + компенсация | 8(6) | `weeklyRestRemaining`, `lastWeeklyRest`, `reducedWeeklyRestAvailable`, `compensation` |
 | 144 ч между недельными отдыхами | 8(6) | `workWeekDuration`, `weeklyRestDeadline`, `workWeekRemaining` |
 | Считывание карты раз в 28 дней | 581/2010 | `cardDaysLeft` |
 
-Предупреждения и нарушения — `infringements`, вид задаёт `InfringementType` (важность, категория, статья), параметры — `time`, `limit`, `requiredBreak`, `count`, `days`.
+Предупреждения и нарушения — `infringements`, вид задаёт `InfringementType` (важность, категория, статья), параметры — `time`, `limit`, `requiredBreak`, `count`, `days`. Как движок толкует спорные места регламента (экипаж, компенсация, отдых после 144 ч) — [`docs/domain/eu-561-rules.md`](../../docs/domain/eu-561-rules.md).
 
 ## Тесты
 
