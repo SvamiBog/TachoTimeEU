@@ -45,7 +45,7 @@
 ## Уровень 2 — сборка и код
 
 Сборка:
-- `flutter build appbundle --release --obfuscate --split-debug-info=<папка символов> --dart-define-from-file=config/prod.json`, для iOS — те же флаги в `flutter build ipa`.
+- `flutter build appbundle --release --obfuscate --split-debug-info=<папка символов> --dart-define-from-file=config/prod.json`, для iOS (после релиза, вместе с iOS-версией) — те же флаги в `flutter build ipa`.
 - Папка символов не в git. Храним её для каждой версии (без неё не расшифровать краши) и загружаем в crash reporting.
 - R8 для Android-части: в release включён по умолчанию, не отключать.
 
@@ -59,13 +59,13 @@
 ## Уровень 3 — токен доступа от своего сервера
 
 Premium = действующий токен, подписанный сервером лицензий. Статус из RevenueCat нужен только для покупки и как сигнал обновить токен. Сервер выдаёт токен, только если:
-- приложение настоящее: Play Integrity на Android (сборка из Google Play, не пересобрана) или App Attest на iOS;
+- приложение настоящее: Play Integrity на Android (сборка из Google Play, не пересобрана); App Attest на iOS — вместе с iOS-версией после релиза;
 - в RevenueCat активен entitlement `premium`.
 
 Что делает приложение:
 - При первом запуске создаёт `installId` (UUID v4) и хранит его в защищённом хранилище (`flutter_secure_storage`).
 - Запрашивает токен: при запуске, если токена нет или ему больше суток; после покупки, восстановления или изменения `CustomerInfo`. Без сети — работает на текущем токене до его срока (по умолчанию 7 дней).
-- Android — Play Integrity, стандартный запрос. iOS — App Attest: ключ создаётся один раз, первый запрос с attestation, дальше assertion. Оба — через свой platform channel (Kotlin / Swift).
+- Android — Play Integrity, стандартный запрос, через свой platform channel (Kotlin). iOS — App Attest (после релиза): ключ создаётся один раз, первый запрос с attestation, дальше assertion, platform channel на Swift.
 - Проверяет токен: подпись Ed25519 по `kid` из списка публичных ключей, `iss`, `ins == installId`, `exp` в будущем, `ent` содержит `premium`. Токен хранится в защищённом хранилище.
 - Защита от перевода часов: хранит максимальное увиденное время. Если текущее время меньше него больше чем на 10 минут — Premium выключается до получения нового токена.
 - Если сервер недоступен сразу после покупки — показывает «Покупка прошла, активируем Premium» и повторяет запрос. Временный Premium по одному статусу RevenueCat не выдаём: иначе правка кэша на телефоне с root снова открывает функции.
@@ -79,7 +79,7 @@ Premium = действующий токен, подписанный сервер
 | `LICENSE_API_URL` | Адрес сервера лицензий |
 | `LICENSE_PUBLIC_KEYS` | Публичные ключи Ed25519: `k1:<base64>`, через запятую — для смены ключа |
 | `REVENUECAT_ANDROID_KEY` | Публичный SDK-ключ RevenueCat для Google Play (`goog_…`) |
-| `REVENUECAT_IOS_KEY` | Публичный SDK-ключ RevenueCat для App Store (`appl_…`) |
+| `REVENUECAT_IOS_KEY` | Публичный SDK-ключ RevenueCat для App Store (`appl_…`). После релиза, вместе с iOS-версией |
 | `PLAY_CLOUD_PROJECT_NUMBER` | Номер проекта Google Cloud, привязанного к Play Integrity |
 
 ## Что закрыто и что нет

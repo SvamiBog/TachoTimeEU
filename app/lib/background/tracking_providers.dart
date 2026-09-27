@@ -16,3 +16,11 @@ final trackingServiceProvider = Provider<TrackingService>(
 final autoDetectSettingsProvider = StreamProvider<AutoDetectSettings>(
   (ref) => ref.watch(settingsRepositoryProvider).watchAutoDetect(),
 );
+
+/// Разрешения геолокации и уведомлений, экономия батареи — для подсказок
+/// в онбординге и настройках. Экраны обновляют его, когда водитель
+/// возвращается из настроек системы.
+final FutureProvider<TrackingHealth> trackingHealthProvider =
+    FutureProvider.autoDispose(
+      (ref) => ref.watch(trackingServiceProvider).health(),
+    );

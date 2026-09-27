@@ -2122,6 +2122,486 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Стр. {page} из {pages}'**
   String reportPage(int page, int pages);
+
+  /// Кнопка: настройки телефона
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть настройки'**
+  String get openSystemSettings;
+
+  /// No description provided for @settingsGeneral.
+  ///
+  /// In ru, this message translates to:
+  /// **'Общее'**
+  String get settingsGeneral;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Язык'**
+  String get settingsLanguage;
+
+  /// Язык интерфейса — системный
+  ///
+  /// In ru, this message translates to:
+  /// **'Как в телефоне'**
+  String get settingsLanguageSystem;
+
+  /// No description provided for @settingsTheme.
+  ///
+  /// In ru, this message translates to:
+  /// **'Оформление'**
+  String get settingsTheme;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In ru, this message translates to:
+  /// **'Система'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In ru, this message translates to:
+  /// **'Светлая'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тёмная'**
+  String get themeDark;
+
+  /// No description provided for @settingsRules.
+  ///
+  /// In ru, this message translates to:
+  /// **'Правила'**
+  String get settingsRules;
+
+  /// No description provided for @settingsTachograph.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тахограф в машине'**
+  String get settingsTachograph;
+
+  /// No description provided for @tachographDigital.
+  ///
+  /// In ru, this message translates to:
+  /// **'Цифровой'**
+  String get tachographDigital;
+
+  /// No description provided for @tachographAnalog.
+  ///
+  /// In ru, this message translates to:
+  /// **'Аналоговый'**
+  String get tachographAnalog;
+
+  /// No description provided for @settingsMobility.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пакет мобильности'**
+  String get settingsMobility;
+
+  /// No description provided for @settingsMobilityHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Два сокращённых недельных отдыха подряд при международных перевозках'**
+  String get settingsMobilityHint;
+
+  /// No description provided for @settingsCrew.
+  ///
+  /// In ru, this message translates to:
+  /// **'Экипаж из двух водителей'**
+  String get settingsCrew;
+
+  /// No description provided for @settingsCrewHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Суточный отдых 9 ч в пределах 30 ч от начала смены'**
+  String get settingsCrewHint;
+
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsWarnLead.
+  ///
+  /// In ru, this message translates to:
+  /// **'Предупреждать о лимитах'**
+  String get settingsWarnLead;
+
+  /// No description provided for @settingsWarnLeadHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерыв, конец дня, вождение'**
+  String get settingsWarnLeadHint;
+
+  /// Название группы вариантов для диктора
+  ///
+  /// In ru, this message translates to:
+  /// **'Предупреждать заранее'**
+  String get settingsWarnLeadGroup;
+
+  /// Порог предупреждения: «15 мин»
+  ///
+  /// In ru, this message translates to:
+  /// **'{minutes} мин'**
+  String leadMinutes(int minutes);
+
+  /// Порог предупреждения: «1 час»
+  ///
+  /// In ru, this message translates to:
+  /// **'{hours, plural, one{{hours} час} few{{hours} часа} many{{hours} часов} other{{hours} часа}}'**
+  String leadHours(int hours);
+
+  /// No description provided for @notifyBreak.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерыв'**
+  String get notifyBreak;
+
+  /// No description provided for @notifyShiftEnd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конец рабочего дня'**
+  String get notifyShiftEnd;
+
+  /// No description provided for @notifyDriving.
+  ///
+  /// In ru, this message translates to:
+  /// **'Лимит вождения'**
+  String get notifyDriving;
+
+  /// No description provided for @notifyCard.
+  ///
+  /// In ru, this message translates to:
+  /// **'Считывание карты'**
+  String get notifyCard;
+
+  /// No description provided for @notifyCardHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Каждые 28 дней'**
+  String get notifyCardHint;
+
+  /// No description provided for @notifyCardLead.
+  ///
+  /// In ru, this message translates to:
+  /// **'Предупредить за'**
+  String get notifyCardLead;
+
+  /// Название группы вариантов для диктора
+  ///
+  /// In ru, this message translates to:
+  /// **'Предупредить о считывании карты за'**
+  String get notifyCardLeadGroup;
+
+  /// Срок напоминания о карте: «7 дней»
+  ///
+  /// In ru, this message translates to:
+  /// **'{days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}'**
+  String leadDays(int days);
+
+  /// No description provided for @notifyAllow.
+  ///
+  /// In ru, this message translates to:
+  /// **'Разрешить уведомления'**
+  String get notifyAllow;
+
+  /// No description provided for @notifyDenied.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сейчас уведомления запрещены в телефоне'**
+  String get notifyDenied;
+
+  /// No description provided for @notifyAllowed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления разрешены'**
+  String get notifyAllowed;
+
+  /// No description provided for @autoTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Автоопределение вождения'**
+  String get autoTitle;
+
+  /// No description provided for @autoSwitch.
+  ///
+  /// In ru, this message translates to:
+  /// **'Определять вождение по GPS'**
+  String get autoSwitch;
+
+  /// No description provided for @autoSwitchHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поехали — вождение, остановились — другая работа. Нужна только скорость: координаты не сохраняются.'**
+  String get autoSwitchHint;
+
+  /// No description provided for @autoAfterStop.
+  ///
+  /// In ru, this message translates to:
+  /// **'После остановки'**
+  String get autoAfterStop;
+
+  /// No description provided for @autoAfterStopHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Через 3 минуты стоянки'**
+  String get autoAfterStopHint;
+
+  /// No description provided for @autoStartFromRest.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение сразу после отдыха'**
+  String get autoStartFromRest;
+
+  /// No description provided for @autoStartFromRestHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Иначе приложение сначала спросит: вы могли ехать пассажиром'**
+  String get autoStartFromRestHint;
+
+  /// No description provided for @autoBattery.
+  ///
+  /// In ru, this message translates to:
+  /// **'Экономия батареи'**
+  String get autoBattery;
+
+  /// No description provided for @autoBatteryLimited.
+  ///
+  /// In ru, this message translates to:
+  /// **'Может остановить автоопределение. Уберите TachoGo из списка экономии'**
+  String get autoBatteryLimited;
+
+  /// No description provided for @autoBatteryOk.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не мешает работе в фоне'**
+  String get autoBatteryOk;
+
+  /// No description provided for @autoAutostart.
+  ///
+  /// In ru, this message translates to:
+  /// **'Автозапуск и работа в фоне'**
+  String get autoAutostart;
+
+  /// No description provided for @autoAutostartHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Xiaomi, Huawei, Honor, Oppo, Vivo, Samsung: разрешите, иначе телефон остановит автоопределение'**
+  String get autoAutostartHint;
+
+  /// No description provided for @autoBlockedService.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геолокация выключена в телефоне. Включите её, чтобы определять вождение.'**
+  String get autoBlockedService;
+
+  /// No description provided for @autoBlockedDenied.
+  ///
+  /// In ru, this message translates to:
+  /// **'Без доступа к геолокации вождение не определить. Приложению нужна только скорость, координаты не сохраняются.'**
+  String get autoBlockedDenied;
+
+  /// No description provided for @autoBlockedForever.
+  ///
+  /// In ru, this message translates to:
+  /// **'Доступ к геолокации запрещён. Разрешите его в настройках телефона: Геолокация → «При использовании приложения».'**
+  String get autoBlockedForever;
+
+  /// No description provided for @autoNoAccess.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет доступа к геолокации — автоопределение не работает. Разрешите его в настройках телефона.'**
+  String get autoNoAccess;
+
+  /// No description provided for @autoEnable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Включить автоопределение'**
+  String get autoEnable;
+
+  /// No description provided for @autoEnabled.
+  ///
+  /// In ru, this message translates to:
+  /// **'Автоопределение включено'**
+  String get autoEnabled;
+
+  /// No description provided for @settingsData.
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные'**
+  String get settingsData;
+
+  /// No description provided for @settingsExport.
+  ///
+  /// In ru, this message translates to:
+  /// **'Экспорт отчёта'**
+  String get settingsExport;
+
+  /// No description provided for @settingsExportFormats.
+  ///
+  /// In ru, this message translates to:
+  /// **'PDF · CSV'**
+  String get settingsExportFormats;
+
+  /// No description provided for @settingsAnalytics.
+  ///
+  /// In ru, this message translates to:
+  /// **'Анонимная статистика'**
+  String get settingsAnalytics;
+
+  /// No description provided for @settingsAnalyticsHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Какие экраны открывают водители — чтобы улучшать приложение. Без координат, имён и номеров карт.'**
+  String get settingsAnalyticsHint;
+
+  /// No description provided for @settingsClear.
+  ///
+  /// In ru, this message translates to:
+  /// **'Очистить все данные'**
+  String get settingsClear;
+
+  /// No description provided for @clearTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Очистить все данные?'**
+  String get clearTitle;
+
+  /// No description provided for @clearText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал режимов, смены, страны, заметки и считывания карты будут удалены. Отменить это нельзя. Настройки останутся.'**
+  String get clearText;
+
+  /// No description provided for @clearConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Очистить'**
+  String get clearConfirm;
+
+  /// No description provided for @clearDone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные удалены'**
+  String get clearDone;
+
+  /// Индикатор шагов онбординга для диктора
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаг {step} из {count}'**
+  String onbStep(int step, int count);
+
+  /// No description provided for @onbWelcomeTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время за рулём — под контролем'**
+  String get onbWelcomeTitle;
+
+  /// No description provided for @onbWelcomeText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Считаем вождение, перерывы и отдых по правилам ЕС 561/2006 и ЕСТР и заранее предупреждаем о лимитах.'**
+  String get onbWelcomeText;
+
+  /// No description provided for @onbStart.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать'**
+  String get onbStart;
+
+  /// No description provided for @onbNext.
+  ///
+  /// In ru, this message translates to:
+  /// **'Далее'**
+  String get onbNext;
+
+  /// No description provided for @onbDone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Готово'**
+  String get onbDone;
+
+  /// No description provided for @onbModesTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Четыре режима — как на тахографе'**
+  String get onbModesTitle;
+
+  /// No description provided for @onbModesText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переключайте режим кнопками на главном экране. Таймеры считаются сами — даже когда приложение закрыто.'**
+  String get onbModesText;
+
+  /// No description provided for @onbModeDriving.
+  ///
+  /// In ru, this message translates to:
+  /// **'За рулём. Считаем непрерывное, суточное и недельное вождение.'**
+  String get onbModeDriving;
+
+  /// No description provided for @onbModeWork.
+  ///
+  /// In ru, this message translates to:
+  /// **'Погрузка, осмотр машины, документы.'**
+  String get onbModeWork;
+
+  /// No description provided for @onbModeAvailability.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ожидание: очередь на погрузку, граница, второй водитель в пути.'**
+  String get onbModeAvailability;
+
+  /// No description provided for @onbModeRest.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерывы и отдых. «Завершить день» закрывает смену.'**
+  String get onbModeRest;
+
+  /// No description provided for @onbSetupTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Настроим под вас'**
+  String get onbSetupTitle;
+
+  /// No description provided for @onbSetupText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё это можно поменять позже в настройках.'**
+  String get onbSetupText;
+
+  /// No description provided for @onbMobilityHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Включите, если ездите по международным рейсам'**
+  String get onbMobilityHint;
+
+  /// No description provided for @onbNotifyText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Предупредим за {minutes, plural, one{{minutes} минуту} few{{minutes} минуты} many{{minutes} минут} other{{minutes} минуты}} до перерыва и конца рабочего дня — даже когда приложение закрыто.'**
+  String onbNotifyText(int minutes);
+
+  /// No description provided for @onbAutoText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поехали — приложение включит вождение, остановились — другую работу. После отдыха оно сначала спросит. Нужна только скорость по GPS: координаты не сохраняются и никуда не отправляются.'**
+  String get onbAutoText;
+
+  /// No description provided for @onbAutoLater.
+  ///
+  /// In ru, this message translates to:
+  /// **'Можно включить позже в настройках.'**
+  String get onbAutoLater;
+
+  /// Кнопка языка в онбординге для диктора
+  ///
+  /// In ru, this message translates to:
+  /// **'Язык: {language}'**
+  String languageButton(String language);
 }
 
 class _AppLocalizationsDelegate

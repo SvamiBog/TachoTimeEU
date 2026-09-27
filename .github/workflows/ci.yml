@@ -5,6 +5,8 @@ on:
     branches: [main]
     tags: ['v*']
   pull_request:
+  # Ручной запуск: все проверки и сборка iOS (она не идёт в PR и на main).
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -235,10 +237,13 @@ jobs:
             app/build/app/outputs/bundle/release/*.aab
           if-no-files-found: error
 
-  # Mac в команде нет: CI проверяет, что iOS-часть собирается — Info.plist,
-  # плагины, нативные зависимости. Без подписи, в TestFlight не уходит.
+  # iOS приостановлен до релиза v1.0 (решение 2026-09-27, docs/roadmap.md,
+  # Фаза 8): сборка не блокирует PR и не тратит время macOS. Запуск вручную
+  # (Actions → CI → Run workflow) — проверить, что iOS-часть ещё собирается.
+  # Без подписи, в TestFlight не уходит.
   build-ios:
-    name: Сборка iOS
+    name: Сборка iOS (вручную)
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     needs: [engine, app]
     runs-on: macos-latest
     defaults:

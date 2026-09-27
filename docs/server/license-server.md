@@ -10,11 +10,13 @@
 
 Шаблон переменных — [license-server.env.example](license-server.env.example).
 
+К релизу v1.0 сервер нужен только для Android (Play Integrity): iOS-версия — после релиза (решение 2026-09-27). Раздел 5 (App Attest), iOS-запросы и iOS-пункты проверки делаем вместе с ней; формат запроса с полем `platform` оставляем, чтобы добавить iOS без смены API.
+
 ## 1. Что подготовить
 
 - Приложение в Google Play Console (хотя бы на треке внутреннего тестирования).
 - Проект в Google Cloud (можно тот же, что для Firebase).
-- Apple Developer Program, приложение в App Store Connect.
+- Apple Developer Program, приложение в App Store Connect — после релиза, для iOS-версии.
 - Проект в RevenueCat.
 - Два окружения сервера: `dev` и `prod`, с **разными** ключами подписи и БД.
 
@@ -62,7 +64,7 @@ openssl pkey -in license_prod_k1.pem -pubout -outform DER | tail -c 32 | base64
 
 Проверка работает только для приложения, установленного из Google Play. Сборка, поставленная через `adb install`, получит `UNRECOGNIZED_VERSION` — это ожидаемо.
 
-## 5. Apple App Attest
+## 5. Apple App Attest (после релиза, вместе с iOS-версией)
 
 1. Apple Developer → Identifiers → App ID приложения → включить **App Attest**. В Xcode добавить capability App Attest.
 2. `APPLE_TEAM_ID` — Membership details, 10 символов. `APPLE_BUNDLE_ID` — bundle ID приложения.
@@ -279,11 +281,11 @@ JWT, подпись EdDSA (Ed25519).
 ## 10. Проверка перед релизом
 
 - [ ] У dev и prod разные ключи подписи. В prod-сборке приложения только prod-ключи.
-- [ ] В prod `INTEGRITY_MODE=enforce`, `APPLE_APP_ATTEST_ENV=production`.
+- [ ] В prod `INTEGRITY_MODE=enforce` (с iOS-версией — ещё `APPLE_APP_ATTEST_ENV=production`).
 - [ ] Установка с внутреннего тестирования Google Play → токен выдан.
 - [ ] Тот же APK через `adb install` → `403 integrity_failed`.
 - [ ] Пересобранный и переподписанный APK → `403 integrity_failed`.
-- [ ] Сборка из TestFlight → токен выдан.
+- [ ] После релиза, с iOS-версией: сборка из TestFlight → токен выдан.
 - [ ] Покупка в sandbox → токен выдан. Отмена или возврат → при следующем запросе `402`, Premium выключен.
 - [ ] Перенос: загрузка с токеном → скачивание на втором устройстве → импорт → `DELETE`.
 - [ ] Загрузка без токена или с просроченным → `401`.

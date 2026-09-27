@@ -18,6 +18,11 @@ enum TrackingBlocker {
   locationDeniedForever,
 }
 
+/// Разрешения и ограничения ОС, от которых зависит автоопределение, — для
+/// подсказок в онбординге и настройках. `battery` — приложение не в списке
+/// экономии батареи (на iOS такого списка нет — всегда true).
+typedef TrackingHealth = ({bool location, bool notifications, bool battery});
+
 /// Запуск и остановка автоопределения вождения из приложения.
 ///
 /// - Android: foreground service с типом location в своём движке
@@ -88,6 +93,41 @@ class TrackingService {
     }
   }
 
+  /// Состояние разрешений сейчас. Ничего не запрашивает — вызывать можно
+  /// при каждом возврате в приложение из настроек системы.
+  Future<TrackingHealth> health() async => (
+    location: await _hasLocationAccess(),
+    notifications: await notificationsAllowed,
+    battery: await isIgnoringBatteryOptimizations,
+  );
+
+  /// Android: есть экономия батареи и экраны автозапуска оболочек.
+  bool get hasBackgroundRestrictions => _platform.isAndroid;
+
+  /// Уведомления разрешены: таймеры в уведомлении сервиса, предупреждения
+  /// о лимитах (Фаза 3).
+  Future<bool> get notificationsAllowed async =>
+      await _platform.checkNotificationPermission() ==
+      NotificationPermission.granted;
+
+  /// Системный запрос разрешения на уведомления (Android 13+, iOS). Вызывать
+  /// из UI. Возвращает, разрешены ли уведомления после ответа водителя.
+  Future<bool> requestNotifications() async {
+    if (await notificationsAllowed) return true;
+    return await _platform.requestNotificationPermission() ==
+        NotificationPermission.granted;
+  }
+
+  /// Геолокация выключена в телефоне — открыть её настройки.
+  Future<void> openLocationSettings() async {
+    await _platform.openLocationSettings();
+  }
+
+  /// Доступ запрещён навсегда — открыть настройки приложения в системе.
+  Future<void> openAppSettings() async {
+    await _platform.openAppSettings();
+  }
+
   /// Android: приложение не в списке экономии батареи. Иначе Doze и
   /// оболочки производителей останавливают сервис.
   Future<bool> get isIgnoringBatteryOptimizations async =>
@@ -108,6 +148,16 @@ class TrackingService {
     return await _platform.openAutostartSettings();
   }
 
+  /// Что сейчас мешает включить автоопределение; null — ничего. Разрешений
+  /// не запрашивает: экран проверяет, исправил ли водитель причину в
+  /// настройках системы.
+  Future<TrackingBlocker?> locationBlocker() async {
+    if (!await _platform.isLocationServiceEnabled()) {
+      return TrackingBlocker.locationServiceDisabled;
+    }
+    return _blockerOf(await _platform.checkPermission());
+  }
+
   Future<TrackingBlocker?> _requestLocation() async {
     if (!await _platform.isLocationServiceEnabled()) {
       return TrackingBlocker.locationServiceDisabled;
@@ -116,13 +166,17 @@ class TrackingService {
     if (permission == LocationPermission.denied) {
       permission = await _platform.requestPermission();
     }
-    return switch (permission) {
-      LocationPermission.whileInUse || LocationPermission.always => null,
-      LocationPermission.deniedForever => TrackingBlocker.locationDeniedForever,
-      LocationPermission.denied ||
-      LocationPermission.unableToDetermine => TrackingBlocker.locationDenied,
-    };
+    return _blockerOf(permission);
   }
+
+  static TrackingBlocker? _blockerOf(LocationPermission permission) =>
+      switch (permission) {
+        LocationPermission.whileInUse || LocationPermission.always => null,
+        LocationPermission.deniedForever =>
+          TrackingBlocker.locationDeniedForever,
+        LocationPermission.denied ||
+        LocationPermission.unableToDetermine => TrackingBlocker.locationDenied,
+      };
 
   Future<bool> _hasLocationAccess() async =>
       switch (await _platform.checkPermission()) {

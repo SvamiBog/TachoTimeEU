@@ -5,15 +5,18 @@ import 'package:tachogo/core/theme/app_typography.dart';
 
 /// Заголовок раздела: «СЕГОДНЯ».
 class SectionTitle extends StatelessWidget {
-  const new(this.text, {super.key});
+  const new(this.text, {this.top = AppSpacing.beforeSectionMax, super.key});
 
   final String text;
 
+  /// Отступ сверху: перед разделом 24–28 dp, первый раздел под шапкой — 12.
+  final double top;
+
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(
+    padding: EdgeInsets.fromLTRB(
       AppSpacing.screenPadding + 4,
-      AppSpacing.beforeSectionMax,
+      top,
       AppSpacing.screenPadding + 4,
       10,
     ),
