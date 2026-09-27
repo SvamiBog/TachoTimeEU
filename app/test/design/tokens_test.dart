@@ -49,6 +49,10 @@ void main() {
       'body': AppTextStyles.body,
       'caption': AppTextStyles.caption,
       'section': AppTextStyles.section,
+      'modeTimer': AppTextStyles.modeTimer,
+      'button': AppTextStyles.button,
+      'label': AppTextStyles.label,
+      'small': AppTextStyles.small,
     };
 
     test('шрифты: Onest для интерфейса, JetBrains Mono для цифр', () {
@@ -58,6 +62,7 @@ void main() {
 
     test('в коде ровно те стили, что в tokens.json', () {
       expect(styles.keys.toSet(), section(tokens, 'typography').keys.toSet());
+      expect(AppTextStyles.all, unorderedEquals(styles.values));
     });
 
     for (final MapEntry(key: name, value: style) in styles.entries) {
@@ -228,6 +233,10 @@ void main() {
         'Основной текст': 'body',
         'Подпись под значением': 'caption',
         'Раздел': 'section',
+        'Таймер режима': 'modeTimer',
+        'Кнопка': 'button',
+        'Метка: чипы, навигация, подпись кольца': 'label',
+        'Мелкий текст': 'small',
       };
       final fonts = section(tokens, 'font');
       final rows = tableRows(readme, '## Типографика');
