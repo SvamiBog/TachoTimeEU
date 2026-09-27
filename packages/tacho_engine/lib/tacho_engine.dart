@@ -10,6 +10,7 @@ export 'src/infringement.dart';
 export 'src/journal.dart';
 export 'src/journal_edits.dart';
 export 'src/manual_shift.dart';
+export 'src/shift_edits.dart';
 export 'src/shifts.dart';
 export 'src/time.dart' show durationBetween, week, weekStartUtc;
 export 'src/timeline.dart';
