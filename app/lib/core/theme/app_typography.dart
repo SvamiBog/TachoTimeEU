@@ -101,6 +101,22 @@ abstract final class AppTextStyles {
     fontFeatures: _tabular,
   );
 
+  /// Значение в ячейке: суммы смены в журнале, дата и время в форме смены.
+  static const valueSmall = TextStyle(
+    fontFamily: AppFonts.numeric,
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+    fontFeatures: _tabular,
+  );
+
+  /// Время в подписи: «06:30 → 19:10» в строке журнала.
+  static const numericCaption = TextStyle(
+    fontFamily: AppFonts.numeric,
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    fontFeatures: _tabular,
+  );
+
   static const List<TextStyle> all = [
     timer,
     screenTitle,
@@ -115,5 +131,7 @@ abstract final class AppTextStyles {
     label,
     small,
     valueLarge,
+    valueSmall,
+    numericCaption,
   ];
 }

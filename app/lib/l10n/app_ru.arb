@@ -751,5 +751,421 @@
         "type": "String"
       }
     }
+  },
+  "journalExport": "Экспорт отчёта",
+  "journalCurrent": "текущая",
+  "journalDriving": "Вождение",
+  "journalFortnight": "За 2 нед.",
+  "journalOf": "из {limit}",
+  "@journalOf": {
+    "description": "«21:40 из 56» — после суммы недели",
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "journalCollapsedDriving": "вождение",
+  "journalWeekSpoken": "Неделя {range}. Вождение {driving} из 56 ч, за две недели {fortnight} из 90 ч",
+  "@journalWeekSpoken": {
+    "description": "Для TalkBack: шапка недели",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "driving": {
+        "type": "String"
+      },
+      "fortnight": {
+        "type": "String"
+      }
+    }
+  },
+  "journalShift": "Смена",
+  "journalWeeklyShort": "нед.",
+  "journalOngoing": "идёт",
+  "journalManual": "вручную",
+  "journalAddShift": "Смена",
+  "journalAddShiftSpoken": "Добавить смену",
+  "journalEmpty": "Смен пока нет. Они появятся, когда вы начнёте переключать режимы, или добавьте смену вручную.",
+  "restStatus": "{status, select, full{полный} reduced{сокращённый} other{недостаточный}}",
+  "@restStatus": {
+    "description": "Оценка отдыха: RestStatus.name",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "journalWeeklyRest": "Недельный отдых · {status}",
+  "@journalWeeklyRest": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "journalShiftSpoken": "{date}, {route}, {time}. Вождение {driving}, смена {span}, отдых {rest}",
+  "@journalShiftSpoken": {
+    "description": "Для TalkBack: строка смены в журнале",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "route": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "driving": {
+        "type": "String"
+      },
+      "span": {
+        "type": "String"
+      },
+      "rest": {
+        "type": "String"
+      }
+    }
+  },
+  "journalRestNone": "нет",
+  "journalRestWeekly": "недельный",
+  "journalLoadError": "Не удалось открыть журнал. Перезапустите приложение — если не поможет, напишите нам через «Ещё».",
+  "dayTitle": "Смена",
+  "daySummary": "Итоги",
+  "dayModes": "Режимы",
+  "dayBreaks": "Перерывы",
+  "dayContinuousAtEnd": "Непрерывное на конец смены",
+  "dayRestAfter": "Отдых после смены",
+  "dayRestKind": "{kind, select, daily{Суточный} weekly{Недельный} other{Не начат}}",
+  "@dayRestKind": {
+    "description": "Вид отдыха после смены: RestKind.name",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "daySplitRest": "раздельный 3 + 9",
+  "dayManualHint": "Смена внесена вручную итогами — записей режимов у неё нет.",
+  "dayNotes": "Заметки",
+  "dayEndMark": "конец дня",
+  "dayEdit": "Изменить смену",
+  "dayNotFound": "Смены больше нет в журнале.",
+  "dayRestUntil": "до {time}",
+  "@dayRestUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "save": "Сохранить",
+  "cancel": "Отмена",
+  "done": "Готово",
+  "delete": "Удалить",
+  "unitHours": "ч",
+  "unitMinutes": "мин",
+  "pickerHours": "Часы",
+  "pickerMinutes": "Минуты",
+  "pickerTime": "Время",
+  "pickerPrevMonth": "Предыдущий месяц",
+  "pickerNextMonth": "Следующий месяц",
+  "pickerRange": "Можно от {min} до {max}",
+  "@pickerRange": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftNewTitle": "Новая смена",
+  "shiftSection": "Смена",
+  "shiftStart": "Начало",
+  "shiftEnd": "Конец",
+  "shiftOnRoad": "в пути",
+  "shiftChoose": "Выбрать",
+  "shiftNowOngoing": "Сейчас (идёт)",
+  "shiftDuration": "Длительность",
+  "shiftNowSuffix": "сейчас",
+  "shiftCountrySpoken": "{side}: страна {code}. Изменить",
+  "@shiftCountrySpoken": {
+    "description": "Для TalkBack: кнопка страны в форме смены",
+    "placeholders": {
+      "side": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftDateSpoken": "{side}: {date}, {time}. Изменить",
+  "@shiftDateSpoken": {
+    "description": "Для TalkBack: кнопки даты и времени в форме смены",
+    "placeholders": {
+      "side": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftDriving": "Вождение",
+  "shiftPerDay": "За день",
+  "shiftLiveContinuous": "считается по перерывам",
+  "shiftRestNone": "Не начат",
+  "shiftRestDaily": "Суточный",
+  "shiftRestWeekly": "Недельный",
+  "shiftSplit": "Раздельный отдых 3 + 9",
+  "shiftSplitHint": "Сначала 3 ч, затем 9 ч",
+  "shiftNotesHint": "Например: паром, ожидание загрузки",
+  "shiftDelete": "Удалить смену",
+  "shiftDeleteTitle": "Удалить смену?",
+  "shiftDeleteManual": "Смена будет удалена из журнала.",
+  "shiftDeleteRecorded": "Будут удалены все записи режимов этой смены. Отменить это нельзя.",
+  "shiftErrStartCountry": "Выберите страну начала смены",
+  "shiftErrEndCountry": "Укажите конечную страну смены",
+  "shiftErrEndBeforeStart": "Конец смены раньше начала",
+  "shiftErrFuture": "Время смены не может быть в будущем",
+  "shiftErrTooLong": "Смена длиннее 30 ч — проверьте даты",
+  "shiftErrDrivingTooLong": "Вождение больше длительности смены",
+  "shiftErrContinuous": "Непрерывное вождение больше суточного",
+  "shiftErrOverlap": "Пересекается со сменой {range}",
+  "@shiftErrOverlap": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftErrRestOverlap": "Отдых после смены заходит на смену {range}",
+  "@shiftErrRestOverlap": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftErrNotLast": "После этой смены есть другие — идти сейчас она не может",
+  "shiftSaveFailed": "Не удалось сохранить. Попробуйте ещё раз.",
+  "shiftLiveHint": "Смена идёт по записям режимов: изменения начала, конца и вождения сдвинут сами записи.",
+  "shiftConvertHint": "Время, вождение или отдых изменены — смена сохранится как ручная запись вместо записей режимов.",
+  "shiftEndNowHint": "Смена закончится в {time}, дальше пойдёт отдых.",
+  "@shiftEndNowHint": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftResumeHint": "Отдых после смены будет удалён — смена продолжится.",
+  "shiftOngoingHint": "Смена станет текущей и продолжится на главном экране с {time}. Режим «{mode}» — если сейчас другой, переключите его там.",
+  "@shiftOngoingHint": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftUnsavedTitle": "Сохранить изменения?",
+  "shiftUnsavedText": "Изменения в смене ещё не сохранены.",
+  "shiftDiscard": "Не сохранять",
+  "shiftDateTimeTitle": "Дата и время смены",
+  "driveEditSubtitle": "Ручная корректировка · {date}",
+  "@driveEditSubtitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "driveEditComputed": "Посчитано приложением",
+  "driveEditDiff": "{diff} к расчёту.",
+  "@driveEditDiff": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "driveEditNoChange": "Время без изменений.",
+  "driveEditHint": "Используйте, если режим переключили не вовремя — лимиты пересчитаются.",
+  "driveEditNoDrive": "В текущей смене ещё нет вождения — корректировать нечего.",
+  "breakCorrection": "Корректировка",
+  "breakCurrentDuration": "Текущий перерыв",
+  "breakLastDuration": "Последний перерыв",
+  "breakNoBreak": "В смене ещё нет перерыва — корректировать нечего.",
+  "breakEditHint": "Время возьмётся у соседней записи — лимиты пересчитаются.",
+  "workdayChangeStart": "Изменить начало смены",
+  "weeklyAddManually": "Указать вручную",
+  "exportPeriod": "Период",
+  "exportWeek": "Эта неделя",
+  "exportTwoWeeks": "2 недели",
+  "exportDays28": "28 дней",
+  "exportCustom": "Свой период",
+  "exportFrom": "С",
+  "exportTo": "По",
+  "exportFormat": "Формат",
+  "exportPdf": "PDF · для инспекции",
+  "exportCsv": "CSV · таблица",
+  "exportPdfHint": "Не официальная запись: отчёт не заменяет данные тахографа и карты водителя.",
+  "exportCsvHint": "Записи режимов по строкам, время в UTC — для Excel и программ учёта.",
+  "exportNotes": "Страны и заметки",
+  "exportCreate": "Создать отчёт",
+  "exportCount": "{count, plural, one{{count} смена} few{{count} смены} many{{count} смен} other{{count} смены}} в отчёте",
+  "@exportCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exportEmpty": "За выбранный период смен нет.",
+  "exportFailed": "Не удалось создать отчёт. Попробуйте ещё раз.",
+  "exportRangeSpoken": "Период с {from} по {to}",
+  "@exportRangeSpoken": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "reportTitle": "Отчёт о времени вождения и отдыха",
+  "reportSubtitle": "Регламент (ЕС) 561/2006 и Соглашение ЕСТР",
+  "reportDriver": "Водитель",
+  "reportCard": "Карта водителя",
+  "reportVehicle": "Госномер",
+  "reportCompany": "Перевозчик",
+  "reportPeriod": "Период",
+  "reportGenerated": "Сформирован",
+  "reportTimezone": "Время — по часовому поясу телефона ({zone}). Сутки и недели отчёта — по UTC, неделя с понедельника 00:00, как на тахографе.",
+  "@reportTimezone": {
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+  "reportDate": "Дата",
+  "reportStart": "Начало",
+  "reportEnd": "Конец",
+  "reportCountries": "Страны",
+  "reportDriving": "Вожд.",
+  "reportWork": "Работа",
+  "reportAvailability": "Готовн.",
+  "reportBreaks": "Перерывы",
+  "reportSpan": "Смена",
+  "reportRestAfter": "Отдых после",
+  "reportNotes": "Заметки",
+  "reportWeek": "Неделя {range}",
+  "@reportWeek": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "reportWeekTotal": "Итого: вождение {driving} из 56 ч · за 2 недели {fortnight} из 90 ч",
+  "@reportWeekTotal": {
+    "placeholders": {
+      "driving": {
+        "type": "String"
+      },
+      "fortnight": {
+        "type": "String"
+      }
+    }
+  },
+  "reportViolations": "Нарушения",
+  "reportNoViolations": "По журналу нарушений нет.",
+  "reportViolationDrive": "{date}: суточное вождение {time} — больше 10 ч",
+  "@reportViolationDrive": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reportViolationSpan": "{date}: рабочий день {time} — больше {limit} ч",
+  "@reportViolationSpan": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "reportViolationRest": "{date}: отдых после смены {time} — недостаточный",
+  "@reportViolationRest": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reportViolationWeek": "Неделя {range}: вождение {time} — больше 56 ч",
+  "@reportViolationWeek": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reportViolationFortnight": "Неделя {range}: за две недели {time} — больше 90 ч",
+  "@reportViolationFortnight": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reportMarks": "Отметки",
+  "reportMarkWarn": "! — продление вождения до 10 ч, рабочий день больше 13 ч или сокращённый отдых",
+  "reportMarkBad": "!! — нарушение",
+  "reportMarkManual": "* — смена внесена вручную итогами",
+  "reportDisclaimer": "Отчёт составлен по записям водителя в приложении TachoGo. Это не официальная запись: он не заменяет данные тахографа и карты водителя.",
+  "reportSignature": "Подпись водителя",
+  "reportPage": "Стр. {page} из {pages}",
+  "@reportPage": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "pages": {
+        "type": "int"
+      }
+    }
   }
 }

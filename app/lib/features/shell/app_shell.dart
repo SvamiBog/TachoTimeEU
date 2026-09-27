@@ -4,6 +4,7 @@ import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/features/home/home_screen.dart';
+import 'package:tachogo/features/journal/journal_screen.dart';
 
 /// Вкладки нижней навигации.
 enum AppTab { home, journal, settings, more }
@@ -29,7 +30,7 @@ class _AppShellState extends State<AppShell> {
         index: _tab.index,
         children: [
           const HomeScreen(),
-          TabPlaceholder(title: l.navJournal),
+          const JournalScreen(),
           TabPlaceholder(title: l.navSettings),
           TabPlaceholder(title: l.navMore),
         ],

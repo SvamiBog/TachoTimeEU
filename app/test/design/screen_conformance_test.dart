@@ -10,16 +10,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tachogo/app.dart';
+import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
+import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
 import 'package:tachogo/features/home/home_screen.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
+import 'package:tachogo/features/journal/journal_parts.dart';
+import 'package:tachogo/features/journal/journal_screen.dart';
+import 'package:tachogo/features/journal/shift_day_screen.dart';
+import 'package:tachogo/features/journal/shift_edit_screen.dart';
 import 'package:tachogo/features/shell/app_shell.dart';
 
 import '../support/app_harness.dart';
@@ -50,6 +56,49 @@ Future<void> _openCountrySheet(WidgetTester tester) async {
   expect(find.byType(CountrySheet), findsOneWidget);
 }
 
+/// Идущая смена с макета «Главная».
+final _shiftStart = DateTime.utc(2026, 9, 23, 6, 49);
+
+/// Форма смены (экран 11) для идущей смены.
+Widget _editor() => Consumer(
+  builder: (context, ref, _) {
+    final journal = ref.watch(journalProvider).value;
+    if (journal == null) return const SizedBox.shrink();
+    return ShiftEditScreen(
+      shift: findShift(journal, (manualId: null, start: _shiftStart)),
+    );
+  },
+);
+
+Future<void> Function(WidgetTester) _tapText(String text) => (tester) async {
+  // Ленивый список: на маленьком экране строка ещё не построена
+  await tester.scrollUntilVisible(
+    find.text(text),
+    200,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.ensureVisible(find.text(text).first);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(text).first);
+  await tester.pumpAndSettle();
+};
+
+Future<void> _openDrivingCorrection(WidgetTester tester) async {
+  await tester.scrollUntilVisible(
+    find.text('Суточное вождение'),
+    300,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await _tapText('Суточное вождение')(tester);
+  expect(find.text('Посчитано приложением'), findsOneWidget);
+}
+
+Future<void> _openExport(WidgetTester tester) async {
+  await tester.tap(find.byTooltip('Экспорт отчёта'));
+  await tester.pumpAndSettle();
+  expect(find.text('Создать отчёт'), findsOneWidget);
+}
+
 final _screens = <String, _Screen>{
   'Главная': (build: HomeScreen.new, open: null),
   'Нижняя навигация': (build: AppShell.new, open: null),
@@ -58,6 +107,33 @@ final _screens = <String, _Screen>{
   'Недельный отдых': (build: WeeklyRestScreen.new, open: null),
   'Шторка «Считывание карты»': (build: HomeScreen.new, open: _openCardSheet),
   'Шторка «Выбор страны»': (build: HomeScreen.new, open: _openCountrySheet),
+  'Шторка «Суточное вождение»': (
+    build: HomeScreen.new,
+    open: _openDrivingCorrection,
+  ),
+  'Журнал': (build: JournalScreen.new, open: null),
+  'Детали дня': (
+    build: () => ShiftDayScreen(shiftKey: (manualId: null, start: _shiftStart)),
+    open: null,
+  ),
+  'Смена': (build: _editor, open: null),
+  'Новая смена': (build: ShiftEditScreen.new, open: null),
+  'Шторка «Дата и время»': (
+    build: _editor,
+    open: _tapText(formatClock(_shiftStart)),
+  ),
+  'Шторка «Длительность»': (build: _editor, open: _tapText('За день')),
+  'Шторка «Удалить смену?»': (build: _editor, open: _tapText('Удалить смену')),
+  'Шторка страны в форме смены': (build: _editor, open: _tapText('PL')),
+  'Шторка «Экспорт отчёта»': (build: JournalScreen.new, open: _openExport),
+  'Шторка «Свой период»': (
+    build: JournalScreen.new,
+    open: (tester) async {
+      await _openExport(tester);
+      await _tapText('Свой период')(tester);
+      await _tapText('По 23.09')(tester);
+    },
+  ),
 };
 
 /// Экраны телефона, dp: основной таргет и небольшой Android.

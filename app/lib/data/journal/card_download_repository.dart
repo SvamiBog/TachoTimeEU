@@ -16,6 +16,15 @@ class CardDownloadRepository {
         .watchSingle();
   }
 
+  /// Последнее считывание для расчёта вне экрана (фоновое уведомление).
+  Future<DateTime?> last() async {
+    final latest = _db.cardDownloads.downloadedAtUtc.max();
+    final row = await (_db.selectOnly(
+      _db.cardDownloads,
+    )..addColumns([latest])).getSingle();
+    return row.read(latest)?.toUtc();
+  }
+
   /// Отмечает считывание сейчас.
   Future<void> record() => _db
       .into(_db.cardDownloads)

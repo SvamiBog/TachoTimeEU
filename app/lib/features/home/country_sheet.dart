@@ -6,6 +6,8 @@ import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
+import 'package:tachogo/core/widgets/choice_pill.dart';
+import 'package:tachogo/core/widgets/segmented_tabs.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
 import 'package:tachogo/data/countries/tacho_countries.dart';
@@ -81,17 +83,144 @@ Future<void> showCountrySheet(BuildContext context) =>
           const FractionallySizedBox(heightFactor: 0.9, child: CountrySheet()),
     );
 
-enum _Target { start, end }
-
-class CountrySheet extends ConsumerStatefulWidget {
+/// Страны смены на главной: выбор сразу пишется в смену (бесплатно, как
+/// переключение режима).
+class CountrySheet extends ConsumerWidget {
   const new({super.key});
 
   @override
-  ConsumerState<CountrySheet> createState() => _CountrySheetState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasShift = ref.watch(countryShiftProvider) != null;
+    final countries = ref.watch(currentCountriesProvider);
+    return CountryPicker(
+      start: countries?.start,
+      end: countries?.end,
+      single: !hasShift,
+      onPick: (target, code) => _pick(ref, target, code),
+    );
+  }
+
+  static Future<CountryTarget?> _pick(
+    WidgetRef ref,
+    CountryTarget target,
+    String? code,
+  ) async {
+    final shift = ref.read(countryShiftProvider);
+    final current = ref.read(currentCountriesProvider);
+    if (shift == null) {
+      // Смены нет — это страна следующей смены
+      if (code != null) {
+        await ref.read(settingsRepositoryProvider).setDefaultCountry(code);
+      }
+      return null;
+    }
+    final repo = ref.read(countryRepositoryProvider);
+    switch (target) {
+      case CountryTarget.start:
+        await repo.setShiftCountries(
+          shift,
+          ShiftCountries(start: code!, end: current?.end),
+        );
+        return CountryTarget.end;
+      case CountryTarget.end:
+        final start = current?.start;
+        if (start == null) return CountryTarget.start;
+        await repo.setShiftCountries(
+          shift,
+          ShiftCountries(start: start, end: code),
+        );
+        return null;
+    }
+  }
 }
 
-class _CountrySheetState extends ConsumerState<CountrySheet> {
-  _Target _target = _Target.start;
+/// Шторка выбора стран для формы смены: страны меняются в форме, а не в
+/// БД. Возвращает выбранные страны; null — шторку закрыли.
+Future<({String? start, String? end})?> showCountryPicker(
+  BuildContext context, {
+  required String? start,
+  required String? end,
+  CountryTarget target = CountryTarget.start,
+}) => showModalBottomSheet<({String? start, String? end})>(
+  context: context,
+  showDragHandle: true,
+  isScrollControlled: true,
+  builder: (_) => FractionallySizedBox(
+    heightFactor: 0.9,
+    child: _LocalCountries(start: start, end: end, target: target),
+  ),
+);
+
+class _LocalCountries extends StatefulWidget {
+  const new({required this.start, required this.end, required this.target});
+
+  final String? start;
+  final String? end;
+  final CountryTarget target;
+
+  @override
+  State<_LocalCountries> createState() => _LocalCountriesState();
+}
+
+class _LocalCountriesState extends State<_LocalCountries> {
+  late String? _start = widget.start;
+  late String? _end = widget.end;
+
+  @override
+  Widget build(BuildContext context) => CountryPicker(
+    start: _start,
+    end: _end,
+    initialTarget: widget.target,
+    closeWith: () => (start: _start, end: _end),
+    onPick: (target, code) async {
+      setState(() {
+        if (target == CountryTarget.start) {
+          _start = code;
+        } else {
+          _end = code;
+        }
+      });
+      return target == CountryTarget.start ? CountryTarget.end : null;
+    },
+  );
+}
+
+/// Какую страну смены выбирают.
+enum CountryTarget { start, end }
+
+/// Выбор страны тахографа: вкладки «Начало / Конец», поиск, недавние,
+/// список кодов. [onPick] получает выбор — код или null («Не указывать»
+/// конечную) — и возвращает вкладку, которую показать дальше; null —
+/// закрыть шторку.
+class CountryPicker extends ConsumerStatefulWidget {
+  const new({
+    required this.start,
+    required this.end,
+    required this.onPick,
+    this.initialTarget = CountryTarget.start,
+    this.single = false,
+    this.closeWith,
+    super.key,
+  });
+
+  final String? start;
+  final String? end;
+  final CountryTarget initialTarget;
+
+  /// Одна страна — следующей смены: заголовок вместо вкладок.
+  final bool single;
+  final Future<CountryTarget?> Function(CountryTarget target, String? code)
+  onPick;
+
+  /// Значение, с которым закрывается шторка.
+  final Object? Function()? closeWith;
+
+  @override
+  ConsumerState<CountryPicker> createState() => _CountryPickerState();
+}
+
+class _CountryPickerState extends ConsumerState<CountryPicker> {
+  late CountryTarget _target = widget.initialTarget;
   String _query = '';
   final _search = TextEditingController();
 
@@ -102,53 +231,34 @@ class _CountrySheetState extends ConsumerState<CountrySheet> {
   }
 
   Future<void> _pick(String? code) async {
-    final shift = ref.read(countryShiftProvider);
-    final current = ref.read(currentCountriesProvider);
     final navigator = Navigator.of(context);
-    if (shift == null) {
-      // Смены нет — это страна следующей смены
-      if (code != null) {
-        await ref.read(settingsRepositoryProvider).setDefaultCountry(code);
-      }
-      navigator.pop();
+    final next = await widget.onPick(
+      widget.single ? CountryTarget.start : _target,
+      code,
+    );
+    if (!mounted) return;
+    if (next == null) {
+      navigator.pop(widget.closeWith?.call());
       return;
     }
-    final repo = ref.read(countryRepositoryProvider);
-    switch (_target) {
-      case _Target.start:
-        await repo.setShiftCountries(
-          shift,
-          ShiftCountries(start: code!, end: current?.end),
-        );
-        setState(() {
-          _target = _Target.end;
-          _query = '';
-          _search.clear();
-        });
-      case _Target.end:
-        final start = current?.start;
-        if (start == null) {
-          setState(() => _target = _Target.start);
-          return;
-        }
-        await repo.setShiftCountries(
-          shift,
-          ShiftCountries(start: start, end: code),
-        );
-        navigator.pop();
-    }
+    setState(() {
+      if (next != _target) {
+        _query = '';
+        _search.clear();
+      }
+      _target = next;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
     final colors = context.colors;
-    final hasShift = ref.watch(countryShiftProvider) != null;
-    final countries = ref.watch(currentCountriesProvider);
+    final hasShift = !widget.single;
     final recent = ref.watch(recentCountriesProvider).value ?? const [];
     final selected = switch (_target) {
-      _Target.start => countries?.start,
-      _Target.end => countries?.end,
+      CountryTarget.start => widget.start,
+      CountryTarget.end => widget.end,
     };
     final q = _query.trim().toLowerCase();
     final list = [
@@ -166,10 +276,20 @@ class _CountrySheetState extends ConsumerState<CountrySheet> {
         Padding(
           padding: const EdgeInsets.fromLTRB(pad, 0, pad, 12),
           child: hasShift
-              ? _Tabs(
-                  target: _target,
-                  start: l.countryStartTab(countries?.start ?? '—'),
-                  end: l.countryEndTab(countries?.end ?? '—'),
+              ? SegmentedTabs<CountryTarget>(
+                  options: [
+                    (
+                      value: CountryTarget.start,
+                      label: l.countryStartTab(widget.start ?? '—'),
+                      detail: null,
+                    ),
+                    (
+                      value: CountryTarget.end,
+                      label: l.countryEndTab(widget.end ?? '—'),
+                      detail: null,
+                    ),
+                  ],
+                  value: _target,
                   onChanged: (t) => setState(() => _target = t),
                 )
               : Text(l.countryNextShift, style: AppTextStyles.header),
@@ -196,7 +316,8 @@ class _CountrySheetState extends ConsumerState<CountrySheet> {
             ),
           ),
         ),
-        if (recent.isNotEmpty || (hasShift && _target == _Target.end)) ...[
+        if (recent.isNotEmpty ||
+            (hasShift && _target == CountryTarget.end)) ...[
           Padding(
             padding: const EdgeInsets.fromLTRB(pad, 16, pad, 8),
             child: Text(
@@ -213,13 +334,13 @@ class _CountrySheetState extends ConsumerState<CountrySheet> {
               runSpacing: 8,
               children: [
                 for (final code in recent)
-                  _Pill(
+                  ChoicePill(
                     code,
                     selected: code == selected,
                     onTap: () => unawaited(_pick(code)),
                   ),
-                if (hasShift && _target == _Target.end)
-                  _Pill(
+                if (hasShift && _target == CountryTarget.end)
+                  ChoicePill(
                     l.countryClearEnd,
                     selected: false,
                     onTap: () => unawaited(_pick(null)),
@@ -262,116 +383,6 @@ class _CountrySheetState extends ConsumerState<CountrySheet> {
                 ),
         ),
       ],
-    );
-  }
-}
-
-class _Tabs extends StatelessWidget {
-  const new({
-    required this.target,
-    required this.start,
-    required this.end,
-    required this.onChanged,
-  });
-
-  final _Target target;
-  final String start;
-  final String end;
-  final ValueChanged<_Target> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    Widget tab(_Target t, String text) {
-      final on = t == target;
-      return Expanded(
-        child: Semantics(
-          selected: on,
-          inMutuallyExclusiveGroup: true,
-          button: true,
-          child: Material(
-            color: on ? colors.surface2 : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppRadius.icon),
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: () => onChanged(t),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: AppSize.minTouch),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      text,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.rowTitle.copyWith(
-                        color: on ? colors.text : colors.textSecondary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadius.badge),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: Row(
-          children: [tab(_Target.start, start), tab(_Target.end, end)],
-        ),
-      ),
-    );
-  }
-}
-
-class _Pill extends StatelessWidget {
-  const new(this.text, {required this.selected, required this.onTap});
-
-  final String text;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Semantics(
-      selected: selected,
-      button: true,
-      child: Material(
-        color: selected ? colors.drive : Colors.transparent,
-        shape: StadiumBorder(
-          side: BorderSide(color: selected ? colors.drive : colors.switchOff),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              minHeight: AppSize.minTouch,
-              minWidth: AppSize.minTouch + 12,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Center(
-                widthFactor: 1,
-                child: Text(
-                  text,
-                  style: AppTextStyles.rowTitle.copyWith(
-                    color: selected ? colors.onAccent : colors.text,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -14,6 +14,7 @@ class PrimaryButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.color,
+    this.icon,
     super.key,
   });
 
@@ -21,11 +22,16 @@ class PrimaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final Color? color;
 
+  /// Значок перед подписью: «↓ Создать отчёт».
+  final IconData? icon;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return FilledButton(
+    final icon = this.icon;
+    return FilledButton.icon(
       onPressed: onPressed,
+      icon: icon == null ? null : Icon(icon, size: 22),
       style: FilledButton.styleFrom(
         backgroundColor: color ?? colors.drive,
         foregroundColor: colors.onAccent,
@@ -35,7 +41,7 @@ class PrimaryButton extends StatelessWidget {
         shape: _shape,
         textStyle: AppTextStyles.button,
       ),
-      child: Text(label, textAlign: TextAlign.center),
+      label: Text(label, textAlign: TextAlign.center),
     );
   }
 }
@@ -60,6 +66,38 @@ class SecondaryButton extends StatelessWidget {
         textStyle: AppTextStyles.button.copyWith(fontWeight: FontWeight.w600),
       ),
       child: Text(label, textAlign: TextAlign.center),
+    );
+  }
+}
+
+/// Опасное действие 56 dp: «Удалить смену» — обводка и текст цвета ошибки.
+class DangerButton extends StatelessWidget {
+  const new({
+    required this.label,
+    required this.onPressed,
+    this.icon,
+    super.key,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final icon = this.icon;
+    return OutlinedButton.icon(
+      onPressed: onPressed,
+      icon: icon == null ? null : Icon(icon, size: 20),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: colors.errorText,
+        side: BorderSide(color: colors.errorText),
+        minimumSize: const Size.fromHeight(AppSize.button),
+        shape: _shape,
+        textStyle: AppTextStyles.button.copyWith(fontWeight: FontWeight.w600),
+      ),
+      label: Text(label, textAlign: TextAlign.center),
     );
   }
 }

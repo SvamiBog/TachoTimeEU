@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -10,6 +12,7 @@ import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/features/home/corrections.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
 void openBreakScreen(BuildContext context) =>
@@ -69,7 +72,9 @@ class BreakScreen extends ConsumerWidget {
             ? null
             : () => _start(context, ref),
       ),
-      children: s == null ? const [] : [_Summary(s), const _SplitRule()],
+      children: s == null
+          ? const []
+          : [_Summary(s), const _Correction(), const _SplitRule()],
     );
   }
 
@@ -257,6 +262,90 @@ class _DashedBorder extends CustomPainter {
   @override
   bool shouldRepaint(_DashedBorder old) =>
       old.color != color || old.radius != radius;
+}
+
+/// «Корректировка» (экран 8): длительность последнего перерыва — правка
+/// журнала.
+class _Correction extends ConsumerWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final colors = context.colors;
+    final at = watchSnapshot(
+      ref,
+      (s) => (shiftStart: s.shift?.start, now: minuteOf(s.now)),
+    );
+    final periods = ref.watch(activityPeriodsProvider).value;
+    final shiftStart = at?.shiftStart;
+    final info = at == null || shiftStart == null || periods == null
+        ? null
+        : lastBreakInfo(periods, shiftStart, at.now);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SectionTitle(l.breakCorrection),
+        CardGroup(
+          children: [
+            if (info == null)
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.cardPadding),
+                  child: Text(
+                    l.breakNoBreak,
+                    style: AppTextStyles.body.copyWith(
+                      color: colors.textSecondary,
+                    ),
+                  ),
+                ),
+              )
+            else
+              MergeSemantics(
+                child: InkWell(
+                  onTap: () => unawaited(openBreakCorrection(context, ref)),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minHeight: AppSize.listRow,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.cardPadding,
+                        vertical: 10,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              info.open
+                                  ? l.breakCurrentDuration
+                                  : l.breakLastDuration,
+                              style: AppTextStyles.rowTitle,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          DurationText(
+                            formatHm(info.duration),
+                            spoken: spokenDuration(l, info.duration),
+                            style: AppTextStyles.value,
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.chevron_right,
+                            color: colors.textSecondary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
 class _SplitRule extends StatelessWidget {

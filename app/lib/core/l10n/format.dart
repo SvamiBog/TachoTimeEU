@@ -76,3 +76,31 @@ String formatDayMonthYear(DateTime t) =>
 /// «Вс 27.09 · 06:10» — срок недельного отдыха.
 String formatDeadline(DateTime t, String locale) =>
     '${_capitalize(formatWeekdayDay(t, locale))} · ${formatClock(t)}';
+
+/// «Сентябрь 2026» — месяц в шапке журнала.
+String formatMonthYear(DateTime t, String locale) =>
+    _capitalize(DateFormat('LLLL y', locale).format(t.toLocal()));
+
+/// «21–27 сентября», «28 сентября – 4 октября» — неделя журнала. Неделя
+/// считается в UTC (ст. 4(i), как на тахографе), поэтому и даты — UTC:
+/// в любом поясе это понедельник–воскресенье.
+String formatWeekRange(DateTime weekStart, String locale) {
+  final start = weekStart.toUtc();
+  final end = start.add(const Duration(days: 6));
+  final dayMonth = DateFormat('d MMMM', locale);
+  return start.month == end.month
+      ? '${start.day}–${dayMonth.format(end)}'
+      : '${dayMonth.format(start)} – ${dayMonth.format(end)}';
+}
+
+/// «Ср» — день недели в строке журнала.
+String formatWeekdayShort(DateTime t, String locale) =>
+    _capitalize(DateFormat('EEE', locale).format(t.toLocal()));
+
+/// «Вторник, 22 сентября» — под заголовком смены.
+String formatWeekdayFull(DateTime t, String locale) =>
+    _capitalize(DateFormat('EEEE, d MMMM', locale).format(t.toLocal()));
+
+/// «18.09 11:20».
+String formatDayMonthClock(DateTime t) =>
+    '${formatDayMonth(t)} ${formatClock(t)}';

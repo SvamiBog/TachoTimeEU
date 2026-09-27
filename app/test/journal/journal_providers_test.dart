@@ -10,6 +10,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/data/journal/shift_meta.dart';
 
 final DateTime t0 = DateTime.utc(2026, 9, 23, 12);
 
@@ -27,6 +28,8 @@ class _Sources {
   final periods = StreamController<List<ActivityPeriod>>();
   final settings = StreamController<ComplianceSettings>();
   final card = StreamController<DateTime?>();
+  final manual = StreamController<List<ManualShiftRecord>>();
+  final meta = StreamController<Map<DateTime, ShiftMeta>>();
 
   late final ProviderContainer container = () {
     // Riverpod 3 приостанавливает провайдеры без слушателей.
@@ -35,6 +38,8 @@ class _Sources {
         activityPeriodsProvider.overrideWith((ref) => periods.stream),
         complianceSettingsProvider.overrideWith((ref) => settings.stream),
         lastCardDownloadProvider.overrideWith((ref) => card.stream),
+        manualShiftsProvider.overrideWith((ref) => manual.stream),
+        shiftMetaProvider.overrideWith((ref) => meta.stream),
         clockProvider.overrideWith(_TestClock.new),
       ],
     )..listen(complianceProvider, (_, _) {});
@@ -56,6 +61,7 @@ class _Sources {
     ]);
     settings.add(const ComplianceSettings());
     card.add(null);
+    manual.add(const []);
   }
 }
 
@@ -65,6 +71,7 @@ void main() {
       'журнал': (s, e, st) => s.periods.addError(e, st),
       'настройки': (s, e, st) => s.settings.addError(e, st),
       'считывание карты': (s, e, st) => s.card.addError(e, st),
+      'ручные смены': (s, e, st) => s.manual.addError(e, st),
     };
 
     for (final MapEntry(key: name, value: fail) in sources.entries) {
@@ -73,6 +80,7 @@ void main() {
         if (name != 'журнал') s.periods.add(const []);
         if (name != 'настройки') s.settings.add(const ComplianceSettings());
         if (name != 'считывание карты') s.card.add(null);
+        if (name != 'ручные смены') s.manual.add(const []);
         await pumpEventQueue();
         expect(s.snapshot, isA<AsyncLoading<ComplianceSnapshot>>());
       });
@@ -141,6 +149,83 @@ void main() {
       await pumpEventQueue();
       expect(s.snapshot.requireValue.cardDaysLeft, 25);
     });
+
+    test(
+      'по изменению ручных смен (BG-08: те же источники у уведомления)',
+      () async {
+        expect(s.snapshot.requireValue.weeklyDriving, Duration.zero);
+        s.manual.add([
+          ManualShiftRecord(
+            ManualShift(
+              id: 1,
+              start: t0.subtract(hours(30)),
+              end: t0.subtract(hours(22)),
+              driving: hours(6),
+              restKind: RestKind.daily,
+              rest: hours(11),
+            ),
+            ShiftMeta.empty,
+          ),
+        ]);
+        await pumpEventQueue();
+        expect(s.snapshot.requireValue.weeklyDriving, hours(6));
+      },
+    );
+  });
+
+  group('журнал по неделям', () {
+    late _Sources s;
+
+    setUp(() async {
+      s = _Sources()..container;
+      s.container.listen(journalProvider, (_, _) {});
+      s.loadAll();
+      await pumpEventQueue();
+    });
+
+    test('ждёт страны смен', () async {
+      expect(s.container.read(journalProvider), isA<AsyncLoading<Journal>>());
+    });
+
+    test('пересчитывается по минуте, а не по секунде', () async {
+      final meta = StreamController<Map<DateTime, ShiftMeta>>();
+      final c = ProviderContainer(
+        overrides: [
+          activityPeriodsProvider.overrideWith(
+            (ref) => Stream.value([
+              ActivityPeriod(mode: DriverMode.driving, start: t0),
+            ]),
+          ),
+          complianceSettingsProvider.overrideWith(
+            (ref) => Stream.value(const ComplianceSettings()),
+          ),
+          manualShiftsProvider.overrideWith((ref) => Stream.value(const [])),
+          shiftMetaProvider.overrideWith((ref) => meta.stream),
+          clockProvider.overrideWith(_TestClock.new),
+        ],
+      );
+      addTearDown(c.dispose);
+      var builds = 0;
+      c.listen(journalProvider, (_, _) => builds++);
+      meta.add({t0: const ShiftMeta(startCountry: 'PL')});
+      await pumpEventQueue();
+      final first = c.read(journalProvider).requireValue;
+      expect(first.shifts.single.driving, Duration.zero);
+      expect(first.metaOf(first.shifts.single).startCountry, 'PL');
+      builds = 0;
+
+      final clock = c.read(clockProvider.notifier) as _TestClock
+        ..now = t0.add(const Duration(seconds: 30));
+      expect(builds, 0);
+      clock.now = t0.add(const Duration(minutes: 1, seconds: 5));
+      c.read(journalProvider);
+      expect(builds, 1);
+      final next = c.read(journalProvider).requireValue;
+      expect(
+        next.shifts.single.driving,
+        const Duration(minutes: 1, seconds: 5),
+      );
+    });
   });
 
   group('PRV-03: часы', () {
@@ -187,6 +272,10 @@ void main() {
 
     await c.read(activityRepositoryProvider).switchMode(DriverMode.driving);
     expect(changes, 1);
+    await c
+        .read(journalEditRepositoryProvider)
+        .setLastBreak(DateTime.utc(2026), Duration.zero);
+    expect(changes, 2, reason: 'ручная правка — тоже');
   });
 }
 

@@ -45,13 +45,20 @@ data/
   countries/              — страны начала и конца смены (таблица shifts, ключ —
                             начало смены), коды тахографа
   journal/                — журнал режимов и считывания карты; complianceProvider —
-                            таймеры движка, пересчёт раз в секунду (clockProvider)
+                            таймеры движка, пересчёт раз в секунду (clockProvider);
+                            journalProvider — журнал по неделям раз в минуту;
+                            JournalEditRepository — слой ручных правок (Premium),
+                            ручные смены, страны и заметки смен
+  report/                 — период отчёта (границы в UTC) и CSV
 background/               — автоопределение вождения: трекер, foreground service
                             (Android), уведомление с таймерами — docs/background.md;
                             TrackingPlatform — всё от ОС и плагинов, подменяется в тестах
 features/<экран>/         — UI и провайдеры конкретного экрана:
                             shell/ — нижняя навигация, home/ — главная,
-                            «Рабочий день», считывание карты
+                            экраны лимитов и корректировки с них;
+                            journal/ — журнал, детали дня, форма смены,
+                            шторки даты, времени и длительности;
+                            export/ — экспорт, PDF, отправка файла
 ```
 
 Экраны подписываются на расчёт через `watchSnapshot` (`features/home/snapshot_select.dart`): каждый блок выбирает свою часть снимка в целых минутах, поэтому ежесекундный тик часов перестраивает только таймеры, у которых сменилась минута. Состояния «скоро» и «превышено» берутся из предупреждений движка — правила регламента в UI не повторяются.
@@ -69,6 +76,12 @@ flutter gen-l10n
 ## Шрифты
 
 Onest и JetBrains Mono — `assets/fonts/`, как нарезаны начертания — `assets/fonts/README.md`.
+
+## Правки журнала и отчёт
+
+- Переключение режима пишет `ActivityRepository` — «живой» путь, без проверки Premium. Правки задним числом, ручные смены и корректировки с экранов лимитов — только через `JournalEditRepository`: одна правка — одна транзакция, новые записи — с `source = manual`. Логику правок задаёт движок (`shift_edits.dart`, `journal_edits.dart`).
+- Смена, внесённая итогами (`ManualShift`), хранится в `manual_shifts`: у неё нет записей режимов, только суммы, страны и заметка. Страны и заметка смены из записей — в `shifts`, ключ — начало смены.
+- Отчёт: `data/report/report.dart` — период и CSV, `features/export/pdf_report.dart` — PDF (пакет `pdf`, шрифты Onest и JetBrains Mono встроены из `assets/fonts/`), `ReportExporter` отдаёт файл в системное «Поделиться» (`share_plus`). Выгрузка — Premium: вторая проверка встанет в `ReportExporter` и `JournalEditRepository` в Фазе 5 (`docs/premium.md`).
 
 Слои: `features` → Riverpod-провайдеры → `data` и `tacho_engine`. Регуляторная логика живёт только в `packages/tacho_engine` (чистый Dart), UI её не дублирует.
 

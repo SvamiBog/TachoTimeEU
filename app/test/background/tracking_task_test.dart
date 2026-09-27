@@ -9,6 +9,8 @@ import 'package:tachogo/background/tracking_task.dart';
 import 'package:tachogo/core/observability/crash_reporter.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
+import 'package:tachogo/data/journal/journal_edit_repository.dart';
+import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 
 import 'fake_tracking_platform.dart';
@@ -85,6 +87,29 @@ void main() {
     expect(update.title, 'Суточный отдых · 10:00');
     expect(update.text, 'До полного отдыха 11 ч: 1:00');
     expect(update.buttons, isEmpty);
+  });
+
+  test('BG-08: ручные смены в расчёте уведомления, как на главной', () async {
+    // Пн и вт по 9:30 вождения — оба продления недели потрачены, в ср
+    // лимит дня 9 ч, а не 10 ч.
+    final edits = JournalEditRepository(db, SettingsRepository(db));
+    for (final day in [21, 22]) {
+      await edits.saveManualShift(
+        ManualShift(
+          start: DateTime.utc(2026, 9, day, 4),
+          end: DateTime.utc(2026, 9, day, 14),
+          driving: const Duration(hours: 9, minutes: 30),
+          restKind: RestKind.daily,
+          rest: const Duration(hours: 11),
+        ),
+        ShiftMeta.empty,
+      );
+    }
+    now = t0.subtract(const Duration(hours: 1));
+    await journal.switchMode(DriverMode.driving);
+    now = t0;
+    await start();
+    expect(platform.updates.last.text, contains('за день осталось 8:00'));
   });
 
   test('«журнал изменён» — перечитать базу и обновить уведомление', () async {

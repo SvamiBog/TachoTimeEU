@@ -11,7 +11,9 @@ import 'package:tachogo/data/db/utc_date_time_converter.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [ActivityPeriods, Shifts, CardDownloads, Settings])
+@DriftDatabase(
+  tables: [ActivityPeriods, Shifts, ManualShifts, CardDownloads, Settings],
+)
 class AppDatabase extends _$AppDatabase {
   new([QueryExecutor? executor])
     : super(
@@ -66,7 +68,7 @@ class AppDatabase extends _$AppDatabase {
   // При изменении схемы: увеличить версию, затем
   // `dart run drift_dev make-migrations` и дописать шаг в onUpgrade.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -77,6 +79,11 @@ class AppDatabase extends _$AppDatabase {
         final periods = schema.activityPeriods;
         await m.addColumn(periods, periods.ferry);
         await m.addColumn(periods, periods.dayEnd);
+      },
+      from2To3: (m, schema) async {
+        // Ручные смены и заметки к сменам (Фаза 2, журнал).
+        await m.createTable(schema.manualShifts);
+        await m.addColumn(schema.shifts, schema.shifts.note);
       },
     ),
     beforeOpen: (details) async {
