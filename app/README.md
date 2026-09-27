@@ -25,7 +25,9 @@ flutter run --dart-define-from-file=env/dev.json --dart-define=CRASH_DSN=… --d
 ## Структура `lib/`
 
 ```
-main.dart                 — точка входа: ProviderScope, перехват ошибок
+main.dart                 — точка входа: контейнер провайдеров, runApp
+bootstrap.dart            — подготовка до runApp: отчёты о падениях, перехват
+                            ошибок, согласие на аналитику, связь с сервисом
 app.dart                  — MaterialApp, темы
 core/
   config/                 — окружение и конфигурация сборки
@@ -37,7 +39,8 @@ data/
   journal/                — журнал режимов и считывания карты; complianceProvider —
                             таймеры движка, пересчёт раз в секунду (clockProvider)
 background/               — автоопределение вождения: трекер, foreground service
-                            (Android), уведомление с таймерами — docs/background.md
+                            (Android), уведомление с таймерами — docs/background.md;
+                            TrackingPlatform — всё от ОС и плагинов, подменяется в тестах
 features/<экран>/         — UI и провайдеры конкретного экрана
 ```
 
@@ -57,12 +60,12 @@ dart run build_runner build
 ## Проверки
 
 ```bash
-dart format lib test
+dart format lib test tool
 flutter analyze --fatal-infos
-flutter test
+flutter test --coverage
 ```
 
-То же самое проверяет pre-commit хук (`git config core.hooksPath .githooks`) и CI (`.github/workflows/ci.yml`).
+То же самое проверяет pre-commit хук (`git config core.hooksPath .githooks`) и CI (`.github/workflows/ci.yml`). CI ещё гоняет тесты в трёх часовых поясах, требует покрытия `lib/data` не ниже 80 %, сверяет снимки схемы БД и итоговый манифест APK (`tool/check_android_manifest.dart`). Список тестов и что ещё предстоит ввести — `docs/testing.md`.
 
 ## Релиз Android
 
