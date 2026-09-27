@@ -1798,6 +1798,330 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Указать вручную'**
   String get weeklyAddManually;
+
+  /// No description provided for @exportPeriod.
+  ///
+  /// In ru, this message translates to:
+  /// **'Период'**
+  String get exportPeriod;
+
+  /// No description provided for @exportWeek.
+  ///
+  /// In ru, this message translates to:
+  /// **'Эта неделя'**
+  String get exportWeek;
+
+  /// No description provided for @exportTwoWeeks.
+  ///
+  /// In ru, this message translates to:
+  /// **'2 недели'**
+  String get exportTwoWeeks;
+
+  /// No description provided for @exportDays28.
+  ///
+  /// In ru, this message translates to:
+  /// **'28 дней'**
+  String get exportDays28;
+
+  /// No description provided for @exportCustom.
+  ///
+  /// In ru, this message translates to:
+  /// **'Свой период'**
+  String get exportCustom;
+
+  /// No description provided for @exportFrom.
+  ///
+  /// In ru, this message translates to:
+  /// **'С'**
+  String get exportFrom;
+
+  /// No description provided for @exportTo.
+  ///
+  /// In ru, this message translates to:
+  /// **'По'**
+  String get exportTo;
+
+  /// No description provided for @exportFormat.
+  ///
+  /// In ru, this message translates to:
+  /// **'Формат'**
+  String get exportFormat;
+
+  /// No description provided for @exportPdf.
+  ///
+  /// In ru, this message translates to:
+  /// **'PDF · для инспекции'**
+  String get exportPdf;
+
+  /// No description provided for @exportCsv.
+  ///
+  /// In ru, this message translates to:
+  /// **'CSV · таблица'**
+  String get exportCsv;
+
+  /// No description provided for @exportPdfHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не официальная запись: отчёт не заменяет данные тахографа и карты водителя.'**
+  String get exportPdfHint;
+
+  /// No description provided for @exportCsvHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Записи режимов по строкам, время в UTC — для Excel и программ учёта.'**
+  String get exportCsvHint;
+
+  /// No description provided for @exportNotes.
+  ///
+  /// In ru, this message translates to:
+  /// **'Страны и заметки'**
+  String get exportNotes;
+
+  /// No description provided for @exportCreate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Создать отчёт'**
+  String get exportCreate;
+
+  /// No description provided for @exportCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{{count} смена} few{{count} смены} many{{count} смен} other{{count} смены}} в отчёте'**
+  String exportCount(int count);
+
+  /// No description provided for @exportEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'За выбранный период смен нет.'**
+  String get exportEmpty;
+
+  /// No description provided for @exportFailed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось создать отчёт. Попробуйте ещё раз.'**
+  String get exportFailed;
+
+  /// No description provided for @exportRangeSpoken.
+  ///
+  /// In ru, this message translates to:
+  /// **'Период с {from} по {to}'**
+  String exportRangeSpoken(String from, String to);
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отчёт о времени вождения и отдыха'**
+  String get reportTitle;
+
+  /// No description provided for @reportSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Регламент (ЕС) 561/2006 и Соглашение ЕСТР'**
+  String get reportSubtitle;
+
+  /// No description provided for @reportDriver.
+  ///
+  /// In ru, this message translates to:
+  /// **'Водитель'**
+  String get reportDriver;
+
+  /// No description provided for @reportCard.
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта водителя'**
+  String get reportCard;
+
+  /// No description provided for @reportVehicle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Госномер'**
+  String get reportVehicle;
+
+  /// No description provided for @reportCompany.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перевозчик'**
+  String get reportCompany;
+
+  /// No description provided for @reportPeriod.
+  ///
+  /// In ru, this message translates to:
+  /// **'Период'**
+  String get reportPeriod;
+
+  /// No description provided for @reportGenerated.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сформирован'**
+  String get reportGenerated;
+
+  /// No description provided for @reportTimezone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время — по часовому поясу телефона ({zone}). Сутки и недели отчёта — по UTC, неделя с понедельника 00:00, как на тахографе.'**
+  String reportTimezone(String zone);
+
+  /// No description provided for @reportDate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дата'**
+  String get reportDate;
+
+  /// No description provided for @reportStart.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начало'**
+  String get reportStart;
+
+  /// No description provided for @reportEnd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конец'**
+  String get reportEnd;
+
+  /// No description provided for @reportCountries.
+  ///
+  /// In ru, this message translates to:
+  /// **'Страны'**
+  String get reportCountries;
+
+  /// No description provided for @reportDriving.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вожд.'**
+  String get reportDriving;
+
+  /// No description provided for @reportWork.
+  ///
+  /// In ru, this message translates to:
+  /// **'Работа'**
+  String get reportWork;
+
+  /// No description provided for @reportAvailability.
+  ///
+  /// In ru, this message translates to:
+  /// **'Готовн.'**
+  String get reportAvailability;
+
+  /// No description provided for @reportBreaks.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерывы'**
+  String get reportBreaks;
+
+  /// No description provided for @reportSpan.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена'**
+  String get reportSpan;
+
+  /// No description provided for @reportRestAfter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отдых после'**
+  String get reportRestAfter;
+
+  /// No description provided for @reportNotes.
+  ///
+  /// In ru, this message translates to:
+  /// **'Заметки'**
+  String get reportNotes;
+
+  /// No description provided for @reportWeek.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неделя {range}'**
+  String reportWeek(String range);
+
+  /// No description provided for @reportWeekTotal.
+  ///
+  /// In ru, this message translates to:
+  /// **'Итого: вождение {driving} из 56 ч · за 2 недели {fortnight} из 90 ч'**
+  String reportWeekTotal(String driving, String fortnight);
+
+  /// No description provided for @reportViolations.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нарушения'**
+  String get reportViolations;
+
+  /// No description provided for @reportNoViolations.
+  ///
+  /// In ru, this message translates to:
+  /// **'По журналу нарушений нет.'**
+  String get reportNoViolations;
+
+  /// No description provided for @reportViolationDrive.
+  ///
+  /// In ru, this message translates to:
+  /// **'{date}: суточное вождение {time} — больше 10 ч'**
+  String reportViolationDrive(String date, String time);
+
+  /// No description provided for @reportViolationSpan.
+  ///
+  /// In ru, this message translates to:
+  /// **'{date}: рабочий день {time} — больше {limit} ч'**
+  String reportViolationSpan(String date, String time, int limit);
+
+  /// No description provided for @reportViolationRest.
+  ///
+  /// In ru, this message translates to:
+  /// **'{date}: отдых после смены {time} — недостаточный'**
+  String reportViolationRest(String date, String time);
+
+  /// No description provided for @reportViolationWeek.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неделя {range}: вождение {time} — больше 56 ч'**
+  String reportViolationWeek(String range, String time);
+
+  /// No description provided for @reportViolationFortnight.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неделя {range}: за две недели {time} — больше 90 ч'**
+  String reportViolationFortnight(String range, String time);
+
+  /// No description provided for @reportMarks.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметки'**
+  String get reportMarks;
+
+  /// No description provided for @reportMarkWarn.
+  ///
+  /// In ru, this message translates to:
+  /// **'! — продление вождения до 10 ч, рабочий день больше 13 ч или сокращённый отдых'**
+  String get reportMarkWarn;
+
+  /// No description provided for @reportMarkBad.
+  ///
+  /// In ru, this message translates to:
+  /// **'!! — нарушение'**
+  String get reportMarkBad;
+
+  /// No description provided for @reportMarkManual.
+  ///
+  /// In ru, this message translates to:
+  /// **'* — смена внесена вручную итогами'**
+  String get reportMarkManual;
+
+  /// No description provided for @reportDisclaimer.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отчёт составлен по записям водителя в приложении TachoGo. Это не официальная запись: он не заменяет данные тахографа и карты водителя.'**
+  String get reportDisclaimer;
+
+  /// No description provided for @reportSignature.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подпись водителя'**
+  String get reportSignature;
+
+  /// No description provided for @reportPage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Стр. {page} из {pages}'**
+  String reportPage(int page, int pages);
 }
 
 class _AppLocalizationsDelegate

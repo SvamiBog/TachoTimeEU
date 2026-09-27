@@ -92,6 +92,12 @@ Future<void> _openDrivingCorrection(WidgetTester tester) async {
   expect(find.text('Посчитано приложением'), findsOneWidget);
 }
 
+Future<void> _openExport(WidgetTester tester) async {
+  await tester.tap(find.byTooltip('Экспорт отчёта'));
+  await tester.pumpAndSettle();
+  expect(find.text('Создать отчёт'), findsOneWidget);
+}
+
 final _screens = <String, _Screen>{
   'Главная': (build: HomeScreen.new, open: null),
   'Нижняя навигация': (build: AppShell.new, open: null),
@@ -115,6 +121,15 @@ final _screens = <String, _Screen>{
   'Шторка «Длительность»': (build: _editor, open: _tapText('За день')),
   'Шторка «Удалить смену?»': (build: _editor, open: _tapText('Удалить смену')),
   'Шторка страны в форме смены': (build: _editor, open: _tapText('PL')),
+  'Шторка «Экспорт отчёта»': (build: JournalScreen.new, open: _openExport),
+  'Шторка «Свой период»': (
+    build: JournalScreen.new,
+    open: (tester) async {
+      await _openExport(tester);
+      await _tapText('Свой период')(tester);
+      await _tapText('По 23.09')(tester);
+    },
+  ),
 };
 
 /// Экраны телефона, dp: основной таргет и небольшой Android.

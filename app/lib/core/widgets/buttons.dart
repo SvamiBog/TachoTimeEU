@@ -14,6 +14,7 @@ class PrimaryButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.color,
+    this.icon,
     super.key,
   });
 
@@ -21,11 +22,16 @@ class PrimaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final Color? color;
 
+  /// Значок перед подписью: «↓ Создать отчёт».
+  final IconData? icon;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return FilledButton(
+    final icon = this.icon;
+    return FilledButton.icon(
       onPressed: onPressed,
+      icon: icon == null ? null : Icon(icon, size: 22),
       style: FilledButton.styleFrom(
         backgroundColor: color ?? colors.drive,
         foregroundColor: colors.onAccent,
@@ -35,7 +41,7 @@ class PrimaryButton extends StatelessWidget {
         shape: _shape,
         textStyle: AppTextStyles.button,
       ),
-      child: Text(label, textAlign: TextAlign.center),
+      label: Text(label, textAlign: TextAlign.center),
     );
   }
 }

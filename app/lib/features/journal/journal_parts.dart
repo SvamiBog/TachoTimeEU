@@ -8,6 +8,7 @@ import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
+import 'package:tachogo/data/report/report.dart';
 
 // Общее для журнала, деталей дня и формы смены: как смена выглядит в
 // строке, ключ смены, подсветка по оценке движка.
@@ -39,11 +40,7 @@ Tone toneOfLevel(JournalLevel level) => switch (level) {
 };
 
 /// «PL → D», «PL → …», «—».
-String routeOf(ShiftMeta meta) {
-  final start = meta.startCountry;
-  if (start == null) return '—';
-  return '$start → ${meta.endCountry ?? '…'}';
-}
+String routeOf(ShiftMeta meta) => routeText(meta);
 
 /// «06:30 → 19:10», «06:49 → идёт».
 String shiftTimeOf(AppLocalizations l, JournalShift s) {

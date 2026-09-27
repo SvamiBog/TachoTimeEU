@@ -154,12 +154,16 @@ class DateTimeField extends StatefulWidget {
     required this.value,
     required this.max,
     required this.onChanged,
+    this.withTime = true,
     super.key,
   });
 
   final DateTime value;
   final DateTime max;
   final ValueChanged<DateTime> onChanged;
+
+  /// false — только день, без колёсиков времени.
+  final bool withTime;
 
   @override
   State<DateTimeField> createState() => _DateTimeFieldState();
@@ -318,49 +322,107 @@ class _DateTimeFieldState extends State<DateTimeField> {
               ],
             ),
           ),
-        Divider(height: 24, color: colors.surface2),
-        Text(
-          l.pickerTime.toUpperCase(),
-          style: AppTextStyles.section.copyWith(color: colors.textSecondary),
-        ),
-        const SizedBox(height: 8),
-        WheelRow(
-          rows: 1,
-          children: [
-            Expanded(
-              child: WheelPicker(
-                label: l.pickerHours,
-                value: local.hour,
-                min: 0,
-                max: 23,
-                loop: true,
-                onChanged: (h) => _set(hour: h),
+        if (widget.withTime) ...[
+          Divider(height: 24, color: colors.surface2),
+          Text(
+            l.pickerTime.toUpperCase(),
+            style: AppTextStyles.section.copyWith(color: colors.textSecondary),
+          ),
+          const SizedBox(height: 8),
+          WheelRow(
+            rows: 1,
+            children: [
+              Expanded(
+                child: WheelPicker(
+                  label: l.pickerHours,
+                  value: local.hour,
+                  min: 0,
+                  max: 23,
+                  loop: true,
+                  onChanged: (h) => _set(hour: h),
+                ),
               ),
-            ),
-            SizedBox(
-              height: WheelPicker.heightFor(1),
-              child: const Center(
-                child: Text(':', style: AppTextStyles.valueLarge),
+              SizedBox(
+                height: WheelPicker.heightFor(1),
+                child: const Center(
+                  child: Text(':', style: AppTextStyles.valueLarge),
+                ),
               ),
-            ),
-            Expanded(
-              child: WheelPicker(
-                label: l.pickerMinutes,
-                value: local.minute,
-                min: 0,
-                max: 59,
-                loop: true,
-                onChanged: (m) => _set(minute: m),
+              Expanded(
+                child: WheelPicker(
+                  label: l.pickerMinutes,
+                  value: local.minute,
+                  min: 0,
+                  max: 59,
+                  loop: true,
+                  onChanged: (m) => _set(minute: m),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ],
     );
   }
 
   static String _capitalized(String s) =>
       s.isEmpty ? s : '${s[0].toUpperCase()}${s.substring(1)}';
+}
+
+/// Шторка выбора дня (свой период отчёта): календарь без времени.
+/// [initial] и результат — день по календарю телефона, не позже [max].
+Future<DateTime?> showDaySheet(
+  BuildContext context, {
+  required String title,
+  required DateTime initial,
+  required DateTime max,
+}) => _showSheet(context, _DaySheet(title: title, initial: initial, max: max));
+
+class _DaySheet extends StatefulWidget {
+  const new({required this.title, required this.initial, required this.max});
+
+  final String title;
+  final DateTime initial;
+  final DateTime max;
+
+  @override
+  State<_DaySheet> createState() => _DaySheetState();
+}
+
+class _DaySheetState extends State<_DaySheet> {
+  late DateTime _value = widget.initial.toUtc();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return Semantics(
+      scopesRoute: true,
+      namesRoute: true,
+      label: widget.title,
+      explicitChildNodes: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          DateTimeField(
+            value: _value,
+            max: widget.max,
+            withTime: false,
+            onChanged: (t) => setState(() => _value = t),
+          ),
+          const SizedBox(height: 16),
+          _SheetButtons(
+            label: l.done,
+            onPressed: () {
+              final local = _value.toLocal();
+              Navigator.of(context)
+                  .pop(DateTime(local.year, local.month, local.day));
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // ───────────────────────── Длительность ─────────────────────────

@@ -1009,5 +1009,163 @@
   "breakNoBreak": "В смене ещё нет перерыва — корректировать нечего.",
   "breakEditHint": "Время возьмётся у соседней записи — лимиты пересчитаются.",
   "workdayChangeStart": "Изменить начало смены",
-  "weeklyAddManually": "Указать вручную"
+  "weeklyAddManually": "Указать вручную",
+  "exportPeriod": "Период",
+  "exportWeek": "Эта неделя",
+  "exportTwoWeeks": "2 недели",
+  "exportDays28": "28 дней",
+  "exportCustom": "Свой период",
+  "exportFrom": "С",
+  "exportTo": "По",
+  "exportFormat": "Формат",
+  "exportPdf": "PDF · для инспекции",
+  "exportCsv": "CSV · таблица",
+  "exportPdfHint": "Не официальная запись: отчёт не заменяет данные тахографа и карты водителя.",
+  "exportCsvHint": "Записи режимов по строкам, время в UTC — для Excel и программ учёта.",
+  "exportNotes": "Страны и заметки",
+  "exportCreate": "Создать отчёт",
+  "exportCount": "{count, plural, one{{count} смена} few{{count} смены} many{{count} смен} other{{count} смены}} в отчёте",
+  "@exportCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exportEmpty": "За выбранный период смен нет.",
+  "exportFailed": "Не удалось создать отчёт. Попробуйте ещё раз.",
+  "exportRangeSpoken": "Период с {from} по {to}",
+  "@exportRangeSpoken": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "reportTitle": "Отчёт о времени вождения и отдыха",
+  "reportSubtitle": "Регламент (ЕС) 561/2006 и Соглашение ЕСТР",
+  "reportDriver": "Водитель",
+  "reportCard": "Карта водителя",
+  "reportVehicle": "Госномер",
+  "reportCompany": "Перевозчик",
+  "reportPeriod": "Период",
+  "reportGenerated": "Сформирован",
+  "reportTimezone": "Время — по часовому поясу телефона ({zone}). Сутки и недели отчёта — по UTC, неделя с понедельника 00:00, как на тахографе.",
+  "@reportTimezone": {
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+  "reportDate": "Дата",
+  "reportStart": "Начало",
+  "reportEnd": "Конец",
+  "reportCountries": "Страны",
+  "reportDriving": "Вожд.",
+  "reportWork": "Работа",
+  "reportAvailability": "Готовн.",
+  "reportBreaks": "Перерывы",
+  "reportSpan": "Смена",
+  "reportRestAfter": "Отдых после",
+  "reportNotes": "Заметки",
+  "reportWeek": "Неделя {range}",
+  "@reportWeek": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "reportWeekTotal": "Итого: вождение {driving} из 56 ч · за 2 недели {fortnight} из 90 ч",
+  "@reportWeekTotal": {
+    "placeholders": {
+      "driving": {
+        "type": "String"
+      },
+      "fortnight": {
+        "type": "String"
+      }
+    }
+  },
+  "reportViolations": "Нарушения",
+  "reportNoViolations": "По журналу нарушений нет.",
+  "reportViolationDrive": "{date}: суточное вождение {time} — больше 10 ч",
+  "@reportViolationDrive": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reportViolationSpan": "{date}: рабочий день {time} — больше {limit} ч",
+  "@reportViolationSpan": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "reportViolationRest": "{date}: отдых после смены {time} — недостаточный",
+  "@reportViolationRest": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reportViolationWeek": "Неделя {range}: вождение {time} — больше 56 ч",
+  "@reportViolationWeek": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reportViolationFortnight": "Неделя {range}: за две недели {time} — больше 90 ч",
+  "@reportViolationFortnight": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reportMarks": "Отметки",
+  "reportMarkWarn": "! — продление вождения до 10 ч, рабочий день больше 13 ч или сокращённый отдых",
+  "reportMarkBad": "!! — нарушение",
+  "reportMarkManual": "* — смена внесена вручную итогами",
+  "reportDisclaimer": "Отчёт составлен по записям водителя в приложении TachoGo. Это не официальная запись: он не заменяет данные тахографа и карты водителя.",
+  "reportSignature": "Подпись водителя",
+  "reportPage": "Стр. {page} из {pages}",
+  "@reportPage": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "pages": {
+        "type": "int"
+      }
+    }
+  }
 }

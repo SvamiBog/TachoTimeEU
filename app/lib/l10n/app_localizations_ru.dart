@@ -1176,4 +1176,200 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get weeklyAddManually => 'Указать вручную';
+
+  @override
+  String get exportPeriod => 'Период';
+
+  @override
+  String get exportWeek => 'Эта неделя';
+
+  @override
+  String get exportTwoWeeks => '2 недели';
+
+  @override
+  String get exportDays28 => '28 дней';
+
+  @override
+  String get exportCustom => 'Свой период';
+
+  @override
+  String get exportFrom => 'С';
+
+  @override
+  String get exportTo => 'По';
+
+  @override
+  String get exportFormat => 'Формат';
+
+  @override
+  String get exportPdf => 'PDF · для инспекции';
+
+  @override
+  String get exportCsv => 'CSV · таблица';
+
+  @override
+  String get exportPdfHint =>
+      'Не официальная запись: отчёт не заменяет данные тахографа и карты водителя.';
+
+  @override
+  String get exportCsvHint =>
+      'Записи режимов по строкам, время в UTC — для Excel и программ учёта.';
+
+  @override
+  String get exportNotes => 'Страны и заметки';
+
+  @override
+  String get exportCreate => 'Создать отчёт';
+
+  @override
+  String exportCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count смены',
+      many: '$count смен',
+      few: '$count смены',
+      one: '$count смена',
+    );
+    return '$_temp0 в отчёте';
+  }
+
+  @override
+  String get exportEmpty => 'За выбранный период смен нет.';
+
+  @override
+  String get exportFailed => 'Не удалось создать отчёт. Попробуйте ещё раз.';
+
+  @override
+  String exportRangeSpoken(String from, String to) {
+    return 'Период с $from по $to';
+  }
+
+  @override
+  String get reportTitle => 'Отчёт о времени вождения и отдыха';
+
+  @override
+  String get reportSubtitle => 'Регламент (ЕС) 561/2006 и Соглашение ЕСТР';
+
+  @override
+  String get reportDriver => 'Водитель';
+
+  @override
+  String get reportCard => 'Карта водителя';
+
+  @override
+  String get reportVehicle => 'Госномер';
+
+  @override
+  String get reportCompany => 'Перевозчик';
+
+  @override
+  String get reportPeriod => 'Период';
+
+  @override
+  String get reportGenerated => 'Сформирован';
+
+  @override
+  String reportTimezone(String zone) {
+    return 'Время — по часовому поясу телефона ($zone). Сутки и недели отчёта — по UTC, неделя с понедельника 00:00, как на тахографе.';
+  }
+
+  @override
+  String get reportDate => 'Дата';
+
+  @override
+  String get reportStart => 'Начало';
+
+  @override
+  String get reportEnd => 'Конец';
+
+  @override
+  String get reportCountries => 'Страны';
+
+  @override
+  String get reportDriving => 'Вожд.';
+
+  @override
+  String get reportWork => 'Работа';
+
+  @override
+  String get reportAvailability => 'Готовн.';
+
+  @override
+  String get reportBreaks => 'Перерывы';
+
+  @override
+  String get reportSpan => 'Смена';
+
+  @override
+  String get reportRestAfter => 'Отдых после';
+
+  @override
+  String get reportNotes => 'Заметки';
+
+  @override
+  String reportWeek(String range) {
+    return 'Неделя $range';
+  }
+
+  @override
+  String reportWeekTotal(String driving, String fortnight) {
+    return 'Итого: вождение $driving из 56 ч · за 2 недели $fortnight из 90 ч';
+  }
+
+  @override
+  String get reportViolations => 'Нарушения';
+
+  @override
+  String get reportNoViolations => 'По журналу нарушений нет.';
+
+  @override
+  String reportViolationDrive(String date, String time) {
+    return '$date: суточное вождение $time — больше 10 ч';
+  }
+
+  @override
+  String reportViolationSpan(String date, String time, int limit) {
+    return '$date: рабочий день $time — больше $limit ч';
+  }
+
+  @override
+  String reportViolationRest(String date, String time) {
+    return '$date: отдых после смены $time — недостаточный';
+  }
+
+  @override
+  String reportViolationWeek(String range, String time) {
+    return 'Неделя $range: вождение $time — больше 56 ч';
+  }
+
+  @override
+  String reportViolationFortnight(String range, String time) {
+    return 'Неделя $range: за две недели $time — больше 90 ч';
+  }
+
+  @override
+  String get reportMarks => 'Отметки';
+
+  @override
+  String get reportMarkWarn =>
+      '! — продление вождения до 10 ч, рабочий день больше 13 ч или сокращённый отдых';
+
+  @override
+  String get reportMarkBad => '!! — нарушение';
+
+  @override
+  String get reportMarkManual => '* — смена внесена вручную итогами';
+
+  @override
+  String get reportDisclaimer =>
+      'Отчёт составлен по записям водителя в приложении TachoGo. Это не официальная запись: он не заменяет данные тахографа и карты водителя.';
+
+  @override
+  String get reportSignature => 'Подпись водителя';
+
+  @override
+  String reportPage(int page, int pages) {
+    return 'Стр. $page из $pages';
+  }
 }

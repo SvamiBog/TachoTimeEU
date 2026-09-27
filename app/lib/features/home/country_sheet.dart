@@ -6,6 +6,7 @@ import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
+import 'package:tachogo/core/widgets/choice_pill.dart';
 import 'package:tachogo/core/widgets/segmented_tabs.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
@@ -333,13 +334,13 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
               runSpacing: 8,
               children: [
                 for (final code in recent)
-                  _Pill(
+                  ChoicePill(
                     code,
                     selected: code == selected,
                     onTap: () => unawaited(_pick(code)),
                   ),
                 if (hasShift && _target == CountryTarget.end)
-                  _Pill(
+                  ChoicePill(
                     l.countryClearEnd,
                     selected: false,
                     onTap: () => unawaited(_pick(null)),
@@ -382,51 +383,6 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
                 ),
         ),
       ],
-    );
-  }
-}
-
-class _Pill extends StatelessWidget {
-  const new(this.text, {required this.selected, required this.onTap});
-
-  final String text;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Semantics(
-      selected: selected,
-      button: true,
-      child: Material(
-        color: selected ? colors.drive : Colors.transparent,
-        shape: StadiumBorder(
-          side: BorderSide(color: selected ? colors.drive : colors.switchOff),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              minHeight: AppSize.minTouch,
-              minWidth: AppSize.minTouch + 12,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Center(
-                widthFactor: 1,
-                child: Text(
-                  text,
-                  style: AppTextStyles.rowTitle.copyWith(
-                    color: selected ? colors.onAccent : colors.text,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
