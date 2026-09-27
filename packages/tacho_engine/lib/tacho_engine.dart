@@ -6,6 +6,7 @@ export 'src/auto_switch.dart';
 export 'src/compliance.dart';
 export 'src/driver_mode.dart';
 export 'src/eu_limits.dart';
+export 'src/forecast.dart';
 export 'src/infringement.dart';
 export 'src/journal.dart';
 export 'src/journal_edits.dart';
