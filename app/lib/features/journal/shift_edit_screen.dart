@@ -94,11 +94,8 @@ class _Form {
       endCountry == o.endCountry &&
       note == o.note;
 
-  ShiftMeta get meta => ShiftMeta(
-    startCountry: startCountry,
-    endCountry: restKind == RestKind.none ? null : endCountry,
-    note: note,
-  );
+  ShiftMeta get meta =>
+      ShiftMeta(startCountry: startCountry, endCountry: endCountry, note: note);
 }
 
 class ShiftEditScreen extends ConsumerStatefulWidget {
@@ -331,18 +328,17 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     final f = _form;
     _error = null;
     if (kind == RestKind.none) {
-      if (f.restKind != RestKind.none) {
-        if (_hasLater(journal)) {
-          _error = context.l10n.shiftErrNotLast;
-          return;
-        }
-        _beforeNone = (end: f.end, country: f.endCountry);
-        f
-          ..restKind = RestKind.none
-          ..end = null;
+      if (f.restKind == RestKind.none) return;
+      if (_hasLater(journal)) {
+        _error = context.l10n.shiftErrNotLast;
+        return;
       }
-      // Смена не закончена — конечной страны у неё ещё нет
-      f.endCountry = null;
+      _beforeNone = (end: f.end, country: f.endCountry);
+      // Смена снова идёт — конечной страны у неё ещё нет
+      f
+        ..restKind = RestKind.none
+        ..end = null
+        ..endCountry = null;
       return;
     }
     if (kind == f.restKind) return;
@@ -578,9 +574,10 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     if (picked != null && mounted) {
       setState(() {
         _error = null;
+        // Конечную страну идущей смены можно выбрать заранее, как на главной
         _form
           ..startCountry = picked.start
-          ..endCountry = _form.restKind == RestKind.none ? null : picked.end;
+          ..endCountry = picked.end;
       });
     }
   }

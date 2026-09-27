@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tachogo/app.dart';
+import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
@@ -117,7 +118,10 @@ final _screens = <String, _Screen>{
   ),
   'Смена': (build: _editor, open: null),
   'Новая смена': (build: ShiftEditScreen.new, open: null),
-  'Шторка «Дата и время»': (build: _editor, open: _tapText('06:49')),
+  'Шторка «Дата и время»': (
+    build: _editor,
+    open: _tapText(formatClock(_shiftStart)),
+  ),
   'Шторка «Длительность»': (build: _editor, open: _tapText('За день')),
   'Шторка «Удалить смену?»': (build: _editor, open: _tapText('Удалить смену')),
   'Шторка страны в форме смены': (build: _editor, open: _tapText('PL')),

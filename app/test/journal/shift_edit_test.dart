@@ -6,6 +6,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/l10n/format.dart';
+import 'package:tachogo/core/widgets/wheel_picker.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/tables.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
@@ -27,6 +29,28 @@ import '../support/journal_fixtures.dart';
 
 Duration h(int hours, [int minutes = 0]) =>
     Duration(hours: hours, minutes: minutes);
+
+// Время на экране — местное: ожидания считаются так же, чтобы тест шёл в
+// любом часовом поясе (CI-01).
+DateTime u(int day, int hour, [int minute = 0]) =>
+    DateTime.utc(2026, 9, day, hour, minute);
+
+/// «06:00 → 14:00», «06:00 → идёт» — строка смены в журнале.
+String span(DateTime a, [DateTime? b]) =>
+    '${formatClock(a)} → ${b == null ? 'идёт' : formatClock(b)}';
+
+/// «Вт, 22.09» — кнопка даты в форме смены.
+String dateButton(DateTime t) =>
+    '${formatWeekdayShort(t, 'ru')}, ${formatDayMonth(t)}';
+
+/// Соседний час выше на колёсике часов: «05» при 06:xx. Только в колёсике:
+/// «10» есть и в календаре.
+Finder hourBefore(DateTime t) => find.descendant(
+  of: find.byType(WheelPicker).first,
+  matching: find.text(
+    ((t.toLocal().hour + 23) % 24).toString().padLeft(2, '0'),
+  ),
+);
 
 void main() {
   late AppDatabase db;
@@ -105,8 +129,8 @@ void main() {
       await tap(tester, find.text('Смена'));
       expect(find.text('Новая смена'), findsOneWidget);
       // 10 ч до сейчас, отдых 11 ч, страны — по умолчанию
-      expect(find.text('02:00'), findsOneWidget);
-      expect(find.text('12:00'), findsOneWidget);
+      expect(find.text(formatClock(u(23, 2))), findsOneWidget);
+      expect(find.text(formatClock(u(23, 12))), findsOneWidget);
       expect(find.text('PL'), findsNWidgets(2));
 
       await tap(tester, find.text('За день'));
@@ -143,28 +167,41 @@ void main() {
     testWidgets('JRN-02: поверх записанной смены — ошибка с её временем', (
       tester,
     ) async {
-      await defaultCountry(tester, 'PL');
+      // Текущая смена с 07:00 и ручная 05:00–09:00, которая на неё
+      // заходит (записана в обход формы)
       await seed(
         tester,
-        consecutive(DateTime.utc(2026, 9, 22, 20), [
+        consecutive(u(22, 20), [
           (DriverMode.rest, h(11)),
           (DriverMode.driving, h(5)),
         ], open: true),
       );
-      now = DateTime.utc(2026, 9, 23, 12);
-      await pump(tester, const ShiftEditScreen());
-      // Время по умолчанию свободно: 10 ч до начала смены минус 11 ч
-      expect(find.text('Вт, 22.09'), findsNWidgets(2));
-      await tap(tester, find.text('Вт, 22.09').last);
-      await tap(tester, find.text('Конец').last);
-      await tap(tester, day(23));
-      await tap(tester, find.text('Готово'));
+      await io(
+        tester,
+        () => JournalEditRepository(db, SettingsRepository(db)).saveManualShift(
+          ManualShift(
+            start: u(23, 5),
+            end: u(23, 9),
+            driving: h(2),
+            restKind: RestKind.daily,
+            rest: h(11),
+          ),
+          const ShiftMeta(startCountry: 'PL', endCountry: 'PL'),
+        ),
+      );
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.text(span(u(23, 5), u(23, 9))));
+      await tap(tester, find.text('Изменить смену'));
       await tap(tester, find.byTooltip('Сохранить'));
+      final current = u(23, 7);
       expect(
-        find.textContaining('Пересекается со сменой ср 23.09 07:00'),
+        find.text(
+          'Пересекается со сменой ${formatWeekdayDay(current, 'ru')} '
+          '${formatClock(current)}–идёт',
+        ),
         findsOneWidget,
       );
-      expect(await manual(tester), isEmpty);
+      expect(find.byType(ShiftEditScreen), findsOneWidget);
       await unmount(tester);
     });
 
@@ -199,11 +236,12 @@ void main() {
     expect(find.text('Новая смена'), findsOneWidget);
     expect(find.text('45:00'), findsOneWidget);
 
-    // Смена пт 18.09 09:00–19:00, затем 45 ч отдыха — до вс 20.09 16:00
-    await tap(tester, find.text('Вт, 22.09').first);
-    await tap(tester, day(18));
+    // Смена пт 18.09 09:00–19:00 UTC, затем 45 ч отдыха — до вс 20.09 16:00.
+    // По умолчанию — 22.09 09:00–19:00: день меняется, время суток остаётся
+    await tap(tester, find.text(dateButton(u(22, 9))).first);
+    await tap(tester, day(u(18, 9).toLocal().day));
     await tap(tester, find.text('Конец').last);
-    await tap(tester, day(18));
+    await tap(tester, day(u(18, 19).toLocal().day));
     await tap(tester, find.text('Готово'));
     await tap(tester, find.byTooltip('Сохранить'));
     expect(find.byType(ShiftEditScreen), findsNothing);
@@ -215,7 +253,7 @@ void main() {
     final m = snapshot(await periods(tester), [saved]);
     expect(m.workWeekStart, DateTime.utc(2026, 9, 20, 16));
     expect(m.weeklyRestDeadline, DateTime.utc(2026, 9, 26, 16));
-    expect(find.text('Сб 26.09 · 16:00'), findsOneWidget);
+    expect(find.text(formatDeadline(u(26, 16), 'ru')), findsOneWidget);
     await unmount(tester);
   });
 
@@ -306,7 +344,7 @@ void main() {
       await pump(tester, const WorkdayScreen());
       await tap(tester, find.text('Изменить начало смены'));
       // 06:00 → 05:00 касанием соседнего часа
-      await tap(tester, find.text('05'));
+      await tap(tester, hourBefore(u(23, 6)));
       await tap(tester, find.text('Готово'));
 
       final m = snapshot(await periods(tester));
@@ -335,11 +373,13 @@ void main() {
           (DriverMode.driving, h(6)),
         ], open: true),
       );
-      await openFromJournal(tester, '06:00 → идёт');
+      await openFromJournal(tester, span(u(23, 6)));
       expect(find.textContaining('Смена идёт по записям'), findsOneWidget);
       await tap(tester, find.text('Суточный'));
       expect(
-        find.text('Смена закончится в 12:00, дальше пойдёт отдых.'),
+        find.text(
+          'Смена закончится в ${formatClock(now)}, дальше пойдёт отдых.',
+        ),
         findsOneWidget,
       );
       await tap(tester, find.byTooltip('Сохранить'));
@@ -348,6 +388,52 @@ void main() {
       expect(after.last.mode, DriverMode.rest);
       expect(after.last.dayEnd, isTrue);
       expect(snapshot(after).status, DriverStatus.dailyRest);
+      await unmount(tester);
+    });
+
+    testWidgets('идущая смена: правка начала не стирает конечную страну', (
+      tester,
+    ) async {
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 22, 19), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(6)),
+        ], open: true),
+      );
+      await io(
+        tester,
+        () => JournalEditRepository(db, SettingsRepository(db)).setShiftMeta(
+          DateTime.utc(2026, 9, 23, 6),
+          const ShiftMeta(startCountry: 'PL', endCountry: 'D'),
+        ),
+      );
+      await openFromJournal(tester, span(u(23, 6)));
+      // «Не начат» уже выбран — касание ничего не меняет
+      await tap(tester, find.text('Не начат'));
+      expect(find.text('D'), findsOneWidget);
+      await tap(tester, find.text(formatClock(u(23, 6))));
+      await tap(tester, hourBefore(u(23, 6)));
+      await tap(tester, find.text('Готово'));
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      final meta = await io(
+        tester,
+        () => JournalEditRepository(
+          db,
+          SettingsRepository(db),
+        ).watchShiftMeta().first,
+      );
+      expect(meta, {
+        DateTime.utc(2026, 9, 23, 5): const ShiftMeta(
+          startCountry: 'PL',
+          endCountry: 'D',
+        ),
+      });
+      expect(
+        snapshot(await periods(tester)).shift?.start,
+        DateTime.utc(2026, 9, 23, 5),
+      );
       await unmount(tester);
     });
 
@@ -364,7 +450,7 @@ void main() {
         ], open: true),
       );
       await defaultCountry(tester, 'D');
-      await openFromJournal(tester, '06:00 → 14:00');
+      await openFromJournal(tester, span(u(22, 6), u(22, 14)));
       // Конечная страна не выбрана — кнопка «—»
       await tap(tester, find.text('—'));
       await tester.enterText(
@@ -413,7 +499,7 @@ void main() {
           const ShiftMeta(startCountry: 'D', endCountry: 'PL'),
         ),
       );
-      await openFromJournal(tester, '06:00 → 14:00');
+      await openFromJournal(tester, span(u(22, 6), u(22, 14)));
       await tap(tester, find.text('За день'));
       await tap(tester, find.text('7').first);
       await tap(tester, find.text('Сохранить'));
@@ -442,7 +528,7 @@ void main() {
           (DriverMode.driving, h(2)),
         ], open: true),
       );
-      await openFromJournal(tester, '06:00 → 14:00');
+      await openFromJournal(tester, span(u(22, 6), u(22, 14)));
       await tap(tester, find.text('Удалить смену'));
       expect(find.text('Удалить смену?'), findsOneWidget);
       await tap(tester, find.text('Отмена'));
@@ -458,7 +544,7 @@ void main() {
         h(6),
         reason: 'осталась 06:00–12:00',
       );
-      expect(find.text('06:00 → 14:00'), findsNothing);
+      expect(find.text(span(u(22, 6), u(22, 14))), findsNothing);
       await unmount(tester);
     });
   });

@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/features/journal/journal_parts.dart';
@@ -38,6 +39,14 @@ Future<void> _pumpJournal(
   );
 }
 
+// Время на экране — местное: ожидания считаются так же, чтобы тест шёл в
+// любом часовом поясе (CI-01).
+DateTime _u(int day, int hour, int minute) =>
+    DateTime.utc(2026, 9, day, hour, minute);
+
+String _span(DateTime a, DateTime? b) =>
+    '${formatClock(a)} → ${b == null ? 'идёт' : formatClock(b)}';
+
 /// Ячейка итогов со значением [value].
 MetricCell _cell(WidgetTester tester, String value) => tester
     .widgetList<MetricCell>(find.byType(MetricCell))
@@ -64,15 +73,16 @@ void main() {
     testWidgets('смены — день, страны, время, итоги', (tester) async {
       await _pumpJournal(tester);
       expect(find.text('PL → …'), findsOneWidget);
-      expect(find.text('06:49 → идёт'), findsOneWidget);
-      expect(find.text('06:30 → 19:10'), findsOneWidget);
+      expect(find.text(_span(_u(23, 6, 49), null)), findsOneWidget);
+      expect(find.text(_span(_u(22, 6, 30), _u(22, 19, 10))), findsOneWidget);
       expect(find.text('D → PL'), findsOneWidget);
       expect(_cell(tester, '8:55').label, 'Вождение');
       expect(_cell(tester, '12:40').label, 'Смена');
       expect(_cell(tester, '11:39').label, 'Отдых');
       expect(_cell(tester, 'нед.').label, 'Отдых', reason: 'пт 18.09');
-      expect(find.text('Вт'), findsNWidgets(2));
-      expect(find.text('22'), findsOneWidget);
+      final tuesday = _u(22, 6, 30);
+      expect(find.text(formatWeekdayShort(tuesday, 'ru')), findsWidgets);
+      expect(find.text('${tuesday.toLocal().day}'), findsWidgets);
     });
 
     testWidgets('подсветка 10 ч, 13+ ч и сокращённого отдыха — по движку', (
@@ -151,24 +161,32 @@ void main() {
       await _pumpJournal(tester);
       expect(find.text('Недельный отдых · полный'), findsNWidgets(2));
       expect(find.text('66:50'), findsOneWidget);
-      expect(find.text('18.09 11:20 → 21.09 06:10'), findsOneWidget);
+      expect(
+        find.text(
+          '${formatDayMonthClock(_u(18, 11, 20))} → '
+          '${formatDayMonthClock(_u(21, 6, 10))}',
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('старые недели свёрнуты, касание раскрывает и сворачивает', (
       tester,
     ) async {
       await _pumpJournal(tester);
-      expect(find.text('09:00 → 17:00'), findsNothing, reason: '7–13.09');
+      final older = _span(_u(7, 6, 0), _u(7, 17, 0));
+      final current = _span(_u(23, 6, 49), null);
+      expect(find.text(older), findsNothing, reason: '7–13.09 свёрнута');
       await tester.tap(find.text('7–13 сентября'));
       await tester.pumpAndSettle();
-      expect(find.text('06:00 → 17:00'), findsNWidgets(5));
+      expect(find.text(older), findsNWidgets(5));
 
       await tester.tap(find.text('21–27 сентября'));
       await tester.pumpAndSettle();
-      expect(find.text('06:49 → идёт'), findsNothing);
+      expect(find.text(current), findsNothing);
       await tester.tap(find.text('21–27 сентября'));
       await tester.pumpAndSettle();
-      expect(find.text('06:49 → идёт'), findsOneWidget);
+      expect(find.text(current), findsOneWidget);
     });
 
     testWidgets('ручная смена отмечена «вручную»', (tester) async {
@@ -214,13 +232,12 @@ void main() {
     testWidgets('диктор читает строку смены целиком', (tester) async {
       final handle = tester.ensureSemantics();
       await _pumpJournal(tester);
+      final start = _u(22, 6, 30);
+      final label =
+          '${formatWeekdayFull(start, 'ru')}, PL → PL, '
+          '${_span(start, _u(22, 19, 10))}. Вождение 8 часов 55 минут';
       expect(
-        find.bySemanticsLabel(
-          RegExp(
-            r'^Вторник, 22 сентября, PL → PL, 06:30 → 19:10\. '
-            'Вождение 8 часов 55 минут',
-          ),
-        ),
+        find.bySemanticsLabel(RegExp('^${RegExp.escape(label)}')),
         findsOneWidget,
       );
       handle.dispose();
@@ -230,14 +247,17 @@ void main() {
   group('детали дня', () {
     testWidgets('касание смены — записи режимов и итоги', (tester) async {
       await _pumpJournal(tester);
-      await tester.tap(find.text('06:30 → 19:10'));
+      await tester.tap(find.text(_span(_u(22, 6, 30), _u(22, 19, 10))));
       await tester.pumpAndSettle();
       expect(find.byType(ShiftDayScreen), findsOneWidget);
-      expect(find.text('Вторник, 22 сентября'), findsOneWidget);
-      expect(find.text('06:30–06:45'), findsOneWidget);
-      expect(find.text('06:45–11:15'), findsOneWidget);
-      // Отдых после смены — через полночь, с датой
-      expect(find.text('19:10 – 23.09 06:49'), findsOneWidget);
+      expect(find.text(formatWeekdayFull(_u(22, 6, 30), 'ru')), findsOneWidget);
+      // Запись — «с–по», через местную полночь — с датой конца
+      String block(DateTime a, DateTime b) => isSameLocalDay(a, b)
+          ? '${formatClock(a)}–${formatClock(b)}'
+          : '${formatClock(a)} – ${formatDayMonthClock(b)}';
+      expect(find.text(block(_u(22, 6, 30), _u(22, 6, 45))), findsOneWidget);
+      expect(find.text(block(_u(22, 6, 45), _u(22, 11, 15))), findsOneWidget);
+      expect(find.text(block(_u(22, 19, 10), _u(23, 6, 49))), findsOneWidget);
       expect(find.text('Изменить смену'), findsOneWidget);
     });
 
