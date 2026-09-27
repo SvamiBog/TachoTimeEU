@@ -90,7 +90,7 @@ class TrackingTaskHandler extends TaskHandler {
   void onReceiveData(Object data) {
     if (data != journalChangedMessage) return;
     final db = _container?.read(databaseProvider);
-    db?.markTablesUpdated({db.activityPeriods});
+    db?.markTablesUpdated({db.activityPeriods, db.manualShifts});
     _refreshLater();
   }
 
@@ -121,12 +121,20 @@ class TrackingTaskHandler extends TaskHandler {
   Future<void> _refresh() async {
     final container = _container;
     if (container == null) return;
+    // Те же источники, что у главной: иначе остатки в уведомлении и на
+    // экране разойдутся.
     final m = calculateCompliance(
       periods: await container.read(activityRepositoryProvider).periods(),
       now: _clock().toUtc(),
+      manualShifts: await container
+          .read(journalEditRepositoryProvider)
+          .manualShifts(),
       settings: await container
           .read(settingsRepositoryProvider)
           .complianceSettings(),
+      lastCardDownload: await container
+          .read(cardDownloadRepositoryProvider)
+          .last(),
     );
     final suggestion = _tracker?.suggestion;
     final n = trackingNotification(m, suggestion: suggestion);

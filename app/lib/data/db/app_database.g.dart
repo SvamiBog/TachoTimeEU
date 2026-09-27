@@ -748,6 +748,15 @@ class $ShiftsTable extends Shifts with TableInfo<$ShiftsTable, ShiftRow> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -756,6 +765,7 @@ class $ShiftsTable extends Shifts with TableInfo<$ShiftsTable, ShiftRow> {
     startCountry,
     endCountry,
     utcOffsetMinutes,
+    note,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -800,6 +810,12 @@ class $ShiftsTable extends Shifts with TableInfo<$ShiftsTable, ShiftRow> {
     } else if (isInserting) {
       context.missing(_utcOffsetMinutesMeta);
     }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
     return context;
   }
 
@@ -837,6 +853,10 @@ class $ShiftsTable extends Shifts with TableInfo<$ShiftsTable, ShiftRow> {
         DriftSqlType.int,
         data['${effectivePrefix}utc_offset_minutes'],
       )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
     );
   }
 
@@ -860,6 +880,9 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
   final String startCountry;
   final String? endCountry;
   final int utcOffsetMinutes;
+
+  /// Заметка водителя к смене (экран 11): «паром, ожидание загрузки».
+  final String? note;
   const ShiftRow({
     required this.id,
     required this.startUtc,
@@ -867,6 +890,7 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
     required this.startCountry,
     this.endCountry,
     required this.utcOffsetMinutes,
+    this.note,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -887,6 +911,9 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
       map['end_country'] = Variable<String>(endCountry);
     }
     map['utc_offset_minutes'] = Variable<int>(utcOffsetMinutes);
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
     return map;
   }
 
@@ -902,6 +929,7 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
           ? const Value.absent()
           : Value(endCountry),
       utcOffsetMinutes: Value(utcOffsetMinutes),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
     );
   }
 
@@ -917,6 +945,7 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
       startCountry: serializer.fromJson<String>(json['startCountry']),
       endCountry: serializer.fromJson<String?>(json['endCountry']),
       utcOffsetMinutes: serializer.fromJson<int>(json['utcOffsetMinutes']),
+      note: serializer.fromJson<String?>(json['note']),
     );
   }
   @override
@@ -929,6 +958,7 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
       'startCountry': serializer.toJson<String>(startCountry),
       'endCountry': serializer.toJson<String?>(endCountry),
       'utcOffsetMinutes': serializer.toJson<int>(utcOffsetMinutes),
+      'note': serializer.toJson<String?>(note),
     };
   }
 
@@ -939,6 +969,7 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
     String? startCountry,
     Value<String?> endCountry = const Value.absent(),
     int? utcOffsetMinutes,
+    Value<String?> note = const Value.absent(),
   }) => ShiftRow(
     id: id ?? this.id,
     startUtc: startUtc ?? this.startUtc,
@@ -946,6 +977,7 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
     startCountry: startCountry ?? this.startCountry,
     endCountry: endCountry.present ? endCountry.value : this.endCountry,
     utcOffsetMinutes: utcOffsetMinutes ?? this.utcOffsetMinutes,
+    note: note.present ? note.value : this.note,
   );
   ShiftRow copyWithCompanion(ShiftsCompanion data) {
     return ShiftRow(
@@ -961,6 +993,7 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
       utcOffsetMinutes: data.utcOffsetMinutes.present
           ? data.utcOffsetMinutes.value
           : this.utcOffsetMinutes,
+      note: data.note.present ? data.note.value : this.note,
     );
   }
 
@@ -972,7 +1005,8 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
           ..write('endUtc: $endUtc, ')
           ..write('startCountry: $startCountry, ')
           ..write('endCountry: $endCountry, ')
-          ..write('utcOffsetMinutes: $utcOffsetMinutes')
+          ..write('utcOffsetMinutes: $utcOffsetMinutes, ')
+          ..write('note: $note')
           ..write(')'))
         .toString();
   }
@@ -985,6 +1019,7 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
     startCountry,
     endCountry,
     utcOffsetMinutes,
+    note,
   );
   @override
   bool operator ==(Object other) =>
@@ -995,7 +1030,8 @@ class ShiftRow extends DataClass implements Insertable<ShiftRow> {
           other.endUtc == this.endUtc &&
           other.startCountry == this.startCountry &&
           other.endCountry == this.endCountry &&
-          other.utcOffsetMinutes == this.utcOffsetMinutes);
+          other.utcOffsetMinutes == this.utcOffsetMinutes &&
+          other.note == this.note);
 }
 
 class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
@@ -1005,6 +1041,7 @@ class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
   final Value<String> startCountry;
   final Value<String?> endCountry;
   final Value<int> utcOffsetMinutes;
+  final Value<String?> note;
   const ShiftsCompanion({
     this.id = const Value.absent(),
     this.startUtc = const Value.absent(),
@@ -1012,6 +1049,7 @@ class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
     this.startCountry = const Value.absent(),
     this.endCountry = const Value.absent(),
     this.utcOffsetMinutes = const Value.absent(),
+    this.note = const Value.absent(),
   });
   ShiftsCompanion.insert({
     this.id = const Value.absent(),
@@ -1020,6 +1058,7 @@ class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
     required String startCountry,
     this.endCountry = const Value.absent(),
     required int utcOffsetMinutes,
+    this.note = const Value.absent(),
   }) : startUtc = Value(startUtc),
        startCountry = Value(startCountry),
        utcOffsetMinutes = Value(utcOffsetMinutes);
@@ -1030,6 +1069,7 @@ class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
     Expression<String>? startCountry,
     Expression<String>? endCountry,
     Expression<int>? utcOffsetMinutes,
+    Expression<String>? note,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1038,6 +1078,7 @@ class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
       if (startCountry != null) 'start_country': startCountry,
       if (endCountry != null) 'end_country': endCountry,
       if (utcOffsetMinutes != null) 'utc_offset_minutes': utcOffsetMinutes,
+      if (note != null) 'note': note,
     });
   }
 
@@ -1048,6 +1089,7 @@ class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
     Value<String>? startCountry,
     Value<String?>? endCountry,
     Value<int>? utcOffsetMinutes,
+    Value<String?>? note,
   }) {
     return ShiftsCompanion(
       id: id ?? this.id,
@@ -1056,6 +1098,7 @@ class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
       startCountry: startCountry ?? this.startCountry,
       endCountry: endCountry ?? this.endCountry,
       utcOffsetMinutes: utcOffsetMinutes ?? this.utcOffsetMinutes,
+      note: note ?? this.note,
     );
   }
 
@@ -1084,6 +1127,9 @@ class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
     if (utcOffsetMinutes.present) {
       map['utc_offset_minutes'] = Variable<int>(utcOffsetMinutes.value);
     }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
     return map;
   }
 
@@ -1095,7 +1141,850 @@ class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
           ..write('endUtc: $endUtc, ')
           ..write('startCountry: $startCountry, ')
           ..write('endCountry: $endCountry, ')
-          ..write('utcOffsetMinutes: $utcOffsetMinutes')
+          ..write('utcOffsetMinutes: $utcOffsetMinutes, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ManualShiftsTable extends ManualShifts
+    with TableInfo<$ManualShiftsTable, ManualShiftRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ManualShiftsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> startUtc =
+      GeneratedColumn<DateTime>(
+        'start_utc',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ManualShiftsTable.$converterstartUtc);
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime?, DateTime> endUtc =
+      GeneratedColumn<DateTime>(
+        'end_utc',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      ).withConverter<DateTime?>($ManualShiftsTable.$converterendUtcn);
+  static const VerificationMeta _drivingMinutesMeta = const VerificationMeta(
+    'drivingMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> drivingMinutes = GeneratedColumn<int>(
+    'driving_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _continuousDrivingMinutesMeta =
+      const VerificationMeta('continuousDrivingMinutes');
+  @override
+  late final GeneratedColumn<int> continuousDrivingMinutes =
+      GeneratedColumn<int>(
+        'continuous_driving_minutes',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
+  @override
+  late final GeneratedColumnWithTypeConverter<RestKind, String> restKind =
+      GeneratedColumn<String>(
+        'rest_kind',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<RestKind>($ManualShiftsTable.$converterrestKind);
+  static const VerificationMeta _restMinutesMeta = const VerificationMeta(
+    'restMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> restMinutes = GeneratedColumn<int>(
+    'rest_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _splitRestMeta = const VerificationMeta(
+    'splitRest',
+  );
+  @override
+  late final GeneratedColumn<bool> splitRest = GeneratedColumn<bool>(
+    'split_rest',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("split_rest" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _startCountryMeta = const VerificationMeta(
+    'startCountry',
+  );
+  @override
+  late final GeneratedColumn<String> startCountry = GeneratedColumn<String>(
+    'start_country',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 3,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endCountryMeta = const VerificationMeta(
+    'endCountry',
+  );
+  @override
+  late final GeneratedColumn<String> endCountry = GeneratedColumn<String>(
+    'end_country',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 3,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _utcOffsetMinutesMeta = const VerificationMeta(
+    'utcOffsetMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> utcOffsetMinutes = GeneratedColumn<int>(
+    'utc_offset_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> createdAt =
+      GeneratedColumn<DateTime>(
+        'created_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ManualShiftsTable.$convertercreatedAt);
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> updatedAt =
+      GeneratedColumn<DateTime>(
+        'updated_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ManualShiftsTable.$converterupdatedAt);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    startUtc,
+    endUtc,
+    drivingMinutes,
+    continuousDrivingMinutes,
+    restKind,
+    restMinutes,
+    splitRest,
+    startCountry,
+    endCountry,
+    note,
+    utcOffsetMinutes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'manual_shifts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ManualShiftRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('driving_minutes')) {
+      context.handle(
+        _drivingMinutesMeta,
+        drivingMinutes.isAcceptableOrUnknown(
+          data['driving_minutes']!,
+          _drivingMinutesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_drivingMinutesMeta);
+    }
+    if (data.containsKey('continuous_driving_minutes')) {
+      context.handle(
+        _continuousDrivingMinutesMeta,
+        continuousDrivingMinutes.isAcceptableOrUnknown(
+          data['continuous_driving_minutes']!,
+          _continuousDrivingMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rest_minutes')) {
+      context.handle(
+        _restMinutesMeta,
+        restMinutes.isAcceptableOrUnknown(
+          data['rest_minutes']!,
+          _restMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('split_rest')) {
+      context.handle(
+        _splitRestMeta,
+        splitRest.isAcceptableOrUnknown(data['split_rest']!, _splitRestMeta),
+      );
+    }
+    if (data.containsKey('start_country')) {
+      context.handle(
+        _startCountryMeta,
+        startCountry.isAcceptableOrUnknown(
+          data['start_country']!,
+          _startCountryMeta,
+        ),
+      );
+    }
+    if (data.containsKey('end_country')) {
+      context.handle(
+        _endCountryMeta,
+        endCountry.isAcceptableOrUnknown(data['end_country']!, _endCountryMeta),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('utc_offset_minutes')) {
+      context.handle(
+        _utcOffsetMinutesMeta,
+        utcOffsetMinutes.isAcceptableOrUnknown(
+          data['utc_offset_minutes']!,
+          _utcOffsetMinutesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_utcOffsetMinutesMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ManualShiftRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ManualShiftRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      startUtc: $ManualShiftsTable.$converterstartUtc.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}start_utc'],
+        )!,
+      ),
+      endUtc: $ManualShiftsTable.$converterendUtcn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}end_utc'],
+        ),
+      ),
+      drivingMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}driving_minutes'],
+      )!,
+      continuousDrivingMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}continuous_driving_minutes'],
+      )!,
+      restKind: $ManualShiftsTable.$converterrestKind.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}rest_kind'],
+        )!,
+      ),
+      restMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_minutes'],
+      )!,
+      splitRest: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}split_rest'],
+      )!,
+      startCountry: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}start_country'],
+      ),
+      endCountry: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}end_country'],
+      ),
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+      utcOffsetMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}utc_offset_minutes'],
+      )!,
+      createdAt: $ManualShiftsTable.$convertercreatedAt.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}created_at'],
+        )!,
+      ),
+      updatedAt: $ManualShiftsTable.$converterupdatedAt.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}updated_at'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $ManualShiftsTable createAlias(String alias) {
+    return $ManualShiftsTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<DateTime, DateTime> $converterstartUtc =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime, DateTime> $converterendUtc =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime?, DateTime?> $converterendUtcn =
+      NullAwareTypeConverter.wrap($converterendUtc);
+  static JsonTypeConverter2<RestKind, String, String> $converterrestKind =
+      const EnumNameConverter<RestKind>(RestKind.values);
+  static TypeConverter<DateTime, DateTime> $convertercreatedAt =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime, DateTime> $converterupdatedAt =
+      const UtcDateTimeConverter();
+}
+
+class ManualShiftRow extends DataClass implements Insertable<ManualShiftRow> {
+  final int id;
+  final DateTime startUtc;
+
+  /// null — смена ещё идёт, отдых не начат.
+  final DateTime? endUtc;
+  final int drivingMinutes;
+  final int continuousDrivingMinutes;
+  final RestKind restKind;
+  final int restMinutes;
+
+  /// Раздельный суточный отдых 3 + 9.
+  final bool splitRest;
+  final String? startCountry;
+  final String? endCountry;
+  final String? note;
+  final int utcOffsetMinutes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ManualShiftRow({
+    required this.id,
+    required this.startUtc,
+    this.endUtc,
+    required this.drivingMinutes,
+    required this.continuousDrivingMinutes,
+    required this.restKind,
+    required this.restMinutes,
+    required this.splitRest,
+    this.startCountry,
+    this.endCountry,
+    this.note,
+    required this.utcOffsetMinutes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    {
+      map['start_utc'] = Variable<DateTime>(
+        $ManualShiftsTable.$converterstartUtc.toSql(startUtc),
+      );
+    }
+    if (!nullToAbsent || endUtc != null) {
+      map['end_utc'] = Variable<DateTime>(
+        $ManualShiftsTable.$converterendUtcn.toSql(endUtc),
+      );
+    }
+    map['driving_minutes'] = Variable<int>(drivingMinutes);
+    map['continuous_driving_minutes'] = Variable<int>(continuousDrivingMinutes);
+    {
+      map['rest_kind'] = Variable<String>(
+        $ManualShiftsTable.$converterrestKind.toSql(restKind),
+      );
+    }
+    map['rest_minutes'] = Variable<int>(restMinutes);
+    map['split_rest'] = Variable<bool>(splitRest);
+    if (!nullToAbsent || startCountry != null) {
+      map['start_country'] = Variable<String>(startCountry);
+    }
+    if (!nullToAbsent || endCountry != null) {
+      map['end_country'] = Variable<String>(endCountry);
+    }
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    map['utc_offset_minutes'] = Variable<int>(utcOffsetMinutes);
+    {
+      map['created_at'] = Variable<DateTime>(
+        $ManualShiftsTable.$convertercreatedAt.toSql(createdAt),
+      );
+    }
+    {
+      map['updated_at'] = Variable<DateTime>(
+        $ManualShiftsTable.$converterupdatedAt.toSql(updatedAt),
+      );
+    }
+    return map;
+  }
+
+  ManualShiftsCompanion toCompanion(bool nullToAbsent) {
+    return ManualShiftsCompanion(
+      id: Value(id),
+      startUtc: Value(startUtc),
+      endUtc: endUtc == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endUtc),
+      drivingMinutes: Value(drivingMinutes),
+      continuousDrivingMinutes: Value(continuousDrivingMinutes),
+      restKind: Value(restKind),
+      restMinutes: Value(restMinutes),
+      splitRest: Value(splitRest),
+      startCountry: startCountry == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startCountry),
+      endCountry: endCountry == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endCountry),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      utcOffsetMinutes: Value(utcOffsetMinutes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ManualShiftRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ManualShiftRow(
+      id: serializer.fromJson<int>(json['id']),
+      startUtc: serializer.fromJson<DateTime>(json['startUtc']),
+      endUtc: serializer.fromJson<DateTime?>(json['endUtc']),
+      drivingMinutes: serializer.fromJson<int>(json['drivingMinutes']),
+      continuousDrivingMinutes: serializer.fromJson<int>(
+        json['continuousDrivingMinutes'],
+      ),
+      restKind: $ManualShiftsTable.$converterrestKind.fromJson(
+        serializer.fromJson<String>(json['restKind']),
+      ),
+      restMinutes: serializer.fromJson<int>(json['restMinutes']),
+      splitRest: serializer.fromJson<bool>(json['splitRest']),
+      startCountry: serializer.fromJson<String?>(json['startCountry']),
+      endCountry: serializer.fromJson<String?>(json['endCountry']),
+      note: serializer.fromJson<String?>(json['note']),
+      utcOffsetMinutes: serializer.fromJson<int>(json['utcOffsetMinutes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'startUtc': serializer.toJson<DateTime>(startUtc),
+      'endUtc': serializer.toJson<DateTime?>(endUtc),
+      'drivingMinutes': serializer.toJson<int>(drivingMinutes),
+      'continuousDrivingMinutes': serializer.toJson<int>(
+        continuousDrivingMinutes,
+      ),
+      'restKind': serializer.toJson<String>(
+        $ManualShiftsTable.$converterrestKind.toJson(restKind),
+      ),
+      'restMinutes': serializer.toJson<int>(restMinutes),
+      'splitRest': serializer.toJson<bool>(splitRest),
+      'startCountry': serializer.toJson<String?>(startCountry),
+      'endCountry': serializer.toJson<String?>(endCountry),
+      'note': serializer.toJson<String?>(note),
+      'utcOffsetMinutes': serializer.toJson<int>(utcOffsetMinutes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ManualShiftRow copyWith({
+    int? id,
+    DateTime? startUtc,
+    Value<DateTime?> endUtc = const Value.absent(),
+    int? drivingMinutes,
+    int? continuousDrivingMinutes,
+    RestKind? restKind,
+    int? restMinutes,
+    bool? splitRest,
+    Value<String?> startCountry = const Value.absent(),
+    Value<String?> endCountry = const Value.absent(),
+    Value<String?> note = const Value.absent(),
+    int? utcOffsetMinutes,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ManualShiftRow(
+    id: id ?? this.id,
+    startUtc: startUtc ?? this.startUtc,
+    endUtc: endUtc.present ? endUtc.value : this.endUtc,
+    drivingMinutes: drivingMinutes ?? this.drivingMinutes,
+    continuousDrivingMinutes:
+        continuousDrivingMinutes ?? this.continuousDrivingMinutes,
+    restKind: restKind ?? this.restKind,
+    restMinutes: restMinutes ?? this.restMinutes,
+    splitRest: splitRest ?? this.splitRest,
+    startCountry: startCountry.present ? startCountry.value : this.startCountry,
+    endCountry: endCountry.present ? endCountry.value : this.endCountry,
+    note: note.present ? note.value : this.note,
+    utcOffsetMinutes: utcOffsetMinutes ?? this.utcOffsetMinutes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ManualShiftRow copyWithCompanion(ManualShiftsCompanion data) {
+    return ManualShiftRow(
+      id: data.id.present ? data.id.value : this.id,
+      startUtc: data.startUtc.present ? data.startUtc.value : this.startUtc,
+      endUtc: data.endUtc.present ? data.endUtc.value : this.endUtc,
+      drivingMinutes: data.drivingMinutes.present
+          ? data.drivingMinutes.value
+          : this.drivingMinutes,
+      continuousDrivingMinutes: data.continuousDrivingMinutes.present
+          ? data.continuousDrivingMinutes.value
+          : this.continuousDrivingMinutes,
+      restKind: data.restKind.present ? data.restKind.value : this.restKind,
+      restMinutes: data.restMinutes.present
+          ? data.restMinutes.value
+          : this.restMinutes,
+      splitRest: data.splitRest.present ? data.splitRest.value : this.splitRest,
+      startCountry: data.startCountry.present
+          ? data.startCountry.value
+          : this.startCountry,
+      endCountry: data.endCountry.present
+          ? data.endCountry.value
+          : this.endCountry,
+      note: data.note.present ? data.note.value : this.note,
+      utcOffsetMinutes: data.utcOffsetMinutes.present
+          ? data.utcOffsetMinutes.value
+          : this.utcOffsetMinutes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ManualShiftRow(')
+          ..write('id: $id, ')
+          ..write('startUtc: $startUtc, ')
+          ..write('endUtc: $endUtc, ')
+          ..write('drivingMinutes: $drivingMinutes, ')
+          ..write('continuousDrivingMinutes: $continuousDrivingMinutes, ')
+          ..write('restKind: $restKind, ')
+          ..write('restMinutes: $restMinutes, ')
+          ..write('splitRest: $splitRest, ')
+          ..write('startCountry: $startCountry, ')
+          ..write('endCountry: $endCountry, ')
+          ..write('note: $note, ')
+          ..write('utcOffsetMinutes: $utcOffsetMinutes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    startUtc,
+    endUtc,
+    drivingMinutes,
+    continuousDrivingMinutes,
+    restKind,
+    restMinutes,
+    splitRest,
+    startCountry,
+    endCountry,
+    note,
+    utcOffsetMinutes,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ManualShiftRow &&
+          other.id == this.id &&
+          other.startUtc == this.startUtc &&
+          other.endUtc == this.endUtc &&
+          other.drivingMinutes == this.drivingMinutes &&
+          other.continuousDrivingMinutes == this.continuousDrivingMinutes &&
+          other.restKind == this.restKind &&
+          other.restMinutes == this.restMinutes &&
+          other.splitRest == this.splitRest &&
+          other.startCountry == this.startCountry &&
+          other.endCountry == this.endCountry &&
+          other.note == this.note &&
+          other.utcOffsetMinutes == this.utcOffsetMinutes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ManualShiftsCompanion extends UpdateCompanion<ManualShiftRow> {
+  final Value<int> id;
+  final Value<DateTime> startUtc;
+  final Value<DateTime?> endUtc;
+  final Value<int> drivingMinutes;
+  final Value<int> continuousDrivingMinutes;
+  final Value<RestKind> restKind;
+  final Value<int> restMinutes;
+  final Value<bool> splitRest;
+  final Value<String?> startCountry;
+  final Value<String?> endCountry;
+  final Value<String?> note;
+  final Value<int> utcOffsetMinutes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const ManualShiftsCompanion({
+    this.id = const Value.absent(),
+    this.startUtc = const Value.absent(),
+    this.endUtc = const Value.absent(),
+    this.drivingMinutes = const Value.absent(),
+    this.continuousDrivingMinutes = const Value.absent(),
+    this.restKind = const Value.absent(),
+    this.restMinutes = const Value.absent(),
+    this.splitRest = const Value.absent(),
+    this.startCountry = const Value.absent(),
+    this.endCountry = const Value.absent(),
+    this.note = const Value.absent(),
+    this.utcOffsetMinutes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  ManualShiftsCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime startUtc,
+    this.endUtc = const Value.absent(),
+    required int drivingMinutes,
+    this.continuousDrivingMinutes = const Value.absent(),
+    required RestKind restKind,
+    this.restMinutes = const Value.absent(),
+    this.splitRest = const Value.absent(),
+    this.startCountry = const Value.absent(),
+    this.endCountry = const Value.absent(),
+    this.note = const Value.absent(),
+    required int utcOffsetMinutes,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : startUtc = Value(startUtc),
+       drivingMinutes = Value(drivingMinutes),
+       restKind = Value(restKind),
+       utcOffsetMinutes = Value(utcOffsetMinutes),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ManualShiftRow> custom({
+    Expression<int>? id,
+    Expression<DateTime>? startUtc,
+    Expression<DateTime>? endUtc,
+    Expression<int>? drivingMinutes,
+    Expression<int>? continuousDrivingMinutes,
+    Expression<String>? restKind,
+    Expression<int>? restMinutes,
+    Expression<bool>? splitRest,
+    Expression<String>? startCountry,
+    Expression<String>? endCountry,
+    Expression<String>? note,
+    Expression<int>? utcOffsetMinutes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (startUtc != null) 'start_utc': startUtc,
+      if (endUtc != null) 'end_utc': endUtc,
+      if (drivingMinutes != null) 'driving_minutes': drivingMinutes,
+      if (continuousDrivingMinutes != null)
+        'continuous_driving_minutes': continuousDrivingMinutes,
+      if (restKind != null) 'rest_kind': restKind,
+      if (restMinutes != null) 'rest_minutes': restMinutes,
+      if (splitRest != null) 'split_rest': splitRest,
+      if (startCountry != null) 'start_country': startCountry,
+      if (endCountry != null) 'end_country': endCountry,
+      if (note != null) 'note': note,
+      if (utcOffsetMinutes != null) 'utc_offset_minutes': utcOffsetMinutes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  ManualShiftsCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? startUtc,
+    Value<DateTime?>? endUtc,
+    Value<int>? drivingMinutes,
+    Value<int>? continuousDrivingMinutes,
+    Value<RestKind>? restKind,
+    Value<int>? restMinutes,
+    Value<bool>? splitRest,
+    Value<String?>? startCountry,
+    Value<String?>? endCountry,
+    Value<String?>? note,
+    Value<int>? utcOffsetMinutes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return ManualShiftsCompanion(
+      id: id ?? this.id,
+      startUtc: startUtc ?? this.startUtc,
+      endUtc: endUtc ?? this.endUtc,
+      drivingMinutes: drivingMinutes ?? this.drivingMinutes,
+      continuousDrivingMinutes:
+          continuousDrivingMinutes ?? this.continuousDrivingMinutes,
+      restKind: restKind ?? this.restKind,
+      restMinutes: restMinutes ?? this.restMinutes,
+      splitRest: splitRest ?? this.splitRest,
+      startCountry: startCountry ?? this.startCountry,
+      endCountry: endCountry ?? this.endCountry,
+      note: note ?? this.note,
+      utcOffsetMinutes: utcOffsetMinutes ?? this.utcOffsetMinutes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (startUtc.present) {
+      map['start_utc'] = Variable<DateTime>(
+        $ManualShiftsTable.$converterstartUtc.toSql(startUtc.value),
+      );
+    }
+    if (endUtc.present) {
+      map['end_utc'] = Variable<DateTime>(
+        $ManualShiftsTable.$converterendUtcn.toSql(endUtc.value),
+      );
+    }
+    if (drivingMinutes.present) {
+      map['driving_minutes'] = Variable<int>(drivingMinutes.value);
+    }
+    if (continuousDrivingMinutes.present) {
+      map['continuous_driving_minutes'] = Variable<int>(
+        continuousDrivingMinutes.value,
+      );
+    }
+    if (restKind.present) {
+      map['rest_kind'] = Variable<String>(
+        $ManualShiftsTable.$converterrestKind.toSql(restKind.value),
+      );
+    }
+    if (restMinutes.present) {
+      map['rest_minutes'] = Variable<int>(restMinutes.value);
+    }
+    if (splitRest.present) {
+      map['split_rest'] = Variable<bool>(splitRest.value);
+    }
+    if (startCountry.present) {
+      map['start_country'] = Variable<String>(startCountry.value);
+    }
+    if (endCountry.present) {
+      map['end_country'] = Variable<String>(endCountry.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (utcOffsetMinutes.present) {
+      map['utc_offset_minutes'] = Variable<int>(utcOffsetMinutes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(
+        $ManualShiftsTable.$convertercreatedAt.toSql(createdAt.value),
+      );
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(
+        $ManualShiftsTable.$converterupdatedAt.toSql(updatedAt.value),
+      );
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ManualShiftsCompanion(')
+          ..write('id: $id, ')
+          ..write('startUtc: $startUtc, ')
+          ..write('endUtc: $endUtc, ')
+          ..write('drivingMinutes: $drivingMinutes, ')
+          ..write('continuousDrivingMinutes: $continuousDrivingMinutes, ')
+          ..write('restKind: $restKind, ')
+          ..write('restMinutes: $restMinutes, ')
+          ..write('splitRest: $splitRest, ')
+          ..write('startCountry: $startCountry, ')
+          ..write('endCountry: $endCountry, ')
+          ..write('note: $note, ')
+          ..write('utcOffsetMinutes: $utcOffsetMinutes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -1524,6 +2413,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $ShiftsTable shifts = $ShiftsTable(this);
+  late final $ManualShiftsTable manualShifts = $ManualShiftsTable(this);
   late final $CardDownloadsTable cardDownloads = $CardDownloadsTable(this);
   late final $SettingsTable settings = $SettingsTable(this);
   @override
@@ -1533,6 +2423,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     activityPeriods,
     shifts,
+    manualShifts,
     cardDownloads,
     settings,
   ];
@@ -1879,6 +2770,7 @@ typedef $$ShiftsTableCreateCompanionBuilder = ShiftsCompanion Function({
   required String startCountry,
   Value<String?> endCountry,
   required int utcOffsetMinutes,
+  Value<String?> note,
 });
 typedef $$ShiftsTableUpdateCompanionBuilder = ShiftsCompanion Function({
   Value<int> id,
@@ -1887,6 +2779,7 @@ typedef $$ShiftsTableUpdateCompanionBuilder = ShiftsCompanion Function({
   Value<String> startCountry,
   Value<String?> endCountry,
   Value<int> utcOffsetMinutes,
+  Value<String?> note,
 });
 
 class $$ShiftsTableFilterComposer
@@ -1929,6 +2822,11 @@ class $$ShiftsTableFilterComposer
     column: $table.utcOffsetMinutes,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$ShiftsTableOrderingComposer
@@ -1969,6 +2867,11 @@ class $$ShiftsTableOrderingComposer
     column: $table.utcOffsetMinutes,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ShiftsTableAnnotationComposer
@@ -2003,6 +2906,9 @@ class $$ShiftsTableAnnotationComposer
     column: $table.utcOffsetMinutes,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
 }
 
 class $$ShiftsTableTableManager
@@ -2039,6 +2945,7 @@ class $$ShiftsTableTableManager
                 Value<String> startCountry = const Value.absent(),
                 Value<String?> endCountry = const Value.absent(),
                 Value<int> utcOffsetMinutes = const Value.absent(),
+                Value<String?> note = const Value.absent(),
               }) => ShiftsCompanion(
                 id: id,
                 startUtc: startUtc,
@@ -2046,6 +2953,7 @@ class $$ShiftsTableTableManager
                 startCountry: startCountry,
                 endCountry: endCountry,
                 utcOffsetMinutes: utcOffsetMinutes,
+                note: note,
               ),
           createCompanionCallback:
               ({
@@ -2055,6 +2963,7 @@ class $$ShiftsTableTableManager
                 required String startCountry,
                 Value<String?> endCountry = const Value.absent(),
                 required int utcOffsetMinutes,
+                Value<String?> note = const Value.absent(),
               }) => ShiftsCompanion.insert(
                 id: id,
                 startUtc: startUtc,
@@ -2062,6 +2971,7 @@ class $$ShiftsTableTableManager
                 startCountry: startCountry,
                 endCountry: endCountry,
                 utcOffsetMinutes: utcOffsetMinutes,
+                note: note,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -2092,6 +3002,397 @@ typedef $$ShiftsTableProcessedTableManager =
       $$ShiftsTableUpdateCompanionBuilder,
       (ShiftRow, BaseReferences<_$AppDatabase, $ShiftsTable, ShiftRow>),
       ShiftRow,
+      PrefetchHooks Function()
+    >;
+typedef $$ManualShiftsTableCreateCompanionBuilder =
+    ManualShiftsCompanion Function({
+      Value<int> id,
+      required DateTime startUtc,
+      Value<DateTime?> endUtc,
+      required int drivingMinutes,
+      Value<int> continuousDrivingMinutes,
+      required RestKind restKind,
+      Value<int> restMinutes,
+      Value<bool> splitRest,
+      Value<String?> startCountry,
+      Value<String?> endCountry,
+      Value<String?> note,
+      required int utcOffsetMinutes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$ManualShiftsTableUpdateCompanionBuilder =
+    ManualShiftsCompanion Function({
+      Value<int> id,
+      Value<DateTime> startUtc,
+      Value<DateTime?> endUtc,
+      Value<int> drivingMinutes,
+      Value<int> continuousDrivingMinutes,
+      Value<RestKind> restKind,
+      Value<int> restMinutes,
+      Value<bool> splitRest,
+      Value<String?> startCountry,
+      Value<String?> endCountry,
+      Value<String?> note,
+      Value<int> utcOffsetMinutes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$ManualShiftsTableFilterComposer
+    extends Composer<_$AppDatabase, $ManualShiftsTable> {
+  $$ManualShiftsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get startUtc =>
+      $composableBuilder(
+        column: $table.startUtc,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<DateTime?, DateTime, DateTime> get endUtc =>
+      $composableBuilder(
+        column: $table.endUtc,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get drivingMinutes => $composableBuilder(
+    column: $table.drivingMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get continuousDrivingMinutes => $composableBuilder(
+    column: $table.continuousDrivingMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<RestKind, RestKind, String> get restKind =>
+      $composableBuilder(
+        column: $table.restKind,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get restMinutes => $composableBuilder(
+    column: $table.restMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get splitRest => $composableBuilder(
+    column: $table.splitRest,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get startCountry => $composableBuilder(
+    column: $table.startCountry,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get endCountry => $composableBuilder(
+    column: $table.endCountry,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get utcOffsetMinutes => $composableBuilder(
+    column: $table.utcOffsetMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get createdAt =>
+      $composableBuilder(
+        column: $table.createdAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get updatedAt =>
+      $composableBuilder(
+        column: $table.updatedAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$ManualShiftsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ManualShiftsTable> {
+  $$ManualShiftsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startUtc => $composableBuilder(
+    column: $table.startUtc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endUtc => $composableBuilder(
+    column: $table.endUtc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get drivingMinutes => $composableBuilder(
+    column: $table.drivingMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get continuousDrivingMinutes => $composableBuilder(
+    column: $table.continuousDrivingMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get restKind => $composableBuilder(
+    column: $table.restKind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get restMinutes => $composableBuilder(
+    column: $table.restMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get splitRest => $composableBuilder(
+    column: $table.splitRest,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get startCountry => $composableBuilder(
+    column: $table.startCountry,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get endCountry => $composableBuilder(
+    column: $table.endCountry,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get utcOffsetMinutes => $composableBuilder(
+    column: $table.utcOffsetMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ManualShiftsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ManualShiftsTable> {
+  $$ManualShiftsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get startUtc =>
+      $composableBuilder(column: $table.startUtc, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime?, DateTime> get endUtc =>
+      $composableBuilder(column: $table.endUtc, builder: (column) => column);
+
+  GeneratedColumn<int> get drivingMinutes => $composableBuilder(
+    column: $table.drivingMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get continuousDrivingMinutes => $composableBuilder(
+    column: $table.continuousDrivingMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<RestKind, String> get restKind =>
+      $composableBuilder(column: $table.restKind, builder: (column) => column);
+
+  GeneratedColumn<int> get restMinutes => $composableBuilder(
+    column: $table.restMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get splitRest =>
+      $composableBuilder(column: $table.splitRest, builder: (column) => column);
+
+  GeneratedColumn<String> get startCountry => $composableBuilder(
+    column: $table.startCountry,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get endCountry => $composableBuilder(
+    column: $table.endCountry,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<int> get utcOffsetMinutes => $composableBuilder(
+    column: $table.utcOffsetMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ManualShiftsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ManualShiftsTable,
+          ManualShiftRow,
+          $$ManualShiftsTableFilterComposer,
+          $$ManualShiftsTableOrderingComposer,
+          $$ManualShiftsTableAnnotationComposer,
+          $$ManualShiftsTableCreateCompanionBuilder,
+          $$ManualShiftsTableUpdateCompanionBuilder,
+          (
+            ManualShiftRow,
+            BaseReferences<_$AppDatabase, $ManualShiftsTable, ManualShiftRow>,
+          ),
+          ManualShiftRow,
+          PrefetchHooks Function()
+        > {
+  $$ManualShiftsTableTableManager(_$AppDatabase db, $ManualShiftsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ManualShiftsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ManualShiftsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ManualShiftsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> startUtc = const Value.absent(),
+                Value<DateTime?> endUtc = const Value.absent(),
+                Value<int> drivingMinutes = const Value.absent(),
+                Value<int> continuousDrivingMinutes = const Value.absent(),
+                Value<RestKind> restKind = const Value.absent(),
+                Value<int> restMinutes = const Value.absent(),
+                Value<bool> splitRest = const Value.absent(),
+                Value<String?> startCountry = const Value.absent(),
+                Value<String?> endCountry = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                Value<int> utcOffsetMinutes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => ManualShiftsCompanion(
+                id: id,
+                startUtc: startUtc,
+                endUtc: endUtc,
+                drivingMinutes: drivingMinutes,
+                continuousDrivingMinutes: continuousDrivingMinutes,
+                restKind: restKind,
+                restMinutes: restMinutes,
+                splitRest: splitRest,
+                startCountry: startCountry,
+                endCountry: endCountry,
+                note: note,
+                utcOffsetMinutes: utcOffsetMinutes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required DateTime startUtc,
+                Value<DateTime?> endUtc = const Value.absent(),
+                required int drivingMinutes,
+                Value<int> continuousDrivingMinutes = const Value.absent(),
+                required RestKind restKind,
+                Value<int> restMinutes = const Value.absent(),
+                Value<bool> splitRest = const Value.absent(),
+                Value<String?> startCountry = const Value.absent(),
+                Value<String?> endCountry = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                required int utcOffsetMinutes,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => ManualShiftsCompanion.insert(
+                id: id,
+                startUtc: startUtc,
+                endUtc: endUtc,
+                drivingMinutes: drivingMinutes,
+                continuousDrivingMinutes: continuousDrivingMinutes,
+                restKind: restKind,
+                restMinutes: restMinutes,
+                splitRest: splitRest,
+                startCountry: startCountry,
+                endCountry: endCountry,
+                note: note,
+                utcOffsetMinutes: utcOffsetMinutes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ManualShiftsTable, ManualShiftRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $ManualShiftsTable,
+                    ManualShiftRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ManualShiftsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ManualShiftsTable,
+      ManualShiftRow,
+      $$ManualShiftsTableFilterComposer,
+      $$ManualShiftsTableOrderingComposer,
+      $$ManualShiftsTableAnnotationComposer,
+      $$ManualShiftsTableCreateCompanionBuilder,
+      $$ManualShiftsTableUpdateCompanionBuilder,
+      (
+        ManualShiftRow,
+        BaseReferences<_$AppDatabase, $ManualShiftsTable, ManualShiftRow>,
+      ),
+      ManualShiftRow,
       PrefetchHooks Function()
     >;
 typedef $$CardDownloadsTableCreateCompanionBuilder =
@@ -2389,6 +3690,8 @@ class $AppDatabaseManager {
       $$ActivityPeriodsTableTableManager(_db, _db.activityPeriods);
   $$ShiftsTableTableManager get shifts =>
       $$ShiftsTableTableManager(_db, _db.shifts);
+  $$ManualShiftsTableTableManager get manualShifts =>
+      $$ManualShiftsTableTableManager(_db, _db.manualShifts);
   $$CardDownloadsTableTableManager get cardDownloads =>
       $$CardDownloadsTableTableManager(_db, _db.cardDownloads);
   $$SettingsTableTableManager get settings =>

@@ -16,7 +16,10 @@ import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/journal/card_download_repository.dart';
+import 'package:tachogo/data/journal/journal_edit_repository.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/data/journal/shift_meta.dart';
+import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 
 /// Часы, которые двигает тест: `clock.now = t`.
@@ -42,8 +45,12 @@ List<Override> journalOverrides({
   Map<DateTime, ShiftCountries> countries = const {},
   List<String> recentCountries = const [],
   String? defaultCountry,
+  List<ManualShiftRecord> manualShifts = const [],
+  Map<DateTime, ShiftMeta> shiftMeta = const {},
 }) => [
   activityPeriodsProvider.overrideWith((ref) => Stream.value(periods)),
+  manualShiftsProvider.overrideWith((ref) => Stream.value(manualShifts)),
+  shiftMetaProvider.overrideWith((ref) => Stream.value(shiftMeta)),
   complianceSettingsProvider.overrideWith((ref) => Stream.value(settings)),
   lastCardDownloadProvider.overrideWith((ref) => Stream.value(lastCard)),
   clockProvider.overrideWith(() => TestClock(now)),
@@ -67,6 +74,9 @@ List<Override> databaseOverrides(
     ),
     cardDownloadRepositoryProvider.overrideWithValue(
       CardDownloadRepository(db, clock: now),
+    ),
+    journalEditRepositoryProvider.overrideWithValue(
+      JournalEditRepository(db, SettingsRepository(db), clock: now),
     ),
     clockProvider.overrideWith(() => TestClock(now())),
   ];

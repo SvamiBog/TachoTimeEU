@@ -50,6 +50,38 @@ class Shifts extends Table {
   TextColumn get startCountry => text().withLength(min: 1, max: 3)();
   TextColumn get endCountry => text().withLength(min: 1, max: 3).nullable()();
   IntColumn get utcOffsetMinutes => integer()();
+
+  /// Заметка водителя к смене (экран 11): «паром, ожидание загрузки».
+  TextColumn get note => text().nullable()();
+}
+
+/// Смены, внесённые вручную итогами — например, за дни до установки
+/// приложения (`ManualShift` движка). Записей режимов у них нет, только
+/// суммы; страны и заметка — здесь же. Длительности — в минутах.
+@DataClassName('ManualShiftRow')
+class ManualShifts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  DateTimeColumn get startUtc => dateTime().map(const UtcDateTimeConverter())();
+
+  /// null — смена ещё идёт, отдых не начат.
+  DateTimeColumn get endUtc =>
+      dateTime().map(const UtcDateTimeConverter()).nullable()();
+  IntColumn get drivingMinutes => integer()();
+  IntColumn get continuousDrivingMinutes =>
+      integer().withDefault(const Constant(0))();
+  TextColumn get restKind => textEnum<RestKind>()();
+  IntColumn get restMinutes => integer().withDefault(const Constant(0))();
+
+  /// Раздельный суточный отдых 3 + 9.
+  BoolColumn get splitRest => boolean().withDefault(const Constant(false))();
+  TextColumn get startCountry => text().withLength(min: 1, max: 3).nullable()();
+  TextColumn get endCountry => text().withLength(min: 1, max: 3).nullable()();
+  TextColumn get note => text().nullable()();
+  IntColumn get utcOffsetMinutes => integer()();
+  DateTimeColumn get createdAt =>
+      dateTime().map(const UtcDateTimeConverter())();
+  DateTimeColumn get updatedAt =>
+      dateTime().map(const UtcDateTimeConverter())();
 }
 
 /// Считывания карты водителя (лимит 28 дней).
