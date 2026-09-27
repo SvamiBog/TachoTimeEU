@@ -197,7 +197,7 @@ class ComplianceSnapshot {
   /// начала.
   final Duration shiftDuration;
 
-  /// Обычный рабочий день: 13 ч (экипаж — 21 ч).
+  /// Обычный рабочий день: 13 ч (экипаж — 19 ч).
   final Duration shiftRegularLimit;
 
   /// Удлинённый: 15 ч при сокращённом или раздельном отдыхе (экипаж — 21 ч).
@@ -334,7 +334,6 @@ ComplianceSnapshot calculateCompliance({
   final timeline = analyzeTimeline(periods, now);
   final lead = settings.warningLead;
   final crew = settings.crew;
-  final team = crew == CrewMode.team;
   final infringements = <Infringement>[];
 
   // Текущий режим
@@ -464,26 +463,46 @@ ComplianceSnapshot calculateCompliance({
           (previousWeeklyRest == null ||
               previousWeeklyRest.status == RestStatus.full));
 
-  // Компенсация сокращённого недельного отдыха — до конца третьей недели
-  Compensation? compensation;
+  // Компенсация сокращённого недельного отдыха (ст. 8(6), 8(7)): долг
+  // берётся одним блоком, присоединённым к другому отдыху не короче 9 ч, до
+  // конца третьей недели после недели сокращённого отдыха. Недельный отдых
+  // (≥ 24 ч) несёт компенсацию сверх 45 ч — иначе обычный недельный отдых
+  // сам гасил бы долг. Долги гасятся по порядку, один длинный отдых может
+  // погасить несколько.
+  final compensationHosts = [
+    for (final p in timeline.rests) (start: p.start, rest: p.rest),
+    for (final m in manual)
+      if (m.end case final end? when m.restKind != RestKind.none)
+        (start: end, rest: m.rest),
+  ];
+  final hostUsed = List.filled(compensationHosts.length, Duration.zero);
+  final unpaid = <Compensation>[];
   for (final r in completedWeekly) {
     final end = r.end;
     if (r.status != RestStatus.reduced || end == null) continue;
     final debt = EuLimits.weeklyRestRegular - r.duration;
     final dueBy = weekStartUtc(r.start)
         .add(week * (EuLimits.compensationWeeks + 1));
-    if (dueBy.isBefore(now.subtract(week * 4))) continue;
-    final repaid = timeline.rests.any(
-      (p) =>
-          !p.start.isBefore(end) &&
-          !p.open &&
-          p.rest >= EuLimits.dailyRestRegular + debt,
-    );
-    if (!repaid &&
-        (compensation == null || dueBy.isBefore(compensation.dueBy))) {
-      compensation = Compensation(debt: debt, dueBy: dueBy);
+    var repaid = false;
+    for (final (i, host) in compensationHosts.indexed) {
+      if (host.start.isBefore(end) || !host.start.isBefore(dueBy)) continue;
+      final base = host.rest >= EuLimits.weeklyRestReduced
+          ? EuLimits.weeklyRestRegular
+          : EuLimits.compensationAttachedRest;
+      // Засчитывается только отдых, набранный к сроку.
+      final byDue = shorter(host.rest, dueBy.difference(host.start));
+      if (byDue - base - hostUsed[i] >= debt) {
+        hostUsed[i] += debt;
+        repaid = true;
+        break;
+      }
+    }
+    if (!repaid && !dueBy.isBefore(now.subtract(week * 4))) {
+      unpaid.add(Compensation(debt: debt, dueBy: dueBy));
     }
   }
+  unpaid.sort((a, b) => a.dueBy.compareTo(b.dueBy));
+  final compensation = unpaid.isEmpty ? null : unpaid.first;
 
   // Рабочая неделя: 144 ч от конца предыдущего недельного отдыха
   final onWeeklyRest = offDutyRest?.weekly ?? false;
@@ -528,21 +547,23 @@ ComplianceSnapshot calculateCompliance({
   final shiftDuration = shift == null
       ? Duration.zero
       : durationBetween(shift.start, spanEnd);
+  // Отдых должен закончиться в окне 24 ч (экипаж — 30 ч): 11 ч или
+  // сокращённый 9 ч. В экипаже 9 ч — тоже сокращённый отдых, поэтому после
+  // трёх сокращений рабочий день экипажа — 19 ч, а не 21 ч.
   final window = workdayWindow(crew);
-  final shiftRegularLimit = team
-      ? window - EuLimits.teamDailyRest
-      : window - EuLimits.dailyRestRegular;
+  final shiftRegularLimit = window - EuLimits.dailyRestRegular;
   final shiftExtendedLimit = window - EuLimits.dailyRestReduced;
-  final canExtend =
-      team || reducedRestsLeft > 0 || (shift?.splitFirstPart ?? false);
+  final canExtend = reducedRestsLeft > 0 || (shift?.splitFirstPart ?? false);
   final shiftLimit = canExtend ? shiftExtendedLimit : shiftRegularLimit;
   final dailyRestDeadline = shift?.start.add(window);
+  final shiftArticle = crew == CrewMode.team ? '8(5)' : null;
 
-  // Карта водителя
+  // Карта водителя. Считывание «из будущего» (часы телефона переведены
+  // назад) считаем сделанным сейчас: больше 28 дней остаться не может.
   final cardDaysLeft = lastCardDownload == null
       ? null
       : EuLimits.cardDownloadInterval.inDays -
-            floorDays(now.difference(lastCardDownload));
+            floorDays(durationBetween(lastCardDownload, now));
 
   // Предупреждения и нарушения
   final drivingUntilBreak = clampToZero(
@@ -600,6 +621,7 @@ ComplianceSnapshot calculateCompliance({
         InfringementType.shiftExceeded,
         time: shiftDuration - shiftLimit,
         limit: shiftLimit,
+        article: shiftArticle,
       ),
     );
   } else if (shift != null && !resting && shiftLimit - shiftDuration <= lead) {
@@ -607,6 +629,7 @@ ComplianceSnapshot calculateCompliance({
       Infringement(
         InfringementType.shiftSoon,
         time: shiftLimit - shiftDuration,
+        article: shiftArticle,
       ),
     );
   }
@@ -638,21 +661,63 @@ ComplianceSnapshot calculateCompliance({
   }
 
   // Отдых, начатый до дедлайна, — начало недельного, если продлится 24 ч
-  if (weeklyRestDeadline != null && !onWeeklyRest) {
+  // (45 ч, если сокращённый недоступен). Пока он идёт после дедлайна, его
+  // нельзя прерывать.
+  if (weeklyRestDeadline != null) {
+    final left = weeklyRestDeadline.difference(now);
     final restStartedInTime =
         lastRest != null &&
-        lastRest.open &&
-        !lastRest.start.isAfter(weeklyRestDeadline);
-    final left = weeklyRestDeadline.difference(now);
-    if (left.isNegative && !restStartedInTime) {
-      infringements.add(
-        Infringement(InfringementType.weeklyRestOverdue, time: -left),
-      );
-    } else if (!left.isNegative && left <= EuLimits.weeklyRestWarning) {
-      infringements.add(
-        Infringement(InfringementType.weeklyRestSoon, time: left),
-      );
+            lastRest.open &&
+            !lastRest.start.isAfter(weeklyRestDeadline)
+        ? lastRest
+        : null;
+    final requiredWeekly = reducedWeeklyRestAvailable
+        ? EuLimits.weeklyRestReduced
+        : EuLimits.weeklyRestRegular;
+    if (left.isNegative && restStartedInTime != null) {
+      if (restStartedInTime.rest < requiredWeekly) {
+        infringements.add(
+          Infringement(
+            InfringementType.weeklyRestContinue,
+            time: requiredWeekly - restStartedInTime.rest,
+          ),
+        );
+      }
+    } else if (!onWeeklyRest) {
+      if (left.isNegative) {
+        infringements.add(
+          Infringement(InfringementType.weeklyRestOverdue, time: -left),
+        );
+      } else if (left <= EuLimits.weeklyRestWarning) {
+        infringements.add(
+          Infringement(InfringementType.weeklyRestSoon, time: left),
+        );
+      }
     }
+  }
+
+  // Компенсация: просроченная — нарушение, срок меньше чем через неделю —
+  // напоминание.
+  final overdueCompensation = unpaid.where((c) => c.dueBy.isBefore(now));
+  final pendingCompensation = unpaid.where((c) => !c.dueBy.isBefore(now));
+  if (overdueCompensation.firstOrNull case final c?) {
+    infringements.add(
+      Infringement(
+        InfringementType.compensationOverdue,
+        time: c.debt,
+        days: floorDays(now.difference(c.dueBy)),
+      ),
+    );
+  }
+  if (pendingCompensation.firstOrNull case final c?
+      when c.dueBy.difference(now) <= EuLimits.compensationWarning) {
+    infringements.add(
+      Infringement(
+        InfringementType.compensationSoon,
+        time: c.debt,
+        days: floorDays(c.dueBy.difference(now)),
+      ),
+    );
   }
 
   if (reducedRestsUsed > EuLimits.dailyRestReductionsBetweenWeeklyRests) {

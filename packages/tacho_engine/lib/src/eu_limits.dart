@@ -31,13 +31,17 @@ abstract final class EuLimits {
   static const workdayWithReducedRest = Duration(hours: 15);
 
   // Экипаж из двух водителей (ст. 8(5)): 9 ч отдыха в пределах 30 ч.
+  // 9 ч и в экипаже — сокращённый отдых: он входит в лимит трёх сокращённых
+  // (ст. 4(g), 8(4); руководство DVSA по правилам ЕС).
   static const teamWorkdayWindow = Duration(hours: 30);
   static const teamDailyRest = Duration(hours: 9);
 
-  // Паром / поезд (ст. 9(1)): полный суточный отдых можно прервать
-  // не больше двух раз, в сумме не дольше часа.
+  // Паром / поезд (ст. 9(1), ред. 2020/1054): полный суточный и сокращённый
+  // недельный отдых можно прервать не больше двух раз, в сумме не дольше
+  // часа. Регулярный недельный — только если рейс не короче 8 ч.
   static const ferryMaxInterruptions = 2;
   static const ferryMaxInterruptionTotal = Duration(hours: 1);
+  static const ferryRegularWeeklyRestCrossing = Duration(hours: 8);
 
   // Недельный отдых (ст. 8.6).
   static const weeklyRestRegular = Duration(hours: 45);
@@ -47,6 +51,14 @@ abstract final class EuLimits {
   /// Компенсация сокращённого недельного отдыха — до конца третьей недели
   /// после недели, в которую он начался (ст. 8(6)).
   static const compensationWeeks = 3;
+
+  /// Компенсацию присоединяют одним блоком к другому отдыху не короче 9 ч
+  /// (ст. 8(7)).
+  static const compensationAttachedRest = Duration(hours: 9);
+
+  /// Напоминание о компенсации — за неделю до срока: её планируют в
+  /// ближайший недельный отдых.
+  static const compensationWarning = Duration(days: 7);
 
   // Карта водителя: считывание не реже раза в 28 дней.
   static const cardDownloadInterval = Duration(days: 28);

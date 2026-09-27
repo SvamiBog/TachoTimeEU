@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -101,6 +103,37 @@ void main() {
       );
       expect((await repo.periods()).last.start, now);
     });
+  });
+
+  group('REP-02: смещение пояса — на момент начала записи', () {
+    // В CI тесты идут и в других поясах (переменная TZ, CI-01)
+    final tz = Platform.environment['TZ'];
+
+    for (final (name, start, byZone) in [
+      (
+        'летом',
+        DateTime.utc(2026, 9, 23, 6),
+        {'Europe/Warsaw': 120, 'Asia/Kolkata': 330, 'America/New_York': -240},
+      ),
+      (
+        'зимой',
+        DateTime.utc(2026, 1, 15, 6),
+        {'Europe/Warsaw': 60, 'Asia/Kolkata': 330, 'America/New_York': -300},
+      ),
+    ]) {
+      test('запись, начатая $name', () async {
+        now = start;
+        await repo.switchMode(DriverMode.driving);
+        now = DateTime.utc(2026, 9, 23, 6);
+        await repo.switchMode(DriverMode.rest);
+
+        final rows = await db.select(db.activityPeriods).get();
+        expect(
+          rows.first.utcOffsetMinutes,
+          byZone[tz] ?? start.toLocal().timeZoneOffset.inMinutes,
+        );
+      });
+    }
   });
 
   test('другой движок узнаёт только о настоящих изменениях', () async {

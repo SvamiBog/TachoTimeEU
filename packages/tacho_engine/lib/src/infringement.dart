@@ -40,6 +40,7 @@ enum InfringementType {
   ),
 
   /// Рабочий день больше 13/15 ч. [Infringement.limit] — действующий лимит.
+  /// У экипажа (19/21 ч) статья — 8(5), см. [Infringement.article].
   shiftExceeded(
     InfringementSeverity.violation,
     InfringementCategory.shiftEnd,
@@ -79,6 +80,32 @@ enum InfringementType {
   ),
   weeklyRestSoon(
     InfringementSeverity.warning,
+    InfringementCategory.weeklyRest,
+    '8(6)',
+  ),
+
+  /// Срок недельного отдыха прошёл, а отдых начат вовремя и ещё идёт: его
+  /// нельзя прерывать, пока он не станет недельным. [Infringement.time] —
+  /// сколько ещё отдыхать (до 24 ч, а если сокращённый недоступен — до 45 ч).
+  weeklyRestContinue(
+    InfringementSeverity.warning,
+    InfringementCategory.weeklyRest,
+    '8(6)',
+  ),
+
+  /// Срок компенсации сокращённого недельного отдыха меньше чем через
+  /// неделю. [Infringement.time] — сколько отдыха добавить,
+  /// [Infringement.days] — дней до срока.
+  compensationSoon(
+    InfringementSeverity.warning,
+    InfringementCategory.weeklyRest,
+    '8(6)',
+  ),
+
+  /// Компенсация не взята до конца третьей недели. [Infringement.time] —
+  /// несданный долг, [Infringement.days] — дней просрочки.
+  compensationOverdue(
+    InfringementSeverity.violation,
     InfringementCategory.weeklyRest,
     '8(6)',
   ),
@@ -130,9 +157,11 @@ class Infringement {
     this.requiredBreak,
     this.count,
     this.days,
+    this._article,
   });
 
   final InfringementType type;
+  final String? _article;
 
   /// Для нарушения — превышение, для предупреждения — остаток до лимита.
   final Duration? time;
@@ -143,6 +172,11 @@ class Infringement {
 
   InfringementSeverity get severity => type.severity;
   InfringementCategory get category => type.category;
+  String get regulation => type.regulation;
+
+  /// Статья, которую видит инспектор. Обычно — статья вида, но рабочий день
+  /// экипажа ограничен ст. 8(5), а не 8(2).
+  String get article => _article ?? type.article;
 
   @override
   bool operator ==(Object other) =>
@@ -152,11 +186,12 @@ class Infringement {
       other.limit == limit &&
       other.requiredBreak == requiredBreak &&
       other.count == count &&
-      other.days == days;
+      other.days == days &&
+      other.article == article;
 
   @override
   int get hashCode =>
-      Object.hash(type, time, limit, requiredBreak, count, days);
+      Object.hash(type, time, limit, requiredBreak, count, days, article);
 
   @override
   String toString() {
@@ -167,6 +202,7 @@ class Infringement {
       if (requiredBreak case final r?) 'required: ${r.inMinutes} мин',
       if (count != null) 'count: $count',
       if (days != null) 'days: $days',
+      if (_article case final a?) 'ст. $a',
     ];
     return 'Infringement(${parts.join(', ')})';
   }

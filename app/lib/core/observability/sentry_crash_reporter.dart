@@ -20,13 +20,15 @@ class SentryCrashReporter implements CrashReporter {
   final bool _backgroundIsolate;
 
   @override
-  Future<void> init() => SentryFlutter.init((options) {
-    options
-      ..dsn = _dsn
-      ..environment = _environment
-      ..sendDefaultPii = false
-      ..autoInitializeNativeSdk = !_backgroundIsolate;
-  });
+  Future<void> init() => SentryFlutter.init(configure);
+
+  /// Настройки SDK: окружение, без персональных данных, в фоновом изоляте —
+  /// без повторной инициализации нативного SDK.
+  void configure(SentryFlutterOptions options) => options
+    ..dsn = _dsn
+    ..environment = _environment
+    ..sendDefaultPii = false
+    ..autoInitializeNativeSdk = !_backgroundIsolate;
 
   @override
   void recordError(Object error, StackTrace stack, {bool fatal = false}) {

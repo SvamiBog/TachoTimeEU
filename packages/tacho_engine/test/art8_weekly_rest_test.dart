@@ -119,6 +119,48 @@ void main() {
       expect(keys(m), isNot(contains(InfringementType.weeklyRestOverdue)));
     });
 
+    test(
+      'такой отдых нельзя прерывать: предупреждение, сколько ещё до 24 ч',
+      () {
+        final log = from([...repeat(5, cycle), ...day13, rest('20:00')]);
+        final i = calc(
+          log.periods,
+          log.now,
+        ).infringement(InfringementType.weeklyRestContinue);
+        expect(i?.severity, InfringementSeverity.warning);
+        expect(i?.type.article, '8(6)');
+        expect(i?.time, const Duration(hours: 4));
+      },
+    );
+
+    test('если сокращённый недельный недоступен — отдыхать до 45 ч', () {
+      // Прошлый недельный отдых — сокращённый 24 ч, пакета мобильности нет
+      final log = logFrom(t0.subtract(const Duration(hours: 24)), [
+        rest('24:00'),
+        ...repeat(5, cycle),
+        ...day13,
+        rest('30:00'),
+      ]);
+      final m = calc(
+        log.periods,
+        log.now,
+        settings: const ComplianceSettings(mobilityPackage: false),
+      );
+      expect(m.reducedWeeklyRestAvailable, isFalse);
+      expect(
+        m.infringement(InfringementType.weeklyRestContinue)?.time,
+        const Duration(hours: 15),
+      );
+    });
+
+    test('до дедлайна отдых можно прервать — предупреждения нет', () {
+      final log = from([...repeat(4, cycle), ...day13, rest('11:00')]);
+      expect(
+        keys(calc(log.periods, log.now)),
+        isNot(contains(InfringementType.weeklyRestContinue)),
+      );
+    });
+
     test('отдых начат до дедлайна, но прерван раньше 24 ч — нарушение', () {
       final log = from([
         ...repeat(5, cycle),
@@ -224,6 +266,151 @@ void main() {
       final m = calc(log.periods, log.now);
       expect(m.lastWeeklyRest?.status, RestStatus.full);
       expect(m.compensation, isNull);
+    });
+
+    test('обычный недельный отдых 45 ч без добавки долг не гасит', () {
+      final log = logFrom(start, [
+        ...reduced,
+        ...repeat(3, cycle),
+        ...day13,
+        rest('45:00'),
+        drive('1:00'),
+      ]);
+      expect(
+        calc(log.periods, log.now).compensation?.debt,
+        const Duration(hours: 15),
+      );
+    });
+
+    group('ст. 8(7): компенсация присоединяется к отдыху не короче 9 ч', () {
+      // Сокращённый отдых 40 ч: долг 5 ч
+      final reduced40 = [...drivingDay('9:00'), rest('40:00')];
+
+      test('суточный отдых 9 ч + 5 ч долга гасит его', () {
+        final log = logFrom(start, [
+          ...reduced40,
+          ...day13,
+          rest('14:00'),
+          drive('1:00'),
+        ]);
+        expect(calc(log.periods, log.now).compensation, isNull);
+      });
+
+      test('13:59 — на минуту меньше, долг остаётся', () {
+        final log = logFrom(start, [
+          ...reduced40,
+          ...day13,
+          rest('13:59'),
+          drive('1:00'),
+        ]);
+        expect(
+          calc(log.periods, log.now).compensation?.debt,
+          const Duration(hours: 5),
+        );
+      });
+    });
+
+    test('один отдых гасит два долга, только если вмещает оба', () {
+      // Два сокращённых по 30 ч (пакет мобильности), затем 45 + 15 ч:
+      // погашен только первый долг
+      final log = logFrom(start, [
+        ...reduced,
+        ...repeat(5, cycle),
+        ...drivingDay('9:00'),
+        rest('30:00'),
+        ...day13,
+        rest('60:00'),
+        drive('1:00'),
+      ]);
+      final m = calc(log.periods, log.now);
+      expect(
+        m.compensation,
+        Compensation(
+          debt: const Duration(hours: 15),
+          dueBy: utc('2026-10-19 00:00'),
+        ),
+      );
+    });
+
+    group('срок — конец третьей недели', () {
+      // Долг 15 ч, срок — пн 12.10 00:00 UTC; дальше идёт работа
+      final log = logFrom(start, [...reduced, work('1:00')]);
+
+      test('за неделю до срока — напоминание', () {
+        final early = calc(log.periods, utc('2026-10-04 23:59'));
+        expect(keys(early), isNot(contains(InfringementType.compensationSoon)));
+
+        final soon = calc(log.periods, utc('2026-10-05 00:00'));
+        expect(
+          soon.infringement(InfringementType.compensationSoon),
+          const Infringement(
+            InfringementType.compensationSoon,
+            time: Duration(hours: 15),
+            days: 7,
+          ),
+        );
+      });
+
+      test('после срока — нарушение', () {
+        final m = calc(log.periods, utc('2026-10-15 10:00'));
+        final i = m.infringement(InfringementType.compensationOverdue);
+        expect(i?.severity, InfringementSeverity.violation);
+        expect(i?.type.article, '8(6)');
+        expect(i?.time, const Duration(hours: 15));
+        expect(i?.days, 3);
+        expect(keys(m), isNot(contains(InfringementType.compensationSoon)));
+      });
+
+      test('отдых после срока долг не гасит', () {
+        final late = logFrom(start, [
+          ...reduced,
+          ...repeat(22, cycle),
+          ...day13,
+          rest('60:00'),
+          drive('1:00'),
+        ]);
+        final lateRest = late.periods[late.periods.length - 2];
+        expect(lateRest.start.isAfter(utc('2026-10-12 00:00')), isTrue);
+        final m = calc(late.periods, late.now);
+        expect(keys(m), contains(InfringementType.compensationOverdue));
+      });
+
+      // Работа до отдыха 62 ч, затем вождение. 45 + 15 ч надо набрать
+      // к пн 12.10 00:00.
+      ComplianceSnapshot restFrom(String restStart) {
+        final restBegins = utc(restStart);
+        final restEnds = restBegins.add(const Duration(hours: 62));
+        final periods = [
+          ...closedLog(start, reduced),
+          ActivityPeriod(
+            mode: DriverMode.otherWork,
+            start: utc('2026-09-20 08:00'),
+            end: restBegins,
+          ),
+          ActivityPeriod(
+            mode: DriverMode.rest,
+            start: restBegins,
+            end: restEnds,
+          ),
+          ActivityPeriod(mode: DriverMode.driving, start: restEnds),
+        ];
+        return calc(periods, restEnds.add(hour));
+      }
+
+      test('отдых начат до срока, но добрал долг уже после — не погашен', () {
+        // С пт 10.10 00:00: к сроку набрано 48 ч из 60
+        expect(
+          keys(restFrom('2026-10-10 00:00')),
+          contains(InfringementType.compensationOverdue),
+        );
+      });
+
+      test('отдых набрал 45 + 15 ч до срока — погашен', () {
+        // С чт 09.10 00:00: к сроку набрано 72 ч
+        final m = restFrom('2026-10-09 00:00');
+        expect(m.compensation, isNull);
+        expect(keys(m), isNot(contains(InfringementType.compensationOverdue)));
+      });
     });
   });
 

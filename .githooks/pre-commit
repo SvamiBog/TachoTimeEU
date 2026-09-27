@@ -19,7 +19,7 @@ if [ -n "$files" ]; then
 fi
 
 if printf '%s\n' "$staged" | grep -q '^packages/tacho_engine/'; then
-  if grep -rnE "package:flutter|dart:ui" packages/tacho_engine/lib; then
+  if grep -rnE "package:flutter|dart:ui" packages/tacho_engine/lib packages/tacho_engine/test packages/tacho_engine/tool; then
     echo "pre-commit: tacho_engine должен оставаться чистым Dart" >&2
     exit 1
   fi

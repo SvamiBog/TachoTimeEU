@@ -90,6 +90,27 @@ void main() {
   });
 
   group('корректировка суточного вождения', () {
+    // Первой записи журнала отдать время некому: журнал просто начинается
+    // позже. Дыры между записями не появляется, вождение уменьшается.
+    test('−N мин на первой записи журнала сдвигают начало журнала', () {
+      final periods = closedLog(now.subtract(const Duration(hours: 3)), [
+        drive('2:00'),
+        work('1:00'),
+      ]);
+      final open = [
+        ...periods,
+        ActivityPeriod(mode: DriverMode.rest, start: now),
+      ];
+      final r = adjustDriving(open, open.first.start, -minutes(10), now);
+      expect(r.applied, -minutes(10));
+      expectContiguous(r.periods);
+      expect(
+        sortedByStart(r.periods).first.start,
+        now.subtract(const Duration(hours: 2, minutes: 50)),
+      );
+      expect(calc(r.periods, now).timeline.shifts.single.driving, minutes(110));
+    });
+
     test('+N мин нельзя больше длины предыдущего отрезка', () {
       final periods = logUntil(now, [
         rest('11:00'),
@@ -316,6 +337,39 @@ void main() {
     });
   });
 
+  group('ENG-09: правка, которую нельзя применить, журнал не меняет', () {
+    final periods = logUntil(now, [rest('11:00'), drive('2:00'), rest('0:20')]);
+    final foreign = ActivityPeriod(
+      mode: DriverMode.driving,
+      start: now.subtract(const Duration(hours: 30)),
+      end: now.subtract(const Duration(hours: 29)),
+    );
+
+    test('переносы начала и конца записи, которой нет в журнале', () {
+      expect(moveStart(periods, foreign, foreign.start, now), same(periods));
+      expect(moveEnd(periods, foreign, foreign.end!, now), same(periods));
+    });
+
+    test('конец открытой записи не переносится', () {
+      final open = periods.last;
+      expect(
+        moveEnd(periods, open, now.subtract(minutes(5)), now),
+        same(periods),
+      );
+    });
+
+    test('без вождения и перерывов после начала смены править нечего', () {
+      final shiftStart = now.subtract(minutes(10));
+      final adjusted = adjustDriving(periods, shiftStart, minutes(10), now);
+      expect(adjusted.periods, same(periods));
+      expect(adjusted.applied, Duration.zero);
+      expect(
+        setLastBreakDuration(periods, now, minutes(10), now),
+        same(periods),
+      );
+    });
+  });
+
   group('случайные правки не ломают журнал', () {
     const modes = DriverMode.values;
 
@@ -377,6 +431,47 @@ void main() {
           );
           edits['setLastBreakDuration'] = updated;
         }
+
+        // Завершение смены задним числом и его отмена (ENG-08): момент —
+        // после первого отдыха, иначе отменять нечего
+        final endAt = periods.length < 2
+            ? now
+            : periods[1].start.add(
+                minutes(
+                  r.nextInt(1, now.difference(periods[1].start).inMinutes),
+                ),
+              );
+        if (periods.length > 1) {
+          final ended = endShiftAt(periods, endAt, now);
+          expect(calc(ended, now).shift, isNull, reason: 'seed $seed');
+          edits['endShiftAt'] = ended;
+          final restStart = ended.lastWhere((p) => p.isOpen).start;
+          if (restStart.isAfter(firstStart)) {
+            edits['resumeShift'] = resumeShift(ended, restStart);
+          }
+        }
+        // Смена, внесённая как идущая: начало — где угодно после начала
+        // журнала
+        final shiftFrom = firstStart.add(
+          minutes(r.nextInt(1, now.difference(firstStart).inMinutes)),
+        );
+        edits['startShiftAt'] = startShiftAt(
+          periods,
+          shiftFrom,
+          minutes(r.nextInt(0, now.difference(shiftFrom).inMinutes)),
+          now,
+        );
+        // Начало после 9 ч первого отдыха: смена начинается ровно там, её
+        // вождение — ровно заданное
+        final afterRest = firstStart.add(minutes(r.nextInt(540, 660)));
+        final driving = minutes(
+          r.nextInt(0, now.difference(afterRest).inMinutes),
+        );
+        final started = startShiftAt(periods, afterRest, driving, now);
+        final startedShift = calc(started, now);
+        expect(startedShift.shift?.start, afterRest, reason: 'seed $seed');
+        expect(startedShift.dailyDriving, driving, reason: 'seed $seed');
+        edits['startShiftAt после отдыха'] = started;
 
         for (final MapEntry(key: name, value: updated) in edits.entries) {
           final label = 'seed $seed, $name';

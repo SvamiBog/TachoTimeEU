@@ -87,4 +87,107 @@ void main() {
     expect(n.title, 'Похоже, вы едете');
     expect(n.text, 'Начать вождение с $hhmm? Отдых будет прерван');
   });
+
+  group('BG-02: остальные состояния', () {
+    test('готовность', () {
+      final n = trackingNotification(
+        snapshot([
+          (DriverMode.rest, h * 11),
+          (DriverMode.availability, m * 30),
+        ]),
+      );
+      expect(n.title, 'Готовность · 0:30');
+      expect(n.text, 'Рабочий день 0:30 из 15:00');
+    });
+
+    test('недельный отдых: до 45 ч, часы без ограничения', () {
+      final n = trackingNotification(
+        snapshot([(DriverMode.driving, h * 4), (DriverMode.rest, h * 30)]),
+      );
+      expect(n.title, 'Недельный отдых · 30:00');
+      expect(n.text, 'До полного отдыха 45 ч: 15:00');
+    });
+
+    test('недельный отдых набран', () {
+      final n = trackingNotification(
+        snapshot([(DriverMode.driving, h * 4), (DriverMode.rest, h * 46)]),
+      );
+      expect(n.text, 'Полный недельный отдых набран');
+    });
+
+    test('суточный отдых набран', () {
+      final n = trackingNotification(
+        snapshot([(DriverMode.driving, h * 4), (DriverMode.rest, h * 12)]),
+      );
+      expect(n.text, 'Полный суточный отдых набран');
+    });
+
+    test('перерыв засчитан', () {
+      final n = trackingNotification(
+        snapshot([
+          (DriverMode.rest, h * 11),
+          (DriverMode.driving, h * 4),
+          (DriverMode.rest, m * 50),
+        ]),
+      );
+      expect(n.title, 'Перерыв · 0:50');
+      expect(n.text, 'Перерыв засчитан, можно ехать 4:30');
+    });
+
+    test('смена не начата', () {
+      final n = trackingNotification(snapshot([(DriverMode.rest, m * 30)]));
+      expect(n.title, 'Смена не начата');
+      expect(n.text, 'Вождение включится само, когда машина поедет');
+    });
+
+    test('режим не выбран: журнал обрывается разрывом', () {
+      final periods = [
+        ActivityPeriod(
+          mode: DriverMode.rest,
+          start: now.subtract(h * 14),
+          end: now.subtract(h * 3),
+        ),
+        ActivityPeriod(
+          mode: DriverMode.driving,
+          start: now.subtract(h * 3),
+          end: now.subtract(h),
+        ),
+      ];
+      final n = trackingNotification(
+        calculateCompliance(periods: periods, now: now),
+      );
+      expect(n.title, 'Режим не выбран');
+      expect(n.text, 'Откройте TachoGo и выберите режим');
+    });
+
+    test('предложение экипажу', () {
+      final at = now.subtract(m * 2);
+      final n = trackingNotification(
+        snapshot([(DriverMode.rest, h * 11), (DriverMode.otherWork, h)]),
+        suggestion: AutoSwitch(
+          AutoSwitchKind.suggest,
+          mode: DriverMode.driving,
+          at: at,
+          reason: AutoSwitchReason.team,
+        ),
+      );
+      expect(n.title, 'Машина едет');
+      expect(n.text, startsWith('Вы за рулём? Вождение с '));
+    });
+
+    test('часы переведены назад: время режима не отрицательное', () {
+      final periods = [
+        ActivityPeriod(
+          mode: DriverMode.rest,
+          start: now.subtract(h * 11),
+          end: now,
+        ),
+        ActivityPeriod(mode: DriverMode.driving, start: now.add(h)),
+      ];
+      final n = trackingNotification(
+        calculateCompliance(periods: periods, now: now),
+      );
+      expect(n.title, 'Вождение · 0:00');
+    });
+  });
 }

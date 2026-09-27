@@ -1,0 +1,76 @@
+// Итоговый манифест Android вместе с манифестами плагинов (CI-06 в
+// docs/testing.md): без фонового доступа к геолокации и прямого запроса на
+// исключение из экономии батареи, сервис автоопределения с типом location,
+// PostHog не стартует до согласия.
+//
+//   dart tool/check_android_manifest.dart [AndroidManifest.xml …]
+//
+// Без аргументов проверяет итоговые манифесты сборки в build/app.
+import 'dart:io';
+
+/// Нарушения в тексте манифеста; пустой список — всё в порядке.
+List<String> manifestProblems(String xml) {
+  final problems = <String>[];
+  List<String> tags(String name) {
+    final tag = RegExp('<$name(?=[\\s/>])[^>]*>');
+    return [for (final m in tag.allMatches(xml)) m[0]!];
+  }
+
+  bool named(String tag, String name) => tag.contains('android:name="$name"');
+
+  for (final permission in const [
+    'android.permission.ACCESS_BACKGROUND_LOCATION',
+    'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
+  ]) {
+    if (tags('uses-permission').any((t) => named(t, permission))) {
+      problems.add('Запрещённое разрешение $permission');
+    }
+  }
+
+  const foregroundService =
+      'com.pravera.flutter_foreground_task.service.ForegroundService';
+  final service = tags('service').where((t) => named(t, foregroundService));
+  if (service.isEmpty) {
+    problems.add('Нет сервиса автоопределения (flutter_foreground_task)');
+  } else if (!service.every(
+    (t) => t.contains('android:foregroundServiceType="location"'),
+  )) {
+    problems.add('Сервис автоопределения без типа location');
+  }
+
+  const posthogAutoInit = 'com.posthog.posthog.AUTO_INIT';
+  final autoInit = tags('meta-data').where((t) => named(t, posthogAutoInit));
+  if (autoInit.isEmpty ||
+      !autoInit.every((t) => t.contains('android:value="false"'))) {
+    problems.add('PostHog AUTO_INIT должен быть false');
+  }
+  return problems;
+}
+
+void main(List<String> args) {
+  final files = args.isNotEmpty
+      ? [for (final a in args) File(a)]
+      : [
+          for (final f in Directory(
+            'build/app/intermediates',
+          ).listSync(recursive: true))
+            if (f is File &&
+                f.path.endsWith('AndroidManifest.xml') &&
+                f.path.replaceAll(r'\', '/').contains('/merged_manifest'))
+              f,
+        ];
+  if (files.isEmpty) {
+    stderr.writeln('Итоговый манифест не найден: сначала соберите APK');
+    exit(1);
+  }
+  var failed = false;
+  for (final f in files) {
+    final problems = manifestProblems(f.readAsStringSync());
+    stdout.writeln('${f.path}: ${problems.isEmpty ? 'ок' : 'ошибки'}');
+    for (final p in problems) {
+      stderr.writeln('  $p');
+    }
+    failed = failed || problems.isNotEmpty;
+  }
+  if (failed) exit(1);
+}

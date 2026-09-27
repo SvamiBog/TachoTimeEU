@@ -281,6 +281,142 @@ void main() {
       expect(decision.at, switchedAt);
     });
   });
+  group('ENG-15: правила переключения полной таблицей', () {
+    final now = utc('2026-09-23 12:00');
+    final eventAt = now.subtract(const Duration(minutes: 1));
+
+    /// Журнал для каждого статуса; с паромом — последняя запись отмечена.
+    List<ActivityPeriod> journalFor(
+      DriverStatus status, {
+      required bool ferry,
+    }) {
+      Seg last(Seg s) => Seg(s.mode, s.duration, ferry: ferry);
+      final segs = switch (status) {
+        DriverStatus.notStarted => [last(rest('0:30'))],
+        DriverStatus.driving => [rest('11:00'), last(drive('1:00'))],
+        DriverStatus.otherWork => [rest('11:00'), last(work('1:00'))],
+        DriverStatus.availability => [rest('11:00'), last(poa('1:00'))],
+        DriverStatus.onBreak => [
+          rest('11:00'),
+          drive('2:00'),
+          last(rest('0:45')),
+        ],
+        DriverStatus.dailyRest => [
+          rest('11:00'),
+          drive('4:00'),
+          last(rest('9:30')),
+        ],
+        DriverStatus.weeklyRest => [
+          rest('11:00'),
+          drive('4:00'),
+          last(rest('30:00')),
+        ],
+        // Журнал обрывается за час до расчёта
+        DriverStatus.unknown => [
+          rest('11:00'),
+          last(drive('1:00')),
+          rest('1:00'),
+        ],
+      };
+      final periods = logUntil(now, segs);
+      return status == DriverStatus.unknown
+          ? periods.sublist(0, periods.length - 1)
+          : periods;
+    }
+
+    /// Ожидание по docs/background.md, «Правила переключения».
+    AutoSwitch expected(
+      DriverStatus status,
+      MotionEventType event, {
+      required bool team,
+      required bool startFromRest,
+      required bool onFerry,
+      required DateTime at,
+    }) {
+      if (event == MotionEventType.stopped) {
+        return status == DriverStatus.driving
+            ? AutoSwitch(
+                AutoSwitchKind.apply,
+                mode: DriverMode.otherWork,
+                at: at,
+              )
+            : AutoSwitch.none;
+      }
+      if (status == DriverStatus.driving || onFerry) return AutoSwitch.none;
+      if (team) {
+        return AutoSwitch(
+          AutoSwitchKind.suggest,
+          mode: DriverMode.driving,
+          at: at,
+          reason: AutoSwitchReason.team,
+        );
+      }
+      const offDuty = {
+        DriverStatus.notStarted,
+        DriverStatus.dailyRest,
+        DriverStatus.weeklyRest,
+      };
+      if (offDuty.contains(status) && !startFromRest) {
+        return AutoSwitch(
+          AutoSwitchKind.suggest,
+          mode: DriverMode.driving,
+          at: at,
+          reason: AutoSwitchReason.offDuty,
+        );
+      }
+      return AutoSwitch(AutoSwitchKind.apply, mode: DriverMode.driving, at: at);
+    }
+
+    for (final status in DriverStatus.values) {
+      for (final ferry in [false, true]) {
+        final periods = journalFor(status, ferry: ferry);
+        final state = calc(periods, now);
+
+        test('${status.name}${ferry ? ', паром' : ''}: журнал даёт этот '
+            'статус', () {
+          expect(state.status, status);
+        });
+
+        for (final event in MotionEventType.values) {
+          for (final team in [false, true]) {
+            for (final startFromRest in [false, true]) {
+              final name = [
+                status.name,
+                if (ferry) 'паром',
+                event.name,
+                if (team) 'экипаж',
+                if (startFromRest) 'сразу с отдыха',
+              ].join(', ');
+              test(name, () {
+                // Отметка «паром» действует только на идущую запись
+                final onFerry = ferry && status != DriverStatus.unknown;
+                final modeStart = state.currentModeStart;
+                final at = modeStart != null && modeStart.isAfter(eventAt)
+                    ? modeStart
+                    : eventAt;
+                expect(
+                  decideAutoSwitch(
+                    event: MotionEvent(event, eventAt),
+                    state: state,
+                    crew: team ? CrewMode.team : CrewMode.solo,
+                    settings: AutoSwitchSettings(startFromRest: startFromRest),
+                  ),
+                  expected(
+                    status,
+                    event,
+                    team: team,
+                    startFromRest: startFromRest,
+                    onFerry: onFerry,
+                    at: at,
+                  ),
+                );
+              });
+            }
+          }
+        }
+      }
+    }
+  });
 }
 
 Duration sec(int n) => Duration(seconds: n);

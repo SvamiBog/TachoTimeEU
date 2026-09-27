@@ -4,12 +4,13 @@ import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/auto_tracker.dart';
-import 'package:tachogo/background/motion_source.dart';
 import 'package:tachogo/background/tracking_notification.dart';
+import 'package:tachogo/background/tracking_platform.dart';
 import 'package:tachogo/core/config/app_env.dart';
 import 'package:tachogo/core/observability/crash_reporter.dart';
 import 'package:tachogo/core/observability/observability_providers.dart';
 import 'package:tachogo/core/observability/sentry_crash_reporter.dart';
+import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
@@ -26,11 +27,25 @@ void startTrackingTask() =>
 /// Автоопределение вождения в фоне и постоянное уведомление с текущим
 /// режимом и главным таймером.
 class TrackingTaskHandler extends TaskHandler {
+  /// Параметры — для тестов: платформа, база и отчёты о падениях.
+  new({
+    this._platform = const TrackingPlatform(),
+    this._database,
+    CrashReporter Function()? crashReporter,
+    DateTime Function()? clock,
+  }) : _crashReporter = crashReporter ?? _backgroundCrashReporter,
+       _clock = clock ?? DateTime.now;
+
   static const acceptButton = 'accept_driving';
   static const dismissButton = 'dismiss_driving';
 
   /// Как часто обновлять уведомление.
   static const refreshInterval = Duration(minutes: 1);
+
+  final TrackingPlatform _platform;
+  final AppDatabase Function()? _database;
+  final CrashReporter Function() _crashReporter;
+  final DateTime Function() _clock;
 
   ProviderContainer? _container;
   AutoTracker? _tracker;
@@ -40,10 +55,12 @@ class TrackingTaskHandler extends TaskHandler {
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
     final container = _container = ProviderContainer(
       overrides: [
-        crashReporterProvider.overrideWith((ref) => _backgroundCrashReporter()),
+        crashReporterProvider.overrideWith((ref) => _crashReporter()),
         journalChangedCallbackProvider.overrideWithValue(
-          () => FlutterForegroundTask.sendDataToMain(journalChangedMessage),
+          () => _platform.sendDataToMain(journalChangedMessage),
         ),
+        if (_database case final database?)
+          databaseProvider.overrideWith((ref) => database()),
       ],
     );
     await container.read(crashReporterProvider).init();
@@ -51,13 +68,14 @@ class TrackingTaskHandler extends TaskHandler {
     final settings = container.read(settingsRepositoryProvider);
     if (!(await settings.autoDetect()).enabled) {
       // Автоопределение выключили, пока сервис не работал (перезагрузка).
-      await FlutterForegroundTask.stopService();
+      await _platform.stopService();
       return;
     }
     final tracker = _tracker = AutoTracker(
       journal: container.read(activityRepositoryProvider),
       settings: settings,
-      source: gpsSamples,
+      source: _platform.motionSamples,
+      clock: _clock,
       onError: _report,
     );
     _suggestionWatch = tracker.suggestions.listen((_) => _refreshLater());
@@ -89,7 +107,7 @@ class TrackingTaskHandler extends TaskHandler {
   }
 
   @override
-  void onNotificationPressed() => FlutterForegroundTask.launchApp();
+  void onNotificationPressed() => _platform.launchApp();
 
   @override
   Future<void> onDestroy(DateTime timestamp, bool isTimeout) async {
@@ -105,14 +123,14 @@ class TrackingTaskHandler extends TaskHandler {
     if (container == null) return;
     final m = calculateCompliance(
       periods: await container.read(activityRepositoryProvider).periods(),
-      now: DateTime.now().toUtc(),
+      now: _clock().toUtc(),
       settings: await container
           .read(settingsRepositoryProvider)
           .complianceSettings(),
     );
     final suggestion = _tracker?.suggestion;
     final n = trackingNotification(m, suggestion: suggestion);
-    await FlutterForegroundTask.updateService(
+    await _platform.updateService(
       notificationTitle: n.title,
       notificationText: n.text,
       notificationButtons: suggestion == null
