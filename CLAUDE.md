@@ -19,6 +19,8 @@
 ## Главное правило кода
 Регуляторный движок (таймеры 561/2006) — чистый Dart без зависимостей от Flutter и UI, покрыт юнит-тестами на кейсах из регламента. Живёт в `packages/tacho_engine` (CI и pre-commit запрещают там `package:flutter`). Это критический путь проекта. Правила: `docs/domain/eu-561-rules.md`.
 
+Список тестов проекта и порядок их ввода — `docs/testing.md`.
+
 ## Дизайн
 - Спецификация: `docs/design/README.md`, скриншоты: `docs/design/screens/`.
 - Цвета, шрифты и радиусы брать только из `app/lib/core/theme/` (`context.colors`, `AppTextStyles`, `AppRadius`, `AppSize`, `AppSpacing`), не хардкодить hex в виджетах. Источник значений — `docs/design/tokens.json`, при изменении обновлять оба места.
