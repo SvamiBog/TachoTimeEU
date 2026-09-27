@@ -1167,5 +1167,147 @@
         "type": "int"
       }
     }
+  },
+  "openSystemSettings": "Открыть настройки",
+  "@openSystemSettings": {
+    "description": "Кнопка: настройки телефона"
+  },
+  "settingsGeneral": "Общее",
+  "settingsLanguage": "Язык",
+  "settingsLanguageSystem": "Как в телефоне",
+  "@settingsLanguageSystem": {
+    "description": "Язык интерфейса — системный"
+  },
+  "settingsTheme": "Оформление",
+  "themeSystem": "Система",
+  "themeLight": "Светлая",
+  "themeDark": "Тёмная",
+  "settingsRules": "Правила",
+  "settingsTachograph": "Тахограф в машине",
+  "tachographDigital": "Цифровой",
+  "tachographAnalog": "Аналоговый",
+  "settingsMobility": "Пакет мобильности",
+  "settingsMobilityHint": "Два сокращённых недельных отдыха подряд при международных перевозках",
+  "settingsCrew": "Экипаж из двух водителей",
+  "settingsCrewHint": "Суточный отдых 9 ч в пределах 30 ч от начала смены",
+  "settingsNotifications": "Уведомления",
+  "settingsWarnLead": "Предупреждать о лимитах",
+  "settingsWarnLeadHint": "Перерыв, конец дня, вождение",
+  "settingsWarnLeadGroup": "Предупреждать заранее",
+  "@settingsWarnLeadGroup": {
+    "description": "Название группы вариантов для диктора"
+  },
+  "leadMinutes": "{minutes} мин",
+  "@leadMinutes": {
+    "description": "Порог предупреждения: «15 мин»",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "leadHours": "{hours, plural, one{{hours} час} few{{hours} часа} many{{hours} часов} other{{hours} часа}}",
+  "@leadHours": {
+    "description": "Порог предупреждения: «1 час»",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "notifyBreak": "Перерыв",
+  "notifyShiftEnd": "Конец рабочего дня",
+  "notifyDriving": "Лимит вождения",
+  "notifyCard": "Считывание карты",
+  "notifyCardHint": "Каждые 28 дней",
+  "notifyCardLead": "Предупредить за",
+  "notifyCardLeadGroup": "Предупредить о считывании карты за",
+  "@notifyCardLeadGroup": {
+    "description": "Название группы вариантов для диктора"
+  },
+  "leadDays": "{days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}",
+  "@leadDays": {
+    "description": "Срок напоминания о карте: «7 дней»",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "notifyAllow": "Разрешить уведомления",
+  "notifyDenied": "Сейчас уведомления запрещены в телефоне",
+  "notifyAllowed": "Уведомления разрешены",
+  "autoTitle": "Автоопределение вождения",
+  "autoSwitch": "Определять вождение по GPS",
+  "autoSwitchHint": "Поехали — вождение, остановились — другая работа. Нужна только скорость: координаты не сохраняются.",
+  "autoAfterStop": "После остановки",
+  "autoAfterStopHint": "Через 3 минуты стоянки",
+  "autoStartFromRest": "Вождение сразу после отдыха",
+  "autoStartFromRestHint": "Иначе приложение сначала спросит: вы могли ехать пассажиром",
+  "autoBattery": "Экономия батареи",
+  "autoBatteryLimited": "Может остановить автоопределение. Уберите TachoGo из списка экономии",
+  "autoBatteryOk": "Не мешает работе в фоне",
+  "autoAutostart": "Автозапуск и работа в фоне",
+  "autoAutostartHint": "Xiaomi, Huawei, Honor, Oppo, Vivo, Samsung: разрешите, иначе телефон остановит автоопределение",
+  "autoBlockedService": "Геолокация выключена в телефоне. Включите её, чтобы определять вождение.",
+  "autoBlockedDenied": "Без доступа к геолокации вождение не определить. Приложению нужна только скорость, координаты не сохраняются.",
+  "autoBlockedForever": "Доступ к геолокации запрещён. Разрешите его в настройках телефона: Геолокация → «При использовании приложения».",
+  "autoNoAccess": "Нет доступа к геолокации — автоопределение не работает. Разрешите его в настройках телефона.",
+  "autoEnable": "Включить автоопределение",
+  "autoEnabled": "Автоопределение включено",
+  "settingsData": "Данные",
+  "settingsExport": "Экспорт отчёта",
+  "settingsExportFormats": "PDF · CSV",
+  "settingsAnalytics": "Анонимная статистика",
+  "settingsAnalyticsHint": "Какие экраны открывают водители — чтобы улучшать приложение. Без координат, имён и номеров карт.",
+  "settingsClear": "Очистить все данные",
+  "clearTitle": "Очистить все данные?",
+  "clearText": "Журнал режимов, смены, страны, заметки и считывания карты будут удалены. Отменить это нельзя. Настройки останутся.",
+  "clearConfirm": "Очистить",
+  "clearDone": "Данные удалены",
+  "onbStep": "Шаг {step} из {count}",
+  "@onbStep": {
+    "description": "Индикатор шагов онбординга для диктора",
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onbWelcomeTitle": "Время за рулём — под контролем",
+  "onbWelcomeText": "Считаем вождение, перерывы и отдых по правилам ЕС 561/2006 и ЕСТР и заранее предупреждаем о лимитах.",
+  "onbStart": "Начать",
+  "onbNext": "Далее",
+  "onbDone": "Готово",
+  "onbModesTitle": "Четыре режима — как на тахографе",
+  "onbModesText": "Переключайте режим кнопками на главном экране. Таймеры считаются сами — даже когда приложение закрыто.",
+  "onbModeDriving": "За рулём. Считаем непрерывное, суточное и недельное вождение.",
+  "onbModeWork": "Погрузка, осмотр машины, документы.",
+  "onbModeAvailability": "Ожидание: очередь на погрузку, граница, второй водитель в пути.",
+  "onbModeRest": "Перерывы и отдых. «Завершить день» закрывает смену.",
+  "onbSetupTitle": "Настроим под вас",
+  "onbSetupText": "Всё это можно поменять позже в настройках.",
+  "onbMobilityHint": "Включите, если ездите по международным рейсам",
+  "onbNotifyText": "Предупредим за {minutes, plural, one{{minutes} минуту} few{{minutes} минуты} many{{minutes} минут} other{{minutes} минуты}} до перерыва и конца рабочего дня — даже когда приложение закрыто.",
+  "@onbNotifyText": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "onbAutoText": "Поехали — приложение включит вождение, остановились — другую работу. После отдыха оно сначала спросит. Нужна только скорость по GPS: координаты не сохраняются и никуда не отправляются.",
+  "onbAutoLater": "Можно включить позже в настройках.",
+  "languageButton": "Язык: {language}",
+  "@languageButton": {
+    "description": "Кнопка языка в онбординге для диктора",
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
   }
 }

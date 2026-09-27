@@ -1372,4 +1372,298 @@ class AppLocalizationsRu extends AppLocalizations {
   String reportPage(int page, int pages) {
     return 'Стр. $page из $pages';
   }
+
+  @override
+  String get openSystemSettings => 'Открыть настройки';
+
+  @override
+  String get settingsGeneral => 'Общее';
+
+  @override
+  String get settingsLanguage => 'Язык';
+
+  @override
+  String get settingsLanguageSystem => 'Как в телефоне';
+
+  @override
+  String get settingsTheme => 'Оформление';
+
+  @override
+  String get themeSystem => 'Система';
+
+  @override
+  String get themeLight => 'Светлая';
+
+  @override
+  String get themeDark => 'Тёмная';
+
+  @override
+  String get settingsRules => 'Правила';
+
+  @override
+  String get settingsTachograph => 'Тахограф в машине';
+
+  @override
+  String get tachographDigital => 'Цифровой';
+
+  @override
+  String get tachographAnalog => 'Аналоговый';
+
+  @override
+  String get settingsMobility => 'Пакет мобильности';
+
+  @override
+  String get settingsMobilityHint =>
+      'Два сокращённых недельных отдыха подряд при международных перевозках';
+
+  @override
+  String get settingsCrew => 'Экипаж из двух водителей';
+
+  @override
+  String get settingsCrewHint =>
+      'Суточный отдых 9 ч в пределах 30 ч от начала смены';
+
+  @override
+  String get settingsNotifications => 'Уведомления';
+
+  @override
+  String get settingsWarnLead => 'Предупреждать о лимитах';
+
+  @override
+  String get settingsWarnLeadHint => 'Перерыв, конец дня, вождение';
+
+  @override
+  String get settingsWarnLeadGroup => 'Предупреждать заранее';
+
+  @override
+  String leadMinutes(int minutes) {
+    return '$minutes мин';
+  }
+
+  @override
+  String leadHours(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours часа',
+      many: '$hours часов',
+      few: '$hours часа',
+      one: '$hours час',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notifyBreak => 'Перерыв';
+
+  @override
+  String get notifyShiftEnd => 'Конец рабочего дня';
+
+  @override
+  String get notifyDriving => 'Лимит вождения';
+
+  @override
+  String get notifyCard => 'Считывание карты';
+
+  @override
+  String get notifyCardHint => 'Каждые 28 дней';
+
+  @override
+  String get notifyCardLead => 'Предупредить за';
+
+  @override
+  String get notifyCardLeadGroup => 'Предупредить о считывании карты за';
+
+  @override
+  String leadDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days дня',
+      many: '$days дней',
+      few: '$days дня',
+      one: '$days день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notifyAllow => 'Разрешить уведомления';
+
+  @override
+  String get notifyDenied => 'Сейчас уведомления запрещены в телефоне';
+
+  @override
+  String get notifyAllowed => 'Уведомления разрешены';
+
+  @override
+  String get autoTitle => 'Автоопределение вождения';
+
+  @override
+  String get autoSwitch => 'Определять вождение по GPS';
+
+  @override
+  String get autoSwitchHint =>
+      'Поехали — вождение, остановились — другая работа. Нужна только скорость: координаты не сохраняются.';
+
+  @override
+  String get autoAfterStop => 'После остановки';
+
+  @override
+  String get autoAfterStopHint => 'Через 3 минуты стоянки';
+
+  @override
+  String get autoStartFromRest => 'Вождение сразу после отдыха';
+
+  @override
+  String get autoStartFromRestHint =>
+      'Иначе приложение сначала спросит: вы могли ехать пассажиром';
+
+  @override
+  String get autoBattery => 'Экономия батареи';
+
+  @override
+  String get autoBatteryLimited =>
+      'Может остановить автоопределение. Уберите TachoGo из списка экономии';
+
+  @override
+  String get autoBatteryOk => 'Не мешает работе в фоне';
+
+  @override
+  String get autoAutostart => 'Автозапуск и работа в фоне';
+
+  @override
+  String get autoAutostartHint =>
+      'Xiaomi, Huawei, Honor, Oppo, Vivo, Samsung: разрешите, иначе телефон остановит автоопределение';
+
+  @override
+  String get autoBlockedService =>
+      'Геолокация выключена в телефоне. Включите её, чтобы определять вождение.';
+
+  @override
+  String get autoBlockedDenied =>
+      'Без доступа к геолокации вождение не определить. Приложению нужна только скорость, координаты не сохраняются.';
+
+  @override
+  String get autoBlockedForever =>
+      'Доступ к геолокации запрещён. Разрешите его в настройках телефона: Геолокация → «При использовании приложения».';
+
+  @override
+  String get autoNoAccess =>
+      'Нет доступа к геолокации — автоопределение не работает. Разрешите его в настройках телефона.';
+
+  @override
+  String get autoEnable => 'Включить автоопределение';
+
+  @override
+  String get autoEnabled => 'Автоопределение включено';
+
+  @override
+  String get settingsData => 'Данные';
+
+  @override
+  String get settingsExport => 'Экспорт отчёта';
+
+  @override
+  String get settingsExportFormats => 'PDF · CSV';
+
+  @override
+  String get settingsAnalytics => 'Анонимная статистика';
+
+  @override
+  String get settingsAnalyticsHint =>
+      'Какие экраны открывают водители — чтобы улучшать приложение. Без координат, имён и номеров карт.';
+
+  @override
+  String get settingsClear => 'Очистить все данные';
+
+  @override
+  String get clearTitle => 'Очистить все данные?';
+
+  @override
+  String get clearText =>
+      'Журнал режимов, смены, страны, заметки и считывания карты будут удалены. Отменить это нельзя. Настройки останутся.';
+
+  @override
+  String get clearConfirm => 'Очистить';
+
+  @override
+  String get clearDone => 'Данные удалены';
+
+  @override
+  String onbStep(int step, int count) {
+    return 'Шаг $step из $count';
+  }
+
+  @override
+  String get onbWelcomeTitle => 'Время за рулём — под контролем';
+
+  @override
+  String get onbWelcomeText =>
+      'Считаем вождение, перерывы и отдых по правилам ЕС 561/2006 и ЕСТР и заранее предупреждаем о лимитах.';
+
+  @override
+  String get onbStart => 'Начать';
+
+  @override
+  String get onbNext => 'Далее';
+
+  @override
+  String get onbDone => 'Готово';
+
+  @override
+  String get onbModesTitle => 'Четыре режима — как на тахографе';
+
+  @override
+  String get onbModesText =>
+      'Переключайте режим кнопками на главном экране. Таймеры считаются сами — даже когда приложение закрыто.';
+
+  @override
+  String get onbModeDriving =>
+      'За рулём. Считаем непрерывное, суточное и недельное вождение.';
+
+  @override
+  String get onbModeWork => 'Погрузка, осмотр машины, документы.';
+
+  @override
+  String get onbModeAvailability =>
+      'Ожидание: очередь на погрузку, граница, второй водитель в пути.';
+
+  @override
+  String get onbModeRest =>
+      'Перерывы и отдых. «Завершить день» закрывает смену.';
+
+  @override
+  String get onbSetupTitle => 'Настроим под вас';
+
+  @override
+  String get onbSetupText => 'Всё это можно поменять позже в настройках.';
+
+  @override
+  String get onbMobilityHint => 'Включите, если ездите по международным рейсам';
+
+  @override
+  String onbNotifyText(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes минуты',
+      many: '$minutes минут',
+      few: '$minutes минуты',
+      one: '$minutes минуту',
+    );
+    return 'Предупредим за $_temp0 до перерыва и конца рабочего дня — даже когда приложение закрыто.';
+  }
+
+  @override
+  String get onbAutoText =>
+      'Поехали — приложение включит вождение, остановились — другую работу. После отдыха оно сначала спросит. Нужна только скорость по GPS: координаты не сохраняются и никуда не отправляются.';
+
+  @override
+  String get onbAutoLater => 'Можно включить позже в настройках.';
+
+  @override
+  String languageButton(String language) {
+    return 'Язык: $language';
+  }
 }

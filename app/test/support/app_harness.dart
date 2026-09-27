@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/background/tracking_providers.dart';
+import 'package:tachogo/background/tracking_service.dart';
 import 'package:tachogo/core/theme/app_theme.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
@@ -19,8 +21,11 @@ import 'package:tachogo/data/journal/card_download_repository.dart';
 import 'package:tachogo/data/journal/journal_edit_repository.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
+import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
+
+import '../background/fake_tracking_platform.dart';
 
 /// Часы, которые двигает тест: `clock.now = t`.
 class TestClock extends Clock {
@@ -35,8 +40,17 @@ class TestClock extends Clock {
   set now(DateTime t) => state = t;
 }
 
+/// Разрешения и экономия батареи для экранов без БД: всё разрешено.
+const TrackingHealth allowed = (
+  location: true,
+  notifications: true,
+  battery: true,
+);
+
 /// Журнал, настройки, считывание карты и страны смен — готовыми
-/// значениями, без БД. Страна новой смене не записывается.
+/// значениями, без данных в БД. Страна новой смене не записывается.
+/// Разрешения — [health], платформа автоопределения — [platform]
+/// (по умолчанию Android, всё разрешено).
 List<Override> journalOverrides({
   required List<ActivityPeriod> periods,
   required DateTime now,
@@ -47,7 +61,38 @@ List<Override> journalOverrides({
   String? defaultCountry,
   List<ManualShiftRecord> manualShifts = const [],
   Map<DateTime, ShiftMeta> shiftMeta = const {},
+  AppPreferences preferences = const AppPreferences(onboardingDone: true),
+  NotificationSettings notifications = const NotificationSettings(),
+  AutoDetectSettings autoDetect = const AutoDetectSettings(),
+  bool analyticsConsent = false,
+  TrackingHealth health = allowed,
+  FakeTrackingPlatform? platform,
 }) => [
+  preferencesProvider.overrideWith((ref) => Stream.value(preferences)),
+  notificationSettingsProvider.overrideWith(
+    (ref) => Stream.value(notifications),
+  ),
+  autoDetectSettingsProvider.overrideWith((ref) => Stream.value(autoDetect)),
+  analyticsConsentProvider.overrideWith(
+    (ref) => Stream.value(analyticsConsent),
+  ),
+  trackingHealthProvider.overrideWith((ref) async => health),
+  // Пустая база в памяти для репозиториев, которые экран берёт сам:
+  // настоящая открылась бы через path_provider, которого в тестах нет.
+  // Данные экрана — из значений выше, не из неё.
+  databaseProvider.overrideWith((ref) {
+    driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+    final db = memoryDatabase();
+    ref.onDispose(db.close);
+    return db;
+  }),
+  trackingServiceProvider.overrideWith(
+    (ref) => TrackingService(
+      journal: ref.watch(activityRepositoryProvider),
+      settings: ref.watch(settingsRepositoryProvider),
+      platform: platform ?? FakeTrackingPlatform(),
+    ),
+  ),
   activityPeriodsProvider.overrideWith((ref) => Stream.value(periods)),
   manualShiftsProvider.overrideWith((ref) => Stream.value(manualShifts)),
   shiftMetaProvider.overrideWith((ref) => Stream.value(shiftMeta)),
@@ -61,14 +106,23 @@ List<Override> journalOverrides({
 ];
 
 /// База в памяти: запись режимов и считываний идёт через настоящие
-/// репозитории, время записи — [now].
+/// репозитории, время записи — [now]. Разрешения и сервис
+/// автоопределения — [platform] (по умолчанию Android, всё разрешено).
 List<Override> databaseOverrides(
   AppDatabase db, {
   required DateTime Function() now,
+  FakeTrackingPlatform? platform,
 }) {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   return [
     databaseProvider.overrideWithValue(db),
+    trackingServiceProvider.overrideWithValue(
+      TrackingService(
+        journal: ActivityRepository(db, clock: now),
+        settings: SettingsRepository(db),
+        platform: platform ?? FakeTrackingPlatform(),
+      ),
+    ),
     activityRepositoryProvider.overrideWithValue(
       ActivityRepository(db, clock: now),
     ),

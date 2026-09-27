@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tachogo/features/home/home_screen.dart';
 import 'package:tachogo/features/journal/journal_screen.dart';
+import 'package:tachogo/features/settings/settings_screen.dart';
 import 'package:tachogo/features/shell/app_shell.dart';
 
 import '../support/app_harness.dart';
@@ -56,15 +57,14 @@ void main() {
               .selectedIndex,
           i + 1,
         );
-        expect(
-          tab == 'Журнал'
-              ? find.byType(JournalScreen)
-              : find.descendant(
-                  of: find.byType(TabPlaceholder),
-                  matching: find.text(tab),
-                ),
-          findsOneWidget,
-        );
+        expect(switch (tab) {
+          'Журнал' => find.byType(JournalScreen),
+          'Настройки' => find.byType(SettingsScreen),
+          _ => find.descendant(
+            of: find.byType(TabPlaceholder),
+            matching: find.text(tab),
+          ),
+        }, findsOneWidget);
         expect(find.byType(HomeScreen), findsNothing);
       }
 

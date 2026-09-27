@@ -16,6 +16,7 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
@@ -26,6 +27,8 @@ import 'package:tachogo/features/journal/journal_parts.dart';
 import 'package:tachogo/features/journal/journal_screen.dart';
 import 'package:tachogo/features/journal/shift_day_screen.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
+import 'package:tachogo/features/onboarding/onboarding_screen.dart';
+import 'package:tachogo/features/settings/settings_screen.dart';
 import 'package:tachogo/features/shell/app_shell.dart';
 
 import '../support/app_harness.dart';
@@ -99,6 +102,15 @@ Future<void> _openExport(WidgetTester tester) async {
   expect(find.text('Создать отчёт'), findsOneWidget);
 }
 
+/// Шаги онбординга: «Начать», затем «Далее».
+Future<void> Function(WidgetTester) _onboardingStep(int step) =>
+    (tester) async {
+      for (var i = 0; i < step; i++) {
+        await tester.tap(find.text(i == 0 ? 'Начать' : 'Далее'));
+        await tester.pumpAndSettle();
+      }
+    };
+
 final _screens = <String, _Screen>{
   'Главная': (build: HomeScreen.new, open: null),
   'Нижняя навигация': (build: AppShell.new, open: null),
@@ -126,6 +138,22 @@ final _screens = <String, _Screen>{
   'Шторка «Удалить смену?»': (build: _editor, open: _tapText('Удалить смену')),
   'Шторка страны в форме смены': (build: _editor, open: _tapText('PL')),
   'Шторка «Экспорт отчёта»': (build: JournalScreen.new, open: _openExport),
+  'Настройки': (build: SettingsScreen.new, open: null),
+  'Шторка «Язык»': (build: SettingsScreen.new, open: _tapText('Язык')),
+  'Шторка «Очистить все данные?»': (
+    build: SettingsScreen.new,
+    open: _tapText('Очистить все данные'),
+  ),
+  'Онбординг · приветствие': (build: OnboardingScreen.new, open: null),
+  'Онбординг · режимы': (build: OnboardingScreen.new, open: _onboardingStep(1)),
+  'Онбординг · настройка': (
+    build: OnboardingScreen.new,
+    open: _onboardingStep(2),
+  ),
+  'Онбординг · автоопределение': (
+    build: OnboardingScreen.new,
+    open: _onboardingStep(3),
+  ),
   'Шторка «Свой период»': (
     build: JournalScreen.new,
     open: (tester) async {
@@ -134,6 +162,16 @@ final _screens = <String, _Screen>{
       await _tapText('По 23.09')(tester);
     },
   ),
+};
+
+/// Экраны без времени и цифр: проверка JetBrains Mono им не нужна.
+const _withoutNumbers = {
+  'Настройки',
+  'Шторка «Язык»',
+  'Шторка «Очистить все данные?»',
+  'Онбординг · режимы',
+  'Онбординг · настройка',
+  'Онбординг · автоопределение',
 };
 
 /// Экраны телефона, dp: основной таргет и небольшой Android.
@@ -167,6 +205,10 @@ Future<void> _pump(
       },
       recentCountries: ['PL', 'D', 'CZ'],
       defaultCountry: 'PL',
+      // Настройки и онбординг со всеми строками: автоопределение включено,
+      // уведомления запрещены, экономия батареи мешает (Android).
+      autoDetect: const AutoDetectSettings(enabled: true),
+      health: (location: true, notifications: false, battery: false),
     ),
     brightness: brightness,
     viewport: viewport,
@@ -266,6 +308,10 @@ void main() {
           for (final text in tester.widgetList<RichText>(find.byType(RichText)))
             if (_numeric.hasMatch(text.text.toPlainText().trim())) text,
         ];
+        if (_withoutNumbers.contains(name)) {
+          expect(numbers, isEmpty, reason: 'цифры есть — убрать из списка');
+          return;
+        }
         expect(numbers, isNotEmpty, reason: 'на экране нет ни одной цифры');
         for (final text in numbers) {
           final style = text.text.style;

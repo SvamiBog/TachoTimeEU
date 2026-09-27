@@ -27,6 +27,12 @@ class TrackingPlatform {
   Future<LocationPermission> requestPermission() =>
       Geolocator.requestPermission();
 
+  /// Системные настройки геолокации: включить её в телефоне.
+  Future<bool> openLocationSettings() => Geolocator.openLocationSettings();
+
+  /// Настройки приложения в системе: разрешения после отказа навсегда.
+  Future<bool> openAppSettings() => Geolocator.openAppSettings();
+
   Stream<MotionSample> motionSamples({required bool fast}) =>
       gpsSamples(fast: fast);
 

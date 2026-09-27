@@ -6,6 +6,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/journal/card_download_repository.dart';
+import 'package:tachogo/data/journal/journal_cleaner.dart';
 import 'package:tachogo/data/journal/journal_edit_repository.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
@@ -32,6 +33,14 @@ final journalEditRepositoryProvider = Provider<JournalEditRepository>(
   (ref) => JournalEditRepository(
     ref.watch(databaseProvider),
     ref.watch(settingsRepositoryProvider),
+    onChanged: ref.watch(journalChangedCallbackProvider),
+  ),
+);
+
+/// «Очистить все данные» в настройках.
+final journalCleanerProvider = Provider<JournalCleaner>(
+  (ref) => JournalCleaner(
+    ref.watch(databaseProvider),
     onChanged: ref.watch(journalChangedCallbackProvider),
   ),
 );

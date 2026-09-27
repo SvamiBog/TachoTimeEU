@@ -9,3 +9,13 @@ final settingsRepositoryProvider = Provider<SettingsRepository>(
 final analyticsConsentProvider = StreamProvider<bool>(
   (ref) => ref.watch(settingsRepositoryProvider).watchAnalyticsConsent(),
 );
+
+/// Тема, язык, онбординг, тахограф.
+final preferencesProvider = StreamProvider<AppPreferences>(
+  (ref) => ref.watch(settingsRepositoryProvider).watchPreferences(),
+);
+
+/// Какие уведомления о лимитах присылать.
+final notificationSettingsProvider = StreamProvider<NotificationSettings>(
+  (ref) => ref.watch(settingsRepositoryProvider).watchNotifications(),
+);

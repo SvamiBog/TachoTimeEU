@@ -26,6 +26,9 @@ class FakeTrackingPlatform implements TrackingPlatform {
       NotificationPermission.granted;
   bool running = false;
 
+  /// Приложение в списке исключений из экономии батареи.
+  bool ignoringBatteryOptimizations = false;
+
   final calls = <String>[];
   final toTask = <Object>[];
   final toMain = <Object>[];
@@ -56,14 +59,31 @@ class FakeTrackingPlatform implements TrackingPlatform {
   Future<NotificationPermission> checkNotificationPermission() async =>
       notificationPermission;
 
+  /// Ответ водителя на системный запрос уведомлений; null — как сейчас.
+  NotificationPermission? notificationAnswer;
+
   @override
   Future<NotificationPermission> requestNotificationPermission() async {
     calls.add('requestNotificationPermission');
-    return notificationPermission;
+    return notificationPermission =
+        notificationAnswer ?? notificationPermission;
   }
 
   @override
-  Future<bool> get isIgnoringBatteryOptimizations async => false;
+  Future<bool> openLocationSettings() async {
+    calls.add('openLocationSettings');
+    return true;
+  }
+
+  @override
+  Future<bool> openAppSettings() async {
+    calls.add('openAppSettings');
+    return true;
+  }
+
+  @override
+  Future<bool> get isIgnoringBatteryOptimizations async =>
+      ignoringBatteryOptimizations;
 
   @override
   Future<bool> openIgnoreBatteryOptimizationSettings() async {
