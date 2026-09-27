@@ -1,6 +1,7 @@
 // Свойства движка на случайных журналах (детерминированный seed).
-// Эталон — поминутная модель: каждая минута журнала имеет один режим,
-// правила регламента применяются к сериям минут, без блоков и склейки.
+// Эталон — поминутная модель: каждая минута журнала имеет один режим и
+// отметки, правила регламента применяются к сериям минут, без блоков и
+// склейки.
 
 import 'dart:math';
 
@@ -56,6 +57,86 @@ Seg _randomSeg(Rng r) {
   return Seg(mode, minutes(d));
 }
 
+/// Журнал с паромом, «концом дня», экипажем и ручными сменами (ENG-14).
+typedef ExtendedLog = ({
+  List<ActivityPeriod> periods,
+  DateTime now,
+  CrewMode crew,
+  List<ManualShift> manual,
+});
+
+const List<DriverMode> workModes = [
+  DriverMode.driving,
+  DriverMode.otherWork,
+  DriverMode.availability,
+];
+
+ExtendedLog extendedLog(int seed) {
+  final r = Rng(seed);
+  final start = utc('2026-08-31 00:00')
+      .add(minutes(r.nextInt(0, 21 * 24 * 60)));
+  Seg interruption() =>
+      Seg(r.pick(workModes), minutes(r.nextInt(1, 45)), ferry: true);
+  Seg anyRest({bool ferry = false}) =>
+      rest(r.pick(restDurations), ferry: ferry);
+
+  final segs = <Seg>[];
+  for (var i = r.nextInt(1, 40); i > 0; i--) {
+    if (r.next() < 0.15) {
+      // Переправа: отдых, посадка, отдых на борту, иногда высадка и отдых
+      segs.addAll([
+        anyRest(),
+        interruption(),
+        anyRest(ferry: r.next() < 0.5),
+        if (r.next() < 0.5) ...[interruption(), anyRest()],
+      ]);
+      continue;
+    }
+    final seg = _randomSeg(r);
+    segs.add(
+      Seg(
+        seg.mode,
+        seg.duration,
+        ferry: !seg.mode.isRest && r.next() < 0.05,
+        dayEnd: seg.mode.isRest && r.next() < 0.2,
+      ),
+    );
+  }
+  final log = logFrom(start, segs);
+
+  // Ручные смены — до начала записей, от поздних к ранним
+  final manual = <ManualShift>[];
+  var t = start;
+  for (var k = r.nextInt(0, 3); k > 0; k--) {
+    final kind = r.pick(RestKind.values);
+    final restLength = switch (kind) {
+      RestKind.none => Duration.zero,
+      RestKind.daily => minutes(r.nextInt(480, 780)),
+      RestKind.weekly => minutes(r.nextInt(1440, 3000)),
+    };
+    final span = minutes(r.nextInt(60, 16 * 60));
+    final end = t.subtract(restLength);
+    final shiftStart = end.subtract(span);
+    manual.add(
+      ManualShift(
+        start: shiftStart,
+        end: end,
+        driving: minutes(r.nextInt(0, min(span.inMinutes, 11 * 60))),
+        restKind: kind,
+        rest: restLength,
+        splitRest: kind == RestKind.daily && r.next() < 0.2,
+      ),
+    );
+    t = shiftStart.subtract(minutes(r.nextInt(0, 600)));
+  }
+  return (
+    periods: log.periods,
+    now: log.now,
+    crew: r.next() < 0.3 ? CrewMode.team : CrewMode.solo,
+    manual: manual,
+  );
+}
+
 /// Серия минут [from, to) от начала журнала.
 class _Run {
   new(this.from, this.to);
@@ -66,41 +147,124 @@ class _Run {
   int get length => to - from;
 }
 
-/// Поминутная эталонная модель ст. 6–8 для журнала без парома и «конца дня».
-Map<String, Object?> oracle(List<ActivityPeriod> periods, DateTime now) {
+/// Период отдыха в минутах: серии отдыха, объединённые через паром.
+typedef _RestPeriod = ({int from, int to, int rest, bool open, bool dayEnd});
+
+/// Поминутная эталонная модель ст. 6–9: каждая минута журнала имеет один
+/// режим и отметки, правила применяются к сериям минут, без блоков и
+/// склейки.
+Map<String, Object?> oracle(
+  List<ActivityPeriod> periods,
+  DateTime now, {
+  CrewMode crew = CrewMode.solo,
+  List<ManualShift> manual = const [],
+}) {
   final origin = periods.first.start;
   int offset(DateTime t) => t.difference(origin).inMinutes;
+  DateTime at(int minute) => origin.add(minutes(minute));
   final n = offset(now);
   final act = List<DriverMode?>.filled(n, null);
+  final ferry = List.filled(n, false);
+  final dayEnd = List.filled(n, false);
   for (final p in periods) {
     for (var t = offset(p.start); t < offset(p.end ?? now); t++) {
       act[t] = p.mode;
+      ferry[t] = p.ferry;
+      dayEnd[t] = p.dayEnd;
     }
+  }
+  bool isRest(int t) => act[t] == DriverMode.rest;
+  bool isDriving(int t) => act[t] == DriverMode.driving;
+  int count(int from, int to, bool Function(int) f) {
+    var total = 0;
+    for (var t = from; t < to; t++) {
+      if (f(t)) total++;
+    }
+    return total;
   }
 
   final rests = <_Run>[];
   for (var t = 0; t < n; t++) {
-    if (act[t] != DriverMode.rest) continue;
+    if (!isRest(t)) continue;
     if (rests.isNotEmpty && rests.last.to == t) {
       rests.last.to = t + 1;
     } else {
       rests.add(_Run(t, t + 1));
     }
   }
-  bool closed(_Run r) => r.to < n;
   final reduced = EuLimits.dailyRestReduced.inMinutes;
+  final weeklyMin = EuLimits.weeklyRestReduced.inMinutes;
+  final window = switch (crew) {
+    CrewMode.solo => EuLimits.workdayWindow.inMinutes,
+    CrewMode.team => EuLimits.teamWorkdayWindow.inMinutes,
+  };
 
-  // Смены — участки между отдыхами ≥ 9 ч, в которых есть что-то кроме отдыха
-  final shifts = <({int from, int to, _Run? restAfter})>[];
+  // Рейс: от первой до последней серии одного режима, целиком отмеченной
+  // «паромом»
+  int crossing(int from, int to) {
+    int? first;
+    var last = from;
+    var t = from;
+    while (t < to) {
+      var end = t + 1;
+      while (end < to && act[end] == act[t]) {
+        end++;
+      }
+      if (count(t, end, (x) => ferry[x]) == end - t) {
+        first ??= t;
+        last = end;
+      }
+      t = end;
+    }
+    return first == null ? 0 : last - first;
+  }
+
+  // Ст. 9: до двух прерываний на пароме, в сумме до 60 мин, только если
+  // набирается 11 ч; регулярный недельный — при рейсе от 8 ч
+  final restPeriods = <_RestPeriod>[];
+  var i = 0;
+  while (i < rests.length) {
+    var bestLast = i;
+    var interruption = 0;
+    for (var k = i + 1; k < rests.length && k <= i + 2; k++) {
+      final gapFrom = rests[k - 1].to;
+      final gapTo = rests[k].from;
+      if (count(gapFrom, gapTo, (t) => ferry[t]) != gapTo - gapFrom) break;
+      interruption += gapTo - gapFrom;
+      if (interruption > 60) break;
+      final rest = count(rests[i].from, rests[k].to, isRest);
+      if (rest >= 660 &&
+          (rest < 2700 || crossing(rests[i].from, rests[k].to) >= 480)) {
+        bestLast = k;
+      }
+    }
+    final from = rests[i].from;
+    final to = rests[bestLast].to;
+    restPeriods.add((
+      from: from,
+      to: to,
+      rest: count(from, to, isRest),
+      open: to == n,
+      dayEnd: count(from, to, (t) => isRest(t) && dayEnd[t]) > 0,
+    ));
+    i = bestLast + 1;
+  }
+
+  // Смены — участки между отдыхами ≥ 9 ч (или идущим «концом дня»), в
+  // которых есть что-то кроме отдыха
+  final shifts = <({int from, int to, _RestPeriod? restAfter})>[];
   var cursor = 0;
-  for (final r in [...rests.where((x) => x.length >= reduced), null]) {
-    final end = r?.from ?? n;
+  final ending = restPeriods.where(
+    (p) => p.rest >= reduced || (p.open && p.dayEnd),
+  );
+  for (final p in [...ending, null]) {
+    final end = p?.from ?? n;
     var first = cursor;
-    while (first < end && act[first] == DriverMode.rest) {
+    while (first < end && isRest(first)) {
       first++;
     }
-    if (first < end) shifts.add((from: first, to: end, restAfter: r));
-    cursor = r?.to ?? n;
+    if (first < end) shifts.add((from: first, to: end, restAfter: p));
+    cursor = p?.to ?? n;
   }
   final current = shifts.isNotEmpty && shifts.last.restAfter == null
       ? shifts.last
@@ -123,12 +287,12 @@ Map<String, Object?> oracle(List<ActivityPeriod> periods, DateTime now) {
     }
 
     for (var t = current.from; t < n; t++) {
-      if (act[t] == DriverMode.rest) {
+      if (isRest(t)) {
         run++;
         continue;
       }
       if (run > 0) closeRun();
-      if (act[t] == DriverMode.driving) {
+      if (isDriving(t)) {
         continuous++;
         daily++;
       }
@@ -137,68 +301,130 @@ Map<String, Object?> oracle(List<ActivityPeriod> periods, DateTime now) {
   }
 
   final lastRun = rests.isEmpty ? null : rests.last;
-  final resting = act[n - 1] == DriverMode.rest;
+  final resting = isRest(n - 1);
   final shiftMinutes = current == null
       ? 0
       : (resting ? lastRun!.from : n) - current.from;
 
-  int drivingSince(DateTime ts) {
-    var total = 0;
-    final from = offset(ts);
-    for (var t = from < 0 ? 0 : from; t < n; t++) {
-      if (act[t] == DriverMode.driving) total++;
+  // Неделя: записи по минутам, ручные смены — в неделе их начала
+  final weekStart = weekStartUtc(now);
+  int drivingIn(DateTime from, DateTime to) {
+    var total = count(
+      offset(from).clamp(0, n),
+      offset(to).clamp(0, n),
+      isDriving,
+    );
+    for (final m in manual) {
+      if (!m.start.isBefore(from) && m.start.isBefore(to)) {
+        total += m.driving.inMinutes;
+      }
     }
     return total;
   }
 
-  final weekStart = weekStartUtc(now);
+  // Продления до 10 ч — завершённые смены этой недели и ручные смены
+  var extensions = 0;
+  for (final s in shifts) {
+    if (identical(s, current) || at(s.from).isBefore(weekStart)) continue;
+    if (count(s.from, s.to, isDriving) > 540) extensions++;
+  }
+  for (final m in manual) {
+    if (!m.start.isBefore(weekStart) &&
+        m.start.isBefore(weekStart.add(week)) &&
+        m.driving > EuLimits.dailyDriving) {
+      extensions++;
+    }
+  }
 
-  // Ст. 8(2) и 8(4): сокращённые отдыхи после последнего завершённого
-  // недельного; статус — по части отдыха в окне 24 ч от начала смены
-  final weekly = rests
-      .where(
-        (r) => r.length >= EuLimits.weeklyRestReduced.inMinutes && closed(r),
-      )
-      .toList();
-  final since = weekly.isEmpty ? null : weekly.last.to;
+  // Последний завершённый недельный отдых: из записей или из ручной смены,
+  // если он не записан режимами
+  final recordedWeekly = [
+    for (final p in restPeriods)
+      if (p.rest >= weeklyMin)
+        (start: at(p.from), end: p.open ? null : at(p.to)),
+  ];
+  final weekly = [...recordedWeekly];
+  for (final m in manual) {
+    final end = m.end;
+    if (m.restKind != RestKind.weekly || end == null) continue;
+    final restEnd = end.add(m.rest);
+    final duplicate = recordedWeekly.any(
+      (r) => r.start.isBefore(restEnd) && (r.end ?? now).isAfter(end),
+    );
+    if (!duplicate) weekly.add((start: end, end: restEnd));
+  }
+  // Последний по началу; при равном начале — добавленный позже
+  final completed = weekly.where((r) => r.end != null);
+  final since = completed.isEmpty
+      ? null
+      : completed.reduce((a, b) => b.start.isBefore(a.start) ? a : b).end;
+  bool beforeSince(DateTime t) => since != null && t.isBefore(since);
+
+  // Ст. 8(2), 8(4), 8(5): сокращённые отдыхи после последнего недельного;
+  // статус — по отдыху в окне 24 ч (экипаж — 30 ч) от начала смены
+  bool isReduced(int inWindow, {required bool split}) =>
+      inWindow >= reduced &&
+      inWindow < EuLimits.dailyRestRegular.inMinutes &&
+      !(split && inWindow >= EuLimits.dailyRestSplitSecond.inMinutes);
   var reducedRests = 0;
   for (final s in shifts) {
     final r = s.restAfter;
-    if (r == null ||
-        !closed(r) ||
-        (since != null && r.from < since) ||
-        r.length >= EuLimits.weeklyRestReduced.inMinutes) {
+    if (r == null || r.open || beforeSince(at(r.from)) || r.rest >= weeklyMin) {
       continue;
     }
-    final window = s.from + EuLimits.workdayWindow.inMinutes - r.from;
-    final inWindow = r.length < window ? r.length : window;
+    final inWindow = count(r.from, min(r.to, s.from + window), isRest);
     final split = rests.any(
       (x) =>
           x.from >= s.from &&
           x.to <= s.to &&
           x.length >= EuLimits.dailyRestSplitFirst.inMinutes,
     );
-    if (inWindow >= reduced &&
-        inWindow < EuLimits.dailyRestRegular.inMinutes &&
-        !split) {
-      reducedRests++;
+    if (isReduced(inWindow, split: split)) reducedRests++;
+  }
+  for (final m in manual) {
+    final end = m.end;
+    if (end == null || beforeSince(end) || m.restKind != RestKind.daily) {
+      continue;
     }
+    final left = window - end.difference(m.start).inMinutes;
+    final inWindow = max(0, min(m.rest.inMinutes, left));
+    if (isReduced(inWindow, split: m.splitRest)) reducedRests++;
   }
 
+  final lastPeriod = restPeriods.isEmpty ? null : restPeriods.last;
   return {
     'shifts': shifts.length,
-    'shiftStart': current == null ? null : origin.add(minutes(current.from)),
+    'shiftStart': current == null ? null : at(current.from),
     'shiftMinutes': shiftMinutes,
     'continuous': continuous,
     'daily': daily,
-    'weekly': drivingSince(weekStart),
-    'fortnight': drivingSince(weekStart.subtract(week)),
-    'offDutyRest': current == null && resting && lastRun!.length >= reduced
-        ? lastRun.length
+    'weekly': drivingIn(weekStart, weekStart.add(week)),
+    'fortnight': drivingIn(weekStart.subtract(week), weekStart.add(week)),
+    'offDutyRest':
+        current == null &&
+            lastPeriod != null &&
+            lastPeriod.open &&
+            (lastPeriod.rest >= reduced || lastPeriod.dayEnd)
+        ? lastPeriod.rest
         : null,
     'reducedRests': reducedRests,
+    'extensions': extensions,
   };
 }
+
+/// То же из расчёта движка.
+Map<String, Object?> engineValues(ComplianceSnapshot m) => {
+  'shifts': m.timeline.shifts.length,
+  'shiftStart': m.shift?.start,
+  'shiftMinutes': m.shiftDuration.inMinutes,
+  'continuous': m.continuousDriving.inMinutes,
+  'daily': m.dailyDriving.inMinutes,
+  'weekly': m.weeklyDriving.inMinutes,
+  'fortnight': m.fortnightDriving.inMinutes,
+  'offDutyRest': m.offDutyRest?.duration.inMinutes,
+  'reducedRests': m.reducedRestsUsed,
+  'extensions': m.extensionsUsed,
+};
 
 /// Всё, что видит водитель, без идентификаторов записей.
 Map<String, Object?> visible(ComplianceSnapshot m) => {
@@ -245,19 +471,28 @@ void main() {
     test('совпадают с поминутной эталонной моделью', () {
       for (final seed in seeds) {
         final log = randomLog(seed);
-        final m = calc(log.periods, log.now);
-        final actual = {
-          'shifts': m.timeline.shifts.length,
-          'shiftStart': m.shift?.start,
-          'shiftMinutes': m.shiftDuration.inMinutes,
-          'continuous': m.continuousDriving.inMinutes,
-          'daily': m.dailyDriving.inMinutes,
-          'weekly': m.weeklyDriving.inMinutes,
-          'fortnight': m.fortnightDriving.inMinutes,
-          'offDutyRest': m.offDutyRest?.duration.inMinutes,
-          'reducedRests': m.reducedRestsUsed,
-        };
-        expect(actual, oracle(log.periods, log.now), reason: 'seed $seed');
+        expect(
+          engineValues(calc(log.periods, log.now)),
+          oracle(log.periods, log.now),
+          reason: 'seed $seed',
+        );
+      }
+    });
+
+    test('паром, «конец дня», экипаж и ручные смены — тоже (ENG-14)', () {
+      for (final seed in seeds) {
+        final log = extendedLog(seed + 1000);
+        final m = calc(
+          log.periods,
+          log.now,
+          settings: ComplianceSettings(crew: log.crew),
+          manual: log.manual,
+        );
+        expect(
+          engineValues(m),
+          oracle(log.periods, log.now, crew: log.crew, manual: log.manual),
+          reason: 'seed ${seed + 1000}',
+        );
       }
     });
 
@@ -283,6 +518,73 @@ void main() {
           visible(calc(periods, log.now)),
           reason: 'seed $seed',
         );
+      }
+    });
+
+    test('пока идёт вождение, суммы не убывают, остатки не растут; во время '
+        'перерыва рабочий день стоит (ENG-13)', () {
+      for (final seed in seeds) {
+        final log = randomLog(seed);
+        final r = Rng(seed * 31);
+        final weekEnd = weekStartUtc(log.now).add(week);
+        final steps = [0, 1, 7, 15, 44, 45, 60, 120, 270, 271, 600];
+
+        // Вождение с момента log.now
+        final driving = [
+          ...log.periods.sublist(0, log.periods.length - 1),
+          log.periods.last.withEnd(log.now),
+          ActivityPeriod(mode: DriverMode.driving, start: log.now),
+        ];
+        ComplianceSnapshot? previous;
+        for (final step in steps) {
+          final at = log.now.add(minutes(step));
+          if (!at.isBefore(weekEnd)) break;
+          final m = calc(driving, at);
+          final p = previous;
+          previous = m;
+          if (p == null) continue;
+          final msg = 'seed $seed, +$step мин';
+          expect(m.dailyDriving >= p.dailyDriving, isTrue, reason: msg);
+          expect(m.weeklyDriving >= p.weeklyDriving, isTrue, reason: msg);
+          expect(m.fortnightDriving >= p.fortnightDriving, isTrue, reason: msg);
+          expect(
+            m.dailyDrivingRemaining <= p.dailyDrivingRemaining,
+            isTrue,
+            reason: msg,
+          );
+          expect(
+            m.weeklyDrivingRemaining <= p.weeklyDrivingRemaining,
+            isTrue,
+            reason: msg,
+          );
+          expect(
+            m.fortnightDrivingRemaining <= p.fortnightDrivingRemaining,
+            isTrue,
+            reason: msg,
+          );
+          expect(
+            m.drivingUntilBreak <= p.drivingUntilBreak,
+            isTrue,
+            reason: msg,
+          );
+          expect(m.shiftRemaining! <= p.shiftRemaining!, isTrue, reason: msg);
+        }
+
+        // Перерыв с момента log.now, если смена идёт и водитель не отдыхает
+        final state = calc(log.periods, log.now);
+        if (state.shift == null || state.currentMode == DriverMode.rest) {
+          continue;
+        }
+        final resting = [
+          ...log.periods.sublist(0, log.periods.length - 1),
+          log.periods.last.withEnd(log.now),
+          ActivityPeriod(mode: DriverMode.rest, start: log.now),
+        ];
+        final breakLength = minutes(r.nextInt(1, 539));
+        final m = calc(resting, log.now.add(breakLength));
+        expect(m.status, DriverStatus.onBreak, reason: 'seed $seed');
+        expect(m.shiftDuration, state.shiftDuration, reason: 'seed $seed');
+        expect(m.dailyDriving, state.dailyDriving, reason: 'seed $seed');
       }
     });
 

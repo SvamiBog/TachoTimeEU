@@ -17,6 +17,9 @@ import 'package:tacho_engine/src/timeline.dart';
 /// список): иначе текущий отдых дробился бы на части и перерыв не
 /// засчитывался. Исключение — «Завершить день» ([dayEnd]) во время
 /// перерыва: текущий отдых становится концом рабочего дня.
+///
+/// Испорченный журнал с несколькими открытыми записями чинится: лишние
+/// закрываются началом следующей записи.
 List<ActivityPeriod> changeMode(
   List<ActivityPeriod> periods,
   DriverMode mode,
@@ -24,22 +27,41 @@ List<ActivityPeriod> changeMode(
   bool ferry = false,
   bool dayEnd = false,
 }) {
-  final open = periods.where((p) => p.isOpen).lastOrNull;
-  if (open != null && open.mode == mode) {
-    if (dayEnd && !open.dayEnd) {
-      return [
-        for (final p in periods)
-          if (identical(p, open)) p.withDayEnd(dayEnd: true) else p,
-      ];
-    }
-    return periods;
+  final open = periods.where((p) => p.isOpen).toList();
+  final current = open.lastOrNull;
+  if (current != null && current.mode == mode) {
+    final markDayEnd = dayEnd && !current.dayEnd;
+    if (open.length == 1 && !markDayEnd) return periods;
+    return [
+      for (final p in periods)
+        if (identical(p, current) && markDayEnd)
+          p.withDayEnd(dayEnd: true)
+        else if (!identical(p, current) && p.isOpen)
+          p.close(_openEnd(periods, p, now))
+        else
+          p,
+    ];
   }
 
   return [
     for (final p in periods)
-      if (p.isOpen) p.close(later(p.start, now)) else p,
+      if (p.isOpen) p.close(_openEnd(periods, p, now)) else p,
     ActivityPeriod(mode: mode, start: now, ferry: ferry, dayEnd: dayEnd),
   ];
+}
+
+/// Где закрыть открытую запись: в [now] или раньше, если после неё уже
+/// начата другая запись.
+DateTime _openEnd(
+  List<ActivityPeriod> periods,
+  ActivityPeriod open,
+  DateTime now,
+) {
+  var end = now;
+  for (final p in periods) {
+    if (p.start.isAfter(open.start) && p.start.isBefore(end)) end = p.start;
+  }
+  return later(open.start, end);
 }
 
 /// «Завершить день»: отдых, который считается концом смены, даже пока он

@@ -556,12 +556,14 @@ ComplianceSnapshot calculateCompliance({
   final canExtend = reducedRestsLeft > 0 || (shift?.splitFirstPart ?? false);
   final shiftLimit = canExtend ? shiftExtendedLimit : shiftRegularLimit;
   final dailyRestDeadline = shift?.start.add(window);
+  final shiftArticle = crew == CrewMode.team ? '8(5)' : null;
 
-  // Карта водителя
+  // Карта водителя. Считывание «из будущего» (часы телефона переведены
+  // назад) считаем сделанным сейчас: больше 28 дней остаться не может.
   final cardDaysLeft = lastCardDownload == null
       ? null
       : EuLimits.cardDownloadInterval.inDays -
-            floorDays(now.difference(lastCardDownload));
+            floorDays(durationBetween(lastCardDownload, now));
 
   // Предупреждения и нарушения
   final drivingUntilBreak = clampToZero(
@@ -619,6 +621,7 @@ ComplianceSnapshot calculateCompliance({
         InfringementType.shiftExceeded,
         time: shiftDuration - shiftLimit,
         limit: shiftLimit,
+        article: shiftArticle,
       ),
     );
   } else if (shift != null && !resting && shiftLimit - shiftDuration <= lead) {
@@ -626,6 +629,7 @@ ComplianceSnapshot calculateCompliance({
       Infringement(
         InfringementType.shiftSoon,
         time: shiftLimit - shiftDuration,
+        article: shiftArticle,
       ),
     );
   }

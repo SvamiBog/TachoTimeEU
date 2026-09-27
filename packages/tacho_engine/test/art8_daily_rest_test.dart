@@ -255,6 +255,7 @@ void main() {
           InfringementType.shiftExceeded,
           time: minute,
           limit: minutes(1260),
+          article: '8(5)',
         ),
       );
     });
@@ -283,6 +284,7 @@ void main() {
           InfringementType.shiftExceeded,
           time: minute,
           limit: minutes(1140),
+          article: '8(5)',
         ),
       );
     });

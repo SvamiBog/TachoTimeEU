@@ -46,13 +46,18 @@ bool _contiguous(DateTime previousEnd, DateTime nextStart) =>
 /// наложения (приоритет у более ранней записи) и склеивает соседние записи
 /// одного режима. Повторное нажатие на тот же режим или ручная правка не
 /// должны дробить перерыв: 20 + 25 мин отдыха подряд — это 45 мин.
+///
+/// Открытая запись, после которой начата другая (испорченный журнал),
+/// заканчивается началом следующей: текущий режим — последний начатый.
 List<Block> buildBlocks(Iterable<ActivityPeriod> periods, DateTime now) {
   final sorted = sortedByStart(periods);
   final blocks = <Block>[];
 
-  for (final p in sorted) {
-    final open = p.isOpen;
-    final end = earlier(p.end ?? now, now);
+  for (final (i, p) in sorted.indexed) {
+    final next = i + 1 < sorted.length ? sorted[i + 1].start : null;
+    final stale = p.isOpen && next != null && next.isAfter(p.start);
+    final open = p.isOpen && !stale;
+    final end = earlier(stale ? next : p.end ?? now, now);
     final prev = blocks.isEmpty ? null : blocks.last;
     final start = prev == null
         ? p.start
