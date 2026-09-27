@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -13,6 +15,7 @@ import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/features/home/corrections.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
 typedef _Workday = ({
@@ -71,10 +74,25 @@ class WorkdayScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
           ],
-          PrimaryButton(
-            label: l.workdayEndDay,
-            color: context.colors.rest,
-            onPressed: start == null ? null : () => _endDay(context, ref),
+          Row(
+            children: [
+              Expanded(
+                child: SecondaryButton(
+                  label: l.workdayChangeStart,
+                  onPressed: start == null
+                      ? null
+                      : () => unawaited(openShiftStartCorrection(context, ref)),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: PrimaryButton(
+                  label: l.workdayEndDay,
+                  color: context.colors.rest,
+                  onPressed: start == null ? null : () => _endDay(context, ref),
+                ),
+              ),
+            ],
           ),
         ],
       ),

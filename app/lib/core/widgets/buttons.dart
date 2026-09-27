@@ -63,3 +63,35 @@ class SecondaryButton extends StatelessWidget {
     );
   }
 }
+
+/// Опасное действие 56 dp: «Удалить смену» — обводка и текст цвета ошибки.
+class DangerButton extends StatelessWidget {
+  const new({
+    required this.label,
+    required this.onPressed,
+    this.icon,
+    super.key,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final icon = this.icon;
+    return OutlinedButton.icon(
+      onPressed: onPressed,
+      icon: icon == null ? null : Icon(icon, size: 20),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: colors.errorText,
+        side: BorderSide(color: colors.errorText),
+        minimumSize: const Size.fromHeight(AppSize.button),
+        shape: _shape,
+        textStyle: AppTextStyles.button.copyWith(fontWeight: FontWeight.w600),
+      ),
+      label: Text(label, textAlign: TextAlign.center),
+    );
+  }
+}

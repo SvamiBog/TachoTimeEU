@@ -1,0 +1,505 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:tachogo/core/l10n/format.dart';
+import 'package:tachogo/core/l10n/l10n.dart';
+import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/theme/app_tokens.dart';
+import 'package:tachogo/core/theme/app_typography.dart';
+import 'package:tachogo/core/widgets/buttons.dart';
+import 'package:tachogo/core/widgets/segmented_tabs.dart';
+import 'package:tachogo/core/widgets/status_chip.dart';
+import 'package:tachogo/core/widgets/wheel_picker.dart';
+
+// Шторки выбора для правок журнала: дата и время смены (экран 12),
+// длительность колёсиками (экран 7). Водитель видит местное время, наружу
+// уходит UTC.
+
+const _sheetPadding = EdgeInsets.fromLTRB(
+  AppSpacing.screenPadding + 4,
+  0,
+  AppSpacing.screenPadding + 4,
+  24,
+);
+
+/// Кнопки «Отмена» и основное действие внизу шторки.
+class _SheetButtons extends StatelessWidget {
+  const new({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      Expanded(
+        child: SecondaryButton(
+          label: context.l10n.cancel,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      const SizedBox(width: 8),
+      Expanded(
+        child: PrimaryButton(label: label, onPressed: onPressed),
+      ),
+    ],
+  );
+}
+
+Future<T?> _showSheet<T>(BuildContext context, Widget child) =>
+    showModalBottomSheet<T>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (_) => SafeArea(
+        child: SingleChildScrollView(padding: _sheetPadding, child: child),
+      ),
+    );
+
+// ───────────────────────── Дата и время ─────────────────────────
+
+/// Начало и конец смены после выбора.
+typedef ShiftTimes = ({DateTime start, DateTime? end});
+
+/// Шторка «Дата и время» (экран 12): начало и, если смена закончилась,
+/// конец. Не позже [max]. null — водитель передумал.
+Future<ShiftTimes?> showDateTimeSheet(
+  BuildContext context, {
+  required DateTime start,
+  required DateTime? end,
+  required DateTime max,
+  bool editEnd = false,
+}) => _showSheet(
+  context,
+  _DateTimeSheet(start: start, end: end, max: max, editEnd: editEnd),
+);
+
+class _DateTimeSheet extends StatefulWidget {
+  const new({
+    required this.start,
+    required this.end,
+    required this.max,
+    required this.editEnd,
+  });
+
+  final DateTime start;
+  final DateTime? end;
+  final DateTime max;
+  final bool editEnd;
+
+  @override
+  State<_DateTimeSheet> createState() => _DateTimeSheetState();
+}
+
+class _DateTimeSheetState extends State<_DateTimeSheet> {
+  late DateTime _start = widget.start;
+  late DateTime? _end = widget.end;
+  late bool _editEnd = widget.editEnd && widget.end != null;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final end = _end;
+    String detail(DateTime t) => '${formatDayMonth(t)} · ${formatClock(t)}';
+    return Semantics(
+      scopesRoute: true,
+      namesRoute: true,
+      label: l.shiftDateTimeTitle,
+      explicitChildNodes: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (end != null) ...[
+            SegmentedTabs<bool>(
+              options: [
+                (value: false, label: l.shiftStart, detail: detail(_start)),
+                (value: true, label: l.shiftEnd, detail: detail(end)),
+              ],
+              value: _editEnd,
+              onChanged: (v) => setState(() => _editEnd = v),
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (_editEnd && end != null)
+            DateTimeField(
+              key: const ValueKey('end'),
+              value: end,
+              max: widget.max,
+              onChanged: (t) => setState(() => _end = t),
+            )
+          else
+            DateTimeField(
+              key: const ValueKey('start'),
+              value: _start,
+              max: widget.max,
+              onChanged: (t) => setState(() => _start = t),
+            ),
+          const SizedBox(height: 16),
+          _SheetButtons(
+            label: l.done,
+            onPressed: () =>
+                Navigator.of(context)
+                    .pop<ShiftTimes>((start: _start, end: _end)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Календарь месяца и время колёсиками. [value] и [max] — UTC, на экране —
+/// местное время. [max] — обычно «сейчас»: его день отмечен как сегодня.
+class DateTimeField extends StatefulWidget {
+  const new({
+    required this.value,
+    required this.max,
+    required this.onChanged,
+    super.key,
+  });
+
+  final DateTime value;
+  final DateTime max;
+  final ValueChanged<DateTime> onChanged;
+
+  @override
+  State<DateTimeField> createState() => _DateTimeFieldState();
+}
+
+class _DateTimeFieldState extends State<DateTimeField> {
+  late DateTime _month = _monthOf(widget.value.toLocal());
+
+  static DateTime _monthOf(DateTime local) => DateTime(local.year, local.month);
+
+  static DateTime _dayOf(DateTime local) =>
+      DateTime(local.year, local.month, local.day);
+
+  void _set({int? year, int? month, int? day, int? hour, int? minute}) {
+    final c = widget.value.toLocal();
+    final t = DateTime(
+      year ?? c.year,
+      month ?? c.month,
+      day ?? c.day,
+      hour ?? c.hour,
+      minute ?? c.minute,
+    ).toUtc();
+    widget.onChanged(t.isAfter(widget.max) ? widget.max : t);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final colors = context.colors;
+    final locale = context.localeTag;
+    final local = widget.value.toLocal();
+    final selected = _dayOf(local);
+    final maxDay = _dayOf(widget.max.toLocal());
+    final next = DateTime(_month.year, _month.month + 1);
+    final days = DateTime(_month.year, _month.month + 1, 0).day;
+    final offset = _month.weekday - DateTime.monday;
+    final weekday = DateFormat('EEE', locale);
+    final cells = <int?>[
+      for (var i = 0; i < offset; i++) null,
+      for (var d = 1; d <= days; d++) d,
+    ];
+    while (cells.length % 7 != 0) {
+      cells.add(null);
+    }
+
+    Widget dayCell(int? d) {
+      if (d == null) return const SizedBox(height: AppSize.minTouch);
+      final day = DateTime(_month.year, _month.month, d);
+      final isSelected = day == selected;
+      final disabled = day.isAfter(maxDay);
+      final isToday = day == maxDay;
+      return Semantics(
+        selected: isSelected,
+        label: formatWeekdayFull(day, locale),
+        excludeSemantics: true,
+        button: true,
+        enabled: !disabled,
+        child: Material(
+          color: isSelected ? colors.drive : Colors.transparent,
+          shape: StadiumBorder(
+            side: isToday && !isSelected
+                ? BorderSide(color: colors.textSecondary)
+                : BorderSide.none,
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: disabled
+                ? null
+                : () => _set(year: day.year, month: day.month, day: d),
+            child: SizedBox(
+              height: AppSize.minTouch,
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    '$d',
+                    style: AppTextStyles.valueSmall.copyWith(
+                      color: isSelected
+                          ? colors.onAccent
+                          : disabled
+                          ? colors.textSecondary
+                          : colors.text,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                formatMonthYear(_month, locale),
+                style: AppTextStyles.header,
+              ),
+            ),
+            IconButton(
+              tooltip: l.pickerPrevMonth,
+              onPressed: () => setState(
+                () => _month = DateTime(_month.year, _month.month - 1),
+              ),
+              icon: const Icon(Icons.chevron_left),
+            ),
+            IconButton(
+              tooltip: l.pickerNextMonth,
+              onPressed: next.isAfter(maxDay)
+                  ? null
+                  : () => setState(() => _month = next),
+              icon: const Icon(Icons.chevron_right),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ExcludeSemantics(
+          child: Row(
+            children: [
+              for (var i = 0; i < 7; i++)
+                Expanded(
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        // 5 января 2026 — понедельник
+                        _capitalized(weekday.format(DateTime(2026, 1, 5 + i))),
+                        style: AppTextStyles.label.copyWith(
+                          color: colors.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4),
+        for (var row = 0; row < cells.length; row += 7)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Row(
+              children: [
+                for (final d in cells.sublist(row, row + 7))
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: dayCell(d),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        Divider(height: 24, color: colors.surface2),
+        Text(
+          l.pickerTime.toUpperCase(),
+          style: AppTextStyles.section.copyWith(color: colors.textSecondary),
+        ),
+        const SizedBox(height: 8),
+        WheelRow(
+          rows: 1,
+          children: [
+            Expanded(
+              child: WheelPicker(
+                label: l.pickerHours,
+                value: local.hour,
+                min: 0,
+                max: 23,
+                loop: true,
+                onChanged: (h) => _set(hour: h),
+              ),
+            ),
+            SizedBox(
+              height: WheelPicker.heightFor(1),
+              child: const Center(
+                child: Text(':', style: AppTextStyles.valueLarge),
+              ),
+            ),
+            Expanded(
+              child: WheelPicker(
+                label: l.pickerMinutes,
+                value: local.minute,
+                min: 0,
+                max: 59,
+                loop: true,
+                onChanged: (m) => _set(minute: m),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  static String _capitalized(String s) =>
+      s.isEmpty ? s : '${s[0].toUpperCase()}${s.substring(1)}';
+}
+
+// ───────────────────────── Длительность ─────────────────────────
+
+/// Шторка «длительность» (экран 7): часы и минуты колёсиками в пределах
+/// [min]–[max]. [computed] — сколько насчитало приложение; [hint] —
+/// пояснение под колёсиками для выбранного значения. null — водитель
+/// передумал.
+Future<Duration?> showDurationSheet(
+  BuildContext context, {
+  required String title,
+  required Duration initial,
+  required Duration max,
+  Duration min = Duration.zero,
+  String? subtitle,
+  Duration? computed,
+  String Function(Duration value)? hint,
+}) => _showSheet(
+  context,
+  _DurationSheet(
+    title: title,
+    subtitle: subtitle,
+    initial: initial,
+    min: min,
+    max: max,
+    computed: computed,
+    hint: hint,
+  ),
+);
+
+class _DurationSheet extends StatefulWidget {
+  const new({
+    required this.title,
+    required this.subtitle,
+    required this.initial,
+    required this.min,
+    required this.max,
+    required this.computed,
+    required this.hint,
+  });
+
+  final String title;
+  final String? subtitle;
+  final Duration initial;
+  final Duration min;
+  final Duration max;
+  final Duration? computed;
+  final String Function(Duration value)? hint;
+
+  @override
+  State<_DurationSheet> createState() => _DurationSheetState();
+}
+
+class _DurationSheetState extends State<_DurationSheet> {
+  late Duration _value = Duration(
+    minutes: widget.initial.inMinutes.clamp(
+      widget.min.inMinutes,
+      widget.max.inMinutes,
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final colors = context.colors;
+    final computed = widget.computed;
+    final subtitle = widget.subtitle;
+    final hint = widget.hint?.call(_value);
+    return Semantics(
+      scopesRoute: true,
+      namesRoute: true,
+      label: widget.title,
+      explicitChildNodes: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(widget.title, style: AppTextStyles.header),
+          if (subtitle != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: AppTextStyles.body.copyWith(color: colors.textSecondary),
+            ),
+          ],
+          if (computed != null) ...[
+            const SizedBox(height: 16),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: colors.surface,
+                borderRadius: BorderRadius.circular(AppRadius.badge),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l.driveEditComputed,
+                        style: AppTextStyles.body.copyWith(
+                          color: colors.textSecondary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(formatHm(computed), style: AppTextStyles.valueSmall),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 16),
+          DurationWheels(
+            value: _value,
+            min: widget.min,
+            max: widget.max,
+            onChanged: (v) => setState(() => _value = v),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            l.pickerRange(formatHm(widget.min), formatHm(widget.max)),
+            style: AppTextStyles.caption.copyWith(color: colors.textSecondary),
+          ),
+          if (hint != null) ...[
+            const SizedBox(height: 12),
+            StatusBanner(hint, tone: Tone.warning),
+          ],
+          const SizedBox(height: 16),
+          _SheetButtons(
+            label: l.save,
+            onPressed: _value == widget.initial
+                ? null
+                : () => Navigator.of(context).pop(_value),
+          ),
+        ],
+      ),
+    );
+  }
+}

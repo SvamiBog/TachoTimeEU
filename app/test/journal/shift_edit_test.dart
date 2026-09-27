@@ -1,0 +1,465 @@
+// Правки журнала через экраны: форма смены (экран 11), дата и время
+// (экран 12), колёсики корректировки (экран 7) с главной и экранов лимитов.
+// База в памяти, фиксированные часы. План тестов: JRN-01…07 в
+// docs/testing.md (логика — в движке, здесь — что пишут экраны).
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/data/db/app_database.dart';
+import 'package:tachogo/data/db/tables.dart';
+import 'package:tachogo/data/journal/activity_repository.dart';
+import 'package:tachogo/data/journal/journal_edit_repository.dart';
+import 'package:tachogo/data/journal/period_store.dart';
+import 'package:tachogo/data/journal/shift_meta.dart';
+import 'package:tachogo/data/settings/settings_repository.dart';
+import 'package:tachogo/features/home/break_screen.dart';
+import 'package:tachogo/features/home/country_sheet.dart';
+import 'package:tachogo/features/home/home_screen.dart';
+import 'package:tachogo/features/home/weekly_rest_screen.dart';
+import 'package:tachogo/features/home/workday_screen.dart';
+import 'package:tachogo/features/journal/journal_screen.dart';
+import 'package:tachogo/features/journal/pickers.dart';
+import 'package:tachogo/features/journal/shift_edit_screen.dart';
+
+import '../support/app_harness.dart';
+import '../support/journal_fixtures.dart';
+
+Duration h(int hours, [int minutes = 0]) =>
+    Duration(hours: hours, minutes: minutes);
+
+void main() {
+  late AppDatabase db;
+  late DateTime now;
+
+  setUp(() {
+    db = memoryDatabase();
+    now = DateTime.utc(2026, 9, 23, 12);
+  });
+  tearDown(() => db.close());
+
+  /// Запрос к базе из widget-теста: только внутри `runAsync`.
+  Future<T> io<T>(WidgetTester tester, Future<T> Function() f) async =>
+      (await tester.runAsync(f)) as T;
+
+  Future<void> seed(WidgetTester tester, List<ActivityPeriod> periods) => io(
+    tester,
+    () => db.transaction(
+      () => savePeriodChanges(db, const [], periods, now, EntrySource.live),
+    ),
+  );
+
+  Future<void> defaultCountry(WidgetTester tester, String code) =>
+      io(tester, () => SettingsRepository(db).setDefaultCountry(code));
+
+  Future<void> pump(WidgetTester tester, Widget screen) => pumpScreen(
+    tester,
+    screen,
+    viewport: const Size(412, 1600),
+    overrides: databaseOverrides(db, now: () => now),
+  );
+
+  /// Касание и ожидание: потоки Drift доставляются только в `runAsync`,
+  /// а `pumpAndSettle` не дождётся конца, пока крутится индикатор загрузки.
+  Future<void> tap(WidgetTester tester, Finder finder) async {
+    await tester.ensureVisible(finder);
+    await tester.pump();
+    await tester.tap(finder);
+    for (var i = 0; i < 3; i++) {
+      await settle(tester);
+      await tester.pump(const Duration(milliseconds: 400));
+    }
+  }
+
+  ComplianceSnapshot snapshot(
+    List<ActivityPeriod> periods, [
+    List<ManualShift> manual = const [],
+  ]) => calculateCompliance(periods: periods, now: now, manualShifts: manual);
+
+  Future<List<ActivityPeriod>> periods(WidgetTester tester) =>
+      io(tester, ActivityRepository(db).periods);
+
+  Future<List<ManualShiftRecord>> manual(WidgetTester tester) => io(
+    tester,
+    () => JournalEditRepository(
+      db,
+      SettingsRepository(db),
+    ).watchManualShifts().first,
+  );
+
+  /// День в календаре шторки «Дата и время».
+  Finder day(int d) => find.descendant(
+    of: find.descendant(
+      of: find.byType(DateTimeField),
+      matching: find.byType(InkWell),
+    ),
+    matching: find.text('$d'),
+  );
+
+  group('новая смена из журнала', () {
+    testWidgets('«+ Смена» — ручная смена с итогами и странами', (
+      tester,
+    ) async {
+      await defaultCountry(tester, 'PL');
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.text('Смена'));
+      expect(find.text('Новая смена'), findsOneWidget);
+      // 10 ч до сейчас, отдых 11 ч, страны — по умолчанию
+      expect(find.text('02:00'), findsOneWidget);
+      expect(find.text('12:00'), findsOneWidget);
+      expect(find.text('PL'), findsNWidgets(2));
+
+      await tap(tester, find.text('За день'));
+      // 0:00 → 1:00: касание соседнего значения часов
+      await tap(tester, find.text('1').first);
+      await tap(tester, find.text('Сохранить'));
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      expect(find.byType(ShiftEditScreen), findsNothing);
+      final saved = (await manual(tester)).single;
+      expect(saved.shift.start, DateTime.utc(2026, 9, 23, 2));
+      expect(saved.shift.end, DateTime.utc(2026, 9, 23, 12));
+      expect(saved.shift.driving, h(1));
+      expect(saved.shift.restKind, RestKind.daily);
+      expect(saved.shift.rest, h(11));
+      expect(saved.meta, const ShiftMeta(startCountry: 'PL', endCountry: 'PL'));
+      expect(
+        find.textContaining('вручную', findRichText: true),
+        findsOneWidget,
+      );
+      await unmount(tester);
+    });
+
+    testWidgets('без страны начала — ошибка и выбор страны', (tester) async {
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.text('Смена'));
+      await tap(tester, find.byTooltip('Сохранить'));
+      expect(find.text('Выберите страну начала смены'), findsOneWidget);
+      expect(find.text('Страна или код'), findsOneWidget);
+      expect(await manual(tester), isEmpty);
+      await unmount(tester);
+    });
+
+    testWidgets('JRN-02: поверх записанной смены — ошибка с её временем', (
+      tester,
+    ) async {
+      await defaultCountry(tester, 'PL');
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 22, 20), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(5)),
+        ], open: true),
+      );
+      now = DateTime.utc(2026, 9, 23, 12);
+      await pump(tester, const ShiftEditScreen());
+      // Время по умолчанию свободно: 10 ч до начала смены минус 11 ч
+      expect(find.text('Вт, 22.09'), findsNWidgets(2));
+      await tap(tester, find.text('Вт, 22.09').last);
+      await tap(tester, find.text('Конец').last);
+      await tap(tester, day(23));
+      await tap(tester, find.text('Готово'));
+      await tap(tester, find.byTooltip('Сохранить'));
+      expect(
+        find.textContaining('Пересекается со сменой ср 23.09 07:00'),
+        findsOneWidget,
+      );
+      expect(await manual(tester), isEmpty);
+      await unmount(tester);
+    });
+
+    testWidgets('несохранённые изменения — вопрос при выходе', (tester) async {
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.text('Смена'));
+      await tester.enterText(find.byType(TextField), 'ожидание загрузки');
+      await tester.pumpAndSettle();
+      await tap(tester, find.byTooltip('Назад'));
+      expect(find.text('Сохранить изменения?'), findsOneWidget);
+      await tap(tester, find.text('Не сохранять'));
+      expect(find.byType(ShiftEditScreen), findsNothing);
+      expect(await manual(tester), isEmpty);
+      await unmount(tester);
+    });
+  });
+
+  testWidgets('JRN-06: недельный отдых вручную задаёт отсчёт 144 ч', (
+    tester,
+  ) async {
+    await defaultCountry(tester, 'PL');
+    // Сейчас идёт смена с 06:00 — до неё записей нет
+    await seed(tester, [
+      ActivityPeriod(
+        mode: DriverMode.driving,
+        start: DateTime.utc(2026, 9, 23, 6),
+      ),
+    ]);
+    await pump(tester, const WeeklyRestScreen());
+    expect(find.textContaining('Нет данных'), findsWidgets);
+    await tap(tester, find.text('Указать вручную'));
+    expect(find.text('Новая смена'), findsOneWidget);
+    expect(find.text('45:00'), findsOneWidget);
+
+    // Смена пт 18.09 09:00–19:00, затем 45 ч отдыха — до вс 20.09 16:00
+    await tap(tester, find.text('Вт, 22.09').first);
+    await tap(tester, day(18));
+    await tap(tester, find.text('Конец').last);
+    await tap(tester, day(18));
+    await tap(tester, find.text('Готово'));
+    await tap(tester, find.byTooltip('Сохранить'));
+    expect(find.byType(ShiftEditScreen), findsNothing);
+
+    final saved = (await manual(tester)).single.shift;
+    expect(saved.start, DateTime.utc(2026, 9, 18, 9));
+    expect(saved.end, DateTime.utc(2026, 9, 18, 19));
+    expect(saved.restKind, RestKind.weekly);
+    final m = snapshot(await periods(tester), [saved]);
+    expect(m.workWeekStart, DateTime.utc(2026, 9, 20, 16));
+    expect(m.weeklyRestDeadline, DateTime.utc(2026, 9, 26, 16));
+    expect(find.text('Сб 26.09 · 16:00'), findsOneWidget);
+    await unmount(tester);
+  });
+
+  group('JRN-07: колёсики не выходят за пределы движка', () {
+    testWidgets('суточное вождение с главной — за счёт соседней записи', (
+      tester,
+    ) async {
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 22, 22, 30), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.otherWork, h(0, 30)),
+          (DriverMode.driving, h(2)),
+        ], open: true),
+      );
+      final before = await periods(tester);
+      final bounds = drivingAdjustmentBounds(
+        before,
+        DateTime.utc(2026, 9, 23, 9, 30),
+        now,
+      )!;
+      expect(bounds, (min: -h(2), max: h(0, 30)));
+
+      await pump(tester, const HomeScreen());
+      await tester.scrollUntilVisible(
+        find.text('Суточное вождение'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tap(tester, find.text('Суточное вождение'));
+      expect(find.text('Посчитано приложением'), findsOneWidget);
+      expect(find.text('Можно от 0:00 до 2:30'), findsOneWidget);
+      // 2:00 → 2:59 касанием соседней минуты — упирается в 2:30
+      await tap(tester, find.text('59'));
+      expect(find.text('30'), findsOneWidget);
+      expect(find.textContaining('+0:30 к расчёту'), findsOneWidget);
+      await tap(tester, find.text('Сохранить'));
+
+      final m = snapshot(await periods(tester));
+      expect(m.dailyDriving, h(2, 30));
+      expect(m.shift?.otherWork, Duration.zero);
+      final rows = await io(tester, () => orderedPeriods(db).get());
+      expect(rows.map((r) => r.source).toSet(), {EntrySource.live});
+      await unmount(tester);
+    });
+
+    testWidgets('перерыв (экран 8) — от минуты до соседней записи', (
+      tester,
+    ) async {
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 22, 22, 40), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(2)),
+          (DriverMode.rest, h(0, 20)),
+        ], open: true),
+      );
+      final info = lastBreakInfo(
+        await periods(tester),
+        DateTime.utc(2026, 9, 23, 9, 40),
+        now,
+      )!;
+      expect(info.max, h(2, 20));
+
+      await pump(tester, const BreakScreen());
+      expect(find.text('Текущий перерыв'), findsOneWidget);
+      await tap(tester, find.text('Текущий перерыв'));
+      expect(find.text('Можно от 0:01 до 2:20'), findsOneWidget);
+      await tap(tester, find.text('21'));
+      await tap(tester, find.text('Сохранить'));
+
+      final last = (await periods(tester)).last;
+      expect(last.mode, DriverMode.rest);
+      expect(last.start, now.subtract(h(0, 21)));
+      await unmount(tester);
+    });
+
+    testWidgets('начало смены (экран 6) — за счёт отдыха перед ней', (
+      tester,
+    ) async {
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 22, 19), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(6)),
+        ], open: true),
+      );
+      await pump(tester, const WorkdayScreen());
+      await tap(tester, find.text('Изменить начало смены'));
+      // 06:00 → 05:00 касанием соседнего часа
+      await tap(tester, find.text('05'));
+      await tap(tester, find.text('Готово'));
+
+      final m = snapshot(await periods(tester));
+      expect(m.shift?.start, DateTime.utc(2026, 9, 23, 5));
+      expect(m.dailyDriving, h(7));
+      await unmount(tester);
+    });
+  });
+
+  group('смена из записей режимов', () {
+    Future<void> openFromJournal(WidgetTester tester, String time) async {
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.text(time));
+      await tap(tester, find.text('Изменить смену'));
+      expect(find.byType(ShiftEditScreen), findsOneWidget);
+    }
+
+    testWidgets('JRN-01: идущая смена — «Суточный» завершает её сейчас', (
+      tester,
+    ) async {
+      await defaultCountry(tester, 'PL');
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 22, 19), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(6)),
+        ], open: true),
+      );
+      await openFromJournal(tester, '06:00 → идёт');
+      expect(find.textContaining('Смена идёт по записям'), findsOneWidget);
+      await tap(tester, find.text('Суточный'));
+      expect(
+        find.text('Смена закончится в 12:00, дальше пойдёт отдых.'),
+        findsOneWidget,
+      );
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      final after = await periods(tester);
+      expect(after.last.mode, DriverMode.rest);
+      expect(after.last.dayEnd, isTrue);
+      expect(snapshot(after).status, DriverStatus.dailyRest);
+      await unmount(tester);
+    });
+
+    testWidgets('прошлая смена: страны без смены времени — только страны', (
+      tester,
+    ) async {
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 21, 19), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(8)),
+          (DriverMode.rest, h(16)),
+          (DriverMode.driving, h(2)),
+        ], open: true),
+      );
+      await defaultCountry(tester, 'D');
+      await openFromJournal(tester, '06:00 → 14:00');
+      // Конечная страна не выбрана — кнопка «—»
+      await tap(tester, find.text('—'));
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(CountryPicker),
+          matching: find.byType(TextField),
+        ),
+        'LT',
+      );
+      await tester.pump();
+      await tap(tester, find.text('Литва'));
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      final meta = await io(
+        tester,
+        () => JournalEditRepository(
+          db,
+          SettingsRepository(db),
+        ).watchShiftMeta().first,
+      );
+      expect(
+        meta[DateTime.utc(2026, 9, 22, 6)],
+        const ShiftMeta(startCountry: 'D', endCountry: 'LT'),
+      );
+      expect(await manual(tester), isEmpty, reason: 'записи режимов на месте');
+      await unmount(tester);
+    });
+
+    testWidgets('прошлая смена с другим вождением становится ручной', (
+      tester,
+    ) async {
+      await defaultCountry(tester, 'D');
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 21, 19), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(8)),
+          (DriverMode.rest, h(16)),
+          (DriverMode.driving, h(2)),
+        ], open: true),
+      );
+      await io(
+        tester,
+        () => JournalEditRepository(db, SettingsRepository(db)).setShiftMeta(
+          DateTime.utc(2026, 9, 22, 6),
+          const ShiftMeta(startCountry: 'D', endCountry: 'PL'),
+        ),
+      );
+      await openFromJournal(tester, '06:00 → 14:00');
+      await tap(tester, find.text('За день'));
+      await tap(tester, find.text('7').first);
+      await tap(tester, find.text('Сохранить'));
+      expect(find.textContaining('сохранится как ручная'), findsOneWidget);
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      final saved = (await manual(tester)).single;
+      expect(saved.meta, const ShiftMeta(startCountry: 'D', endCountry: 'PL'));
+      expect(saved.shift.driving, h(7));
+      expect(saved.shift.continuousDrivingAtEnd, h(7));
+      expect(saved.shift.start, DateTime.utc(2026, 9, 22, 6));
+      expect((await periods(tester)).map((p) => p.mode), [
+        DriverMode.rest,
+        DriverMode.driving,
+      ]);
+      await unmount(tester);
+    });
+
+    testWidgets('JRN-05: «Удалить смену» после подтверждения', (tester) async {
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 21, 19), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(8)),
+          (DriverMode.rest, h(16)),
+          (DriverMode.driving, h(2)),
+        ], open: true),
+      );
+      await openFromJournal(tester, '06:00 → 14:00');
+      await tap(tester, find.text('Удалить смену'));
+      expect(find.text('Удалить смену?'), findsOneWidget);
+      await tap(tester, find.text('Отмена'));
+      expect(await periods(tester), hasLength(4));
+
+      await tap(tester, find.text('Удалить смену'));
+      await tap(tester, find.text('Удалить'));
+      expect(find.byType(ShiftEditScreen), findsNothing);
+      final after = await periods(tester);
+      expect(after, hasLength(3));
+      expect(
+        snapshot(after).weeklyDriving,
+        h(6),
+        reason: 'осталась 06:00–12:00',
+      );
+      expect(find.text('06:00 → 14:00'), findsNothing);
+      await unmount(tester);
+    });
+  });
+}

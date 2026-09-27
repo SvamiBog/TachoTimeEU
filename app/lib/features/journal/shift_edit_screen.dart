@@ -1,0 +1,1167 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/l10n/format.dart';
+import 'package:tachogo/core/l10n/l10n.dart';
+import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/theme/app_tokens.dart';
+import 'package:tachogo/core/theme/app_typography.dart';
+import 'package:tachogo/core/widgets/buttons.dart';
+import 'package:tachogo/core/widgets/confirm_sheet.dart';
+import 'package:tachogo/core/widgets/detail_scaffold.dart';
+import 'package:tachogo/core/widgets/mode_style.dart';
+import 'package:tachogo/core/widgets/sections.dart';
+import 'package:tachogo/core/widgets/segmented_tabs.dart';
+import 'package:tachogo/core/widgets/status_chip.dart';
+import 'package:tachogo/data/countries/country_providers.dart';
+import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/data/journal/shift_meta.dart';
+import 'package:tachogo/features/home/country_sheet.dart';
+import 'package:tachogo/features/home/snapshot_select.dart';
+import 'package:tachogo/features/journal/pickers.dart';
+
+/// Форма смены (экран 11): новая ручная смена или смена из журнала.
+/// [presetRest] — вид отдыха новой смены («Указать вручную» недельный
+/// отдых, экран 9). Возвращает true, если смену сохранили или удалили.
+Future<bool> openShiftEditor(
+  BuildContext context, {
+  JournalShift? shift,
+  RestKind? presetRest,
+}) async {
+  final saved = await Navigator.of(context).push<bool>(
+    MaterialPageRoute(
+      builder: (_) => ShiftEditScreen(shift: shift, presetRest: presetRest),
+    ),
+  );
+  return saved ?? false;
+}
+
+/// Значения формы. Время — UTC с точностью до минуты, как на экране.
+class _Form {
+  new({
+    required this.start,
+    required this.end,
+    required this.restKind,
+    required this.rest,
+    required this.split,
+    required this.driving,
+    required this.continuous,
+    required this.startCountry,
+    required this.endCountry,
+    required this.note,
+  });
+
+  DateTime start;
+
+  /// null — смена идёт, отдых не начат.
+  DateTime? end;
+  RestKind restKind;
+  Duration rest;
+  bool split;
+  Duration driving;
+  Duration continuous;
+  String? startCountry;
+  String? endCountry;
+  String note;
+
+  _Form copy() => _Form(
+    start: start,
+    end: end,
+    restKind: restKind,
+    rest: rest,
+    split: split,
+    driving: driving,
+    continuous: continuous,
+    startCountry: startCountry,
+    endCountry: endCountry,
+    note: note,
+  );
+
+  bool sameTiming(_Form o) =>
+      start == o.start &&
+      end == o.end &&
+      restKind == o.restKind &&
+      rest == o.rest &&
+      split == o.split &&
+      driving == o.driving &&
+      continuous == o.continuous;
+
+  bool sameAs(_Form o) =>
+      sameTiming(o) &&
+      startCountry == o.startCountry &&
+      endCountry == o.endCountry &&
+      note == o.note;
+
+  ShiftMeta get meta => ShiftMeta(
+    startCountry: startCountry,
+    endCountry: restKind == RestKind.none ? null : endCountry,
+    note: note,
+  );
+}
+
+class ShiftEditScreen extends ConsumerStatefulWidget {
+  const new({this.shift, this.presetRest, super.key});
+
+  /// Смена из журнала; null — новая ручная смена.
+  final JournalShift? shift;
+  final RestKind? presetRest;
+
+  @override
+  ConsumerState<ShiftEditScreen> createState() => _ShiftEditScreenState();
+}
+
+class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
+  static const _dailyRest = Duration(hours: 11);
+  static const _weeklyRest = Duration(hours: 45);
+
+  _Form? _initial;
+  late _Form _form;
+  String? _error;
+  bool _saving = false;
+  final _note = TextEditingController();
+
+  /// Конец и конечная страна до выбора «Не начат» — вернутся, если снова
+  /// выбрать отдых.
+  ({DateTime? end, String? country})? _beforeNone;
+
+  JournalShift? get _shift => widget.shift;
+  bool get _isNew => _shift == null;
+  bool get _live => _shift?.live ?? false;
+  bool get _recorded => _shift?.recorded != null;
+
+  @override
+  void dispose() {
+    _note.dispose();
+    super.dispose();
+  }
+
+  /// Значения формы из смены — один раз, когда журнал посчитан.
+  void _init(Journal journal, String? defaultCountry) {
+    final s = _shift;
+    final now = floorTimeToMinute(journal.now);
+    final slot = s == null ? freeShiftSlot(journal.shifts, now) : null;
+    final meta = s == null ? ShiftMeta.empty : journal.metaOf(s);
+    final manual = s?.manual;
+    final restKind =
+        manual?.restKind ?? s?.rest.kind ?? widget.presetRest ?? RestKind.daily;
+    final startCountry = meta.startCountry ?? defaultCountry;
+    final initial = _Form(
+      start: s?.start ?? slot!.start,
+      end: s == null ? slot!.end : s.end,
+      restKind: restKind,
+      rest: manual != null
+          ? manual.rest
+          : s != null && s.rest.kind != RestKind.none
+          ? floorToMinute(s.rest.duration)
+          : restKind == RestKind.weekly
+          ? _weeklyRest
+          : _dailyRest,
+      split: manual?.splitRest ?? s?.rest.split ?? false,
+      driving: floorToMinute(s?.driving ?? Duration.zero),
+      continuous: floorToMinute(s?.continuousDrivingAtEnd ?? Duration.zero),
+      startCountry: startCountry,
+      // У новой смены конечная страна по умолчанию — начальная
+      endCountry: s != null
+          ? meta.endCountry
+          : restKind == RestKind.none
+          ? null
+          : startCountry,
+      note: meta.note ?? '',
+    );
+    _initial = initial;
+    _form = initial.copy();
+    _note.text = initial.note;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final journal = ref.watch(journalProvider).value;
+    final defaultCountry = ref.watch(defaultCountryProvider);
+    if (_initial == null) {
+      if (journal == null || !defaultCountry.hasValue) {
+        return DetailScaffold(
+          title: _isNew ? l.shiftNewTitle : l.dayTitle,
+          children: const [Center(child: CircularProgressIndicator())],
+        );
+      }
+      _init(journal, defaultCountry.value);
+    }
+    final initial = _initial!;
+    final f = _form;
+    final now = ref.watch(clockProvider.select(minuteOf));
+    final crew = ref.watch(
+      complianceSettingsProvider.select((a) => a.value?.crew),
+    );
+    final dirty = !f.sameAs(initial);
+    final error = _error;
+
+    return PopScope(
+      canPop: !dirty || _saving,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) unawaited(_requestClose());
+      },
+      child: DetailScaffold(
+        title: _isNew ? l.shiftNewTitle : l.dayTitle,
+        subtitle: formatWeekdayFull(f.start, context.localeTag),
+        onBack: () => unawaited(_requestClose()),
+        action: IconButton(
+          onPressed: _saving ? null : () => unawaited(_save()),
+          tooltip: l.save,
+          icon: Icon(Icons.check, size: 26, color: context.colors.drive),
+        ),
+        banner: error == null
+            ? null
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.screenPadding,
+                  0,
+                  AppSpacing.screenPadding,
+                  8,
+                ),
+                child: Semantics(
+                  liveRegion: true,
+                  child: StatusBanner(error, tone: Tone.violation),
+                ),
+              ),
+        bottom: _isNew
+            ? null
+            : DangerButton(
+                label: l.shiftDelete,
+                icon: Icons.delete_outline,
+                onPressed: _saving ? null : () => unawaited(_delete()),
+              ),
+        children: [
+          if (_hint(l, now) case final hint?) _Hint(hint),
+          SectionTitle(l.shiftSection),
+          _TimesCard(
+            form: f,
+            now: now,
+            onCountry: _pickCountry,
+            onDate: ({required editEnd}) => _pickDates(now, editEnd: editEnd),
+            onEndNow: () => _selectRest(RestKind.daily, journal),
+          ),
+          SectionTitle(l.shiftDriving),
+          _drivingCard(l, now, journal),
+          SectionTitle(l.dayRestAfter),
+          _restCard(l, now, journal, crew ?? CrewMode.solo),
+          SectionTitle(l.dayNotes),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.screenPadding,
+            ),
+            child: TextField(
+              controller: _note,
+              onChanged: (v) => setState(() => _form.note = v),
+              minLines: 3,
+              maxLines: 6,
+              style: AppTextStyles.body,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                hintText: l.shiftNotesHint,
+                hintStyle: AppTextStyles.body.copyWith(
+                  color: context.colors.textSecondary,
+                ),
+                filled: true,
+                fillColor: context.colors.surface,
+                contentPadding: const EdgeInsets.all(AppSpacing.cardPadding),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.modeButton),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ───────────────────────── состояние формы ─────────────────────────
+
+  bool get _liveEnded => _live && _initial!.end != null;
+
+  /// Отдых после «живой» смены уже идёт или начнётся при сохранении.
+  bool get _restOngoing => _live && _form.restKind != RestKind.none;
+
+  /// Смена без записей режимов (новая, ручная или прошлая) идёт сейчас —
+  /// станет текущей.
+  bool get _becomesCurrent => !_live && _form.restKind == RestKind.none;
+
+  bool get _timingChanged => !_form.sameTiming(_initial!);
+
+  bool get _willConvert =>
+      _recorded && !_live && _timingChanged && !_becomesCurrent;
+
+  String? _hint(AppLocalizations l, DateTime now) {
+    final f = _form;
+    if (_live) {
+      if (f.restKind == RestKind.none && _initial!.end != null) {
+        return l.shiftResumeHint;
+      }
+      if (_initial!.end == null && f.restKind != RestKind.none) {
+        return l.shiftEndNowHint(formatClock(f.end ?? now));
+      }
+      return l.shiftLiveHint;
+    }
+    if (_becomesCurrent) {
+      return l.shiftOngoingHint(
+        formatClock(f.start),
+        l.modeName(
+          f.driving > Duration.zero ? DriverMode.driving : DriverMode.otherWork,
+        ),
+      );
+    }
+    return _willConvert ? l.shiftConvertHint : null;
+  }
+
+  bool _hasLater(Journal? journal) {
+    final shift = _shift;
+    return journal != null &&
+        journal.shifts.any(
+          (s) =>
+              (shift == null || !sameShift(s, shift)) &&
+              s.start.isAfter(_form.start),
+        );
+  }
+
+  void _selectRest(RestKind kind, Journal? journal) => setState(() {
+    final f = _form;
+    _error = null;
+    if (kind == RestKind.none) {
+      if (f.restKind != RestKind.none) {
+        if (_hasLater(journal)) {
+          _error = context.l10n.shiftErrNotLast;
+          return;
+        }
+        _beforeNone = (end: f.end, country: f.endCountry);
+        f
+          ..restKind = RestKind.none
+          ..end = null;
+      }
+      // Смена не закончена — конечной страны у неё ещё нет
+      f.endCountry = null;
+      return;
+    }
+    if (kind == f.restKind) return;
+    final previous = f.restKind;
+    f.restKind = kind;
+    if (previous == RestKind.none) {
+      final before = _beforeNone;
+      f.end =
+          before?.end ??
+          (_liveEnded
+              ? _initial!.end
+              : floorTimeToMinute(journal?.now ?? f.start));
+      f.endCountry ??= before?.country ?? (_isNew ? f.startCountry : null);
+    }
+    if (kind == RestKind.weekly && f.rest < EuLimits.weeklyRestReduced) {
+      f.rest = _weeklyRest;
+    }
+    if (kind == RestKind.daily &&
+        (f.rest == Duration.zero || f.rest >= EuLimits.weeklyRestReduced)) {
+      f.rest = _dailyRest;
+    }
+  });
+
+  // ───────────────────────── карточки ─────────────────────────
+
+  Widget _drivingCard(AppLocalizations l, DateTime now, Journal? journal) {
+    final f = _form;
+    final initial = _initial!;
+    final shift = _shift;
+    final span = durationBetween(f.start, f.end ?? now);
+    final bounds = _live && shift != null && journal != null
+        ? drivingAdjustmentBounds(journal.periods, shift.start, now)
+        : null;
+    final (Duration min, Duration max) = _live
+        ? bounds == null
+              ? (initial.driving, initial.driving)
+              : (initial.driving + bounds.min, initial.driving + bounds.max)
+        : (Duration.zero, floorToMinute(span));
+    final continuousAuto = _live || _becomesCurrent;
+    return CardGroup(
+      children: [
+        _ValueRow(
+          label: l.shiftPerDay,
+          value: f.driving,
+          onTap: max > min
+              ? () => unawaited(
+                  _pickDuration(
+                    title: l.shiftPerDay,
+                    value: f.driving,
+                    min: min < Duration.zero ? Duration.zero : min,
+                    max: max < const Duration(hours: 24)
+                        ? max
+                        : const Duration(hours: 24),
+                    onPicked: (v) {
+                      f.driving = v;
+                      // Непрерывное не больше суточного
+                      if (f.continuous > v) f.continuous = v;
+                    },
+                  ),
+                )
+              : null,
+        ),
+        _ValueRow(
+          label: l.dayContinuousAtEnd,
+          caption: continuousAuto ? l.shiftLiveContinuous : null,
+          value: _becomesCurrent ? f.driving : f.continuous,
+          onTap: continuousAuto || f.driving == Duration.zero
+              ? null
+              : () => unawaited(
+                  _pickDuration(
+                    title: l.dayContinuousAtEnd,
+                    value: f.continuous,
+                    max: f.driving,
+                    onPicked: (v) => f.continuous = v,
+                  ),
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _restCard(
+    AppLocalizations l,
+    DateTime now,
+    Journal? journal,
+    CrewMode crew,
+  ) {
+    final f = _form;
+    final ongoing = _restOngoing;
+    final span = durationBetween(f.start, f.end ?? now);
+    final status = ongoing
+        ? null
+        : switch (f.restKind) {
+            RestKind.daily => dailyRestStatus(
+              restInWindow(span, f.rest, crew),
+              split: f.split,
+            ),
+            RestKind.weekly => weeklyRestStatus(f.rest),
+            RestKind.none => null,
+          };
+    final shown = ongoing
+        ? (_liveEnded ? _shift!.rest.duration : Duration.zero)
+        : f.rest;
+    return CardGroup(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(AppSpacing.cardPadding),
+          child: SegmentedTabs<RestKind>(
+            options: [
+              (value: RestKind.none, label: l.shiftRestNone, detail: null),
+              (value: RestKind.daily, label: l.shiftRestDaily, detail: null),
+              (value: RestKind.weekly, label: l.shiftRestWeekly, detail: null),
+            ],
+            value: f.restKind,
+            onChanged: (k) => _selectRest(k, journal),
+          ),
+        ),
+        if (f.restKind == RestKind.daily && !ongoing)
+          MergeSemantics(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.cardPadding,
+                12,
+                AppSpacing.cardPadding - 4,
+                12,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l.shiftSplit, style: AppTextStyles.rowTitle),
+                        Text(
+                          l.shiftSplitHint,
+                          style: AppTextStyles.caption.copyWith(
+                            color: context.colors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Switch(
+                    value: f.split,
+                    onChanged: (v) => setState(() => f.split = v),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        if (f.restKind != RestKind.none)
+          _ValueRow(
+            label: l.shiftDuration,
+            value: shown,
+            chip: ongoing
+                ? StatusChip(l.journalOngoing, tone: Tone.rest)
+                : status == null
+                ? null
+                : StatusChip(
+                    l.restStatus(status.name),
+                    tone: switch (status) {
+                      RestStatus.full => Tone.rest,
+                      RestStatus.reduced => Tone.warning,
+                      RestStatus.insufficient => Tone.violation,
+                    },
+                  ),
+            onTap: ongoing
+                ? null
+                : () => unawaited(
+                    _pickDuration(
+                      title: l.shiftDuration,
+                      value: f.rest,
+                      max: f.restKind == RestKind.weekly
+                          ? const Duration(hours: 99)
+                          : const Duration(hours: 23, minutes: 59),
+                      onPicked: (v) => f.rest = v,
+                    ),
+                  ),
+          ),
+      ],
+    );
+  }
+
+  // ───────────────────────── выбор значений ─────────────────────────
+
+  Future<void> _pickDuration({
+    required String title,
+    required Duration value,
+    required Duration max,
+    required void Function(Duration) onPicked,
+    Duration min = Duration.zero,
+  }) async {
+    final picked = await showDurationSheet(
+      context,
+      title: title,
+      initial: value,
+      min: min,
+      max: max < min ? min : max,
+    );
+    if (picked != null && mounted) {
+      setState(() {
+        _error = null;
+        onPicked(picked);
+      });
+    }
+  }
+
+  Future<void> _pickDates(DateTime now, {required bool editEnd}) async {
+    final picked = await showDateTimeSheet(
+      context,
+      start: _form.start,
+      end: _form.end,
+      max: now,
+      editEnd: editEnd,
+    );
+    if (picked != null && mounted) {
+      setState(() {
+        _error = null;
+        _form.start = picked.start;
+        if (_form.end != null) _form.end = picked.end;
+      });
+    }
+  }
+
+  Future<void> _pickCountry(CountryTarget target) async {
+    final picked = await showCountryPicker(
+      context,
+      start: _form.startCountry,
+      end: _form.endCountry,
+      target: target,
+    );
+    if (picked != null && mounted) {
+      setState(() {
+        _error = null;
+        _form
+          ..startCountry = picked.start
+          ..endCountry = _form.restKind == RestKind.none ? null : picked.end;
+      });
+    }
+  }
+
+  // ───────────────────────── сохранение ─────────────────────────
+
+  Future<void> _requestClose() async {
+    final navigator = Navigator.of(context);
+    if (_initial == null || _form.sameAs(_initial!)) {
+      navigator.pop(false);
+      return;
+    }
+    final l = context.l10n;
+    final save = await showConfirmSheet(
+      context,
+      title: l.shiftUnsavedTitle,
+      text: l.shiftUnsavedText,
+      confirm: l.save,
+      cancel: l.shiftDiscard,
+    );
+    if (save == null || !mounted) return;
+    if (save) {
+      await _save();
+    } else {
+      setState(() => _saving = true);
+      navigator.pop(false);
+    }
+  }
+
+  Future<void> _delete() async {
+    final shift = _shift;
+    if (shift == null) return;
+    final l = context.l10n;
+    final navigator = Navigator.of(context);
+    final ok = await showConfirmSheet(
+      context,
+      title: l.shiftDeleteTitle,
+      text: shift.manual != null ? l.shiftDeleteManual : l.shiftDeleteRecorded,
+      confirm: l.delete,
+      cancel: l.cancel,
+      danger: true,
+    );
+    if (ok != true || !mounted) return;
+    setState(() => _saving = true);
+    try {
+      await ref.read(journalEditRepositoryProvider).deleteShift(shift);
+      navigator.pop(true);
+    } on Object {
+      if (mounted) {
+        setState(() {
+          _saving = false;
+          _error = l.shiftSaveFailed;
+        });
+      }
+    }
+  }
+
+  /// Проверяет форму и сохраняет смену тем путём, который ей подходит:
+  /// правка записей «живой» смены, страны и заметка без изменения
+  /// времени, ручная смена, перевод в ручную или смена, ставшая текущей.
+  Future<void> _save() async {
+    final l = context.l10n;
+    final journal = ref.read(journalProvider).value;
+    if (journal == null || _initial == null) return;
+    final now = ref.read(clockProvider);
+    final f = _form;
+    final initial = _initial!;
+    final shift = _shift;
+    final repo = ref.read(journalEditRepositoryProvider);
+    final navigator = Navigator.of(context);
+
+    String? problem;
+    Future<void> Function()? write;
+    if (f.startCountry == null) {
+      problem = l.shiftErrStartCountry;
+    } else if (_live && shift != null) {
+      final spanEnd = f.end ?? now;
+      if (f.start != initial.start || f.end != initial.end) {
+        final hit = findOverlap(
+          journal.shifts,
+          (start: f.start, end: spanEnd),
+          now: now,
+          except: shift,
+        );
+        problem = f.start.isAfter(now) || spanEnd.isAfter(now)
+            ? l.shiftErrFuture
+            : !f.start.isBefore(spanEnd)
+            ? l.shiftErrEndBeforeStart
+            : hit != null
+            ? l.shiftErrOverlap(_range(l, hit))
+            : null;
+      }
+      final edit = LiveShiftEdit(
+        shiftStart: shift.start,
+        restStart: initial.end,
+        newStart: f.start != initial.start ? f.start : null,
+        endAt: initial.end == null
+            ? (f.restKind != RestKind.none ? f.end ?? now : null)
+            : (f.end != initial.end ? f.end : null),
+        resume: initial.end != null && f.restKind == RestKind.none,
+        drivingDelta: f.driving - initial.driving,
+      );
+      write = () => repo.applyLiveEdit(edit, meta: f.meta);
+    } else if (_recorded && !_timingChanged && shift != null) {
+      write = () => repo.setShiftMeta(shift.start, f.meta);
+    } else if (f.restKind != RestKind.none && f.endCountry == null) {
+      problem = l.shiftErrEndCountry;
+    } else {
+      final ongoing = f.restKind == RestKind.none;
+      final check = checkManualShift(
+        start: f.start,
+        end: ongoing ? null : f.end,
+        driving: f.driving,
+        continuousDrivingAtEnd: _becomesCurrent ? f.driving : f.continuous,
+        rest: ongoing ? Duration.zero : f.rest,
+        shifts: journal.shifts,
+        now: now,
+        except: shift,
+      );
+      problem = check == null ? null : _problemText(l, check);
+      final record = ManualShift(
+        id: shift?.manual?.id,
+        start: f.start,
+        end: ongoing || f.end == null
+            ? null
+            : (f.end!.isBefore(f.start) ? f.start : f.end),
+        driving: f.driving,
+        continuousDrivingAtEnd: _becomesCurrent ? f.driving : f.continuous,
+        restKind: f.restKind,
+        rest: ongoing ? Duration.zero : f.rest,
+        splitRest: f.restKind == RestKind.daily && f.split,
+      );
+      final meta = f.meta;
+      write = _becomesCurrent
+          ? () => repo.startOngoingShift(record, meta, replacing: shift)
+          : _willConvert
+          ? () => repo.convertToManual(shift!, record, meta)
+          : () => repo.saveManualShift(record, meta);
+    }
+
+    if (problem != null) {
+      setState(() => _error = problem);
+      if (f.startCountry == null) {
+        unawaited(_pickCountry(CountryTarget.start));
+      } else if (problem == l.shiftErrEndCountry) {
+        unawaited(_pickCountry(CountryTarget.end));
+      }
+      return;
+    }
+    setState(() {
+      _error = null;
+      _saving = true;
+    });
+    try {
+      await write!();
+      navigator.pop(true);
+    } on Object {
+      if (mounted) {
+        setState(() {
+          _saving = false;
+          _error = l.shiftSaveFailed;
+        });
+      }
+    }
+  }
+
+  String _problemText(AppLocalizations l, ShiftEditProblem p) =>
+      switch (p.error) {
+        ShiftEditError.endBeforeStart => l.shiftErrEndBeforeStart,
+        ShiftEditError.future => l.shiftErrFuture,
+        ShiftEditError.tooLong => l.shiftErrTooLong,
+        ShiftEditError.drivingTooLong => l.shiftErrDrivingTooLong,
+        ShiftEditError.continuousTooLong => l.shiftErrContinuous,
+        ShiftEditError.overlap => l.shiftErrOverlap(_range(l, p.conflict!)),
+        ShiftEditError.restOverlap => l.shiftErrRestOverlap(
+          _range(l, p.conflict!),
+        ),
+        ShiftEditError.notLast => l.shiftErrNotLast,
+      };
+
+  /// «пн 21.09 06:10–19:00».
+  String _range(AppLocalizations l, JournalShift s) {
+    final end = s.end;
+    return '${formatWeekdayDay(s.start, context.localeTag)} '
+        '${formatClock(s.start)}–'
+        '${end == null ? l.journalOngoing : formatClock(end)}';
+  }
+}
+
+class _Hint extends StatelessWidget {
+  const new(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.screenPadding,
+        8,
+        AppSpacing.screenPadding,
+        0,
+      ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(AppRadius.badge),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.info_outline, size: 18, color: colors.textSecondary),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  text,
+                  style: AppTextStyles.caption.copyWith(color: colors.chipText),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Карточка «Смена»: начало и конец (страна, дата, время), длительность.
+class _TimesCard extends StatelessWidget {
+  const new({
+    required this.form,
+    required this.now,
+    required this.onCountry,
+    required this.onDate,
+    required this.onEndNow,
+  });
+
+  final _Form form;
+  final DateTime now;
+  final void Function(CountryTarget target) onCountry;
+  final void Function({required bool editEnd}) onDate;
+  final VoidCallback onEndNow;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final colors = context.colors;
+    final end = form.end;
+    final span = durationBetween(form.start, end ?? now);
+    return CardGroup(
+      children: [
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _Side(
+                  title: l.shiftStart,
+                  country: form.startCountry,
+                  at: form.start,
+                  onCountry: () => onCountry(CountryTarget.start),
+                  onDate: () => onDate(editEnd: false),
+                ),
+              ),
+              VerticalDivider(width: 1, thickness: 1, color: colors.surface2),
+              Expanded(
+                child: _Side(
+                  title: l.shiftEnd,
+                  country: form.endCountry,
+                  at: end,
+                  onRoad: form.restKind == RestKind.none,
+                  onCountry: () => onCountry(CountryTarget.end),
+                  onDate: () => onDate(editEnd: true),
+                  onEndNow: onEndNow,
+                ),
+              ),
+            ],
+          ),
+        ),
+        MergeSemantics(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: AppSize.listRow),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.cardPadding,
+                vertical: 10,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(l.shiftDuration, style: AppTextStyles.rowTitle),
+                  ),
+                  if (end == null) ...[
+                    Text(
+                      l.shiftNowSuffix,
+                      style: AppTextStyles.label.copyWith(color: colors.drive),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  DurationText(
+                    formatHm(span),
+                    spoken: spokenDuration(l, span),
+                    style: AppTextStyles.value.copyWith(
+                      color: span > maxManualShiftSpan
+                          ? colors.errorText
+                          : colors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Side extends StatelessWidget {
+  const new({
+    required this.title,
+    required this.country,
+    required this.at,
+    required this.onCountry,
+    required this.onDate,
+    this.onRoad = false,
+    this.onEndNow,
+  });
+
+  final String title;
+  final String? country;
+
+  /// null — смена идёт.
+  final DateTime? at;
+  final bool onRoad;
+  final VoidCallback onCountry;
+  final VoidCallback onDate;
+  final VoidCallback? onEndNow;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final colors = context.colors;
+    final locale = context.localeTag;
+    final at = this.at;
+    final country = this.country;
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.cardPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                title,
+                style: AppTextStyles.caption.copyWith(
+                  color: colors.textSecondary,
+                ),
+              ),
+              if (onRoad) StatusChip(l.shiftOnRoad, tone: Tone.warning),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Semantics(
+            button: true,
+            label: l.shiftCountrySpoken(title, country ?? l.shiftChoose),
+            excludeSemantics: true,
+            child: Material(
+              color: colors.background,
+              shape: StadiumBorder(side: BorderSide(color: colors.switchOff)),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: onCountry,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minHeight: AppSize.minTouch,
+                    minWidth: AppSize.minTouch,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          country ?? '—',
+                          style: AppTextStyles.valueSmall.copyWith(
+                            color: country == null
+                                ? colors.textSecondary
+                                : colors.text,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Icon(
+                          Icons.keyboard_arrow_down,
+                          size: 18,
+                          color: colors.textSecondary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          if (at == null)
+            _FieldButton(
+              icon: Icons.schedule,
+              text: l.shiftNowOngoing,
+              spoken: l.shiftNowOngoing,
+              color: colors.drive,
+              onTap: onEndNow ?? onDate,
+            )
+          else ...[
+            _FieldButton(
+              icon: Icons.calendar_today_outlined,
+              text: '${formatWeekdayShort(at, locale)}, ${formatDayMonth(at)}',
+              spoken: l.shiftDateSpoken(
+                title,
+                formatWeekdayFull(at, locale),
+                formatClock(at),
+              ),
+              onTap: onDate,
+            ),
+            const SizedBox(height: 6),
+            _FieldButton(
+              icon: Icons.schedule,
+              text: formatClock(at),
+              numeric: true,
+              spoken: l.shiftDateSpoken(
+                title,
+                formatWeekdayFull(at, locale),
+                formatClock(at),
+              ),
+              onTap: onDate,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Кнопка поля даты или времени: значок и значение на тёмной плашке.
+class _FieldButton extends StatelessWidget {
+  const new({
+    required this.icon,
+    required this.text,
+    required this.spoken,
+    required this.onTap,
+    this.numeric = false,
+    this.color,
+  });
+
+  final IconData icon;
+  final String text;
+  final String spoken;
+  final VoidCallback onTap;
+  final bool numeric;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Semantics(
+      button: true,
+      label: spoken,
+      excludeSemantics: true,
+      child: Material(
+        color: colors.background,
+        borderRadius: BorderRadius.circular(AppRadius.icon),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              minHeight: AppSize.minTouch,
+              minWidth: double.infinity,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                children: [
+                  Icon(icon, size: 18, color: color ?? colors.textSecondary),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Text(
+                        text,
+                        maxLines: 1,
+                        style:
+                            (numeric
+                                    ? AppTextStyles.value
+                                    : AppTextStyles.body.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ))
+                                .copyWith(color: color),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Строка «название — значение ›»: касание открывает колёсико.
+class _ValueRow extends StatelessWidget {
+  const new({
+    required this.label,
+    required this.value,
+    this.caption,
+    this.chip,
+    this.onTap,
+  });
+
+  final String label;
+  final String? caption;
+  final Duration value;
+  final StatusChip? chip;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final colors = context.colors;
+    final caption = this.caption;
+    final chip = this.chip;
+    final body = ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: AppSize.listRow),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.cardPadding,
+          vertical: 10,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: AppTextStyles.rowTitle),
+                  if (caption != null)
+                    Text(
+                      caption,
+                      style: AppTextStyles.small.copyWith(
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (chip != null) ...[const SizedBox(width: 8), chip],
+            const SizedBox(width: 8),
+            DurationText(
+              formatHm(value),
+              spoken: spokenDuration(l, value),
+              style: AppTextStyles.value,
+            ),
+            if (onTap != null) ...[
+              const SizedBox(width: 4),
+              Icon(Icons.chevron_right, color: colors.textSecondary),
+            ],
+          ],
+        ),
+      ),
+    );
+    return MergeSemantics(
+      child: onTap == null ? body : InkWell(onTap: onTap, child: body),
+    );
+  }
+}

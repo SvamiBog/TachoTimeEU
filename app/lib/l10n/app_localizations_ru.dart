@@ -806,4 +806,374 @@ class AppLocalizationsRu extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get journalExport => 'Экспорт отчёта';
+
+  @override
+  String get journalCurrent => 'текущая';
+
+  @override
+  String get journalDriving => 'Вождение';
+
+  @override
+  String get journalFortnight => 'За 2 нед.';
+
+  @override
+  String journalOf(int limit) {
+    return 'из $limit';
+  }
+
+  @override
+  String get journalCollapsedDriving => 'вождение';
+
+  @override
+  String journalWeekSpoken(String range, String driving, String fortnight) {
+    return 'Неделя $range. Вождение $driving из 56 ч, за две недели $fortnight из 90 ч';
+  }
+
+  @override
+  String get journalShift => 'Смена';
+
+  @override
+  String get journalWeeklyShort => 'нед.';
+
+  @override
+  String get journalOngoing => 'идёт';
+
+  @override
+  String get journalManual => 'вручную';
+
+  @override
+  String get journalAddShift => 'Смена';
+
+  @override
+  String get journalAddShiftSpoken => 'Добавить смену';
+
+  @override
+  String get journalEmpty =>
+      'Смен пока нет. Они появятся, когда вы начнёте переключать режимы, или добавьте смену вручную.';
+
+  @override
+  String restStatus(String status) {
+    String _temp0 = intl.Intl.selectLogic(status, {
+      'full': 'полный',
+      'reduced': 'сокращённый',
+      'other': 'недостаточный',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String journalWeeklyRest(String status) {
+    return 'Недельный отдых · $status';
+  }
+
+  @override
+  String journalShiftSpoken(
+    String date,
+    String route,
+    String time,
+    String driving,
+    String span,
+    String rest,
+  ) {
+    return '$date, $route, $time. Вождение $driving, смена $span, отдых $rest';
+  }
+
+  @override
+  String get journalRestNone => 'нет';
+
+  @override
+  String get journalRestWeekly => 'недельный';
+
+  @override
+  String get journalLoadError =>
+      'Не удалось открыть журнал. Перезапустите приложение — если не поможет, напишите нам через «Ещё».';
+
+  @override
+  String get dayTitle => 'Смена';
+
+  @override
+  String get daySummary => 'Итоги';
+
+  @override
+  String get dayModes => 'Режимы';
+
+  @override
+  String get dayBreaks => 'Перерывы';
+
+  @override
+  String get dayContinuousAtEnd => 'Непрерывное на конец смены';
+
+  @override
+  String get dayRestAfter => 'Отдых после смены';
+
+  @override
+  String dayRestKind(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'daily': 'Суточный',
+      'weekly': 'Недельный',
+      'other': 'Не начат',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get daySplitRest => 'раздельный 3 + 9';
+
+  @override
+  String get dayManualHint =>
+      'Смена внесена вручную итогами — записей режимов у неё нет.';
+
+  @override
+  String get dayNotes => 'Заметки';
+
+  @override
+  String get dayEndMark => 'конец дня';
+
+  @override
+  String get dayEdit => 'Изменить смену';
+
+  @override
+  String get dayNotFound => 'Смены больше нет в журнале.';
+
+  @override
+  String dayRestUntil(String time) {
+    return 'до $time';
+  }
+
+  @override
+  String get save => 'Сохранить';
+
+  @override
+  String get cancel => 'Отмена';
+
+  @override
+  String get done => 'Готово';
+
+  @override
+  String get delete => 'Удалить';
+
+  @override
+  String get unitHours => 'ч';
+
+  @override
+  String get unitMinutes => 'мин';
+
+  @override
+  String get pickerHours => 'Часы';
+
+  @override
+  String get pickerMinutes => 'Минуты';
+
+  @override
+  String get pickerTime => 'Время';
+
+  @override
+  String get pickerPrevMonth => 'Предыдущий месяц';
+
+  @override
+  String get pickerNextMonth => 'Следующий месяц';
+
+  @override
+  String pickerRange(String min, String max) {
+    return 'Можно от $min до $max';
+  }
+
+  @override
+  String get shiftNewTitle => 'Новая смена';
+
+  @override
+  String get shiftSection => 'Смена';
+
+  @override
+  String get shiftStart => 'Начало';
+
+  @override
+  String get shiftEnd => 'Конец';
+
+  @override
+  String get shiftOnRoad => 'в пути';
+
+  @override
+  String get shiftChoose => 'Выбрать';
+
+  @override
+  String get shiftNowOngoing => 'Сейчас (идёт)';
+
+  @override
+  String get shiftDuration => 'Длительность';
+
+  @override
+  String get shiftNowSuffix => 'сейчас';
+
+  @override
+  String shiftCountrySpoken(String side, String code) {
+    return '$side: страна $code. Изменить';
+  }
+
+  @override
+  String shiftDateSpoken(String side, String date, String time) {
+    return '$side: $date, $time. Изменить';
+  }
+
+  @override
+  String get shiftDriving => 'Вождение';
+
+  @override
+  String get shiftPerDay => 'За день';
+
+  @override
+  String get shiftLiveContinuous => 'считается по перерывам';
+
+  @override
+  String get shiftRestNone => 'Не начат';
+
+  @override
+  String get shiftRestDaily => 'Суточный';
+
+  @override
+  String get shiftRestWeekly => 'Недельный';
+
+  @override
+  String get shiftSplit => 'Раздельный отдых 3 + 9';
+
+  @override
+  String get shiftSplitHint => 'Сначала 3 ч, затем 9 ч';
+
+  @override
+  String get shiftNotesHint => 'Например: паром, ожидание загрузки';
+
+  @override
+  String get shiftDelete => 'Удалить смену';
+
+  @override
+  String get shiftDeleteTitle => 'Удалить смену?';
+
+  @override
+  String get shiftDeleteManual => 'Смена будет удалена из журнала.';
+
+  @override
+  String get shiftDeleteRecorded =>
+      'Будут удалены все записи режимов этой смены. Отменить это нельзя.';
+
+  @override
+  String get shiftErrStartCountry => 'Выберите страну начала смены';
+
+  @override
+  String get shiftErrEndCountry => 'Укажите конечную страну смены';
+
+  @override
+  String get shiftErrEndBeforeStart => 'Конец смены раньше начала';
+
+  @override
+  String get shiftErrFuture => 'Время смены не может быть в будущем';
+
+  @override
+  String get shiftErrTooLong => 'Смена длиннее 30 ч — проверьте даты';
+
+  @override
+  String get shiftErrDrivingTooLong => 'Вождение больше длительности смены';
+
+  @override
+  String get shiftErrContinuous => 'Непрерывное вождение больше суточного';
+
+  @override
+  String shiftErrOverlap(String range) {
+    return 'Пересекается со сменой $range';
+  }
+
+  @override
+  String shiftErrRestOverlap(String range) {
+    return 'Отдых после смены заходит на смену $range';
+  }
+
+  @override
+  String get shiftErrNotLast =>
+      'После этой смены есть другие — идти сейчас она не может';
+
+  @override
+  String get shiftSaveFailed => 'Не удалось сохранить. Попробуйте ещё раз.';
+
+  @override
+  String get shiftLiveHint =>
+      'Смена идёт по записям режимов: изменения начала, конца и вождения сдвинут сами записи.';
+
+  @override
+  String get shiftConvertHint =>
+      'Время, вождение или отдых изменены — смена сохранится как ручная запись вместо записей режимов.';
+
+  @override
+  String shiftEndNowHint(String time) {
+    return 'Смена закончится в $time, дальше пойдёт отдых.';
+  }
+
+  @override
+  String get shiftResumeHint =>
+      'Отдых после смены будет удалён — смена продолжится.';
+
+  @override
+  String shiftOngoingHint(String time, String mode) {
+    return 'Смена станет текущей и продолжится на главном экране с $time. Режим «$mode» — если сейчас другой, переключите его там.';
+  }
+
+  @override
+  String get shiftUnsavedTitle => 'Сохранить изменения?';
+
+  @override
+  String get shiftUnsavedText => 'Изменения в смене ещё не сохранены.';
+
+  @override
+  String get shiftDiscard => 'Не сохранять';
+
+  @override
+  String get shiftDateTimeTitle => 'Дата и время смены';
+
+  @override
+  String driveEditSubtitle(String date) {
+    return 'Ручная корректировка · $date';
+  }
+
+  @override
+  String get driveEditComputed => 'Посчитано приложением';
+
+  @override
+  String driveEditDiff(String diff) {
+    return '$diff к расчёту.';
+  }
+
+  @override
+  String get driveEditNoChange => 'Время без изменений.';
+
+  @override
+  String get driveEditHint =>
+      'Используйте, если режим переключили не вовремя — лимиты пересчитаются.';
+
+  @override
+  String get driveEditNoDrive =>
+      'В текущей смене ещё нет вождения — корректировать нечего.';
+
+  @override
+  String get breakCorrection => 'Корректировка';
+
+  @override
+  String get breakCurrentDuration => 'Текущий перерыв';
+
+  @override
+  String get breakLastDuration => 'Последний перерыв';
+
+  @override
+  String get breakNoBreak =>
+      'В смене ещё нет перерыва — корректировать нечего.';
+
+  @override
+  String get breakEditHint =>
+      'Время возьмётся у соседней записи — лимиты пересчитаются.';
+
+  @override
+  String get workdayChangeStart => 'Изменить начало смены';
+
+  @override
+  String get weeklyAddManually => 'Указать вручную';
 }

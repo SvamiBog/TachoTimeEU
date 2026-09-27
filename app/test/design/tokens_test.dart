@@ -54,6 +54,8 @@ void main() {
       'label': AppTextStyles.label,
       'small': AppTextStyles.small,
       'valueLarge': AppTextStyles.valueLarge,
+      'valueSmall': AppTextStyles.valueSmall,
+      'numericCaption': AppTextStyles.numericCaption,
     };
 
     test('шрифты: Onest для интерфейса, JetBrains Mono для цифр', () {
@@ -243,6 +245,8 @@ void main() {
         'Метка: чипы, навигация, подпись кольца': 'label',
         'Мелкий текст': 'small',
         'Крупное значение: «45 ч»': 'valueLarge',
+        'Значение в ячейке: журнал, дата и время смены': 'valueSmall',
+        'Время в подписи: «06:30 → 19:10»': 'numericCaption',
       };
       final fonts = section(tokens, 'font');
       final rows = tableRows(readme, '## Типографика');

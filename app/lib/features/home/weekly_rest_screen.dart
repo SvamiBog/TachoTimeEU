@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -12,6 +14,7 @@ import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
+import 'package:tachogo/features/journal/shift_edit_screen.dart';
 
 typedef _Last = ({
   DateTime start,
@@ -73,12 +76,27 @@ class WeeklyRestScreen extends ConsumerWidget {
     );
     return DetailScaffold(
       title: l.rowWeeklyRest,
-      bottom: PrimaryButton(
-        label: l.weeklyStartRest,
-        color: context.colors.rest,
-        onPressed: s == null || s.offDuty
-            ? null
-            : () => _startRest(context, ref),
+      bottom: Row(
+        children: [
+          Expanded(
+            child: SecondaryButton(
+              label: l.weeklyAddManually,
+              onPressed: () => unawaited(
+                openShiftEditor(context, presetRest: RestKind.weekly),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: PrimaryButton(
+              label: l.weeklyStartRest,
+              color: context.colors.rest,
+              onPressed: s == null || s.offDuty
+                  ? null
+                  : () => _startRest(context, ref),
+            ),
+          ),
+        ],
       ),
       children: s == null
           ? const []

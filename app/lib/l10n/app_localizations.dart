@@ -1173,6 +1173,631 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'{code, select, A{Австрия} AL{Албания} AND{Андорра} ARM{Армения} AZ{Азербайджан} B{Бельгия} BG{Болгария} BIH{Босния и Герцеговина} BY{Беларусь} CH{Швейцария} CY{Кипр} CZ{Чехия} D{Германия} DK{Дания} E{Испания} EST{Эстония} F{Франция} FIN{Финляндия} FL{Лихтенштейн} GE{Грузия} GR{Греция} H{Венгрия} HR{Хорватия} I{Италия} IRL{Ирландия} IS{Исландия} KZ{Казахстан} L{Люксембург} LT{Литва} LV{Латвия} M{Мальта} MC{Монако} MD{Молдова} MK{Северная Македония} MNE{Черногория} N{Норвегия} NL{Нидерланды} P{Португалия} PL{Польша} RO{Румыния} RSM{Сан-Марино} RUS{Россия} S{Швеция} SK{Словакия} SLO{Словения} SRB{Сербия} TJ{Таджикистан} TM{Туркменистан} TR{Турция} UA{Украина} UK{Великобритания} UZ{Узбекистан} V{Ватикан} other{{code}}}'**
   String countryName(String code);
+
+  /// No description provided for @journalExport.
+  ///
+  /// In ru, this message translates to:
+  /// **'Экспорт отчёта'**
+  String get journalExport;
+
+  /// No description provided for @journalCurrent.
+  ///
+  /// In ru, this message translates to:
+  /// **'текущая'**
+  String get journalCurrent;
+
+  /// No description provided for @journalDriving.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение'**
+  String get journalDriving;
+
+  /// No description provided for @journalFortnight.
+  ///
+  /// In ru, this message translates to:
+  /// **'За 2 нед.'**
+  String get journalFortnight;
+
+  /// «21:40 из 56» — после суммы недели
+  ///
+  /// In ru, this message translates to:
+  /// **'из {limit}'**
+  String journalOf(int limit);
+
+  /// No description provided for @journalCollapsedDriving.
+  ///
+  /// In ru, this message translates to:
+  /// **'вождение'**
+  String get journalCollapsedDriving;
+
+  /// Для TalkBack: шапка недели
+  ///
+  /// In ru, this message translates to:
+  /// **'Неделя {range}. Вождение {driving} из 56 ч, за две недели {fortnight} из 90 ч'**
+  String journalWeekSpoken(String range, String driving, String fortnight);
+
+  /// No description provided for @journalShift.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена'**
+  String get journalShift;
+
+  /// No description provided for @journalWeeklyShort.
+  ///
+  /// In ru, this message translates to:
+  /// **'нед.'**
+  String get journalWeeklyShort;
+
+  /// No description provided for @journalOngoing.
+  ///
+  /// In ru, this message translates to:
+  /// **'идёт'**
+  String get journalOngoing;
+
+  /// No description provided for @journalManual.
+  ///
+  /// In ru, this message translates to:
+  /// **'вручную'**
+  String get journalManual;
+
+  /// No description provided for @journalAddShift.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена'**
+  String get journalAddShift;
+
+  /// No description provided for @journalAddShiftSpoken.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить смену'**
+  String get journalAddShiftSpoken;
+
+  /// No description provided for @journalEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смен пока нет. Они появятся, когда вы начнёте переключать режимы, или добавьте смену вручную.'**
+  String get journalEmpty;
+
+  /// Оценка отдыха: RestStatus.name
+  ///
+  /// In ru, this message translates to:
+  /// **'{status, select, full{полный} reduced{сокращённый} other{недостаточный}}'**
+  String restStatus(String status);
+
+  /// No description provided for @journalWeeklyRest.
+  ///
+  /// In ru, this message translates to:
+  /// **'Недельный отдых · {status}'**
+  String journalWeeklyRest(String status);
+
+  /// Для TalkBack: строка смены в журнале
+  ///
+  /// In ru, this message translates to:
+  /// **'{date}, {route}, {time}. Вождение {driving}, смена {span}, отдых {rest}'**
+  String journalShiftSpoken(
+    String date,
+    String route,
+    String time,
+    String driving,
+    String span,
+    String rest,
+  );
+
+  /// No description provided for @journalRestNone.
+  ///
+  /// In ru, this message translates to:
+  /// **'нет'**
+  String get journalRestNone;
+
+  /// No description provided for @journalRestWeekly.
+  ///
+  /// In ru, this message translates to:
+  /// **'недельный'**
+  String get journalRestWeekly;
+
+  /// No description provided for @journalLoadError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось открыть журнал. Перезапустите приложение — если не поможет, напишите нам через «Ещё».'**
+  String get journalLoadError;
+
+  /// No description provided for @dayTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена'**
+  String get dayTitle;
+
+  /// No description provided for @daySummary.
+  ///
+  /// In ru, this message translates to:
+  /// **'Итоги'**
+  String get daySummary;
+
+  /// No description provided for @dayModes.
+  ///
+  /// In ru, this message translates to:
+  /// **'Режимы'**
+  String get dayModes;
+
+  /// No description provided for @dayBreaks.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерывы'**
+  String get dayBreaks;
+
+  /// No description provided for @dayContinuousAtEnd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Непрерывное на конец смены'**
+  String get dayContinuousAtEnd;
+
+  /// No description provided for @dayRestAfter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отдых после смены'**
+  String get dayRestAfter;
+
+  /// Вид отдыха после смены: RestKind.name
+  ///
+  /// In ru, this message translates to:
+  /// **'{kind, select, daily{Суточный} weekly{Недельный} other{Не начат}}'**
+  String dayRestKind(String kind);
+
+  /// No description provided for @daySplitRest.
+  ///
+  /// In ru, this message translates to:
+  /// **'раздельный 3 + 9'**
+  String get daySplitRest;
+
+  /// No description provided for @dayManualHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена внесена вручную итогами — записей режимов у неё нет.'**
+  String get dayManualHint;
+
+  /// No description provided for @dayNotes.
+  ///
+  /// In ru, this message translates to:
+  /// **'Заметки'**
+  String get dayNotes;
+
+  /// No description provided for @dayEndMark.
+  ///
+  /// In ru, this message translates to:
+  /// **'конец дня'**
+  String get dayEndMark;
+
+  /// No description provided for @dayEdit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменить смену'**
+  String get dayEdit;
+
+  /// No description provided for @dayNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смены больше нет в журнале.'**
+  String get dayNotFound;
+
+  /// No description provided for @dayRestUntil.
+  ///
+  /// In ru, this message translates to:
+  /// **'до {time}'**
+  String dayRestUntil(String time);
+
+  /// No description provided for @save.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить'**
+  String get save;
+
+  /// No description provided for @cancel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get cancel;
+
+  /// No description provided for @done.
+  ///
+  /// In ru, this message translates to:
+  /// **'Готово'**
+  String get done;
+
+  /// No description provided for @delete.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get delete;
+
+  /// No description provided for @unitHours.
+  ///
+  /// In ru, this message translates to:
+  /// **'ч'**
+  String get unitHours;
+
+  /// No description provided for @unitMinutes.
+  ///
+  /// In ru, this message translates to:
+  /// **'мин'**
+  String get unitMinutes;
+
+  /// No description provided for @pickerHours.
+  ///
+  /// In ru, this message translates to:
+  /// **'Часы'**
+  String get pickerHours;
+
+  /// No description provided for @pickerMinutes.
+  ///
+  /// In ru, this message translates to:
+  /// **'Минуты'**
+  String get pickerMinutes;
+
+  /// No description provided for @pickerTime.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время'**
+  String get pickerTime;
+
+  /// No description provided for @pickerPrevMonth.
+  ///
+  /// In ru, this message translates to:
+  /// **'Предыдущий месяц'**
+  String get pickerPrevMonth;
+
+  /// No description provided for @pickerNextMonth.
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующий месяц'**
+  String get pickerNextMonth;
+
+  /// No description provided for @pickerRange.
+  ///
+  /// In ru, this message translates to:
+  /// **'Можно от {min} до {max}'**
+  String pickerRange(String min, String max);
+
+  /// No description provided for @shiftNewTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новая смена'**
+  String get shiftNewTitle;
+
+  /// No description provided for @shiftSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена'**
+  String get shiftSection;
+
+  /// No description provided for @shiftStart.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начало'**
+  String get shiftStart;
+
+  /// No description provided for @shiftEnd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конец'**
+  String get shiftEnd;
+
+  /// No description provided for @shiftOnRoad.
+  ///
+  /// In ru, this message translates to:
+  /// **'в пути'**
+  String get shiftOnRoad;
+
+  /// No description provided for @shiftChoose.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать'**
+  String get shiftChoose;
+
+  /// No description provided for @shiftNowOngoing.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сейчас (идёт)'**
+  String get shiftNowOngoing;
+
+  /// No description provided for @shiftDuration.
+  ///
+  /// In ru, this message translates to:
+  /// **'Длительность'**
+  String get shiftDuration;
+
+  /// No description provided for @shiftNowSuffix.
+  ///
+  /// In ru, this message translates to:
+  /// **'сейчас'**
+  String get shiftNowSuffix;
+
+  /// Для TalkBack: кнопка страны в форме смены
+  ///
+  /// In ru, this message translates to:
+  /// **'{side}: страна {code}. Изменить'**
+  String shiftCountrySpoken(String side, String code);
+
+  /// Для TalkBack: кнопки даты и времени в форме смены
+  ///
+  /// In ru, this message translates to:
+  /// **'{side}: {date}, {time}. Изменить'**
+  String shiftDateSpoken(String side, String date, String time);
+
+  /// No description provided for @shiftDriving.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение'**
+  String get shiftDriving;
+
+  /// No description provided for @shiftPerDay.
+  ///
+  /// In ru, this message translates to:
+  /// **'За день'**
+  String get shiftPerDay;
+
+  /// No description provided for @shiftLiveContinuous.
+  ///
+  /// In ru, this message translates to:
+  /// **'считается по перерывам'**
+  String get shiftLiveContinuous;
+
+  /// No description provided for @shiftRestNone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не начат'**
+  String get shiftRestNone;
+
+  /// No description provided for @shiftRestDaily.
+  ///
+  /// In ru, this message translates to:
+  /// **'Суточный'**
+  String get shiftRestDaily;
+
+  /// No description provided for @shiftRestWeekly.
+  ///
+  /// In ru, this message translates to:
+  /// **'Недельный'**
+  String get shiftRestWeekly;
+
+  /// No description provided for @shiftSplit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Раздельный отдых 3 + 9'**
+  String get shiftSplit;
+
+  /// No description provided for @shiftSplitHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сначала 3 ч, затем 9 ч'**
+  String get shiftSplitHint;
+
+  /// No description provided for @shiftNotesHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: паром, ожидание загрузки'**
+  String get shiftNotesHint;
+
+  /// No description provided for @shiftDelete.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить смену'**
+  String get shiftDelete;
+
+  /// No description provided for @shiftDeleteTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить смену?'**
+  String get shiftDeleteTitle;
+
+  /// No description provided for @shiftDeleteManual.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена будет удалена из журнала.'**
+  String get shiftDeleteManual;
+
+  /// No description provided for @shiftDeleteRecorded.
+  ///
+  /// In ru, this message translates to:
+  /// **'Будут удалены все записи режимов этой смены. Отменить это нельзя.'**
+  String get shiftDeleteRecorded;
+
+  /// No description provided for @shiftErrStartCountry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите страну начала смены'**
+  String get shiftErrStartCountry;
+
+  /// No description provided for @shiftErrEndCountry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Укажите конечную страну смены'**
+  String get shiftErrEndCountry;
+
+  /// No description provided for @shiftErrEndBeforeStart.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конец смены раньше начала'**
+  String get shiftErrEndBeforeStart;
+
+  /// No description provided for @shiftErrFuture.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время смены не может быть в будущем'**
+  String get shiftErrFuture;
+
+  /// No description provided for @shiftErrTooLong.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена длиннее 30 ч — проверьте даты'**
+  String get shiftErrTooLong;
+
+  /// No description provided for @shiftErrDrivingTooLong.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение больше длительности смены'**
+  String get shiftErrDrivingTooLong;
+
+  /// No description provided for @shiftErrContinuous.
+  ///
+  /// In ru, this message translates to:
+  /// **'Непрерывное вождение больше суточного'**
+  String get shiftErrContinuous;
+
+  /// No description provided for @shiftErrOverlap.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пересекается со сменой {range}'**
+  String shiftErrOverlap(String range);
+
+  /// No description provided for @shiftErrRestOverlap.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отдых после смены заходит на смену {range}'**
+  String shiftErrRestOverlap(String range);
+
+  /// No description provided for @shiftErrNotLast.
+  ///
+  /// In ru, this message translates to:
+  /// **'После этой смены есть другие — идти сейчас она не может'**
+  String get shiftErrNotLast;
+
+  /// No description provided for @shiftSaveFailed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось сохранить. Попробуйте ещё раз.'**
+  String get shiftSaveFailed;
+
+  /// No description provided for @shiftLiveHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена идёт по записям режимов: изменения начала, конца и вождения сдвинут сами записи.'**
+  String get shiftLiveHint;
+
+  /// No description provided for @shiftConvertHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время, вождение или отдых изменены — смена сохранится как ручная запись вместо записей режимов.'**
+  String get shiftConvertHint;
+
+  /// No description provided for @shiftEndNowHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена закончится в {time}, дальше пойдёт отдых.'**
+  String shiftEndNowHint(String time);
+
+  /// No description provided for @shiftResumeHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отдых после смены будет удалён — смена продолжится.'**
+  String get shiftResumeHint;
+
+  /// No description provided for @shiftOngoingHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена станет текущей и продолжится на главном экране с {time}. Режим «{mode}» — если сейчас другой, переключите его там.'**
+  String shiftOngoingHint(String time, String mode);
+
+  /// No description provided for @shiftUnsavedTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить изменения?'**
+  String get shiftUnsavedTitle;
+
+  /// No description provided for @shiftUnsavedText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменения в смене ещё не сохранены.'**
+  String get shiftUnsavedText;
+
+  /// No description provided for @shiftDiscard.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не сохранять'**
+  String get shiftDiscard;
+
+  /// No description provided for @shiftDateTimeTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дата и время смены'**
+  String get shiftDateTimeTitle;
+
+  /// No description provided for @driveEditSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ручная корректировка · {date}'**
+  String driveEditSubtitle(String date);
+
+  /// No description provided for @driveEditComputed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Посчитано приложением'**
+  String get driveEditComputed;
+
+  /// No description provided for @driveEditDiff.
+  ///
+  /// In ru, this message translates to:
+  /// **'{diff} к расчёту.'**
+  String driveEditDiff(String diff);
+
+  /// No description provided for @driveEditNoChange.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время без изменений.'**
+  String get driveEditNoChange;
+
+  /// No description provided for @driveEditHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Используйте, если режим переключили не вовремя — лимиты пересчитаются.'**
+  String get driveEditHint;
+
+  /// No description provided for @driveEditNoDrive.
+  ///
+  /// In ru, this message translates to:
+  /// **'В текущей смене ещё нет вождения — корректировать нечего.'**
+  String get driveEditNoDrive;
+
+  /// No description provided for @breakCorrection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Корректировка'**
+  String get breakCorrection;
+
+  /// No description provided for @breakCurrentDuration.
+  ///
+  /// In ru, this message translates to:
+  /// **'Текущий перерыв'**
+  String get breakCurrentDuration;
+
+  /// No description provided for @breakLastDuration.
+  ///
+  /// In ru, this message translates to:
+  /// **'Последний перерыв'**
+  String get breakLastDuration;
+
+  /// No description provided for @breakNoBreak.
+  ///
+  /// In ru, this message translates to:
+  /// **'В смене ещё нет перерыва — корректировать нечего.'**
+  String get breakNoBreak;
+
+  /// No description provided for @breakEditHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время возьмётся у соседней записи — лимиты пересчитаются.'**
+  String get breakEditHint;
+
+  /// No description provided for @workdayChangeStart.
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменить начало смены'**
+  String get workdayChangeStart;
+
+  /// No description provided for @weeklyAddManually.
+  ///
+  /// In ru, this message translates to:
+  /// **'Указать вручную'**
+  String get weeklyAddManually;
 }
 
 class _AppLocalizationsDelegate

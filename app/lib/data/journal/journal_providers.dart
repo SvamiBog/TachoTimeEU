@@ -134,23 +134,33 @@ final journalProvider = Provider<AsyncValue<Journal>>((ref) {
       AsyncData(value: final m),
       AsyncData(value: final meta),
     ) =>
-      AsyncData(
-        Journal(
-          now: now,
-          periods: p,
-          weeks: buildJournal(
-            timeline: analyzeTimeline(p, now),
-            now: now,
-            manualShifts: [for (final r in m) r.shift],
-            crew: s.crew,
-          ),
-          recordedMeta: meta,
-          manualMeta: {for (final r in m) ?r.shift.id: r.meta},
-        ),
-      ),
+      AsyncData(_journal(now, s, p, m, meta)),
     _ => const AsyncLoading(),
   };
 });
+
+Journal _journal(
+  DateTime now,
+  ComplianceSettings settings,
+  List<ActivityPeriod> periods,
+  List<ManualShiftRecord> manual,
+  Map<DateTime, ShiftMeta> meta,
+) {
+  final timeline = analyzeTimeline(periods, now);
+  return Journal(
+    now: now,
+    periods: periods,
+    timeline: timeline,
+    weeks: buildJournal(
+      timeline: timeline,
+      now: now,
+      manualShifts: [for (final r in manual) r.shift],
+      crew: settings.crew,
+    ),
+    recordedMeta: meta,
+    manualMeta: {for (final r in manual) ?r.shift.id: r.meta},
+  );
+}
 
 DateTime _minuteOf(DateTime t) =>
     DateTime.utc(t.year, t.month, t.day, t.hour, t.minute);
@@ -160,6 +170,7 @@ class Journal {
   const new({
     required this.now,
     required this.periods,
+    required this.timeline,
     required this.weeks,
     required this.recordedMeta,
     required this.manualMeta,
@@ -168,8 +179,11 @@ class Journal {
   /// Момент расчёта.
   final DateTime now;
 
-  /// Записи режимов — для деталей дня и CSV.
+  /// Записи режимов — для правок и CSV.
   final List<ActivityPeriod> periods;
+
+  /// Шкала: блоки режимов для деталей дня.
+  final Timeline timeline;
 
   /// Недели от текущей к старым.
   final List<JournalWeek> weeks;

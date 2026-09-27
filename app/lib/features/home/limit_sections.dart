@@ -13,6 +13,7 @@ import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/break_screen.dart';
+import 'package:tachogo/features/home/corrections.dart';
 import 'package:tachogo/features/home/limit_row.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
@@ -168,9 +169,10 @@ class WorkdayRow extends ConsumerWidget {
   }
 }
 
-typedef _Daily = ({int value, int extensionsLeft, Tone tone});
+typedef _Daily = ({int value, int extensionsLeft, Tone tone, bool shift});
 
 _Daily _daily(ComplianceSnapshot s) => (
+  shift: s.shift != null,
   value: minutes(s.dailyDriving),
   extensionsLeft: s.extensionsLeft,
   tone: toneOf(
@@ -193,6 +195,10 @@ class DailyDrivingRow extends ConsumerWidget {
     const extended = EuLimits.dailyDrivingExtended;
     return LimitRow(
       title: l.rowDailyDriving,
+      // Корректировка — правка журнала (экран 7)
+      onTap: s.shift
+          ? () => unawaited(openDrivingCorrection(context, ref))
+          : null,
       chip: _chip(
         context,
         s.tone,
