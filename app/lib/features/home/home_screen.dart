@@ -5,9 +5,11 @@ import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
+import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/alerts.dart';
 import 'package:tachogo/features/home/card_reading.dart';
+import 'package:tachogo/features/home/country_sheet.dart';
 import 'package:tachogo/features/home/hero_card.dart';
 import 'package:tachogo/features/home/limit_sections.dart';
 import 'package:tachogo/features/home/mode_buttons.dart';
@@ -23,6 +25,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(shiftCountryAutofillProvider);
     final load = ref.watch(
       complianceProvider.select(
         (a) => a.hasValue
@@ -78,25 +81,33 @@ class HomeHeader extends ConsumerWidget {
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.screenPadding + 4,
           8,
-          AppSpacing.screenPadding,
+          AppSpacing.screenPadding - 4,
           8,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text(l.appTitle, style: AppTextStyles.header),
-            const SizedBox(height: 2),
-            Text(
-              shiftStart == null
-                  ? l.homeNoShift(date)
-                  : l.homeShiftSince(date, formatClock(shiftStart)),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.small.copyWith(
-                color: context.colors.textSecondary,
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l.appTitle, style: AppTextStyles.header),
+                  const SizedBox(height: 2),
+                  Text(
+                    shiftStart == null
+                        ? l.homeNoShift(date)
+                        : l.homeShiftSince(date, formatClock(shiftStart)),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.small.copyWith(
+                      color: context.colors.textSecondary,
+                    ),
+                  ),
+                ],
               ),
             ),
+            const SizedBox(width: 8),
+            const CountryChip(),
           ],
         ),
       ),

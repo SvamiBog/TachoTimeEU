@@ -93,6 +93,14 @@ abstract final class AppTextStyles {
     fontWeight: FontWeight.w400,
   );
 
+  /// Крупное значение в карточке: «45 ч» на экране недельного отдыха.
+  static const valueLarge = TextStyle(
+    fontFamily: AppFonts.numeric,
+    fontSize: 32,
+    fontWeight: FontWeight.w700,
+    fontFeatures: _tabular,
+  );
+
   static const List<TextStyle> all = [
     timer,
     screenTitle,
@@ -106,5 +114,6 @@ abstract final class AppTextStyles {
     button,
     label,
     small,
+    valueLarge,
   ];
 }

@@ -11,6 +11,7 @@ import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/limit_bar.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
+import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
@@ -87,7 +88,11 @@ class WorkdayScreen extends ConsumerWidget {
                       ? l.todayDate(formatWeekdayDay(start, context.localeTag))
                       : formatWeekdayDay(start, context.localeTag),
                 ),
-                _Milestones(s, start),
+                _Milestones(
+                  s,
+                  start,
+                  country: ref.watch(currentCountriesProvider)?.start,
+                ),
               ],
               const _Rule(),
             ],
@@ -180,10 +185,13 @@ class _Summary extends StatelessWidget {
 }
 
 class _Milestones extends StatelessWidget {
-  const new(this.s, this.start);
+  const new(this.s, this.start, {this.country});
 
   final _Workday s;
   final DateTime start;
+
+  /// Страна начала смены, код тахографа.
+  final String? country;
 
   @override
   Widget build(BuildContext context) {
@@ -196,6 +204,7 @@ class _Milestones extends StatelessWidget {
         _Milestone(
           dot: _Dot.solid,
           title: l.workdayStart,
+          subtitle: country,
           value: formatClock(start),
         ),
         _Milestone(

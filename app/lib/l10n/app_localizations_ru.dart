@@ -573,4 +573,237 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return 'Осталось $_temp0.';
   }
+
+  @override
+  String get ferryTitle => 'Паром / поезд';
+
+  @override
+  String get ferryHint =>
+      'Отдых можно прервать не больше двух раз, всего до 1 ч (ст. 9). Движение парома не включит вождение.';
+
+  @override
+  String get ferryOn => 'паром';
+
+  @override
+  String breakHero(String limit) {
+    return 'Перерыв после $limit вождения';
+  }
+
+  @override
+  String breakPartDone(int minutes) {
+    return '$minutes мин ✓';
+  }
+
+  @override
+  String breakPart(int minutes) {
+    return '$minutes мин';
+  }
+
+  @override
+  String breakPartLeft(int minutes) {
+    return '$minutes мин — осталось';
+  }
+
+  @override
+  String breakFirstTaken(String from, String to) {
+    return 'Первая часть взята в $from–$to';
+  }
+
+  @override
+  String get breakNone => 'Нужен перерыв 45 мин подряд или 15 + 30 мин.';
+
+  @override
+  String get breakSplitTitle => 'Раздельный перерыв 15 + 30';
+
+  @override
+  String get breakSplitText =>
+      'Первая часть не меньше 15 мин, вторая — не меньше 30 мин, именно в таком порядке. Приложение распознаёт его само.';
+
+  @override
+  String get breakStart => 'Начать перерыв';
+
+  @override
+  String get breakOngoing => 'Перерыв идёт';
+
+  @override
+  String get weeklyStartBy => 'Начать не позже';
+
+  @override
+  String weeklyInTime(String left) {
+    return 'через $left — конец рабочей недели (144 ч)';
+  }
+
+  @override
+  String weeklyOverdue(String time) {
+    return 'просрочено на $time';
+  }
+
+  @override
+  String get weeklyOngoing => 'Недельный отдых идёт';
+
+  @override
+  String get weeklyUnknown =>
+      'Нет данных о прошлом недельном отдыхе. Срок появится после отдыха от 24 ч.';
+
+  @override
+  String get weeklyNext => 'Следующий отдых';
+
+  @override
+  String get weeklyFull => 'Полный';
+
+  @override
+  String get weeklyFullHint => 'не в кабине';
+
+  @override
+  String get weeklyReduced => 'Сокращённый';
+
+  @override
+  String get weeklyReducedYes => 'доступен · с компенсацией';
+
+  @override
+  String get weeklyReducedNo => 'недоступен — нужен полный';
+
+  @override
+  String get weeklyHistory => 'История';
+
+  @override
+  String weeklyPrevious(String status) {
+    String _temp0 = intl.Intl.selectLogic(status, {
+      'full': 'полный',
+      'reduced': 'сокращённый',
+      'other': 'недостаточный',
+    });
+    return 'Предыдущий · $_temp0';
+  }
+
+  @override
+  String get weeklyNow => 'сейчас';
+
+  @override
+  String get weeklyCompensation => 'Долг по компенсации';
+
+  @override
+  String get weeklyCompensationNone => 'нет';
+
+  @override
+  String weeklyCompensationValue(String time, String date) {
+    return '$time до $date';
+  }
+
+  @override
+  String get weeklyMobilityOn =>
+      'Пакет мобильности включён: при международных перевозках можно взять два сокращённых отдыха подряд, если они проходят за пределами страны регистрации. Сокращение компенсируется до конца третьей недели.';
+
+  @override
+  String get weeklyMobilityOff =>
+      'Сокращённый недельный отдых компенсируется до конца третьей недели: долг присоединяют к отдыху не короче 9 ч.';
+
+  @override
+  String get weeklyStartRest => 'Начать отдых';
+
+  @override
+  String get countryTitle => 'Выбор страны';
+
+  @override
+  String countryChip(String start, String end) {
+    return 'Страна начала $start, конечная $end. Изменить';
+  }
+
+  @override
+  String countryChipNoEnd(String start) {
+    return 'Страна начала $start, конечная не выбрана. Изменить';
+  }
+
+  @override
+  String get countryChipNone => 'Страна смены не выбрана. Выбрать';
+
+  @override
+  String countryStartTab(String code) {
+    return 'Начало · $code';
+  }
+
+  @override
+  String countryEndTab(String code) {
+    return 'Конец · $code';
+  }
+
+  @override
+  String get countryNextShift => 'Страна следующей смены';
+
+  @override
+  String get countrySearch => 'Страна или код';
+
+  @override
+  String get countryRecent => 'Недавние';
+
+  @override
+  String get countryClearEnd => 'Не указывать';
+
+  @override
+  String get countryNotFound => 'Ничего не найдено';
+
+  @override
+  String get countryFooter =>
+      'Страну начала и конца смены водитель вводит в тахограф (Регламент (ЕС) 165/2014, ст. 34).';
+
+  @override
+  String countryName(String code) {
+    String _temp0 = intl.Intl.selectLogic(code, {
+      'A': 'Австрия',
+      'AL': 'Албания',
+      'AND': 'Андорра',
+      'ARM': 'Армения',
+      'AZ': 'Азербайджан',
+      'B': 'Бельгия',
+      'BG': 'Болгария',
+      'BIH': 'Босния и Герцеговина',
+      'BY': 'Беларусь',
+      'CH': 'Швейцария',
+      'CY': 'Кипр',
+      'CZ': 'Чехия',
+      'D': 'Германия',
+      'DK': 'Дания',
+      'E': 'Испания',
+      'EST': 'Эстония',
+      'F': 'Франция',
+      'FIN': 'Финляндия',
+      'FL': 'Лихтенштейн',
+      'GE': 'Грузия',
+      'GR': 'Греция',
+      'H': 'Венгрия',
+      'HR': 'Хорватия',
+      'I': 'Италия',
+      'IRL': 'Ирландия',
+      'IS': 'Исландия',
+      'KZ': 'Казахстан',
+      'L': 'Люксембург',
+      'LT': 'Литва',
+      'LV': 'Латвия',
+      'M': 'Мальта',
+      'MC': 'Монако',
+      'MD': 'Молдова',
+      'MK': 'Северная Македония',
+      'MNE': 'Черногория',
+      'N': 'Норвегия',
+      'NL': 'Нидерланды',
+      'P': 'Португалия',
+      'PL': 'Польша',
+      'RO': 'Румыния',
+      'RSM': 'Сан-Марино',
+      'RUS': 'Россия',
+      'S': 'Швеция',
+      'SK': 'Словакия',
+      'SLO': 'Словения',
+      'SRB': 'Сербия',
+      'TJ': 'Таджикистан',
+      'TM': 'Туркменистан',
+      'TR': 'Турция',
+      'UA': 'Украина',
+      'UK': 'Великобритания',
+      'UZ': 'Узбекистан',
+      'V': 'Ватикан',
+      'other': '$code',
+    });
+    return '$_temp0';
+  }
 }

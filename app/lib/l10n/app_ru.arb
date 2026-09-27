@@ -592,5 +592,164 @@
         "type": "int"
       }
     }
+  },
+  "ferryTitle": "Паром / поезд",
+  "ferryHint": "Отдых можно прервать не больше двух раз, всего до 1 ч (ст. 9). Движение парома не включит вождение.",
+  "ferryOn": "паром",
+  "@ferryOn": {
+    "description": "Рядом с текущим режимом, когда включён режим «паром / поезд»"
+  },
+  "breakHero": "Перерыв после {limit} вождения",
+  "@breakHero": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "breakPartDone": "{minutes} мин ✓",
+  "@breakPartDone": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "breakPart": "{minutes} мин",
+  "@breakPart": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "breakPartLeft": "{minutes} мин — осталось",
+  "@breakPartLeft": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "breakFirstTaken": "Первая часть взята в {from}–{to}",
+  "@breakFirstTaken": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "breakNone": "Нужен перерыв 45 мин подряд или 15 + 30 мин.",
+  "breakSplitTitle": "Раздельный перерыв 15 + 30",
+  "breakSplitText": "Первая часть не меньше 15 мин, вторая — не меньше 30 мин, именно в таком порядке. Приложение распознаёт его само.",
+  "breakStart": "Начать перерыв",
+  "breakOngoing": "Перерыв идёт",
+  "weeklyStartBy": "Начать не позже",
+  "weeklyInTime": "через {left} — конец рабочей недели (144 ч)",
+  "@weeklyInTime": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyOverdue": "просрочено на {time}",
+  "@weeklyOverdue": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyOngoing": "Недельный отдых идёт",
+  "weeklyUnknown": "Нет данных о прошлом недельном отдыхе. Срок появится после отдыха от 24 ч.",
+  "weeklyNext": "Следующий отдых",
+  "weeklyFull": "Полный",
+  "weeklyFullHint": "не в кабине",
+  "weeklyReduced": "Сокращённый",
+  "weeklyReducedYes": "доступен · с компенсацией",
+  "weeklyReducedNo": "недоступен — нужен полный",
+  "weeklyHistory": "История",
+  "weeklyPrevious": "Предыдущий · {status, select, full{полный} reduced{сокращённый} other{недостаточный}}",
+  "@weeklyPrevious": {
+    "description": "Статус недельного отдыха: RestStatus.name",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyNow": "сейчас",
+  "weeklyCompensation": "Долг по компенсации",
+  "weeklyCompensationNone": "нет",
+  "weeklyCompensationValue": "{time} до {date}",
+  "@weeklyCompensationValue": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyMobilityOn": "Пакет мобильности включён: при международных перевозках можно взять два сокращённых отдыха подряд, если они проходят за пределами страны регистрации. Сокращение компенсируется до конца третьей недели.",
+  "weeklyMobilityOff": "Сокращённый недельный отдых компенсируется до конца третьей недели: долг присоединяют к отдыху не короче 9 ч.",
+  "weeklyStartRest": "Начать отдых",
+  "countryTitle": "Выбор страны",
+  "countryChip": "Страна начала {start}, конечная {end}. Изменить",
+  "@countryChip": {
+    "description": "Для диктора: чип стран в шапке главной",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "countryChipNoEnd": "Страна начала {start}, конечная не выбрана. Изменить",
+  "@countryChipNoEnd": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      }
+    }
+  },
+  "countryChipNone": "Страна смены не выбрана. Выбрать",
+  "countryStartTab": "Начало · {code}",
+  "@countryStartTab": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "countryEndTab": "Конец · {code}",
+  "@countryEndTab": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "countryNextShift": "Страна следующей смены",
+  "countrySearch": "Страна или код",
+  "countryRecent": "Недавние",
+  "countryClearEnd": "Не указывать",
+  "countryNotFound": "Ничего не найдено",
+  "countryFooter": "Страну начала и конца смены водитель вводит в тахограф (Регламент (ЕС) 165/2014, ст. 34).",
+  "countryName": "{code, select, A{Австрия} AL{Албания} AND{Андорра} ARM{Армения} AZ{Азербайджан} B{Бельгия} BG{Болгария} BIH{Босния и Герцеговина} BY{Беларусь} CH{Швейцария} CY{Кипр} CZ{Чехия} D{Германия} DK{Дания} E{Испания} EST{Эстония} F{Франция} FIN{Финляндия} FL{Лихтенштейн} GE{Грузия} GR{Греция} H{Венгрия} HR{Хорватия} I{Италия} IRL{Ирландия} IS{Исландия} KZ{Казахстан} L{Люксембург} LT{Литва} LV{Латвия} M{Мальта} MC{Монако} MD{Молдова} MK{Северная Македония} MNE{Черногория} N{Норвегия} NL{Нидерланды} P{Португалия} PL{Польша} RO{Румыния} RSM{Сан-Марино} RUS{Россия} S{Швеция} SK{Словакия} SLO{Словения} SRB{Сербия} TJ{Таджикистан} TM{Туркменистан} TR{Турция} UA{Украина} UK{Великобритания} UZ{Узбекистан} V{Ватикан} other{{code}}}",
+  "@countryName": {
+    "description": "Название страны по коду тахографа (TachoCountries.codes)",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
   }
 }

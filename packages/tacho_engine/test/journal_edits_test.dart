@@ -87,6 +87,75 @@ void main() {
       );
       expect(updated.last.ferry, isTrue);
     });
+
+    test('паром: новая запись наследует отметку текущей', () {
+      final onFerry = setFerry(
+        logUntil(now, [rest('11:00'), drive('2:00')]),
+        ferry: true,
+      );
+      final updated = changeMode(onFerry, DriverMode.rest, now);
+      expect(updated.map((p) => p.ferry), [false, true, true]);
+      expect(
+        changeMode(onFerry, DriverMode.rest, now, ferry: false).last.ferry,
+        isFalse,
+        reason: 'явное значение важнее наследования',
+      );
+      expect(
+        changeMode(
+          logUntil(now, [rest('11:00'), drive('2:00')]),
+          DriverMode.rest,
+          now,
+        ).last.ferry,
+        isFalse,
+      );
+    });
+  });
+
+  group('режим «паром / поезд»', () {
+    test('включение отмечает только текущую запись', () {
+      final periods = logUntil(now, [
+        rest('11:00'),
+        drive('1:00'),
+        work('0:30'),
+      ]);
+      final updated = setFerry(periods, ferry: true);
+      expect(updated.map((p) => p.ferry), [false, false, true]);
+      expect(updated.map((p) => (p.id, p.start, p.end)), [
+        for (final p in periods) (p.id, p.start, p.end),
+      ]);
+    });
+
+    test('выключение снимает отметку с текущей, прошлые остаются', () {
+      final periods = changeMode(
+        setFerry(logUntil(now, [rest('11:00'), drive('1:00')]), ferry: true),
+        DriverMode.rest,
+        now,
+      );
+      final updated = setFerry(periods, ferry: false);
+      expect(updated.map((p) => p.ferry), [false, true, false]);
+    });
+
+    test('без изменений и без открытой записи — тот же список', () {
+      final periods = logUntil(now, [rest('11:00'), drive('1:00')]);
+      expect(identical(setFerry(periods, ferry: false), periods), isTrue);
+      final onFerry = setFerry(periods, ferry: true);
+      expect(identical(setFerry(onFerry, ferry: true), onFerry), isTrue);
+      final closed = closedLog(now, [drive('1:00')]);
+      expect(identical(setFerry(closed, ferry: true), closed), isTrue);
+    });
+
+    test('на пароме движение не включает вождение', () {
+      final periods = setFerry(
+        logUntil(now, [rest('11:00'), drive('1:00'), rest('0:20')]),
+        ferry: true,
+      );
+      final decision = decideAutoSwitch(
+        event: MotionEvent(MotionEventType.started, now),
+        state: calculateCompliance(periods: periods, now: now),
+        crew: CrewMode.solo,
+      );
+      expect(decision.kind, AutoSwitchKind.none);
+    });
   });
 
   group('корректировка суточного вождения', () {

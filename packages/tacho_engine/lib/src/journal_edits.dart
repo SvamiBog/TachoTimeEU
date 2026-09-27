@@ -20,15 +20,20 @@ import 'package:tacho_engine/src/timeline.dart';
 ///
 /// Испорченный журнал с несколькими открытыми записями чинится: лишние
 /// закрываются началом следующей записи.
+///
+/// Без [ferry] новая запись продолжает отметку «паром / поезд» текущей:
+/// водитель на пароме, пока не выключит режим ([setFerry]). Так отметку
+/// получают и записи автоопределения.
 List<ActivityPeriod> changeMode(
   List<ActivityPeriod> periods,
   DriverMode mode,
   DateTime now, {
-  bool ferry = false,
+  bool? ferry,
   bool dayEnd = false,
 }) {
   final open = periods.where((p) => p.isOpen).toList();
   final current = open.lastOrNull;
+  final onFerry = ferry ?? current?.ferry ?? false;
   if (current != null && current.mode == mode) {
     final markDayEnd = dayEnd && !current.dayEnd;
     if (open.length == 1 && !markDayEnd) return periods;
@@ -46,7 +51,25 @@ List<ActivityPeriod> changeMode(
   return [
     for (final p in periods)
       if (p.isOpen) p.close(_openEnd(periods, p, now)) else p,
-    ActivityPeriod(mode: mode, start: now, ferry: ferry, dayEnd: dayEnd),
+    ActivityPeriod(mode: mode, start: now, ferry: onFerry, dayEnd: dayEnd),
+  ];
+}
+
+/// Режим «паром / поезд» (ст. 9): отметка у текущей записи. Водитель
+/// включает его, когда заехал на паром или поезд, — текущая запись уже там,
+/// и автоопределение не принимает движение парома за вождение
+/// (`decideAutoSwitch`). Следующие записи отметку наследуют
+/// ([changeMode]), выключение снимает её с текущей.
+///
+/// Без открытой записи или без изменений возвращается тот же список.
+List<ActivityPeriod> setFerry(
+  List<ActivityPeriod> periods, {
+  required bool ferry,
+}) {
+  if (!periods.any((p) => p.isOpen && p.ferry != ferry)) return periods;
+  return [
+    for (final p in periods)
+      if (p.isOpen) p.withFerry(ferry: ferry) else p,
   ];
 }
 

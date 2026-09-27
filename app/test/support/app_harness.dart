@@ -1,7 +1,7 @@
 // Запуск экранов в widget-тестах: фиксированные часы, журнал без БД или
 // база в памяти, локализация, тема и размер экрана телефона.
 
-import 'package:drift/drift.dart' show driftRuntimeOptions;
+import 'package:drift/drift.dart' show DatabaseConnection, driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +10,8 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/theme/app_theme.dart';
+import 'package:tachogo/data/countries/country_providers.dart';
+import 'package:tachogo/data/countries/country_repository.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
@@ -30,17 +32,25 @@ class TestClock extends Clock {
   set now(DateTime t) => state = t;
 }
 
-/// Журнал, настройки и считывание карты — готовыми значениями, без БД.
+/// Журнал, настройки, считывание карты и страны смен — готовыми
+/// значениями, без БД. Страна новой смене не записывается.
 List<Override> journalOverrides({
   required List<ActivityPeriod> periods,
   required DateTime now,
   ComplianceSettings settings = const ComplianceSettings(),
   DateTime? lastCard,
+  Map<DateTime, ShiftCountries> countries = const {},
+  List<String> recentCountries = const [],
+  String? defaultCountry,
 }) => [
   activityPeriodsProvider.overrideWith((ref) => Stream.value(periods)),
   complianceSettingsProvider.overrideWith((ref) => Stream.value(settings)),
   lastCardDownloadProvider.overrideWith((ref) => Stream.value(lastCard)),
   clockProvider.overrideWith(() => TestClock(now)),
+  shiftCountriesProvider.overrideWith((ref) => Stream.value(countries)),
+  recentCountriesProvider.overrideWith((ref) => Stream.value(recentCountries)),
+  defaultCountryProvider.overrideWith((ref) => Stream.value(defaultCountry)),
+  shiftCountryAutofillProvider.overrideWith((ref) {}),
 ];
 
 /// База в памяти: запись режимов и считываний идёт через настоящие
@@ -62,11 +72,15 @@ List<Override> databaseOverrides(
   ];
 }
 
-AppDatabase memoryDatabase() => AppDatabase(NativeDatabase.memory());
+/// База в памяти для widget-тестов. Потоки запросов закрываются сразу,
+/// без таймера нулевой длительности: иначе упавший тест оставляет таймер,
+/// закрытие базы ждёт вечно, и за ним висят следующие тесты.
+AppDatabase memoryDatabase() => AppDatabase(
+  DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true),
+);
 
-/// Конец теста с базой: убрать экран, пока тест идёт. Drift, отписываясь
-/// от потоков, ставит таймер нулевой длительности — без этого тест
-/// падает с «Timer is still pending», а закрытие базы ждёт вечно.
+/// Конец теста с базой: убрать экран, пока тест идёт, — потоки Drift и
+/// Riverpod отписываются до проверки таймеров.
 Future<void> unmount(WidgetTester tester) async {
   await tester.pumpWidget(const SizedBox.shrink());
   await tester.pump(Duration.zero);
@@ -94,6 +108,7 @@ Future<void> pumpScreen(
     ProviderScope(
       overrides: overrides,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: buildTheme(brightness),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

@@ -897,6 +897,282 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Осталось {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}.'**
   String infrCardSoonText(int days);
+
+  /// No description provided for @ferryTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Паром / поезд'**
+  String get ferryTitle;
+
+  /// No description provided for @ferryHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отдых можно прервать не больше двух раз, всего до 1 ч (ст. 9). Движение парома не включит вождение.'**
+  String get ferryHint;
+
+  /// Рядом с текущим режимом, когда включён режим «паром / поезд»
+  ///
+  /// In ru, this message translates to:
+  /// **'паром'**
+  String get ferryOn;
+
+  /// No description provided for @breakHero.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерыв после {limit} вождения'**
+  String breakHero(String limit);
+
+  /// No description provided for @breakPartDone.
+  ///
+  /// In ru, this message translates to:
+  /// **'{minutes} мин ✓'**
+  String breakPartDone(int minutes);
+
+  /// No description provided for @breakPart.
+  ///
+  /// In ru, this message translates to:
+  /// **'{minutes} мин'**
+  String breakPart(int minutes);
+
+  /// No description provided for @breakPartLeft.
+  ///
+  /// In ru, this message translates to:
+  /// **'{minutes} мин — осталось'**
+  String breakPartLeft(int minutes);
+
+  /// No description provided for @breakFirstTaken.
+  ///
+  /// In ru, this message translates to:
+  /// **'Первая часть взята в {from}–{to}'**
+  String breakFirstTaken(String from, String to);
+
+  /// No description provided for @breakNone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нужен перерыв 45 мин подряд или 15 + 30 мин.'**
+  String get breakNone;
+
+  /// No description provided for @breakSplitTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Раздельный перерыв 15 + 30'**
+  String get breakSplitTitle;
+
+  /// No description provided for @breakSplitText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Первая часть не меньше 15 мин, вторая — не меньше 30 мин, именно в таком порядке. Приложение распознаёт его само.'**
+  String get breakSplitText;
+
+  /// No description provided for @breakStart.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать перерыв'**
+  String get breakStart;
+
+  /// No description provided for @breakOngoing.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерыв идёт'**
+  String get breakOngoing;
+
+  /// No description provided for @weeklyStartBy.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать не позже'**
+  String get weeklyStartBy;
+
+  /// No description provided for @weeklyInTime.
+  ///
+  /// In ru, this message translates to:
+  /// **'через {left} — конец рабочей недели (144 ч)'**
+  String weeklyInTime(String left);
+
+  /// No description provided for @weeklyOverdue.
+  ///
+  /// In ru, this message translates to:
+  /// **'просрочено на {time}'**
+  String weeklyOverdue(String time);
+
+  /// No description provided for @weeklyOngoing.
+  ///
+  /// In ru, this message translates to:
+  /// **'Недельный отдых идёт'**
+  String get weeklyOngoing;
+
+  /// No description provided for @weeklyUnknown.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет данных о прошлом недельном отдыхе. Срок появится после отдыха от 24 ч.'**
+  String get weeklyUnknown;
+
+  /// No description provided for @weeklyNext.
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующий отдых'**
+  String get weeklyNext;
+
+  /// No description provided for @weeklyFull.
+  ///
+  /// In ru, this message translates to:
+  /// **'Полный'**
+  String get weeklyFull;
+
+  /// No description provided for @weeklyFullHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'не в кабине'**
+  String get weeklyFullHint;
+
+  /// No description provided for @weeklyReduced.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сокращённый'**
+  String get weeklyReduced;
+
+  /// No description provided for @weeklyReducedYes.
+  ///
+  /// In ru, this message translates to:
+  /// **'доступен · с компенсацией'**
+  String get weeklyReducedYes;
+
+  /// No description provided for @weeklyReducedNo.
+  ///
+  /// In ru, this message translates to:
+  /// **'недоступен — нужен полный'**
+  String get weeklyReducedNo;
+
+  /// No description provided for @weeklyHistory.
+  ///
+  /// In ru, this message translates to:
+  /// **'История'**
+  String get weeklyHistory;
+
+  /// Статус недельного отдыха: RestStatus.name
+  ///
+  /// In ru, this message translates to:
+  /// **'Предыдущий · {status, select, full{полный} reduced{сокращённый} other{недостаточный}}'**
+  String weeklyPrevious(String status);
+
+  /// No description provided for @weeklyNow.
+  ///
+  /// In ru, this message translates to:
+  /// **'сейчас'**
+  String get weeklyNow;
+
+  /// No description provided for @weeklyCompensation.
+  ///
+  /// In ru, this message translates to:
+  /// **'Долг по компенсации'**
+  String get weeklyCompensation;
+
+  /// No description provided for @weeklyCompensationNone.
+  ///
+  /// In ru, this message translates to:
+  /// **'нет'**
+  String get weeklyCompensationNone;
+
+  /// No description provided for @weeklyCompensationValue.
+  ///
+  /// In ru, this message translates to:
+  /// **'{time} до {date}'**
+  String weeklyCompensationValue(String time, String date);
+
+  /// No description provided for @weeklyMobilityOn.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пакет мобильности включён: при международных перевозках можно взять два сокращённых отдыха подряд, если они проходят за пределами страны регистрации. Сокращение компенсируется до конца третьей недели.'**
+  String get weeklyMobilityOn;
+
+  /// No description provided for @weeklyMobilityOff.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сокращённый недельный отдых компенсируется до конца третьей недели: долг присоединяют к отдыху не короче 9 ч.'**
+  String get weeklyMobilityOff;
+
+  /// No description provided for @weeklyStartRest.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать отдых'**
+  String get weeklyStartRest;
+
+  /// No description provided for @countryTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбор страны'**
+  String get countryTitle;
+
+  /// Для диктора: чип стран в шапке главной
+  ///
+  /// In ru, this message translates to:
+  /// **'Страна начала {start}, конечная {end}. Изменить'**
+  String countryChip(String start, String end);
+
+  /// No description provided for @countryChipNoEnd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Страна начала {start}, конечная не выбрана. Изменить'**
+  String countryChipNoEnd(String start);
+
+  /// No description provided for @countryChipNone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Страна смены не выбрана. Выбрать'**
+  String get countryChipNone;
+
+  /// No description provided for @countryStartTab.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начало · {code}'**
+  String countryStartTab(String code);
+
+  /// No description provided for @countryEndTab.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конец · {code}'**
+  String countryEndTab(String code);
+
+  /// No description provided for @countryNextShift.
+  ///
+  /// In ru, this message translates to:
+  /// **'Страна следующей смены'**
+  String get countryNextShift;
+
+  /// No description provided for @countrySearch.
+  ///
+  /// In ru, this message translates to:
+  /// **'Страна или код'**
+  String get countrySearch;
+
+  /// No description provided for @countryRecent.
+  ///
+  /// In ru, this message translates to:
+  /// **'Недавние'**
+  String get countryRecent;
+
+  /// No description provided for @countryClearEnd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не указывать'**
+  String get countryClearEnd;
+
+  /// No description provided for @countryNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего не найдено'**
+  String get countryNotFound;
+
+  /// No description provided for @countryFooter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Страну начала и конца смены водитель вводит в тахограф (Регламент (ЕС) 165/2014, ст. 34).'**
+  String get countryFooter;
+
+  /// Название страны по коду тахографа (TachoCountries.codes)
+  ///
+  /// In ru, this message translates to:
+  /// **'{code, select, A{Австрия} AL{Албания} AND{Андорра} ARM{Армения} AZ{Азербайджан} B{Бельгия} BG{Болгария} BIH{Босния и Герцеговина} BY{Беларусь} CH{Швейцария} CY{Кипр} CZ{Чехия} D{Германия} DK{Дания} E{Испания} EST{Эстония} F{Франция} FIN{Финляндия} FL{Лихтенштейн} GE{Грузия} GR{Греция} H{Венгрия} HR{Хорватия} I{Италия} IRL{Ирландия} IS{Исландия} KZ{Казахстан} L{Люксембург} LT{Литва} LV{Латвия} M{Мальта} MC{Монако} MD{Молдова} MK{Северная Македония} MNE{Черногория} N{Норвегия} NL{Нидерланды} P{Португалия} PL{Польша} RO{Румыния} RSM{Сан-Марино} RUS{Россия} S{Швеция} SK{Словакия} SLO{Словения} SRB{Сербия} TJ{Таджикистан} TM{Туркменистан} TR{Турция} UA{Украина} UK{Великобритания} UZ{Узбекистан} V{Ватикан} other{{code}}}'**
+  String countryName(String code);
 }
 
 class _AppLocalizationsDelegate

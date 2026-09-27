@@ -70,6 +70,15 @@ class ActivityPeriod {
     dayEnd: dayEnd,
   );
 
+  ActivityPeriod withFerry({required bool ferry}) => ActivityPeriod(
+    id: id,
+    mode: mode,
+    start: start,
+    end: end,
+    ferry: ferry,
+    dayEnd: dayEnd,
+  );
+
   ActivityPeriod withDayEnd({required bool dayEnd}) => ActivityPeriod(
     id: id,
     mode: mode,

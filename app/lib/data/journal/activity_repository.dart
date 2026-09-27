@@ -28,25 +28,28 @@ class ActivityRepository {
   ];
 
   /// Переключает режим. Повторное нажатие на активный режим ничего не
-  /// меняет. [ferry] — водитель на пароме / поезде (ст. 9).
+  /// меняет. [ferry] — водитель на пароме / поезде (ст. 9); без него новая
+  /// запись продолжает отметку текущей.
   ///
   /// [at] — момент переключения, если он уже прошёл: автоопределение
   /// замечает движение с задержкой и переключает с начала движения. Момент
   /// не позже текущего и не раньше начала текущей записи.
-  Future<void> switchMode(
-    DriverMode mode, {
-    bool ferry = false,
-    DateTime? at,
-  }) => _changeOpen(
-    (open, at) => changeMode(open, mode, at, ferry: ferry),
-    at: at,
-  );
+  Future<void> switchMode(DriverMode mode, {bool? ferry, DateTime? at}) =>
+      _changeOpen(
+        (open, at) => changeMode(open, mode, at, ferry: ferry),
+        at: at,
+      );
 
   /// «Завершить день»: отдых, который сразу завершает смену. Во время
   /// перерыва текущий отдых становится концом дня.
   Future<void> endDay() => _changeOpen(
     (open, at) => changeMode(open, DriverMode.rest, at, dayEnd: true),
   );
+
+  /// Режим «паром / поезд» (ст. 9): отметка у текущей записи, следующие
+  /// записи её наследуют. Без открытой записи ничего не меняет.
+  Future<void> setFerryMode({required bool on}) =>
+      _changeOpen((open, _) => setFerry(open, ferry: on));
 
   SimpleSelectStatement<$ActivityPeriodsTable, ActivityPeriodRow> _ordered() =>
       _db.select(_db.activityPeriods)..orderBy([

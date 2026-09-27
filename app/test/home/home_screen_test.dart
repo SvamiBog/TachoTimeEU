@@ -386,6 +386,8 @@ void main() {
       );
       expect(find.text('Отметьте последнее считывание'), findsOneWidget);
 
+      await tester.ensureVisible(find.byType(CardReadingTile));
+      await tester.pumpAndSettle();
       await tester.tap(find.byType(CardReadingTile));
       await tester.pumpAndSettle();
       expect(find.text('Считывание ещё не отмечено.'), findsOneWidget);

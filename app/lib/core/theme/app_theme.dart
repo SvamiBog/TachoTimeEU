@@ -64,6 +64,16 @@ ThemeData buildTheme(Brightness brightness) {
       behavior: SnackBarBehavior.floating,
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(color: c.drive),
+    // Переключатель: включён — цвет вождения, выключен — токен switchOff.
+    switchTheme: SwitchThemeData(
+      trackColor: WidgetStateProperty.resolveWith(
+        (states) => selected(states) ? c.drive : c.switchOff,
+      ),
+      thumbColor: WidgetStateProperty.resolveWith(
+        (states) => selected(states) ? c.onAccent : c.textSecondary,
+      ),
+      trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+    ),
     extensions: [c],
   );
 }

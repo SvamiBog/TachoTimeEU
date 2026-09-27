@@ -42,6 +42,8 @@ l10n/                     — строки интерфейса: app_ru.arb и �
 data/
   db/                     — Drift: таблицы, AppDatabase, провайдер
   settings/               — настройки «ключ — значение», согласие на аналитику
+  countries/              — страны начала и конца смены (таблица shifts, ключ —
+                            начало смены), коды тахографа
   journal/                — журнал режимов и считывания карты; complianceProvider —
                             таймеры движка, пересчёт раз в секунду (clockProvider)
 background/               — автоопределение вождения: трекер, foreground service

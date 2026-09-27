@@ -72,3 +72,7 @@ String _capitalize(String s) =>
 /// «02.09.2026».
 String formatDayMonthYear(DateTime t) =>
     '${formatDayMonth(t)}.${t.toLocal().year}';
+
+/// «Вс 27.09 · 06:10» — срок недельного отдыха.
+String formatDeadline(DateTime t, String locale) =>
+    '${_capitalize(formatWeekdayDay(t, locale))} · ${formatClock(t)}';

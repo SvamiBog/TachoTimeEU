@@ -53,6 +53,7 @@ void main() {
       'button': AppTextStyles.button,
       'label': AppTextStyles.label,
       'small': AppTextStyles.small,
+      'valueLarge': AppTextStyles.valueLarge,
     };
 
     test('шрифты: Onest для интерфейса, JetBrains Mono для цифр', () {
@@ -241,6 +242,7 @@ void main() {
         'Кнопка': 'button',
         'Метка: чипы, навигация, подпись кольца': 'label',
         'Мелкий текст': 'small',
+        'Крупное значение: «45 ч»': 'valueLarge',
       };
       final fonts = section(tokens, 'font');
       final rows = tableRows(readme, '## Типографика');

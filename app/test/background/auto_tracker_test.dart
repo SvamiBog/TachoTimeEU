@@ -236,6 +236,25 @@ void main() {
       expect(last.mode, DriverMode.otherWork);
       expect(last.ferry, isTrue);
     });
+
+    test('заехал на паром и встал — стоянка тоже на пароме, паром плывёт — '
+        'вождение не включается', () async {
+      await journalWith([DriverMode.otherWork]);
+      await tracker.start();
+      await drive(repeat(5, 50));
+      // Водитель включил «паром / поезд» за рулём, на палубе остановился
+      await journal.setFerryMode(on: true);
+      await drive(repeat(20, 0));
+      await drive(repeat(30, 20));
+
+      final periods = await journal.periods();
+      expect(periods.map((p) => (p.mode, p.ferry)).skip(1), [
+        (DriverMode.otherWork, false),
+        (DriverMode.driving, true),
+        (DriverMode.otherWork, true),
+      ]);
+      expect(tracker.suggestion, isNull);
+    });
   });
 
   group('BG-04: новые правила — со следующего события, без перезапуска', () {

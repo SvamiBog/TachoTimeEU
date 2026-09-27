@@ -13,8 +13,12 @@ import 'package:tachogo/app.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
+import 'package:tachogo/data/countries/country_repository.dart';
+import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/card_reading.dart';
+import 'package:tachogo/features/home/country_sheet.dart';
 import 'package:tachogo/features/home/home_screen.dart';
+import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
 import 'package:tachogo/features/shell/app_shell.dart';
 
@@ -40,11 +44,20 @@ Future<void> _openCardSheet(WidgetTester tester) async {
   expect(find.byType(CardSheet), findsOneWidget);
 }
 
+Future<void> _openCountrySheet(WidgetTester tester) async {
+  await tester.tap(find.byType(CountryChip));
+  await tester.pumpAndSettle();
+  expect(find.byType(CountrySheet), findsOneWidget);
+}
+
 final _screens = <String, _Screen>{
   'Главная': (build: HomeScreen.new, open: null),
   'Нижняя навигация': (build: AppShell.new, open: null),
   'Рабочий день': (build: WorkdayScreen.new, open: null),
+  'Перерыв': (build: BreakScreen.new, open: null),
+  'Недельный отдых': (build: WeeklyRestScreen.new, open: null),
   'Шторка «Считывание карты»': (build: HomeScreen.new, open: _openCardSheet),
+  'Шторка «Выбор страны»': (build: HomeScreen.new, open: _openCountrySheet),
 };
 
 /// Экраны телефона, dp: основной таргет и небольшой Android.
@@ -73,6 +86,11 @@ Future<void> _pump(
       periods: week.periods,
       now: week.now,
       lastCard: week.now.subtract(const Duration(days: 23)),
+      countries: {
+        DateTime.utc(2026, 9, 23, 6, 49): const ShiftCountries(start: 'PL'),
+      },
+      recentCountries: ['PL', 'D', 'CZ'],
+      defaultCountry: 'PL',
     ),
     brightness: brightness,
     viewport: viewport,

@@ -11,6 +11,7 @@ import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
+import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
 /// Главная карточка: кольцо, плашка о перерыве, текущий режим.
@@ -124,38 +125,41 @@ class HeroRing extends ConsumerWidget {
     final big = Duration(minutes: ring.big);
     return SizedBox.square(
       dimension: size,
-      child: CustomPaint(
-        painter: _RingPainter(
-          fraction: ring.target == 0 ? 0 : ring.progress / ring.target,
-          track: colors.line,
-          color: color,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(28),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Диктор читает подпись вместе с таймером
-                ExcludeSemantics(
-                  child: Text(
-                    label.toUpperCase(),
-                    style: AppTextStyles.label.copyWith(
-                      color: colors.textSecondary,
-                      letterSpacing: AppTextStyles.label.fontSize! * 0.08,
+      child: GestureDetector(
+        onTap: () => openBreakScreen(context),
+        child: CustomPaint(
+          painter: _RingPainter(
+            fraction: ring.target == 0 ? 0 : ring.progress / ring.target,
+            track: colors.line,
+            color: color,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(28),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Диктор читает подпись вместе с таймером
+                  ExcludeSemantics(
+                    child: Text(
+                      label.toUpperCase(),
+                      style: AppTextStyles.label.copyWith(
+                        color: colors.textSecondary,
+                        letterSpacing: AppTextStyles.label.fontSize! * 0.08,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                DurationText(
-                  formatHm(big),
-                  spoken: '$label, ${spokenDuration(l, big)}',
-                  style: AppTextStyles.timer.copyWith(color: color),
-                ),
-                const SizedBox(height: 4),
-                Text(caption, style: AppTextStyles.body),
-              ],
+                  const SizedBox(height: 4),
+                  DurationText(
+                    formatHm(big),
+                    spoken: '$label, ${spokenDuration(l, big)}',
+                    style: AppTextStyles.timer.copyWith(color: color),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(caption, style: AppTextStyles.body),
+                ],
+              ),
             ),
           ),
         ),
@@ -268,13 +272,17 @@ class HeroBanner extends ConsumerWidget {
   }
 }
 
-typedef _Mode = ({DriverMode? mode, DateTime? since, int duration});
+typedef _Mode = ({DriverMode? mode, DateTime? since, int duration, bool ferry});
 
-_Mode _mode(ComplianceSnapshot s) => (
-  mode: s.currentMode,
-  since: s.currentModeStart,
-  duration: minutes(s.currentModeDuration),
-);
+_Mode _mode(ComplianceSnapshot s) {
+  final last = s.timeline.blocks.lastOrNull;
+  return (
+    mode: s.currentMode,
+    since: s.currentModeStart,
+    duration: minutes(s.currentModeDuration),
+    ferry: last != null && last.open && last.ferry,
+  );
+}
 
 /// Текущий режим: «● Отдых с 11:37      0:00».
 class CurrentModeRow extends ConsumerWidget {
@@ -320,6 +328,13 @@ class CurrentModeRow extends ConsumerWidget {
                   if (state.since case final since?)
                     TextSpan(
                       text: ' ${l.modeSince(formatClock(since))}',
+                      style: AppTextStyles.body.copyWith(
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                  if (state.ferry)
+                    TextSpan(
+                      text: ' · ${l.ferryOn}',
                       style: AppTextStyles.body.copyWith(
                         color: colors.textSecondary,
                       ),

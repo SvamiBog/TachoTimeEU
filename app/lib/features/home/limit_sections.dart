@@ -1,14 +1,21 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/theme/app_tokens.dart';
+import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/limit_bar.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
+import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/limit_row.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
+import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
 
 Duration _m(int minutes) => Duration(minutes: minutes);
@@ -43,6 +50,11 @@ void _openWorkday(BuildContext context) =>
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const WorkdayScreen()));
 
+void _openBreak(BuildContext context) => openBreakScreen(context);
+
+void _openWeeklyRest(BuildContext context) => Navigator.of(context)
+    .push(MaterialPageRoute<void>(builder: (_) => const WeeklyRestScreen()));
+
 // ───────────────────────── Сегодня ─────────────────────────
 
 typedef _Continuous = ({int value, bool driving, DateTime breakAt, Tone tone});
@@ -71,6 +83,7 @@ class ContinuousRow extends ConsumerWidget {
     final left = EuLimits.continuousDriving - value;
     return LimitRow(
       title: l.rowContinuous,
+      onTap: () => _openBreak(context),
       chip: _chip(context, s.tone, soon: l.chipBreakSoon),
       value: _duration(
         context,
@@ -261,6 +274,7 @@ class BreakRow extends ConsumerWidget {
         : (l.breakNotTaken, null);
     return LimitRow(
       title: l.rowBreak,
+      onTap: () => _openBreak(context),
       chip: s.split ? const StatusChip('15 + 30') : null,
       value: _duration(context, taken, color: s.counted ? colors.rest : null),
       bar: LimitBar(
@@ -376,10 +390,73 @@ class RestSection extends ConsumerWidget {
                   : deadline == null
                   ? l.statusNoData
                   : l.statusBy(formatWeekdayClock(deadline, context.localeTag)),
+              onTap: () => _openWeeklyRest(context),
             ),
+            const FerryRow(),
           ],
         ),
       ],
+    );
+  }
+}
+
+typedef _Ferry = ({bool on, bool canToggle});
+
+_Ferry _ferry(ComplianceSnapshot s) {
+  final last = s.timeline.blocks.lastOrNull;
+  return (
+    on: last != null && last.open && last.ferry,
+    canToggle: s.currentMode != null,
+  );
+}
+
+/// «Паром / поезд» (ст. 9): отметка текущей записи и следующих, пока
+/// водитель не выключит.
+class FerryRow extends ConsumerWidget {
+  const new({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final s = watchSnapshot(ref, _ferry);
+    if (s == null) return const SizedBox.shrink();
+    final l = context.l10n;
+    return MergeSemantics(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.cardPadding,
+          12,
+          AppSpacing.cardPadding - 4,
+          12,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l.ferryTitle, style: AppTextStyles.rowTitle),
+                  const SizedBox(height: 2),
+                  Text(
+                    l.ferryHint,
+                    style: AppTextStyles.caption.copyWith(
+                      color: context.colors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Switch(
+              value: s.on,
+              onChanged: s.canToggle
+                  ? (on) => unawaited(
+                      ref.read(activityRepositoryProvider).setFerryMode(on: on),
+                    )
+                  : null,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -516,6 +593,7 @@ class WorkWeekRow extends ConsumerWidget {
     final value = _m(s.value);
     return LimitRow(
       title: l.rowWorkWeek,
+      onTap: () => _openWeeklyRest(context),
       chip: _chip(
         context,
         s.tone,

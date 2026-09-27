@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/data/countries/tacho_countries.dart';
 import 'package:tachogo/data/db/app_database.dart';
 
 /// Автоопределение вождения по GPS.
@@ -35,6 +36,7 @@ class SettingsRepository {
   static const _autoDetect = 'auto_detect';
   static const _autoAfterStop = 'auto_after_stop';
   static const _autoStartFromRest = 'auto_start_from_rest';
+  static const _defaultCountry = 'default_country';
 
   final AppDatabase _db;
 
@@ -70,6 +72,21 @@ class SettingsRepository {
     _autoAfterStop: s.rules.afterStop.name,
     _autoStartFromRest: '${s.rules.startFromRest}',
   });
+
+  /// Страна для новой смены — последняя выбранная; null — ещё не выбирали.
+  Stream<String?> watchDefaultCountry() =>
+      _watch(_defaultCountry).map(_country).distinct();
+
+  Future<String?> defaultCountry() async => _country(
+    (await (_db.select(
+      _db.settings,
+    )..where((s) => s.key.equals(_defaultCountry))).getSingleOrNull())?.value,
+  );
+
+  Future<void> setDefaultCountry(String code) => _put(_defaultCountry, code);
+
+  static String? _country(String? code) =>
+      code != null && TachoCountries.isValid(code) ? code : null;
 
   // Некорректное значение в БД не должно ломать расчёт — берём умолчание.
   static ComplianceSettings _complianceFrom(Map<String, String> v) {
