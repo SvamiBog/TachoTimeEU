@@ -36,10 +36,12 @@ abstract final class EuLimits {
   static const teamWorkdayWindow = Duration(hours: 30);
   static const teamDailyRest = Duration(hours: 9);
 
-  // Паром / поезд (ст. 9(1)): полный суточный отдых можно прервать
-  // не больше двух раз, в сумме не дольше часа.
+  // Паром / поезд (ст. 9(1), ред. 2020/1054): полный суточный и сокращённый
+  // недельный отдых можно прервать не больше двух раз, в сумме не дольше
+  // часа. Регулярный недельный — только если рейс не короче 8 ч.
   static const ferryMaxInterruptions = 2;
   static const ferryMaxInterruptionTotal = Duration(hours: 1);
+  static const ferryRegularWeeklyRestCrossing = Duration(hours: 8);
 
   // Недельный отдых (ст. 8.6).
   static const weeklyRestRegular = Duration(hours: 45);

@@ -138,7 +138,9 @@ class RestPeriod {
 /// Находит периоды отдыха. Блоки отдыха объединяются через прерывания на
 /// пароме / поезде (ст. 9: не больше двух, суммарно до 1 ч), только если
 /// в сумме получается не меньше полного суточного отдыха (11 ч) — иначе
-/// исключение не применяется.
+/// исключение не применяется. Регулярный недельный отдых (45 ч) через
+/// прерывания — только при рейсе от 8 ч: рейс — от первого до последнего
+/// блока с отметкой «паром» внутри периода. Каюту движок не проверяет.
 List<RestPeriod> findRestPeriods(List<Block> blocks) {
   final periods = <RestPeriod>[];
   var i = 0;
@@ -176,13 +178,31 @@ List<RestPeriod> findRestPeriods(List<Block> blocks) {
       }
       last = j;
       final merged = _periodOf(blocks, i, last);
-      if (merged.rest >= EuLimits.dailyRestRegular) best = merged;
+      if (merged.rest >= EuLimits.dailyRestRegular &&
+          (merged.rest < EuLimits.weeklyRestRegular ||
+              _crossing(blocks, i, last) >=
+                  EuLimits.ferryRegularWeeklyRestCrossing)) {
+        best = merged;
+      }
     }
 
     periods.add(best);
     i = best.lastBlock + 1;
   }
   return periods;
+}
+
+/// Рейс парома / поезда внутри периода: от начала первого блока с отметкой
+/// до конца последнего.
+Duration _crossing(List<Block> blocks, int first, int last) {
+  DateTime? from;
+  var to = blocks[first].start;
+  for (var k = first; k <= last; k++) {
+    if (!blocks[k].ferry) continue;
+    from ??= blocks[k].start;
+    to = blocks[k].end;
+  }
+  return from == null ? Duration.zero : durationBetween(from, to);
 }
 
 RestPeriod _periodOf(List<Block> blocks, int first, int last) {

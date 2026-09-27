@@ -1,6 +1,8 @@
-// Ст. 9 Регламента 561/2006: на пароме / поезде полный суточный отдых можно
-// прервать не больше двух раз другими действиями общей длительностью до
-// 1 ч. На сокращённый суточный отдых исключение не распространяется.
+// Ст. 9 Регламента 561/2006 (ред. 2020/1054): на пароме / поезде полный
+// суточный и сокращённый недельный отдых можно прервать не больше двух раз
+// другими действиями общей длительностью до 1 ч. Регулярный недельный —
+// только при рейсе от 8 ч. На сокращённый суточный отдых исключение не
+// распространяется.
 
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:test/test.dart';
@@ -196,6 +198,85 @@ void main() {
       );
       expect(m.timeline.shifts, hasLength(2));
       expect(m.weeklyDriving, minutes(5 * 60 + 15 + 30));
+    });
+  });
+
+  group('ст. 9(1): недельный отдых на пароме / поезде', () {
+    // Смена, затем отдых в порту, посадка, отдых на борту, высадка, отдых.
+    List<ActivityPeriod> crossing({
+      required Object port,
+      required Object onBoard,
+      bool markOnBoard = true,
+      Object? after,
+    }) => logUntil(now, [
+      rest('11:00'),
+      drive('5:00'),
+      rest(port),
+      drive('0:20', ferry: true),
+      rest(onBoard, ferry: markOnBoard),
+      if (after != null) ...[drive('0:20', ferry: true), rest(after)],
+      drive('0:30'),
+    ]);
+
+    test('сокращённый недельный прерывается при любом рейсе: 20 ч + 10 ч = '
+        '30 ч', () {
+      final m = calc(crossing(port: '20:00', onBoard: '10:00'), now);
+      expect(m.lastWeeklyRest?.duration, dur('30:00'));
+      expect(m.lastWeeklyRest?.status, RestStatus.reduced);
+      expect(m.timeline.shifts, hasLength(2));
+    });
+
+    test('рейс ровно 8 ч — регулярный недельный 47:20', () {
+      final m = calc(
+        crossing(port: '30:00', onBoard: '7:20', after: '10:00'),
+        now,
+      );
+      expect(m.lastWeeklyRest?.duration, dur('47:20'));
+      expect(m.lastWeeklyRest?.status, RestStatus.full);
+      expect(m.compensation, isNull);
+    });
+
+    test('рейс 7:59 — регулярный не прерывается: недельный отдых 37:19 '
+        'до высадки, долг 7:41', () {
+      final m = calc(
+        crossing(port: '30:00', onBoard: '7:19', after: '10:00'),
+        now,
+      );
+      expect(m.lastWeeklyRest?.duration, dur('37:19'));
+      expect(m.lastWeeklyRest?.status, RestStatus.reduced);
+      expect(m.compensation?.debt, dur('7:41'));
+      // Высадка начинает смену, отдых после неё — суточный
+      expect(m.timeline.shifts, hasLength(3));
+    });
+
+    test('отдых на борту без отметки: рейс — от посадки до высадки', () {
+      final m = calc(
+        crossing(
+          port: '30:00',
+          onBoard: '7:20',
+          markOnBoard: false,
+          after: '10:00',
+        ),
+        now,
+      );
+      expect(m.lastWeeklyRest?.duration, dur('47:20'));
+      expect(m.lastWeeklyRest?.status, RestStatus.full);
+    });
+
+    test('одна посадка, отдых на борту без отметки — рейс не виден, '
+        'регулярный недельный не засчитан', () {
+      final m = calc(
+        crossing(port: '40:00', onBoard: '10:00', markOnBoard: false),
+        now,
+      );
+      expect(m.lastWeeklyRest?.duration, dur('40:00'));
+      expect(m.lastWeeklyRest?.status, RestStatus.reduced);
+    });
+
+    test('одна посадка, отдых на борту 7:40 с отметкой — рейс 8 ч', () {
+      final m = calc(crossing(port: '40:00', onBoard: '7:40'), now);
+      expect(m.lastWeeklyRest?.duration, dur('47:40'));
+      expect(m.lastWeeklyRest?.status, RestStatus.full);
     });
   });
 }
