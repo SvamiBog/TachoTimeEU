@@ -1,3 +1,6 @@
+import 'dart:io' show sleep;
+import 'dart:math' as math;
+
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:sqlite3/common.dart' show CommonDatabase;
@@ -19,14 +22,46 @@ class AppDatabase extends _$AppDatabase {
             ),
       );
 
+  /// Сколько запись ждёт, пока база занята другим соединением.
+  static const busyTimeout = Duration(seconds: 5);
+
+  static const _busyPauses = [
+    Duration(milliseconds: 1),
+    Duration(milliseconds: 2),
+    Duration(milliseconds: 5),
+    Duration(milliseconds: 10),
+    Duration(milliseconds: 20),
+  ];
+
   /// Журнал пишут два Flutter-движка: приложение и фоновый сервис
   /// автоопределения (Android). `shareAcrossIsolates` между независимыми
   /// движками не работает, поэтому у каждого своё соединение: WAL позволяет
-  /// читать во время записи, а при занятой базе запись ждёт до 5 с.
+  /// читать во время записи, а при занятой базе запись ждёт до [timeout].
   /// Об изменениях движки сообщают друг другу сами (`markTablesUpdated`).
-  static void configureConnection(CommonDatabase db) => db
-    ..execute('PRAGMA journal_mode = WAL')
-    ..execute('PRAGMA busy_timeout = 5000');
+  ///
+  /// Ожидание считаем по часам сами, а не через `PRAGMA busy_timeout`: SQLite
+  /// спит между попытками через `nanosleep` и засчитывает паузу целиком, даже
+  /// если сон прервал сигнал. Профилировщик Dart (debug- и profile-сборки,
+  /// `flutter test`) шлёт сигналы потоку примерно раз в миллисекунду, и 5 с
+  /// ожидания заканчивались примерно за 70 мс.
+  static void configureConnection(
+    CommonDatabase db, {
+    Duration timeout = busyTimeout,
+  }) {
+    final waited = Stopwatch();
+    db
+      ..execute('PRAGMA journal_mode = WAL')
+      ..busyHandler = (attempt) {
+        if (attempt == 0) {
+          waited
+            ..reset()
+            ..start();
+        }
+        if (waited.elapsed >= timeout) return false;
+        sleep(_busyPauses[math.min(attempt, _busyPauses.length - 1)]);
+        return true;
+      };
+  }
 
   // При изменении схемы: увеличить версию, затем
   // `dart run drift_dev make-migrations` и дописать шаг в onUpgrade.
