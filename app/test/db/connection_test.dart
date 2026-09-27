@@ -1,4 +1,4 @@
-// Соединение с базой: версия схемы, режим WAL, ожидание блокировки и два
+// Соединение с базой: версия схемы, режим WAL, ожидание занятой базы и два
 // соединения с одним файлом, как у приложения и фонового сервиса.
 // План тестов: DB-01…03 в docs/testing.md.
 import 'dart:async';
@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sqlite3/common.dart' show SqlError;
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
@@ -57,11 +58,17 @@ void main() {
     expect(db.schemaVersion, versions.reduce((a, b) => a > b ? a : b));
   });
 
-  test('DB-02: WAL, ожидание блокировки 5 с, внешние ключи', () async {
+  test('DB-02: WAL, внешние ключи, ожидание — свой обработчик', () async {
     final db = open();
     expect(await pragma(db, 'journal_mode'), 'wal');
-    expect(await pragma(db, 'busy_timeout'), 5000);
     expect(await pragma(db, 'foreign_keys'), 1);
+    expect(
+      await pragma(db, 'busy_timeout'),
+      0,
+      reason:
+          'PRAGMA busy_timeout заменяет обработчик ожидания по часам, '
+          'а её сон прерывает профилировщик Dart',
+    );
   });
 
   group('DB-03: два соединения с одним файлом', () {
@@ -108,6 +115,50 @@ void main() {
         DriverMode.driving,
       ]);
       expect(periods.first.end, periods.last.start);
+    });
+
+    test('ждёт по часам не дольше срока, потом — ошибка', () async {
+      const timeout = Duration(milliseconds: 300);
+      final app = open();
+      await app.customSelect('SELECT 1').get();
+      // В изоляте теста: ошибка SQLite приходит без обёртки drift
+      final service = AppDatabase(
+        NativeDatabase(
+          file,
+          setup: (db) => AppDatabase.configureConnection(db, timeout: timeout),
+        ),
+      );
+      addTearDown(service.close);
+      await service.customSelect('SELECT 1').get();
+
+      final release = Completer<void>();
+      final holding = Completer<void>();
+      final appWrite = app.transaction(() async {
+        await app
+            .into(app.cardDownloads)
+            .insert(CardDownloadsCompanion.insert(downloadedAtUtc: t0));
+        holding.complete();
+        await release.future;
+      });
+      await holding.future;
+
+      final waited = Stopwatch()..start();
+      await expectLater(
+        service
+            .into(service.cardDownloads)
+            .insert(CardDownloadsCompanion.insert(downloadedAtUtc: t0)),
+        throwsA(
+          isA<SqliteException>().having(
+            (e) => e.resultCode,
+            'код',
+            SqlError.SQLITE_BUSY,
+          ),
+        ),
+      );
+      // Сигналы профилировщика в flutter test срок не сокращают
+      expect(waited.elapsed, greaterThanOrEqualTo(timeout));
+      release.complete();
+      await appWrite;
     });
 
     test('одновременные переключения из двух движков не теряются', () async {
