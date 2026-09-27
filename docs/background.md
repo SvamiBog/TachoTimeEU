@@ -62,9 +62,10 @@
 
 ## Экономия батареи и оболочки производителей
 
-Doze и оболочки останавливают фоновые сервисы. `TrackingService` даёт UI (онбординг, Фаза 2):
+Doze и оболочки останавливают фоновые сервисы. `TrackingService` даёт UI — последний шаг онбординга и раздел «Автоопределение вождения» в настройках (`app/lib/features/settings/auto_detect.dart`):
 - `isIgnoringBatteryOptimizations` и `openBatteryOptimizationSettings()` — системный список исключений. Прямой запрос (`REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`) не используем: Google Play ограничивает это разрешение.
 - `openVendorBackgroundSettings()` — экран автозапуска оболочки: Xiaomi / Redmi / POCO, Huawei, Honor, Oppo / Realme / OnePlus, Vivo, Samsung. Если экрана нет — настройки приложения. Пошаговые инструкции для водителя: dontkillmyapp.com.
+- `health()` — доступ к геолокации, уведомления и экономия батареи сейчас, `locationBlocker()` — что мешает включить автоопределение. Ничего не запрашивают: экраны проверяют их, когда водитель вернулся из настроек телефона. Отказ в доступе объясняется плашкой; при отказе навсегда и выключенной геолокации — кнопка в настройки телефона (`openAppSettings()`, `openLocationSettings()`).
 
 ## Проверить на устройствах (Фаза 4)
 
