@@ -1,0 +1,74 @@
+// Форматы времени на экранах. Движок считает в UTC, водитель видит
+// местное время телефона; длительности от часового пояса не зависят.
+
+import 'package:intl/intl.dart';
+import 'package:tachogo/l10n/app_localizations.dart';
+
+/// Длительность как на тахографе: «4:30», «56:00», «−0:15». Неполная минута
+/// отбрасывается — таймер меняется, когда минута прошла целиком.
+String formatHm(Duration d) {
+  final minutes = d.inMinutes;
+  final m = minutes.abs();
+  final sign = minutes < 0 ? '−' : '';
+  return '$sign${m ~/ 60}:${(m % 60).toString().padLeft(2, '0')}';
+}
+
+/// Лимит: целые часы — «56 ч», иначе «4:30».
+String formatLimit(AppLocalizations l, Duration d) =>
+    d.inMinutes % 60 == 0 ? l.hoursShort(d.inHours) : formatHm(d);
+
+/// Местное время «06:49».
+String formatClock(DateTime t) {
+  final local = t.toLocal();
+  return '${_two(local.hour)}:${_two(local.minute)}';
+}
+
+/// «Ср, 23 сентября» — в шапке главной.
+String formatWeekdayDate(DateTime t, String locale) =>
+    _capitalize(DateFormat('EEE, d MMMM', locale).format(t.toLocal()));
+
+/// «вс 06:10» — срок в пределах недели.
+String formatWeekdayClock(DateTime t, String locale) =>
+    '${DateFormat('EEE', locale).format(t.toLocal())} ${formatClock(t)}';
+
+/// «пн 21.09, 06:10».
+String formatWeekdayDayClock(DateTime t, String locale) =>
+    '${formatWeekdayDay(t, locale)}, ${formatClock(t)}';
+
+/// «ср 23.09».
+String formatWeekdayDay(DateTime t, String locale) =>
+    '${DateFormat('EEE', locale).format(t.toLocal())} ${formatDayMonth(t)}';
+
+/// «02.09».
+String formatDayMonth(DateTime t) {
+  final local = t.toLocal();
+  return '${_two(local.day)}.${_two(local.month)}';
+}
+
+/// Длительность для TalkBack / VoiceOver: «4 часа 30 минут», а не «4:30».
+String spokenDuration(AppLocalizations l, Duration d) {
+  final total = d.inMinutes.abs();
+  final hours = total ~/ 60;
+  final minutes = total % 60;
+  final text = [
+    if (hours > 0) l.spokenHours(hours),
+    if (minutes > 0 || hours == 0) l.spokenMinutes(minutes),
+  ].join(' ');
+  return d.inMinutes < 0 ? l.spokenOverrun(text) : text;
+}
+
+/// Тот же день по местному времени.
+bool isSameLocalDay(DateTime a, DateTime b) {
+  final x = a.toLocal();
+  final y = b.toLocal();
+  return x.year == y.year && x.month == y.month && x.day == y.day;
+}
+
+String _two(int n) => n.toString().padLeft(2, '0');
+
+String _capitalize(String s) =>
+    s.isEmpty ? s : '${s[0].toUpperCase()}${s.substring(1)}';
+
+/// «02.09.2026».
+String formatDayMonthYear(DateTime t) =>
+    '${formatDayMonth(t)}.${t.toLocal().year}';

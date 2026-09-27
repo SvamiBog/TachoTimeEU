@@ -1,22 +1,51 @@
 // Каждый экран отрисовывается и проверяется на соответствие дизайну и
 // доступности: обе темы, ширина 412 dp (основной таргет) и 360 dp,
 // крупный системный шрифт, контраст текста, зоны касания ≥ 44 dp,
-// время и цифры — JetBrains Mono с цифрами одинаковой ширины.
+// время и цифры — JetBrains Mono с цифрами одной ширины.
 //
-// Новый экран — добавить в [_screens]. Экрану с данными из БД —
-// переопределить databaseProvider базой в памяти в _pump.
+// Новый экран или шторка — добавить в [_screens]. Данные — неделя
+// с макета «Главная» за рулём: предупреждения, чипы и плашки на экране.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tachogo/app.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
-import 'package:tachogo/core/theme/app_theme.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
+import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/home_screen.dart';
+import 'package:tachogo/features/home/workday_screen.dart';
+import 'package:tachogo/features/shell/app_shell.dart';
 
-final _screens = <String, Widget Function()>{'Главная': HomeScreen.new};
+import '../support/app_harness.dart';
+import '../support/journal_fixtures.dart';
+
+/// Экран и, для шторки, как её открыть.
+typedef _Screen = ({
+  Widget Function() build,
+  Future<void> Function(WidgetTester tester)? open,
+});
+
+Future<void> _openCardSheet(WidgetTester tester) async {
+  await tester.scrollUntilVisible(
+    find.byType(CardReadingTile),
+    300,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.ensureVisible(find.byType(CardReadingTile));
+  await tester.pumpAndSettle();
+  await tester.tap(find.byType(CardReadingTile));
+  await tester.pumpAndSettle();
+  expect(find.byType(CardSheet), findsOneWidget);
+}
+
+final _screens = <String, _Screen>{
+  'Главная': (build: HomeScreen.new, open: null),
+  'Нижняя навигация': (build: AppShell.new, open: null),
+  'Рабочий день': (build: WorkdayScreen.new, open: null),
+  'Шторка «Считывание карты»': (build: HomeScreen.new, open: _openCardSheet),
+};
 
 /// Экраны телефона, dp: основной таргет и небольшой Android.
 const _viewports = {'412 dp': Size(412, 915), '360 dp': Size(360, 640)};
@@ -31,28 +60,35 @@ const _minTapTarget = MinimumTapTargetGuideline(
 
 Future<void> _pump(
   WidgetTester tester,
-  Widget screen, {
+  _Screen screen, {
   Brightness brightness = Brightness.dark,
   Size viewport = const Size(412, 915),
   double textScale = 1,
 }) async {
-  tester.view
-    ..devicePixelRatio = 2.625
-    ..physicalSize = viewport * 2.625;
-  tester.platformDispatcher.textScaleFactorTestValue = textScale;
-  addTearDown(tester.view.reset);
-  addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-  await tester.pumpWidget(
-    ProviderScope(
-      child: MaterialApp(theme: buildTheme(brightness), home: screen),
+  final week = designWeek(driving: true);
+  await pumpScreen(
+    tester,
+    screen.build(),
+    overrides: journalOverrides(
+      periods: week.periods,
+      now: week.now,
+      lastCard: week.now.subtract(const Duration(days: 23)),
     ),
+    brightness: brightness,
+    viewport: viewport,
+    textScale: textScale,
   );
+  await screen.open?.call(tester);
 }
 
 /// Текст из одних цифр и знаков времени: «4:30», «56:00», «12 / 90», «−0:15».
 final _numeric = RegExp(r'^[−\-+]?[\d\s:.,/%]*\d[\d\s:.,/%]*$');
 
 void main() {
+  // Настоящие Onest и JetBrains Mono вместо тестового Ahem: переполнение и
+  // контраст проверяются на тех же ширинах текста, что на телефоне.
+  setUpAll(loadAppFonts);
+
   test('шаблон цифр', () {
     for (final s in ['4:30', '56:00', '12 / 90', '−0:15', '28', '100%']) {
       expect(_numeric.hasMatch(s), isTrue, reason: s);
@@ -63,20 +99,29 @@ void main() {
   });
 
   testWidgets('по умолчанию тёмная тема из токенов', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: TachoGoApp()));
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: databaseOverrides(db, now: () => designWeek().now),
+        child: const TachoGoApp(),
+      ),
+    );
+    await settle(tester);
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.themeMode, ThemeMode.dark);
 
-    final context = tester.element(find.byType(Scaffold));
+    final context = tester.element(find.byType(Scaffold).first);
     expect(Theme.of(context).brightness, Brightness.dark);
     expect(context.colors, same(AppColors.dark));
     expect(
       Theme.of(context).scaffoldBackgroundColor,
       AppColors.dark.background,
     );
+    await unmount(tester);
   });
 
-  for (final MapEntry(key: name, value: build) in _screens.entries) {
+  for (final MapEntry(key: name, value: screen) in _screens.entries) {
     group('экран «$name»', () {
       for (final brightness in Brightness.values) {
         final theme = brightness == Brightness.dark ? 'тёмная' : 'светлая';
@@ -89,7 +134,7 @@ void main() {
             ) async {
               await _pump(
                 tester,
-                build(),
+                screen,
                 brightness: brightness,
                 viewport: viewport,
                 textScale: scale,
@@ -102,7 +147,7 @@ void main() {
         testWidgets(
           '$theme: контраст отрисованного текста',
           (tester) async {
-            await _pump(tester, build(), brightness: brightness);
+            await _pump(tester, screen, brightness: brightness);
             await expectLater(tester, meetsGuideline(textContrastGuideline));
           },
           // Таймер цвета вождения на фоне светлой темы — 2.5:1,
@@ -113,7 +158,7 @@ void main() {
         testWidgets('$theme: зоны касания ≥ 44 dp и с подписью', (
           tester,
         ) async {
-          await _pump(tester, build(), brightness: brightness);
+          await _pump(tester, screen, brightness: brightness);
           await expectLater(tester, meetsGuideline(_minTapTarget));
           await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
         });
@@ -122,7 +167,7 @@ void main() {
       testWidgets('время и цифры — JetBrains Mono, цифры одной ширины', (
         tester,
       ) async {
-        await _pump(tester, build());
+        await _pump(tester, screen);
         final numbers = [
           for (final text in tester.widgetList<RichText>(find.byType(RichText)))
             if (_numeric.hasMatch(text.text.toPlainText().trim())) text,
@@ -141,8 +186,8 @@ void main() {
       });
 
       testWidgets('поля экрана — 16 dp', (tester) async {
-        await _pump(tester, build());
-        final screenRect = tester.getRect(find.byType(Scaffold));
+        await _pump(tester, screen);
+        final screenRect = tester.getRect(find.byType(Scaffold).first);
         for (final text in find.byType(Text).evaluate()) {
           final rect = tester.getRect(
             find.byElementPredicate((e) => identical(e, text)),
