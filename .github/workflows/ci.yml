@@ -29,14 +29,23 @@ jobs:
           cache: true
       - name: Движок не зависит от Flutter
         run: |
-          if grep -rnE "package:flutter|dart:ui" lib test; then
+          if grep -rnE "package:flutter|dart:ui" lib test tool; then
             echo "tacho_engine должен оставаться чистым Dart" >&2
             exit 1
           fi
       - run: dart pub get
       - run: dart format --output=none --set-exit-if-changed .
       - run: dart analyze --fatal-infos
-      - run: dart test
+      - name: Тесты с покрытием
+        run: dart run coverage:test_with_coverage
+      - name: Покрытие не ниже 95 %
+        run: dart run tool/check_coverage.dart coverage/lcov.info 95 lib/
+      - uses: actions/upload-artifact@v6
+        if: ${{ !cancelled() }}
+        with:
+          name: coverage-engine
+          path: packages/tacho_engine/coverage/lcov.info
+          if-no-files-found: ignore
 
   app:
     name: Приложение
@@ -56,9 +65,100 @@ jobs:
         run: |
           dart run build_runner build
           git diff --exit-code -- lib
-      - run: dart format --output=none --set-exit-if-changed lib test
+      # Новая версия схемы без make-migrations — здесь появятся новые файлы.
+      - name: Снимки схемы БД актуальны
+        run: |
+          dart run drift_dev make-migrations
+          changed=$(git status --porcelain -- drift_schemas test/drift lib/data/db)
+          if [ -n "$changed" ]; then
+            echo "$changed"
+            echo "Запустите dart run drift_dev make-migrations" >&2
+            exit 1
+          fi
+      - run: dart format --output=none --set-exit-if-changed lib test tool
       - run: flutter analyze --fatal-infos
-      - run: flutter test
+      - run: flutter test --coverage
+      - name: Покрытие lib/data не ниже 80 %
+        run: >-
+          dart run ../packages/tacho_engine/tool/check_coverage.dart
+          coverage/lcov.info 80 lib/data/
+      - uses: actions/upload-artifact@v6
+        if: ${{ !cancelled() }}
+        with:
+          name: coverage-app
+          path: app/coverage/lcov.info
+          if-no-files-found: ignore
+
+  # Время в движке и базе — UTC. Прогон в других поясах ловит местное время
+  # там, где его быть не должно.
+  timezones:
+    name: Часовой пояс ${{ matrix.tz }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tz: [Europe/Warsaw, Asia/Kolkata, America/New_York]
+    env:
+      TZ: ${{ matrix.tz }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Движок
+        working-directory: packages/tacho_engine
+        run: |
+          dart pub get
+          dart test
+      - name: Приложение
+        working-directory: app
+        run: |
+          flutter pub get
+          flutter test
+
+  prototype:
+    name: Веб-прототип
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+
+  secrets:
+    name: Поиск секретов
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Ключи и конфиги с секретами не в репозитории
+        run: |
+          pattern='(\.jks|\.keystore|\.p12|\.pem|(^|/)key\.properties|google-services\.json|GoogleService-Info\.plist)$'
+          files=$(git ls-files | grep -Ei "$pattern" || true)
+          if [ -n "$files" ]; then
+            echo "$files"
+            echo "Эти файлы не должны попадать в git" >&2
+            exit 1
+          fi
+      # Новые коммиты: в PR — от базовой ветки, при push — от прошлого
+      # состояния ветки.
+      - name: gitleaks
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          range="$GITHUB_SHA"
+          if [ -n "$BASE" ] && git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            range="$BASE..$GITHUB_SHA"
+          fi
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:latest \
+            git /repo --log-opts="$range" --redact --no-banner --verbose
 
   build-android:
     name: Сборка Android
@@ -115,6 +215,10 @@ jobs:
           --dart-define-from-file=env/prod.json
           --dart-define=CRASH_DSN="$CRASH_DSN"
           --dart-define=ANALYTICS_KEY="$ANALYTICS_KEY"
+
+      # Плагины могут добавить разрешения, которых нет в нашем манифесте.
+      - name: Итоговый манифест с плагинами
+        run: dart run tool/check_android_manifest.dart
 
       - uses: actions/upload-artifact@v6
         with:
