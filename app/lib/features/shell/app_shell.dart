@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
-import 'package:tachogo/core/theme/app_tokens.dart';
-import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/features/home/home_screen.dart';
 import 'package:tachogo/features/journal/journal_screen.dart';
+import 'package:tachogo/features/more/more_screen.dart';
 import 'package:tachogo/features/settings/settings_screen.dart';
 
 /// Вкладки нижней навигации.
@@ -29,11 +28,11 @@ class _AppShellState extends State<AppShell> {
     return Scaffold(
       body: IndexedStack(
         index: _tab.index,
-        children: [
-          const HomeScreen(),
-          const JournalScreen(),
-          const SettingsScreen(),
-          TabPlaceholder(title: l.navMore),
+        children: const [
+          HomeScreen(),
+          JournalScreen(),
+          SettingsScreen(),
+          MoreScreen(),
         ],
       ),
       bottomNavigationBar: DecoratedBox(
@@ -66,33 +65,4 @@ class _AppShellState extends State<AppShell> {
       ),
     );
   }
-}
-
-/// Вкладка, которая ещё не сделана (Фаза 2, следующие шаги).
-class TabPlaceholder extends StatelessWidget {
-  const new({required this.title, super.key});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    body: SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.all(AppSpacing.screenPadding + 4),
-        children: [
-          Semantics(
-            header: true,
-            child: Text(title, style: AppTextStyles.screenTitle),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            context.l10n.tabInProgress,
-            style: AppTextStyles.body.copyWith(
-              color: context.colors.textSecondary,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
 }

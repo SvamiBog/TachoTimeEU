@@ -17,17 +17,19 @@ import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
+import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/settings/auto_detect.dart';
 import 'package:tachogo/features/settings/language_sheet.dart';
 
-/// Шаги онбординга. Макеты — 13 (приветствие) и 14 (настройка); режимы
-/// и автоопределение собраны из компонентов дизайн-системы.
-enum OnboardingStep { welcome, modes, setup, autoDetect }
+/// Шаги онбординга. Макеты — 13 (приветствие) и 14 (настройка); режимы,
+/// главные правила и автоопределение собраны из компонентов дизайн-системы.
+enum OnboardingStep { welcome, modes, rules, setup, autoDetect }
 
-/// Онбординг при первом запуске (UI-13): язык, режимы и таймеры, тип
-/// тахографа, пакет мобильности, уведомления, согласие на аналитику,
-/// автоопределение вождения. Выбор сразу пишется в настройки; «Готово»
-/// отмечает онбординг пройденным — больше он не показывается.
+/// Онбординг при первом запуске (UI-13): язык, режимы, главные правила для
+/// тех, кто впервые с тахографом, тип транспорта и тахографа, пакет
+/// мобильности, уведомления, согласие на аналитику, автоопределение
+/// вождения. Выбор сразу пишется в настройки; «Готово» отмечает онбординг
+/// пройденным — больше он не показывается.
 class OnboardingScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -88,6 +90,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 child: switch (_step) {
                   OnboardingStep.welcome => const _Welcome(),
                   OnboardingStep.modes => const _Modes(),
+                  OnboardingStep.rules => const _Rules(),
                   OnboardingStep.setup => const _Setup(),
                   OnboardingStep.autoDetect => const _AutoDetect(),
                 },
@@ -418,7 +421,49 @@ class _Modes extends StatelessWidget {
   }
 }
 
-// ───────────────────────── 3. Настройка ─────────────────────────
+// ───────────────────────── 3. Главные правила ─────────────────────────
+
+/// Четыре лимита, о которых водитель должен знать с первого дня; остальное
+/// — в «Инструкции и правилах».
+class _Rules extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 8),
+      children: [
+        _Intro(title: l.onbRulesTitle, text: l.onbRulesText),
+        const SizedBox(height: AppSpacing.beforeSectionMin),
+        const CardGroup(
+          children: [
+            RuleRow(GuideRule.continuous),
+            RuleRow(GuideRule.dailyDriving),
+            RuleRow(GuideRule.dailyRest),
+            RuleRow(GuideRule.weeklyRest),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.screenPadding + 4,
+            12,
+            AppSpacing.screenPadding + 4,
+            0,
+          ),
+          child: Text(
+            l.onbRulesMore,
+            style: AppTextStyles.caption.copyWith(
+              color: context.colors.textSecondary,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ───────────────────────── 4. Настройка ─────────────────────────
 
 class _Setup extends ConsumerWidget {
   const new();
@@ -427,9 +472,8 @@ class _Setup extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final repo = ref.read(settingsRepositoryProvider);
-    final tachograph =
-        ref.watch(preferencesProvider).value?.tachograph ??
-        TachographType.digital;
+    final prefs =
+        ref.watch(preferencesProvider).value ?? const AppPreferences();
     final rules =
         ref.watch(complianceSettingsProvider).value ??
         const ComplianceSettings();
@@ -438,29 +482,66 @@ class _Setup extends ConsumerWidget {
       padding: const EdgeInsets.only(bottom: 8),
       children: [
         _Intro(title: l.onbSetupTitle, text: l.onbSetupText),
-        SectionTitle(l.settingsTachograph, top: AppSpacing.beforeSectionMin),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.screenPadding,
-          ),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (final (i, type) in TachographType.values.indexed) ...[
-                  if (i > 0) const SizedBox(width: 8),
-                  Expanded(
-                    child: _TachographOption(
-                      type: type,
-                      selected: tachograph == type,
-                      onTap: () => unawaited(repo.setTachograph(type)),
-                    ),
-                  ),
-                ],
-              ],
+        SectionTitle(l.settingsVehicle, top: AppSpacing.beforeSectionMin),
+        _Options(
+          options: [
+            (
+              icon: Icons.local_shipping_outlined,
+              label: l.vehicleTruckOrBus,
+              selected: prefs.vehicle == VehicleType.truckOrBus,
+              onTap: () => unawaited(repo.setVehicle(VehicleType.truckOrBus)),
             ),
-          ),
+            (
+              icon: Icons.airport_shuttle_outlined,
+              label: l.vehicleVan,
+              selected: prefs.vehicle == VehicleType.van,
+              onTap: () => unawaited(repo.setVehicle(VehicleType.van)),
+            ),
+          ],
         ),
+        // У фургона тахограф только цифровой — вместо выбора пояснение
+        if (prefs.vehicle == VehicleType.van) ...[
+          const SizedBox(height: AppSpacing.betweenCardsMin),
+          CardGroup(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.cardPadding),
+                child: Text(
+                  l.onbVanText(formatUtcDate(vanRulesFrom)),
+                  style: AppTextStyles.body.copyWith(
+                    color: context.colors.chipText,
+                    height: 1.45,
+                  ),
+                ),
+              ),
+              NavRow(
+                icon: Icons.help_outline,
+                title: l.guideVanCheck,
+                onTap: () => openGuide(context),
+              ),
+            ],
+          ),
+        ] else ...[
+          SectionTitle(l.settingsTachograph, top: AppSpacing.beforeSectionMin),
+          _Options(
+            options: [
+              (
+                icon: Icons.credit_card,
+                label: l.tachographDigital,
+                selected: prefs.tachograph == TachographType.digital,
+                onTap: () =>
+                    unawaited(repo.setTachograph(TachographType.digital)),
+              ),
+              (
+                icon: Icons.album_outlined,
+                label: l.tachographAnalog,
+                selected: prefs.tachograph == TachographType.analog,
+                onTap: () =>
+                    unawaited(repo.setTachograph(TachographType.analog)),
+              ),
+            ],
+          ),
+        ],
         SectionTitle(l.settingsRules, top: AppSpacing.beforeSectionMin),
         CardGroup(
           children: [
@@ -492,20 +573,47 @@ class _Setup extends ConsumerWidget {
   }
 }
 
-/// Карточка-вариант «Цифровой» / «Аналоговый» (экран 14).
-class _TachographOption extends StatelessWidget {
-  const new({required this.type, required this.selected, required this.onTap});
+typedef _Option = ({
+  IconData icon,
+  String label,
+  bool selected,
+  VoidCallback onTap,
+});
 
-  final TachographType type;
-  final bool selected;
-  final VoidCallback onTap;
+/// Варианты карточками в ряд (экран 14): «Грузовик или автобус» /
+/// «Фургон 2,5–3,5 т», «Цифровой» / «Аналоговый».
+class _Options extends StatelessWidget {
+  const new({required this.options});
+
+  final List<_Option> options;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
+    child: IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final (i, option) in options.indexed) ...[
+            if (i > 0) const SizedBox(width: 8),
+            Expanded(child: _OptionCard(option)),
+          ],
+        ],
+      ),
+    ),
+  );
+}
+
+class _OptionCard extends StatelessWidget {
+  const new(this.option);
+
+  final _Option option;
 
   @override
   Widget build(BuildContext context) {
-    final l = context.l10n;
     final colors = context.colors;
     return Semantics(
-      selected: selected,
+      selected: option.selected,
       inMutuallyExclusiveGroup: true,
       button: true,
       child: Material(
@@ -513,13 +621,13 @@ class _TachographOption extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.modeButton),
           side: BorderSide(
-            color: selected ? colors.drive : colors.line,
+            color: option.selected ? colors.drive : colors.line,
             width: 2,
           ),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: onTap,
+          onTap: option.onTap,
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 112),
             child: Padding(
@@ -528,19 +636,9 @@ class _TachographOption extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(
-                    type == TachographType.digital
-                        ? Icons.credit_card
-                        : Icons.album_outlined,
-                    size: 28,
-                  ),
+                  Icon(option.icon, size: 28),
                   const SizedBox(height: 16),
-                  Text(
-                    type == TachographType.digital
-                        ? l.tachographDigital
-                        : l.tachographAnalog,
-                    style: AppTextStyles.header,
-                  ),
+                  Text(option.label, style: AppTextStyles.header),
                 ],
               ),
             ),
@@ -632,7 +730,7 @@ class _NotificationsCardState extends ConsumerState<_NotificationsCard> {
   }
 }
 
-// ───────────────────────── 4. Автоопределение ─────────────────────────
+// ───────────────────────── 5. Автоопределение ─────────────────────────
 
 class _AutoDetect extends ConsumerStatefulWidget {
   const new();
