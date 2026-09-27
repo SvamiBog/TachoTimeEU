@@ -12,6 +12,7 @@ ThemeData buildTheme(Brightness brightness) {
       seedColor: c.drive,
       brightness: brightness,
       primary: c.drive,
+      onPrimary: c.onAccent,
       surface: c.surface,
       onSurface: c.text,
       error: c.errorText,

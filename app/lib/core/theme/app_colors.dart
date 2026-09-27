@@ -23,6 +23,10 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.errorText,
     required this.switchOff,
     required this.scrim,
+    required this.onAccent,
+    required this.chipText,
+    required this.restBg,
+    required this.restText,
   });
 
   final Color background;
@@ -48,6 +52,17 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Фон под шторкой (bottom sheet).
   final Color scrim;
 
+  /// Подпись и значок на заливке цветом режима: активная кнопка режима,
+  /// основная кнопка, выбранная вкладка.
+  final Color onAccent;
+
+  /// Текст нейтрального чипа на [surface2].
+  final Color chipText;
+
+  /// Плашка «перерыв идёт / засчитан».
+  final Color restBg;
+  final Color restText;
+
   static const dark = AppColors(
     background: Color(0xFF111315),
     surface: Color(0xFF1A1D20),
@@ -65,6 +80,10 @@ class AppColors extends ThemeExtension<AppColors> {
     errorText: Color(0xFFFF9C94),
     switchOff: Color(0xFF3A3F45),
     scrim: Color(0xFF070808),
+    onAccent: Color(0xFF111315),
+    chipText: Color(0xFFC9CDD2),
+    restBg: Color(0xFF16261F),
+    restText: Color(0xFF9FE3CE),
   );
 
   static const light = AppColors(
@@ -84,6 +103,10 @@ class AppColors extends ThemeExtension<AppColors> {
     errorText: Color(0xFFA8261C),
     switchOff: Color(0xFFD6D2C9),
     scrim: Color(0xFF8A8680),
+    onAccent: Color(0xFF15171A),
+    chipText: Color(0xFF3F444B),
+    restBg: Color(0xFFDCF1E9),
+    restText: Color(0xFF145C48),
   );
 
   @override
@@ -104,6 +127,10 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? errorText,
     Color? switchOff,
     Color? scrim,
+    Color? onAccent,
+    Color? chipText,
+    Color? restBg,
+    Color? restText,
   }) => AppColors(
     background: background ?? this.background,
     surface: surface ?? this.surface,
@@ -121,6 +148,10 @@ class AppColors extends ThemeExtension<AppColors> {
     errorText: errorText ?? this.errorText,
     switchOff: switchOff ?? this.switchOff,
     scrim: scrim ?? this.scrim,
+    onAccent: onAccent ?? this.onAccent,
+    chipText: chipText ?? this.chipText,
+    restBg: restBg ?? this.restBg,
+    restText: restText ?? this.restText,
   );
 
   @override
@@ -144,6 +175,10 @@ class AppColors extends ThemeExtension<AppColors> {
       errorText: l(errorText, other.errorText),
       switchOff: l(switchOff, other.switchOff),
       scrim: l(scrim, other.scrim),
+      onAccent: l(onAccent, other.onAccent),
+      chipText: l(chipText, other.chipText),
+      restBg: l(restBg, other.restBg),
+      restText: l(restText, other.restText),
     );
   }
 }

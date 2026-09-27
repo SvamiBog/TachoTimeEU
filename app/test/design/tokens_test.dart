@@ -151,6 +151,7 @@ void main() {
         expect(theme.extension<AppColors>(), same(palette));
         expect(theme.scaffoldBackgroundColor, palette.background);
         expect(theme.colorScheme.primary, palette.drive);
+        expect(theme.colorScheme.onPrimary, palette.onAccent);
         expect(theme.colorScheme.surface, palette.surface);
         expect(theme.colorScheme.onSurface, palette.text);
         expect(theme.colorScheme.error, palette.errorText);
@@ -212,6 +213,9 @@ void main() {
         'Ошибка фон / текст': ['errorBg', 'errorText'],
         'Выкл. переключатель': ['switchOff'],
         'Затемнение шторки': ['scrim'],
+        'Текст на акценте': ['onAccent'],
+        'Текст чипа': ['chipText'],
+        'Отдых · плашка фон / текст': ['restBg', 'restText'],
       };
       final rows = tableRows(readme, '## Токены');
       expect(rows.map((r) => r[0]).toSet(), labels.keys.toSet());
