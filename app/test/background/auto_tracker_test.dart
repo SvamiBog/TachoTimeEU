@@ -166,4 +166,117 @@ void main() {
     await drive([...repeat(5, 40), ...repeat(20, 0)]);
     expect(rateRequests.last, isFalse);
   });
+
+  group('BG-03: ошибки, остановка, экипаж, паром', () {
+    test('ошибка GPS уходит в onError, трекер работает дальше', () async {
+      final errors = <Object>[];
+      await tracker.stop();
+      tracker = AutoTracker(
+        journal: journal,
+        settings: settings,
+        source: source,
+        clock: () => now,
+        onError: (e, _) => errors.add(e),
+      );
+      await journalWith([DriverMode.otherWork]);
+      await tracker.start();
+
+      gps.addError(StateError('GPS'));
+      await pumpEventQueue();
+      expect(errors, [isA<StateError>()]);
+
+      await drive(repeat(5, 50));
+      expect((await journal.periods()).last.mode, DriverMode.driving);
+    });
+
+    test('stop() дожидается событий и закрывает поток предложений', () async {
+      await journal.switchMode(DriverMode.rest);
+      now = t0;
+      await tracker.start();
+      var closed = false;
+      tracker.suggestions.listen((_) {}, onDone: () => closed = true);
+
+      await drive(repeat(5, 50));
+      await tracker.stop();
+      await pumpEventQueue();
+      expect(closed, isTrue);
+      expect(tracker.suggestion?.reason, AutoSwitchReason.offDuty);
+    });
+
+    test('согласие без предложения ничего не пишет', () async {
+      await journalWith([DriverMode.otherWork]);
+      await tracker.start();
+      final before = await journal.periods();
+      await tracker.acceptSuggestion();
+      expect(await journal.periods(), before);
+    });
+
+    test('экипаж — предложение с причиной «экипаж»', () async {
+      await settings.setComplianceSettings(
+        const ComplianceSettings(crew: CrewMode.team),
+      );
+      await journalWith([DriverMode.otherWork]);
+      await tracker.start();
+      await drive(repeat(5, 50));
+
+      expect(tracker.suggestion?.reason, AutoSwitchReason.team);
+      expect((await journal.periods()).last.mode, DriverMode.otherWork);
+    });
+
+    test('на пароме — ничего', () async {
+      await journal.switchMode(DriverMode.rest);
+      now = t0.subtract(const Duration(minutes: 30));
+      await journal.switchMode(DriverMode.otherWork, ferry: true);
+      now = t0;
+      await tracker.start();
+      await drive(repeat(10, 50));
+
+      expect(tracker.suggestion, isNull);
+      final last = (await journal.periods()).last;
+      expect(last.mode, DriverMode.otherWork);
+      expect(last.ferry, isTrue);
+    });
+  });
+
+  group('BG-04: новые правила — со следующего события, без перезапуска', () {
+    test('режим после остановки', () async {
+      await journalWith([DriverMode.otherWork]);
+      await tracker.start();
+      await drive(repeat(5, 50));
+      await settings.setAutoDetect(
+        const AutoDetectSettings(
+          enabled: true,
+          rules: AutoSwitchSettings(afterStop: DriverMode.availability),
+        ),
+      );
+      await drive(repeat(20, 0));
+
+      expect((await journal.periods()).last.mode, DriverMode.availability);
+    });
+
+    test('вождение сразу и с отдыха', () async {
+      await journal.switchMode(DriverMode.rest);
+      now = t0;
+      await tracker.start();
+      await settings.setAutoDetect(
+        const AutoDetectSettings(
+          enabled: true,
+          rules: AutoSwitchSettings(startFromRest: true),
+        ),
+      );
+      await drive(repeat(5, 50));
+
+      expect(tracker.suggestion, isNull);
+      expect((await journal.periods()).last.mode, DriverMode.driving);
+    });
+
+    test('выключение действует сразу', () async {
+      await journalWith([DriverMode.otherWork]);
+      await tracker.start();
+      await settings.setAutoDetect(const AutoDetectSettings());
+      await drive(repeat(5, 50));
+
+      expect((await journal.periods()).last.mode, DriverMode.otherWork);
+    });
+  });
 }

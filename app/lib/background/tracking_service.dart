@@ -1,10 +1,7 @@
-import 'dart:io' show Platform;
-
-import 'package:flutter/services.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:tachogo/background/auto_tracker.dart';
-import 'package:tachogo/background/motion_source.dart';
+import 'package:tachogo/background/tracking_platform.dart';
 import 'package:tachogo/background/tracking_task.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
@@ -32,14 +29,19 @@ enum TrackingBlocker {
 ///   приложение смахнули, автоопределение ждёт следующего запуска; таймеры
 ///   при этом не теряются — они считаются по журналу.
 class TrackingService {
-  new({required this._journal, required this._settings, this._onError});
+  new({
+    required this._journal,
+    required this._settings,
+    this._onError,
+    this._platform = const TrackingPlatform(),
+  });
 
   static const _serviceId = 561;
-  static const _deviceChannel = MethodChannel('eu.tachogo/device');
 
   final ActivityRepository _journal;
   final SettingsRepository _settings;
   final void Function(Object error, StackTrace stack)? _onError;
+  final TrackingPlatform _platform;
 
   /// iOS: трекер в процессе приложения.
   AutoTracker? _inProcess;
@@ -54,11 +56,11 @@ class TrackingService {
   Future<TrackingBlocker?> enable() async {
     final blocker = await _requestLocation();
     if (blocker != null) return blocker;
-    if (Platform.isAndroid &&
-        await FlutterForegroundTask.checkNotificationPermission() !=
+    if (_platform.isAndroid &&
+        await _platform.checkNotificationPermission() !=
             NotificationPermission.granted) {
       // Без него сервис работает, но уведомление с таймерами не видно.
-      await FlutterForegroundTask.requestNotificationPermission();
+      await _platform.requestNotificationPermission();
     }
     final current = await _settings.autoDetect();
     await _settings.setAutoDetect(
@@ -89,13 +91,12 @@ class TrackingService {
   /// Android: приложение не в списке экономии батареи. Иначе Doze и
   /// оболочки производителей останавливают сервис.
   Future<bool> get isIgnoringBatteryOptimizations async =>
-      !Platform.isAndroid ||
-      await FlutterForegroundTask.isIgnoringBatteryOptimizations;
+      !_platform.isAndroid || await _platform.isIgnoringBatteryOptimizations;
 
   /// Открывает системный список исключений из экономии батареи.
   Future<void> openBatteryOptimizationSettings() async {
-    if (Platform.isAndroid) {
-      await FlutterForegroundTask.openIgnoreBatteryOptimizationSettings();
+    if (_platform.isAndroid) {
+      await _platform.openIgnoreBatteryOptimizationSettings();
     }
   }
 
@@ -103,18 +104,17 @@ class TrackingService {
   /// (Xiaomi, Huawei, Honor, Oppo, Vivo, Samsung). Возвращает false, если
   /// такого экрана нет и открылись обычные настройки приложения.
   Future<bool> openVendorBackgroundSettings() async {
-    if (!Platform.isAndroid) return false;
-    return await _deviceChannel.invokeMethod<bool>('openAutostartSettings') ??
-        false;
+    if (!_platform.isAndroid) return false;
+    return await _platform.openAutostartSettings();
   }
 
   Future<TrackingBlocker?> _requestLocation() async {
-    if (!await Geolocator.isLocationServiceEnabled()) {
+    if (!await _platform.isLocationServiceEnabled()) {
       return TrackingBlocker.locationServiceDisabled;
     }
-    var permission = await Geolocator.checkPermission();
+    var permission = await _platform.checkPermission();
     if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+      permission = await _platform.requestPermission();
     }
     return switch (permission) {
       LocationPermission.whileInUse || LocationPermission.always => null,
@@ -125,19 +125,19 @@ class TrackingService {
   }
 
   Future<bool> _hasLocationAccess() async =>
-      switch (await Geolocator.checkPermission()) {
+      switch (await _platform.checkPermission()) {
         LocationPermission.whileInUse || LocationPermission.always => true,
         _ => false,
       };
 
   Future<void> _start() async {
-    if (Platform.isAndroid) {
+    if (_platform.isAndroid) {
       await _startAndroid();
-    } else if (Platform.isIOS && _inProcess == null) {
+    } else if (_platform.isIOS && _inProcess == null) {
       final tracker = _inProcess = AutoTracker(
         journal: _journal,
         settings: _settings,
-        source: gpsSamples,
+        source: _platform.motionSamples,
         onError: _onError,
       );
       await tracker.start();
@@ -145,9 +145,9 @@ class TrackingService {
   }
 
   Future<void> _stop() async {
-    if (Platform.isAndroid) {
-      if (await FlutterForegroundTask.isRunningService) {
-        await FlutterForegroundTask.stopService();
+    if (_platform.isAndroid) {
+      if (await _platform.isRunningService) {
+        await _platform.stopService();
       }
     } else {
       final tracker = _inProcess;
@@ -157,18 +157,16 @@ class TrackingService {
   }
 
   Future<void> _startAndroid() async {
-    FlutterForegroundTask.init(
-      androidNotificationOptions: AndroidNotificationOptions(
+    _platform.initService(
+      android: AndroidNotificationOptions(
         channelId: 'auto_detect',
         channelName: 'Автоопределение вождения',
         channelDescription:
             'Текущий режим и таймеры, пока работает автоопределение',
         onlyAlertOnce: true,
       ),
-      iosNotificationOptions: const IOSNotificationOptions(
-        showNotification: false,
-      ),
-      foregroundTaskOptions: ForegroundTaskOptions(
+      ios: const IOSNotificationOptions(showNotification: false),
+      task: ForegroundTaskOptions(
         eventAction: ForegroundTaskEventAction.repeat(
           TrackingTaskHandler.refreshInterval.inMilliseconds,
         ),
@@ -176,8 +174,8 @@ class TrackingService {
         autoRunOnMyPackageReplaced: true,
       ),
     );
-    if (await FlutterForegroundTask.isRunningService) return;
-    final result = await FlutterForegroundTask.startService(
+    if (await _platform.isRunningService) return;
+    final result = await _platform.startService(
       serviceId: _serviceId,
       serviceTypes: [ForegroundServiceTypes.location],
       notificationTitle: 'TachoGo',
@@ -196,19 +194,22 @@ class TrackingService {
 abstract final class TrackingMessages {
   /// Подписка на сообщения задачи: [onJournalChanged] — журнал изменён
   /// в фоне. Возвращает функцию отписки.
-  static void Function() listen({required void Function() onJournalChanged}) {
+  static void Function() listen({
+    required void Function() onJournalChanged,
+    TrackingPlatform platform = const TrackingPlatform(),
+  }) {
     void callback(Object data) {
       if (data == journalChangedMessage) onJournalChanged();
     }
 
-    FlutterForegroundTask.addTaskDataCallback(callback);
-    return () => FlutterForegroundTask.removeTaskDataCallback(callback);
+    platform.addTaskDataCallback(callback);
+    return () => platform.removeTaskDataCallback(callback);
   }
 
   /// Сообщает задаче сервиса, что журнал изменён в приложении.
-  static void notifyJournalChanged() {
-    if (Platform.isAndroid) {
-      FlutterForegroundTask.sendDataToTask(journalChangedMessage);
-    }
+  static void notifyJournalChanged({
+    TrackingPlatform platform = const TrackingPlatform(),
+  }) {
+    if (platform.isAndroid) platform.sendDataToTask(journalChangedMessage);
   }
 }

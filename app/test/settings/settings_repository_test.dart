@@ -97,6 +97,27 @@ void main() {
       expect(await repo.watchAutoDetect().first, saved);
     });
 
+    test('не повторяется, когда меняются другие настройки (REP-04)', () async {
+      final values = <AutoDetectSettings>[];
+      final sub = repo.watchAutoDetect().listen(values.add);
+      addTearDown(sub.cancel);
+      await pumpEventQueue();
+
+      await repo.setAnalyticsConsent(granted: true);
+      await repo.setComplianceSettings(
+        const ComplianceSettings(crew: CrewMode.team),
+      );
+      await pumpEventQueue();
+      expect(values, [const AutoDetectSettings()]);
+
+      await repo.setAutoDetect(const AutoDetectSettings(enabled: true));
+      await pumpEventQueue();
+      expect(values, [
+        const AutoDetectSettings(),
+        const AutoDetectSettings(enabled: true),
+      ]);
+    });
+
     test('вождение как режим после остановки не принимается', () async {
       await db
           .into(db.settings)

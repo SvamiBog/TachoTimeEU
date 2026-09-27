@@ -10,13 +10,15 @@ import 'package:tachogo/core/observability/analytics.dart';
 /// Автоинициализация SDK выключена в AndroidManifest.xml и Info.plist
 /// (`com.posthog.posthog.AUTO_INIT`), иначе он стартовал бы до согласия.
 class PosthogAnalytics implements Analytics {
-  new(this._projectKey, {required this._environment});
+  /// [posthog] — для тестов; по умолчанию SDK приложения.
+  new(this._projectKey, {required this._environment, Posthog? posthog})
+    : _posthog = posthog ?? Posthog();
 
-  static const _host = 'https://eu.i.posthog.com';
+  static const host = 'https://eu.i.posthog.com';
 
   final String _projectKey;
   final String _environment;
-  final _posthog = Posthog();
+  final Posthog _posthog;
 
   var _enabled = false;
   Future<void>? _ready;
@@ -36,7 +38,7 @@ class PosthogAnalytics implements Analytics {
 
   Future<void> _setup() async {
     final config = PostHogConfig(_projectKey)
-      ..host = _host
+      ..host = host
       ..personProfiles = PostHogPersonProfiles.never
       ..preloadFeatureFlags = false
       ..surveys = false;

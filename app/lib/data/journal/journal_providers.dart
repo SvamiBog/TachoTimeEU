@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/database_provider.dart';
@@ -47,7 +48,8 @@ class Clock extends Notifier<DateTime> {
     return _now();
   }
 
-  static DateTime _now() => DateTime.now().toUtc();
+  // `clock` из package:clock — в тестах его подменяет fake_async.
+  static DateTime _now() => clock.now().toUtc();
 }
 
 /// Настройки, от которых зависит расчёт: экипаж, пакет мобильности, пороги.

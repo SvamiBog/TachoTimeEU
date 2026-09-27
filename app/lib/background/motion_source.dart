@@ -28,9 +28,11 @@ Stream<MotionSample> gpsSamples({required bool fast}) {
   return Geolocator.getPositionStream(locationSettings: settings).map(sampleOf);
 }
 
-/// Скорость в м/с → км/ч; отрицательная — неизвестна.
+/// Скорость в м/с → км/ч. Скорость неизвестна (−1), если система её не
+/// сообщила: тогда плагин подставляет 0, и отметка без скорости выглядела
+/// бы стоянкой — через 3 мин вождение сменилось бы другой работой.
 MotionSample sampleOf(Position p) => MotionSample(
   time: p.timestamp.toUtc(),
-  speedKmh: p.speed < 0 ? -1 : p.speed * 3.6,
-  accuracyMeters: p.accuracy,
+  speedKmh: !p.hasSpeed || p.speed < 0 ? -1 : p.speed * 3.6,
+  accuracyMeters: p.hasAccuracy ? p.accuracy : null,
 );
