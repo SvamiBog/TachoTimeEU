@@ -2267,6 +2267,12 @@ abstract class AppLocalizations {
   /// **'Конец рабочего дня'**
   String get notifyShiftEnd;
 
+  /// No description provided for @notifyShiftEndHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Суточный и недельный отдых'**
+  String get notifyShiftEndHint;
+
   /// No description provided for @notifyDriving.
   ///
   /// In ru, this message translates to:
@@ -2320,6 +2326,78 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Уведомления разрешены'**
   String get notifyAllowed;
+
+  /// No description provided for @notifyExact.
+  ///
+  /// In ru, this message translates to:
+  /// **'Точное время уведомлений'**
+  String get notifyExact;
+
+  /// No description provided for @notifyExactHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Разрешите «Будильники и напоминания» — иначе телефон может задержать предупреждение'**
+  String get notifyExactHint;
+
+  /// No description provided for @notifyChannelLimits.
+  ///
+  /// In ru, this message translates to:
+  /// **'Лимиты и нарушения'**
+  String get notifyChannelLimits;
+
+  /// No description provided for @notifyChannelLimitsHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерыв, конец рабочего дня, вождение, недельный отдых, карта'**
+  String get notifyChannelLimitsHint;
+
+  /// No description provided for @notifyChannelRest.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отдых набран'**
+  String get notifyChannelRest;
+
+  /// No description provided for @notifyChannelRestHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерыв засчитан, суточный и недельный отдых набран'**
+  String get notifyChannelRestHint;
+
+  /// No description provided for @notifyBreakTakenTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерыв засчитан'**
+  String get notifyBreakTakenTitle;
+
+  /// Уведомление: «Перерыв 45 мин набран. Можно ехать 4:30…»
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерыв {required} мин набран. Можно ехать {time} до следующего перерыва.'**
+  String notifyBreakTakenText(int required, String time);
+
+  /// No description provided for @notifyDailyRestTakenTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Суточный отдых набран'**
+  String get notifyDailyRestTakenTitle;
+
+  /// Уведомление: «Полный отдых 11 ч — можно начинать смену.»
+  ///
+  /// In ru, this message translates to:
+  /// **'Полный отдых {limit} — можно начинать смену.'**
+  String notifyDailyRestTakenText(String limit);
+
+  /// No description provided for @notifyWeeklyRestTakenTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Недельный отдых набран'**
+  String get notifyWeeklyRestTakenTitle;
+
+  /// Уведомление: «Полный отдых 45 ч — можно начинать…»
+  ///
+  /// In ru, this message translates to:
+  /// **'Полный отдых {limit} — можно начинать новую рабочую неделю.'**
+  String notifyWeeklyRestTakenText(String limit);
 
   /// No description provided for @autoTitle.
   ///

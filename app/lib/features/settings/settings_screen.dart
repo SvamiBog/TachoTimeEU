@@ -18,7 +18,9 @@ import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
 import 'package:tachogo/features/settings/auto_detect.dart';
+import 'package:tachogo/features/settings/exact_alarms.dart';
 import 'package:tachogo/features/settings/language_sheet.dart';
+import 'package:tachogo/notifications/alert_providers.dart';
 
 /// Пороги предупреждения о лимитах (экран 3).
 const warningLeads = [
@@ -189,7 +191,8 @@ class TachographTabs extends StatelessWidget {
 }
 
 /// Порог предупреждений и категории уведомлений. Порог сразу меняет
-/// плашки «скоро» на экранах; категории понадобятся уведомлениям (Фаза 3).
+/// плашки «скоро» на экранах и момент уведомлений; расписание
+/// пересчитывается само (`AlertScheduler`).
 class _NotificationsCard extends ConsumerWidget {
   const new();
 
@@ -204,10 +207,12 @@ class _NotificationsCard extends ConsumerWidget {
         ref.watch(notificationSettingsProvider).value ??
         const NotificationSettings();
     final allowed = ref.watch(trackingHealthProvider).value?.notifications;
+    final exact = ref.watch(exactAlarmsProvider).value;
     void save(NotificationSettings s) => unawaited(repo.setNotifications(s));
     return CardGroup(
       children: [
         if (allowed == false) const NotificationPermissionRow(),
+        if (exact == false) const ExactAlarmsRow(),
         ChoiceBlock(
           title: l.settingsWarnLead,
           subtitle: l.settingsWarnLeadHint,
@@ -236,6 +241,7 @@ class _NotificationsCard extends ConsumerWidget {
         ),
         SwitchRow(
           title: l.notifyShiftEnd,
+          subtitle: l.notifyShiftEndHint,
           strong: false,
           value: notify.shiftEnd,
           onChanged: (on) => save(notify.copyWith(shiftEnd: on)),

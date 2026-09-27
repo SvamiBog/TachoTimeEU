@@ -17,10 +17,12 @@ void main() {
       expect(manifestProblems(source), isEmpty);
     });
 
-    test('проверка ловит фоновую геолокацию и запрос про батарею', () {
+    test('проверка ловит фоновую геолокацию, запрос про батарею и '
+        'USE_EXACT_ALARM', () {
       for (final permission in [
         'ACCESS_BACKGROUND_LOCATION',
         'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
+        'USE_EXACT_ALARM',
       ]) {
         final bad = source.replaceFirst(
           '<application',
@@ -37,6 +39,34 @@ void main() {
         'android:foregroundServiceType="dataSync"',
       );
       expect(manifestProblems(bad), [contains('location')]);
+    });
+
+    test('NTF: уведомления по расписанию — разрешения и ресиверы', () {
+      for (final permission in [
+        'RECEIVE_BOOT_COMPLETED',
+        'SCHEDULE_EXACT_ALARM',
+      ]) {
+        final bad = source.replaceFirst(
+          '<uses-permission android:name="android.permission.$permission" />',
+          '',
+        );
+        expect(manifestProblems(bad), [contains(permission)]);
+      }
+      for (final receiver in [
+        'ScheduledNotificationReceiver',
+        'ScheduledNotificationBootReceiver',
+      ]) {
+        final bad = source.replaceFirst(
+          'flutterlocalnotifications.$receiver"',
+          'flutterlocalnotifications.Other"',
+        );
+        expect(manifestProblems(bad), [contains(receiver)]);
+      }
+      final noBoot = source.replaceFirst(
+        '<action android:name="android.intent.action.BOOT_COMPLETED" />',
+        '',
+      );
+      expect(manifestProblems(noBoot), [contains('перезагрузки')]);
     });
 
     test('проверка ловит автозапуск PostHog', () {

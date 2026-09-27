@@ -17,6 +17,7 @@ import 'package:tachogo/features/settings/settings_screen.dart';
 import 'package:tachogo/features/shell/app_shell.dart';
 
 import '../background/fake_tracking_platform.dart';
+import '../notifications/fake_notification_platform.dart';
 import '../support/app_harness.dart';
 
 final t0 = DateTime.utc(2026, 9, 23, 12);
@@ -352,6 +353,51 @@ void main() {
       expect(find.text('Разрешить уведомления'), findsNothing);
       await tapText(tester, 'Открыть настройки');
       expect(platform.calls, contains('openAppSettings'));
+      await unmount(tester);
+    });
+  });
+
+  group('NTF: точное время уведомлений', () {
+    late FakeNotificationPlatform alerts;
+    setUp(() => alerts = FakeNotificationPlatform());
+
+    Future<void> pumpWithAlerts(WidgetTester tester) => pumpScreen(
+      tester,
+      const SettingsScreen(),
+      overrides: databaseOverrides(
+        db,
+        now: () => t0,
+        platform: platform,
+        notifications: alerts,
+      ),
+    );
+
+    testWidgets('будильники запрещены — строка; после разрешения пропадает, '
+        'расписание — точными будильниками', (tester) async {
+      alerts.exactAllowed = false;
+      await seedJournal(tester);
+      await pumpWithAlerts(tester);
+      await show(tester, 'Точное время уведомлений');
+      expect(find.textContaining('Будильники и напоминания'), findsOne);
+      await tapText(tester, 'Точное время уведомлений');
+      expect(alerts.calls, contains('requestExactAlarms'));
+      expect(find.text('Точное время уведомлений'), findsNothing);
+      expect(alerts.pending, isNotEmpty);
+      expect(alerts.pending.values.every((p) => p.exact), isTrue);
+      await unmount(tester);
+    });
+
+    testWidgets('будильники разрешены — строки нет', (tester) async {
+      await pumpWithAlerts(tester);
+      await show(tester, 'Перерыв');
+      expect(find.text('Точное время уведомлений'), findsNothing);
+      await unmount(tester);
+    });
+
+    testWidgets('«Конец рабочего дня» — это и недельный отдых', (tester) async {
+      await pump(tester);
+      await show(tester, 'Конец рабочего дня');
+      expect(find.text('Суточный и недельный отдых'), findsOne);
       await unmount(tester);
     });
   });
