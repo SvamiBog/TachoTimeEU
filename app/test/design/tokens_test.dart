@@ -49,6 +49,11 @@ void main() {
       'body': AppTextStyles.body,
       'caption': AppTextStyles.caption,
       'section': AppTextStyles.section,
+      'modeTimer': AppTextStyles.modeTimer,
+      'button': AppTextStyles.button,
+      'label': AppTextStyles.label,
+      'small': AppTextStyles.small,
+      'valueLarge': AppTextStyles.valueLarge,
     };
 
     test('шрифты: Onest для интерфейса, JetBrains Mono для цифр', () {
@@ -58,6 +63,7 @@ void main() {
 
     test('в коде ровно те стили, что в tokens.json', () {
       expect(styles.keys.toSet(), section(tokens, 'typography').keys.toSet());
+      expect(AppTextStyles.all, unorderedEquals(styles.values));
     });
 
     for (final MapEntry(key: name, value: style) in styles.entries) {
@@ -146,6 +152,7 @@ void main() {
         expect(theme.extension<AppColors>(), same(palette));
         expect(theme.scaffoldBackgroundColor, palette.background);
         expect(theme.colorScheme.primary, palette.drive);
+        expect(theme.colorScheme.onPrimary, palette.onAccent);
         expect(theme.colorScheme.surface, palette.surface);
         expect(theme.colorScheme.onSurface, palette.text);
         expect(theme.colorScheme.error, palette.errorText);
@@ -207,6 +214,9 @@ void main() {
         'Ошибка фон / текст': ['errorBg', 'errorText'],
         'Выкл. переключатель': ['switchOff'],
         'Затемнение шторки': ['scrim'],
+        'Текст на акценте': ['onAccent'],
+        'Текст чипа': ['chipText'],
+        'Отдых · плашка фон / текст': ['restBg', 'restText'],
       };
       final rows = tableRows(readme, '## Токены');
       expect(rows.map((r) => r[0]).toSet(), labels.keys.toSet());
@@ -228,6 +238,11 @@ void main() {
         'Основной текст': 'body',
         'Подпись под значением': 'caption',
         'Раздел': 'section',
+        'Таймер режима': 'modeTimer',
+        'Кнопка': 'button',
+        'Метка: чипы, навигация, подпись кольца': 'label',
+        'Мелкий текст': 'small',
+        'Крупное значение: «45 ч»': 'valueLarge',
       };
       final fonts = section(tokens, 'font');
       final rows = tableRows(readme, '## Типографика');

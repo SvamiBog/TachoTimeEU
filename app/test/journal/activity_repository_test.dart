@@ -66,6 +66,31 @@ void main() {
       await repo.switchMode(DriverMode.otherWork, ferry: true);
       expect((await repo.periods()).single.ferry, isTrue);
     });
+
+    test('режим «паром»: текущая запись и следующие, выключение — с '
+        'текущей', () async {
+      await repo.switchMode(DriverMode.driving);
+      await repo.setFerryMode(on: true);
+      advance(const Duration(minutes: 5));
+      await repo.switchMode(DriverMode.rest);
+      advance(const Duration(hours: 2));
+      await repo.switchMode(DriverMode.driving);
+      await repo.setFerryMode(on: false);
+      advance(const Duration(minutes: 5));
+      await repo.switchMode(DriverMode.otherWork);
+
+      expect((await repo.periods()).map((p) => (p.mode, p.ferry)), [
+        (DriverMode.driving, true),
+        (DriverMode.rest, true),
+        (DriverMode.driving, false),
+        (DriverMode.otherWork, false),
+      ]);
+    });
+
+    test('режим «паром» без записей ничего не пишет', () async {
+      await repo.setFerryMode(on: true);
+      expect(await repo.periods(), isEmpty);
+    });
   });
 
   group('переключение задним числом (автоопределение)', () {

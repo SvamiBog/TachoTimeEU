@@ -54,6 +54,10 @@ final Map<String, Color Function(AppColors)> colorFields = {
   'errorText': (c) => c.errorText,
   'switchOff': (c) => c.switchOff,
   'scrim': (c) => c.scrim,
+  'onAccent': (c) => c.onAccent,
+  'chipText': (c) => c.chipText,
+  'restBg': (c) => c.restBg,
+  'restText': (c) => c.restText,
 };
 
 /// Палитры тем по имени из tokens.json.
@@ -70,7 +74,8 @@ const lightDriveContrastIssue =
     '#FFFFFF — 2.8:1, нужно ≥ 3:1 (WCAG 1.4.3, 1.4.11). Проходит, '
     'например, #BB7900: 3.2:1 и 3.6:1, тёмная подпись на нём — 5.0:1.';
 
-const lightOnAccentIssue =
-    'Светлая тема: ColorScheme.fromSeed даёт белую подпись на акценте '
-    '#D48A00 — 2.8:1, нужно ≥ 4.5:1. В прототипе подпись тёмная '
-    '(--tt-on-accent): #15171A на #D48A00 — 6.4:1.';
+const lightOnModeIssue =
+    'Светлая тема: подпись #15171A на активной кнопке режима — отдых '
+    '#1F8A6C 4.2:1, работа #C9562C 4.2:1, готовность #3D64C9 3.3:1, нужно '
+    '≥ 4.5:1 (подпись 13 px). Белая подпись тоже не проходит на отдыхе и '
+    'работе (4.3:1) — нужны темнее цвета режимов светлой темы.';

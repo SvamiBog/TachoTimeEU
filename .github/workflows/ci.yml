@@ -64,7 +64,14 @@ jobs:
       - name: Сгенерированный код актуален
         run: |
           dart run build_runner build
+          flutter gen-l10n
           git diff --exit-code -- lib
+          untracked=$(git ls-files --others --exclude-standard -- lib)
+          if [ -n "$untracked" ]; then
+            echo "$untracked"
+            echo "Сгенерированные файлы не в git" >&2
+            exit 1
+          fi
       # Новая версия схемы без make-migrations — здесь появятся новые файлы.
       - name: Снимки схемы БД актуальны
         run: |

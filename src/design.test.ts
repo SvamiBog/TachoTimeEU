@@ -36,6 +36,10 @@ const cssToToken: Record<string, ColorToken> = {
   'err-fg': 'errorText',
   'switch-off': 'switchOff',
   scrim: 'scrim',
+  'on-accent': 'onAccent',
+  'chip-fg': 'chipText',
+  'rest-bg': 'restBg',
+  'rest-fg': 'restText',
 };
 
 /** Переменные --tt-* из блока CSS с данным селектором. */

@@ -64,4 +64,56 @@ abstract final class AppTextStyles {
     fontWeight: FontWeight.w600,
     letterSpacing: 13 * 0.08,
   );
+
+  /// Время в текущем режиме под кольцом на главной.
+  static const modeTimer = TextStyle(
+    fontFamily: AppFonts.numeric,
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
+    fontFeatures: _tabular,
+  );
+
+  static const button = TextStyle(
+    fontFamily: AppFonts.ui,
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+  );
+
+  /// Чипы, подписи нижней навигации и кольца.
+  static const label = TextStyle(
+    fontFamily: AppFonts.ui,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+  );
+
+  /// Дата под названием в шапке.
+  static const small = TextStyle(
+    fontFamily: AppFonts.ui,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+  );
+
+  /// Крупное значение в карточке: «45 ч» на экране недельного отдыха.
+  static const valueLarge = TextStyle(
+    fontFamily: AppFonts.numeric,
+    fontSize: 32,
+    fontWeight: FontWeight.w700,
+    fontFeatures: _tabular,
+  );
+
+  static const List<TextStyle> all = [
+    timer,
+    screenTitle,
+    header,
+    rowTitle,
+    value,
+    body,
+    caption,
+    section,
+    modeTimer,
+    button,
+    label,
+    small,
+    valueLarge,
+  ];
 }

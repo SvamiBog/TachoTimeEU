@@ -18,6 +18,9 @@ const _largeTextAndGraphics = 3.0;
 const Map<String, String> _knownIssues = {
   'light/drive/background': lightDriveContrastIssue,
   'light/drive/surface': lightDriveContrastIssue,
+  'light/onAccent/rest': lightOnModeIssue,
+  'light/onAccent/work': lightOnModeIssue,
+  'light/onAccent/available': lightOnModeIssue,
 };
 
 void main() {
@@ -56,9 +59,17 @@ void main() {
         }
       });
 
-      group('плашки лимитов', () {
+      group('плашки лимитов и чипы', () {
         pair(theme, 'warningText', 'warningBg', _normalText);
         pair(theme, 'errorText', 'errorBg', _normalText);
+        pair(theme, 'restText', 'restBg', _normalText);
+        pair(theme, 'chipText', 'surface2', _normalText);
+      });
+
+      group('подпись активной кнопки режима', () {
+        for (final mode in ['drive', 'rest', 'work', 'available']) {
+          pair(theme, 'onAccent', mode, _normalText);
+        }
       });
 
       group('цвета режимов: таймер, полосы, кнопки', () {
@@ -93,7 +104,7 @@ void main() {
               '${hexOf(scheme.onPrimary)} на ${hexOf(scheme.primary)} — '
               '${ratio.toStringAsFixed(2)}:1',
         );
-      }, skip: theme == 'light' ? lightOnAccentIssue : null);
+      });
     });
   }
 

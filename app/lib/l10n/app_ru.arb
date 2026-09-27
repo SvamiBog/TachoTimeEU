@@ -1,0 +1,755 @@
+{
+  "@@locale": "ru",
+  "appTitle": "TachoGo",
+  "navHome": "Главная",
+  "navJournal": "Журнал",
+  "navSettings": "Настройки",
+  "navMore": "Ещё",
+  "tabInProgress": "Экран в работе — появится в следующих обновлениях.",
+  "@tabInProgress": {
+    "description": "Заглушка вкладки, которая ещё не сделана"
+  },
+  "close": "Закрыть",
+  "back": "Назад",
+  "ofLimit": "из {limit}",
+  "@ofLimit": {
+    "description": "«4:48 из 13:00», «2:15 из 11 ч»",
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumLock": "Доступно в Premium",
+  "@premiumLock": {
+    "description": "Подпись замка у Premium-действия"
+  },
+  "hoursShort": "{hours} ч",
+  "@hoursShort": {
+    "description": "Лимит в целых часах: «56 ч»",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "daysShort": "{days} дн",
+  "@daysShort": {
+    "description": "Дни до считывания карты: «7 дн»",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "spokenHours": "{count, plural, one{{count} час} few{{count} часа} many{{count} часов} other{{count} часа}}",
+  "@spokenHours": {
+    "description": "Длительность для TalkBack / VoiceOver",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spokenMinutes": "{count, plural, one{{count} минута} few{{count} минуты} many{{count} минут} other{{count} минуты}}",
+  "@spokenMinutes": {
+    "description": "Длительность для TalkBack / VoiceOver",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spokenOverrun": "превышение {duration}",
+  "@spokenOverrun": {
+    "description": "Для TalkBack: таймер ушёл в минус",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "modeDriving": "Вождение",
+  "modeRest": "Отдых",
+  "modeWork": "Работа",
+  "@modeWork": {
+    "description": "Короткое название для кнопки режима"
+  },
+  "modeWorkFull": "Другая работа",
+  "modeAvailability": "Готовность",
+  "modeNone": "Режим не выбран",
+  "modeSince": "с {time}",
+  "@modeSince": {
+    "description": "Режим начат в это время",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "switchFailed": "Режим не записан. Попробуйте ещё раз.",
+  "homeShiftSince": "{date} · смена с {time}",
+  "@homeShiftSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "homeNoShift": "{date} · смена не начата",
+  "@homeNoShift": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "homeLoadError": "Не удалось открыть журнал. Перезапустите приложение — если не поможет, напишите нам через «Ещё».",
+  "heroUntilBreak": "До перерыва",
+  "heroBreak": "Перерыв",
+  "heroDailyRest": "Суточный отдых",
+  "heroWeeklyRest": "Недельный отдых",
+  "heroContinuousOf": "непрерывно {time} из {limit}",
+  "@heroContinuousOf": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "heroOffDutyHint": "Смена завершена. Новая начнётся с первого режима кроме отдыха.",
+  "bannerBreakNeeded45": "Нужен перерыв 45 мин (или раздельный 15 + 30)",
+  "bannerBreakNeeded30": "Нужен перерыв 30 мин — вторая часть раздельного 15 + 30",
+  "bannerOnBreak": "Перерыв {time} из {required} мин",
+  "@bannerOnBreak": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "required": {
+        "type": "int"
+      }
+    }
+  },
+  "bannerBreakCounted": "Перерыв засчитан — можно ехать {limit}",
+  "@bannerBreakCounted": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionAlerts": "Предупреждения",
+  "sectionToday": "Сегодня",
+  "sectionRest": "Отдых",
+  "sectionWeek": "Неделя",
+  "rowContinuous": "Непрерывное вождение",
+  "chipBreakSoon": "скоро перерыв",
+  "chipExceeded": "превышено",
+  "chipLimiting": "ограничивает",
+  "chipShiftSoon": "скоро конец",
+  "chipLimitSoon": "скоро лимит",
+  "chipRestSoon": "скоро отдых",
+  "chipTimes": "{hours} ч ×{count}",
+  "@chipTimes": {
+    "description": "Сколько раз ещё можно: «10 ч ×2»",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "limitOf": "лимит {limit}",
+  "@limitOf": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "leftUntil": "ещё {left} → {time}",
+  "@leftUntil": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "left": "ещё {left}",
+  "@left": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "limitLeft": "{hours} ч: ещё {left}",
+  "@limitLeft": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "limitLeftUntil": "{hours} ч: ещё {left} → {time}",
+  "@limitLeftUntil": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "left": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "limitUntil": "{hours} ч → {time}",
+  "@limitUntil": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "rowWorkday": "Рабочий день",
+  "workdayNoShift": "Смена не начата",
+  "rowDailyDriving": "Суточное вождение",
+  "rowBreak": "Перерыв",
+  "breakTaken": "Взято {minutes} мин в {time}",
+  "@breakTaken": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "breakStillNeeded": "ещё {minutes} мин",
+  "@breakStillNeeded": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "breakNotTaken": "Перерыв ещё не брали",
+  "breakResting": "Сейчас перерыв {time} из {required} мин",
+  "@breakResting": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "required": {
+        "type": "int"
+      }
+    }
+  },
+  "rowDailyRest": "Суточный отдых",
+  "dailyRestCaption": "11 ч полный · 9 ч сокращённый",
+  "dailyRestSplit": "3 + 9",
+  "rowWeeklyRest": "Недельный отдых",
+  "weeklyRestCaption": "45 ч полный · 24 ч сокращённый",
+  "chipReducedAvailable": "24 ч доступен",
+  "chipReducedUnavailable": "только 45 ч",
+  "statusNotStarted": "не начат",
+  "statusInProgress": "идёт {time}",
+  "@statusInProgress": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "statusBy": "до {when}",
+  "@statusBy": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "statusNoData": "нет данных",
+  "rowWeeklyDriving": "Недельное вождение",
+  "rowFortnightDriving": "Двухнедельное вождение",
+  "rowWorkWeek": "Рабочая неделя",
+  "workWeekSince": "с {since}",
+  "@workWeekSince": {
+    "placeholders": {
+      "since": {
+        "type": "String"
+      }
+    }
+  },
+  "workWeekUnknown": "Нет данных о прошлом недельном отдыхе",
+  "cardTitle": "Считывание карты",
+  "cardCaption": "последнее {last} · до {due}",
+  "@cardCaption": {
+    "placeholders": {
+      "last": {
+        "type": "String"
+      },
+      "due": {
+        "type": "String"
+      }
+    }
+  },
+  "cardNever": "Отметьте последнее считывание",
+  "cardSheetLast": "Последнее считывание: {date}",
+  "@cardSheetLast": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cardSheetNever": "Считывание ещё не отмечено.",
+  "cardSheetRule": "Данные карты водителя нужно считывать не реже раза в 28 дней (Регламент (ЕС) 581/2010).",
+  "cardMarkToday": "Считано сегодня",
+  "cardMarked": "Считывание отмечено",
+  "workdayStart": "Начало смены",
+  "workdayRegular": "{hours} ч — обычный день",
+  "@workdayRegular": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "workdayRegularHint": "затем полный отдых 11 ч · ещё {left}",
+  "@workdayRegularHint": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "workdayExtended": "{hours} ч — удлинённый день",
+  "@workdayExtended": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "workdayExtendedHint": "затем сокращённый отдых 9 ч · осталось ×{count}",
+  "@workdayExtendedHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workdayRule": "Суточный отдых должен закончиться в пределах 24 часов от начала смены. Сокращённый отдых 9 ч можно брать не больше трёх раз между недельными отдыхами.",
+  "workdayEndDay": "Завершить день",
+  "workdayEndDayHint": "Отдых начнётся сейчас и завершит смену, даже если он короче 9 ч.",
+  "todayDate": "Сегодня, {date}",
+  "@todayDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "infrArticle": "ЕС {regulation} · ст. {article}",
+  "@infrArticle": {
+    "placeholders": {
+      "regulation": {
+        "type": "String"
+      },
+      "article": {
+        "type": "String"
+      }
+    }
+  },
+  "infrContinuousExceededTitle": "Превышено непрерывное вождение",
+  "infrContinuousExceededText": "Вождение без перерыва больше {limit} на {time}. Остановитесь и сделайте перерыв {required} мин.",
+  "@infrContinuousExceededText": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "required": {
+        "type": "int"
+      }
+    }
+  },
+  "infrBreakSoonTitle": "Скоро перерыв",
+  "infrBreakSoonText": "До лимита {limit} осталось {time}. Нужен перерыв {required} мин.",
+  "@infrBreakSoonText": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "required": {
+        "type": "int"
+      }
+    }
+  },
+  "infrDailyDriveExceededTitle": "Превышено суточное вождение",
+  "infrDailyDriveExceededText": "Больше {limit} на {time}. Начните суточный отдых.",
+  "@infrDailyDriveExceededText": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrDailyDriveSoonTitle": "Суточное вождение заканчивается",
+  "infrDailyDriveSoonText": "До лимита {limit} осталось {time}.",
+  "@infrDailyDriveSoonText": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrExtensionInUseTitle": "Идёт продление до 10 ч",
+  "infrExtensionInUseText": "Продлений на этой неделе останется: {count}.",
+  "@infrExtensionInUseText": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "infrShiftExceededTitle": "Превышен рабочий день",
+  "infrShiftExceededText": "Смена длиннее {limit} на {time}. Начните суточный отдых.",
+  "@infrShiftExceededText": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrShiftSoonTitle": "Скоро конец рабочего дня",
+  "infrShiftSoonText": "Начните суточный отдых через {time}.",
+  "@infrShiftSoonText": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrWeeklyDriveExceededTitle": "Превышено недельное вождение",
+  "infrWeeklyDriveExceededText": "Больше {limit} на {time}.",
+  "@infrWeeklyDriveExceededText": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrWeeklyDriveSoonTitle": "Недельное вождение заканчивается",
+  "infrWeeklyDriveSoonText": "До {limit} осталось {time}.",
+  "@infrWeeklyDriveSoonText": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrFortnightDriveExceededTitle": "Превышено вождение за две недели",
+  "infrFortnightDriveExceededText": "Больше {limit} на {time}.",
+  "@infrFortnightDriveExceededText": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrFortnightDriveSoonTitle": "Вождение за две недели заканчивается",
+  "infrFortnightDriveSoonText": "До {limit} осталось {time}.",
+  "@infrFortnightDriveSoonText": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrWeeklyRestOverdueTitle": "Недельный отдых просрочен",
+  "infrWeeklyRestOverdueText": "С прошлого недельного отдыха прошло больше 144 ч — на {time}.",
+  "@infrWeeklyRestOverdueText": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrWeeklyRestSoonTitle": "Скоро недельный отдых",
+  "infrWeeklyRestSoonText": "Начните недельный отдых через {time}.",
+  "@infrWeeklyRestSoonText": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrWeeklyRestContinueTitle": "Не прерывайте отдых",
+  "infrWeeklyRestContinueText": "Срок недельного отдыха прошёл. Отдыхайте ещё {time}, чтобы отдых стал недельным.",
+  "@infrWeeklyRestContinueText": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrCompensationSoonTitle": "Скоро срок компенсации",
+  "infrCompensationSoonText": "Присоедините {time} к отдыху не короче 9 ч. До срока {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}.",
+  "@infrCompensationSoonText": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "infrCompensationOverdueTitle": "Компенсация просрочена",
+  "infrCompensationOverdueText": "Не присоединено {time} за сокращённый недельный отдых. Просрочка — {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}.",
+  "@infrCompensationOverdueText": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "infrReducedRestsExceededTitle": "Слишком много сокращённых отдыхов",
+  "infrReducedRestsExceededText": "С недельного отдыха сокращённых: {count}, допускается 3.",
+  "@infrReducedRestsExceededText": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "infrCardOverdueTitle": "Считывание карты просрочено",
+  "infrCardOverdueText": "Срок 28 дней прошёл {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}} назад.",
+  "@infrCardOverdueText": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "infrCardSoonTitle": "Скоро считывание карты",
+  "infrCardSoonText": "Осталось {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}.",
+  "@infrCardSoonText": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "ferryTitle": "Паром / поезд",
+  "ferryHint": "Отдых можно прервать не больше двух раз, всего до 1 ч (ст. 9). Движение парома не включит вождение.",
+  "ferryOn": "паром",
+  "@ferryOn": {
+    "description": "Рядом с текущим режимом, когда включён режим «паром / поезд»"
+  },
+  "breakHero": "Перерыв после {limit} вождения",
+  "@breakHero": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "breakPartDone": "{minutes} мин ✓",
+  "@breakPartDone": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "breakPart": "{minutes} мин",
+  "@breakPart": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "breakPartLeft": "{minutes} мин — осталось",
+  "@breakPartLeft": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "breakFirstTaken": "Первая часть взята в {from}–{to}",
+  "@breakFirstTaken": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "breakNone": "Нужен перерыв 45 мин подряд или 15 + 30 мин.",
+  "breakSplitTitle": "Раздельный перерыв 15 + 30",
+  "breakSplitText": "Первая часть не меньше 15 мин, вторая — не меньше 30 мин, именно в таком порядке. Приложение распознаёт его само.",
+  "breakStart": "Начать перерыв",
+  "breakOngoing": "Перерыв идёт",
+  "weeklyStartBy": "Начать не позже",
+  "weeklyInTime": "через {left} — конец рабочей недели (144 ч)",
+  "@weeklyInTime": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyOverdue": "просрочено на {time}",
+  "@weeklyOverdue": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyOngoing": "Недельный отдых идёт",
+  "weeklyUnknown": "Нет данных о прошлом недельном отдыхе. Срок появится после отдыха от 24 ч.",
+  "weeklyNext": "Следующий отдых",
+  "weeklyFull": "Полный",
+  "weeklyFullHint": "не в кабине",
+  "weeklyReduced": "Сокращённый",
+  "weeklyReducedYes": "доступен · с компенсацией",
+  "weeklyReducedNo": "недоступен — нужен полный",
+  "weeklyHistory": "История",
+  "weeklyPrevious": "Предыдущий · {status, select, full{полный} reduced{сокращённый} other{недостаточный}}",
+  "@weeklyPrevious": {
+    "description": "Статус недельного отдыха: RestStatus.name",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyNow": "сейчас",
+  "weeklyCompensation": "Долг по компенсации",
+  "weeklyCompensationNone": "нет",
+  "weeklyCompensationValue": "{time} до {date}",
+  "@weeklyCompensationValue": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyMobilityOn": "Пакет мобильности включён: при международных перевозках можно взять два сокращённых отдыха подряд, если они проходят за пределами страны регистрации. Сокращение компенсируется до конца третьей недели.",
+  "weeklyMobilityOff": "Сокращённый недельный отдых компенсируется до конца третьей недели: долг присоединяют к отдыху не короче 9 ч.",
+  "weeklyStartRest": "Начать отдых",
+  "countryTitle": "Выбор страны",
+  "countryChip": "Страна начала {start}, конечная {end}. Изменить",
+  "@countryChip": {
+    "description": "Для диктора: чип стран в шапке главной",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "countryChipNoEnd": "Страна начала {start}, конечная не выбрана. Изменить",
+  "@countryChipNoEnd": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      }
+    }
+  },
+  "countryChipNone": "Страна смены не выбрана. Выбрать",
+  "countryStartTab": "Начало · {code}",
+  "@countryStartTab": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "countryEndTab": "Конец · {code}",
+  "@countryEndTab": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "countryNextShift": "Страна следующей смены",
+  "countrySearch": "Страна или код",
+  "countryRecent": "Недавние",
+  "countryClearEnd": "Не указывать",
+  "countryNotFound": "Ничего не найдено",
+  "countryFooter": "Страну начала и конца смены водитель вводит в тахограф (Регламент (ЕС) 165/2014, ст. 34).",
+  "countryName": "{code, select, A{Австрия} AL{Албания} AND{Андорра} ARM{Армения} AZ{Азербайджан} B{Бельгия} BG{Болгария} BIH{Босния и Герцеговина} BY{Беларусь} CH{Швейцария} CY{Кипр} CZ{Чехия} D{Германия} DK{Дания} E{Испания} EST{Эстония} F{Франция} FIN{Финляндия} FL{Лихтенштейн} GE{Грузия} GR{Греция} H{Венгрия} HR{Хорватия} I{Италия} IRL{Ирландия} IS{Исландия} KZ{Казахстан} L{Люксембург} LT{Литва} LV{Латвия} M{Мальта} MC{Монако} MD{Молдова} MK{Северная Македония} MNE{Черногория} N{Норвегия} NL{Нидерланды} P{Португалия} PL{Польша} RO{Румыния} RSM{Сан-Марино} RUS{Россия} S{Швеция} SK{Словакия} SLO{Словения} SRB{Сербия} TJ{Таджикистан} TM{Туркменистан} TR{Турция} UA{Украина} UK{Великобритания} UZ{Узбекистан} V{Ватикан} other{{code}}}",
+  "@countryName": {
+    "description": "Название страны по коду тахографа (TachoCountries.codes)",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  }
+}
