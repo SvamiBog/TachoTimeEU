@@ -52,6 +52,13 @@ String typed(DateTime t) {
       '${local.minute.toString().padLeft(2, '0')}';
 }
 
+/// Длительность [value] в строке отдыха с оценкой [status]: время суток
+/// в других строках формы может выглядеть так же.
+Finder restRow(String status, String value) => find.descendant(
+  of: find.widgetWithText(Row, status),
+  matching: find.text(value),
+);
+
 void main() {
   late AppDatabase db;
   late DateTime now;
@@ -315,9 +322,9 @@ void main() {
     await tap(tester, find.text('Указать вручную'));
     expect(find.text('Новая смена'), findsOneWidget);
     // По умолчанию — 22.09 09:00–19:00, отдых до текущей смены — 11 ч:
-    // для недельного мало
-    expect(find.text('11:00'), findsOneWidget);
-    expect(find.text('недостаточный'), findsOneWidget);
+    // для недельного мало. Длительность ищем в строке отдыха: в поясе
+    // UTC+2 начало смены на экране — тоже «11:00»
+    expect(restRow('недостаточный', '11:00'), findsOneWidget);
 
     // Смена пт 18.09 09:00–19:00 UTC: день меняется, время суток остаётся.
     // Отдых — до начала текущей смены, ср 23.09 06:00
@@ -326,8 +333,7 @@ void main() {
     await tap(tester, find.text('Конец').last);
     await tap(tester, day(u(18, 19).toLocal().day));
     await tap(tester, find.text('Готово'));
-    expect(find.text('107:00'), findsOneWidget);
-    expect(find.text('полный'), findsOneWidget);
+    expect(restRow('полный', '107:00'), findsOneWidget);
     await tap(tester, find.byTooltip('Сохранить'));
     expect(find.byType(ShiftEditScreen), findsNothing);
 
