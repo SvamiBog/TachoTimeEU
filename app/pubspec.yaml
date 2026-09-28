@@ -78,3 +78,10 @@ flutter:
           weight: 400
         - asset: assets/fonts/NotoSansGeorgian-Bold.ttf
           weight: 700
+    # Запасной для греческого: только греческие буквы, нарезан из Noto Sans.
+    - family: Noto Sans Greek
+      fonts:
+        - asset: assets/fonts/NotoSansGreek-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansGreek-Bold.ttf
+          weight: 700

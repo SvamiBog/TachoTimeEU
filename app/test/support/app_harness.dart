@@ -231,10 +231,18 @@ Future<void> loadAppFonts() async {
     mono.addFont(rootBundle.load('assets/fonts/JetBrainsMono-$w.ttf'));
   }
   final georgian = FontLoader('Noto Sans Georgian');
+  final greek = FontLoader('Noto Sans Greek');
   for (final w in ['Regular', 'Bold']) {
     georgian.addFont(rootBundle.load('assets/fonts/NotoSansGeorgian-$w.ttf'));
+    greek.addFont(rootBundle.load('assets/fonts/NotoSansGreek-$w.ttf'));
   }
   final icons = FontLoader('MaterialIcons')
     ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
-  await Future.wait([onest.load(), mono.load(), georgian.load(), icons.load()]);
+  await Future.wait([
+    onest.load(),
+    mono.load(),
+    georgian.load(),
+    greek.load(),
+    icons.load(),
+  ]);
 }
