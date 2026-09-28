@@ -12,6 +12,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/background/tracking_service.dart';
 import 'package:tachogo/core/config/app_info.dart';
+import 'package:tachogo/core/l10n/fallback_localizations.dart';
 import 'package:tachogo/core/theme/app_theme.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
@@ -199,7 +200,8 @@ Future<void> pumpScreen(
         debugShowCheckedModeBanner: false,
         theme: buildTheme(brightness),
         locale: locale,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        // Как в приложении: с запасными системными подписями (мальтийский)
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: child,
       ),
