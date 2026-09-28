@@ -93,14 +93,8 @@ void main() {
 
     test('отдых после такой смены гасит долг компенсации один раз', () {
       // Два сокращённых недельных отдыха по 40 ч — долг 5 ч у каждого
-      final a = manualShift(
-        utc('2026-09-07 06:00'),
-        restKind: RestKind.weekly,
-      );
-      final b = manualShift(
-        utc('2026-09-09 08:00'),
-        restKind: RestKind.weekly,
-      );
+      final a = manualShift(utc('2026-09-07 06:00'), restKind: RestKind.weekly);
+      final b = manualShift(utc('2026-09-09 08:00'), restKind: RestKind.weekly);
       final c = manualShift(utc('2026-09-11 10:00'));
       // Смена по записям завершена с вождением — ручная, отдых 14 ч
       // записан: 9 ч + 5 ч долга
