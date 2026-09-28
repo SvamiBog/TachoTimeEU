@@ -8,6 +8,13 @@ import 'package:tacho_engine/tacho_engine.dart';
 /// [fast] — машина едет или только что тронулась: отметки каждые 5 с.
 /// Иначе — только после смещения на 50 м: на стоянке GPS почти не будит
 /// телефон, а первая отметка в пути уже переключает на частые.
+///
+/// Поток geolocator открывается не сразу, а после паузы. Пока на прежний
+/// поток кто-то подписан, geolocator отдаёт его же — с прежними
+/// настройками. `AutoTracker` меняет частоту прямо в обработчике отметки, а
+/// отписка во время рассылки откладывается до её конца: без паузы трекер
+/// остался бы на редких отметках с фильтром 50 м, и на стоянке их нет
+/// совсем — остановка не определилась бы никогда (INT-03).
 Stream<MotionSample> gpsSamples({required bool fast}) {
   final distanceFilter = fast ? 0 : 50;
   // iOS не приостанавливает обновления на стоянке (по умолчанию в
@@ -26,11 +33,15 @@ Stream<MotionSample> gpsSamples({required bool fast}) {
           showBackgroundLocationIndicator: true,
         );
   Position? previous;
-  return Geolocator.getPositionStream(locationSettings: settings).map((p) {
-    final sample = sampleOf(p, previous: previous);
-    previous = p;
-    return sample;
-  });
+  return Stream<void>.fromFuture(Future<void>.delayed(Duration.zero))
+      .asyncExpand(
+        (_) => Geolocator.getPositionStream(locationSettings: settings),
+      )
+      .map((p) {
+        final sample = sampleOf(p, previous: previous);
+        previous = p;
+        return sample;
+      });
 }
 
 /// Скорость по смещению — только между близкими по времени отметками:

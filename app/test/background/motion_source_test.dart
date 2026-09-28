@@ -1,6 +1,9 @@
 // Отметка GPS → отметка детектора. План тестов: BG-01 в docs/testing.md.
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/motion_source.dart';
 
 Position position({
@@ -26,7 +29,58 @@ Position position({
   hasAccuracy: hasAccuracy,
 );
 
+/// Геолокация как geolocator_android: пока на поток подписан хоть кто-то,
+/// новый запрос получает его же, с прежними настройками.
+class _CachingGeolocator extends GeolocatorPlatform {
+  final requested = <LocationSettings?>[];
+  final sources = <StreamController<Position>>[];
+  Stream<Position>? _open;
+
+  @override
+  Stream<Position> getPositionStream({LocationSettings? locationSettings}) {
+    if (_open case final open?) return open;
+    requested.add(locationSettings);
+    final source = StreamController<Position>();
+    sources.add(source);
+    return _open = source.stream.asBroadcastStream(
+      onCancel: (s) {
+        unawaited(s.cancel());
+        _open = null;
+      },
+    );
+  }
+}
+
 void main() {
+  test('частота меняется и из обработчика отметки: у geolocator — новый '
+      'поток, а не прежний (INT-03)', () async {
+    final original = GeolocatorPlatform.instance;
+    addTearDown(() => GeolocatorPlatform.instance = original);
+    final platform = _CachingGeolocator();
+    GeolocatorPlatform.instance = platform;
+
+    final seen = <bool>[];
+    late StreamSubscription<MotionSample> samples;
+    samples = gpsSamples(fast: false).listen((_) {
+      // Как AutoTracker: машина тронулась — частые отметки
+      seen.add(false);
+      unawaited(samples.cancel());
+      samples = gpsSamples(fast: true).listen((_) => seen.add(true));
+    });
+    addTearDown(() => samples.cancel());
+    await pumpEventQueue();
+    platform.sources.last.add(position(speed: 10));
+    await pumpEventQueue();
+
+    expect(platform.requested.map((s) => s?.distanceFilter), [
+      50,
+      0,
+    ], reason: 'частые отметки — без фильтра по смещению');
+    platform.sources.last.add(position(speed: 0));
+    await pumpEventQueue();
+    expect(seen, [false, true]);
+  });
+
   test('скорость в м/с переводится в км/ч', () {
     expect(sampleOf(position(speed: 10)).speedKmh, closeTo(36, 1e-9));
     expect(sampleOf(position(speed: 0)).speedKmh, 0);
