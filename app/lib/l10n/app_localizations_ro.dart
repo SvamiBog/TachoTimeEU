@@ -373,6 +373,13 @@ class AppLocalizationsRo extends AppLocalizations {
       'Repausul începe acum și încheie tura, chiar dacă e mai scurt de 9 h.';
 
   @override
+  String get endDayDriving => 'Conducere pe zi';
+
+  @override
+  String get endDayDrivingHint =>
+      'Cât ați condus astăzi? Orele exacte ale modurilor nu sunt necesare — doar totalul.';
+
+  @override
   String todayDate(String date) {
     return 'Azi, $date';
   }
@@ -889,9 +896,6 @@ class AppLocalizationsRo extends AppLocalizations {
   String get daySummary => 'Total';
 
   @override
-  String get dayModes => 'Moduri';
-
-  @override
   String get dayBreaks => 'Pauze';
 
   @override
@@ -914,14 +918,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get daySplitRest => 'împărțit 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Tura a fost introdusă manual prin totaluri — nu are înregistrări de moduri.';
-
-  @override
   String get dayNotes => 'Note';
-
-  @override
-  String get dayEndMark => 'sfârșitul zilei';
 
   @override
   String get dayEdit => 'Editează tura';

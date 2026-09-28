@@ -371,6 +371,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die Ruhezeit beginnt jetzt und beendet die Schicht, auch wenn sie kürzer als 9 Std. ist.';
 
   @override
+  String get endDayDriving => 'Lenkzeit heute';
+
+  @override
+  String get endDayDrivingHint =>
+      'Wie lange sind Sie heute gefahren? Genaue Zeiten der Modi sind nicht nötig — nur die Summe.';
+
+  @override
   String todayDate(String date) {
     return 'Heute, $date';
   }
@@ -882,9 +889,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get daySummary => 'Übersicht';
 
   @override
-  String get dayModes => 'Modi';
-
-  @override
   String get dayBreaks => 'Pausen';
 
   @override
@@ -907,14 +911,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get daySplitRest => 'geteilt 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Schicht manuell als Summe eingetragen — ohne Modus-Einträge.';
-
-  @override
   String get dayNotes => 'Notizen';
-
-  @override
-  String get dayEndMark => 'Tagesende';
 
   @override
   String get dayEdit => 'Schicht bearbeiten';

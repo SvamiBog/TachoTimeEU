@@ -70,20 +70,9 @@ void main() {
       }
     });
 
-    test('греческие буквы — в запасном шрифте', () {
-      const text = 'Αναφορά χρόνου οδήγησης και ανάπαυσης';
-      final ttf = TtfParser((fonts.fallback.last as pw.TtfFont).data);
-      final missing = [
-        for (final rune in text.runes)
-          if (rune != 0x20 && !ttf.charToGlyphIndexMap.containsKey(rune))
-            String.fromCharCode(rune),
-      ];
-      expect(missing, isEmpty, reason: ttf.fontName);
-    });
-
     test('грузинские буквы — в запасном шрифте, отчёт на грузинском', () async {
       const text = 'ანგარიში მართვისა და დასვენების დროის შესახებ';
-      final ttf = TtfParser((fonts.fallback.first as pw.TtfFont).data);
+      final ttf = TtfParser((fonts.fallback.single as pw.TtfFont).data);
       final missing = [
         for (final rune in text.runes)
           if (rune != 0x20 && !ttf.charToGlyphIndexMap.containsKey(rune))

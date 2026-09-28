@@ -371,6 +371,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le repos commence maintenant et termine le poste, même s’il dure moins de 9 h.';
 
   @override
+  String get endDayDriving => 'Conduite du jour';
+
+  @override
+  String get endDayDrivingHint =>
+      'Combien de temps avez-vous conduit aujourd’hui ? Les heures exactes des modes ne sont pas nécessaires — seulement le total.';
+
+  @override
   String todayDate(String date) {
     return 'Aujourd’hui, $date';
   }
@@ -884,9 +891,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get daySummary => 'Bilan';
 
   @override
-  String get dayModes => 'Activités';
-
-  @override
   String get dayBreaks => 'Pauses';
 
   @override
@@ -909,14 +913,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get daySplitRest => 'fractionné 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Poste saisi manuellement en totaux — sans enregistrements d’activités.';
-
-  @override
   String get dayNotes => 'Notes';
-
-  @override
-  String get dayEndMark => 'fin de journée';
 
   @override
   String get dayEdit => 'Modifier le poste';

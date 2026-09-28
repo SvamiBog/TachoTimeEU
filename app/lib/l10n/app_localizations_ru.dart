@@ -374,6 +374,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Отдых начнётся сейчас и завершит смену, даже если он короче 9 ч.';
 
   @override
+  String get endDayDriving => 'Вождение за день';
+
+  @override
+  String get endDayDrivingHint =>
+      'Сколько вы сегодня были за рулём? Точное время режимов не нужно — только сумма.';
+
+  @override
   String todayDate(String date) {
     return 'Сегодня, $date';
   }
@@ -894,9 +901,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get daySummary => 'Итоги';
 
   @override
-  String get dayModes => 'Режимы';
-
-  @override
   String get dayBreaks => 'Перерывы';
 
   @override
@@ -919,14 +923,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get daySplitRest => 'раздельный 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Смена внесена вручную итогами — записей режимов у неё нет.';
-
-  @override
   String get dayNotes => 'Заметки';
-
-  @override
-  String get dayEndMark => 'конец дня';
 
   @override
   String get dayEdit => 'Изменить смену';

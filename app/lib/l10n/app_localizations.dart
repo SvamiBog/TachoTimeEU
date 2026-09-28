@@ -5,32 +5,18 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'app_localizations_bg.dart';
 import 'app_localizations_cs.dart';
-import 'app_localizations_da.dart';
 import 'app_localizations_de.dart';
-import 'app_localizations_el.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
-import 'app_localizations_et.dart';
-import 'app_localizations_fi.dart';
 import 'app_localizations_fr.dart';
-import 'app_localizations_ga.dart';
-import 'app_localizations_hr.dart';
-import 'app_localizations_hu.dart';
 import 'app_localizations_it.dart';
 import 'app_localizations_ka.dart';
-import 'app_localizations_lt.dart';
-import 'app_localizations_lv.dart';
-import 'app_localizations_mt.dart';
 import 'app_localizations_nl.dart';
 import 'app_localizations_pl.dart';
-import 'app_localizations_pt.dart';
 import 'app_localizations_ro.dart';
 import 'app_localizations_ru.dart';
 import 'app_localizations_sk.dart';
-import 'app_localizations_sl.dart';
-import 'app_localizations_sv.dart';
 import 'app_localizations_uk.dart';
 import 'app_localizations_uz.dart';
 
@@ -121,31 +107,17 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ru'),
-    Locale('bg'),
     Locale('cs'),
-    Locale('da'),
     Locale('de'),
-    Locale('el'),
     Locale('en'),
     Locale('es'),
-    Locale('et'),
-    Locale('fi'),
     Locale('fr'),
-    Locale('ga'),
-    Locale('hr'),
-    Locale('hu'),
     Locale('it'),
     Locale('ka'),
-    Locale('lt'),
-    Locale('lv'),
-    Locale('mt'),
     Locale('nl'),
     Locale('pl'),
-    Locale('pt'),
     Locale('ro'),
     Locale('sk'),
-    Locale('sl'),
-    Locale('sv'),
     Locale('uk'),
     Locale('uz'),
   ];
@@ -707,6 +679,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Отдых начнётся сейчас и завершит смену, даже если он короче 9 ч.'**
   String get workdayEndDayHint;
+
+  /// Подпись поля в шторке «Завершить день»: сумма вождения за смену, которую вводит водитель.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение за день'**
+  String get endDayDriving;
+
+  /// Пояснение в шторке «Завершить день»: водителю не нужен журнал режимов по времени, только итог вождения.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сколько вы сегодня были за рулём? Точное время режимов не нужно — только сумма.'**
+  String get endDayDrivingHint;
 
   /// No description provided for @todayDate.
   ///
@@ -1363,12 +1347,6 @@ abstract class AppLocalizations {
   /// **'Итоги'**
   String get daySummary;
 
-  /// No description provided for @dayModes.
-  ///
-  /// In ru, this message translates to:
-  /// **'Режимы'**
-  String get dayModes;
-
   /// No description provided for @dayBreaks.
   ///
   /// In ru, this message translates to:
@@ -1399,23 +1377,11 @@ abstract class AppLocalizations {
   /// **'раздельный 3 + 9'**
   String get daySplitRest;
 
-  /// No description provided for @dayManualHint.
-  ///
-  /// In ru, this message translates to:
-  /// **'Смена внесена вручную итогами — записей режимов у неё нет.'**
-  String get dayManualHint;
-
   /// No description provided for @dayNotes.
   ///
   /// In ru, this message translates to:
   /// **'Заметки'**
   String get dayNotes;
-
-  /// No description provided for @dayEndMark.
-  ///
-  /// In ru, this message translates to:
-  /// **'конец дня'**
-  String get dayEndMark;
 
   /// No description provided for @dayEdit.
   ///
@@ -3355,32 +3321,18 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) => <String>[
-    'bg',
     'cs',
-    'da',
     'de',
-    'el',
     'en',
     'es',
-    'et',
-    'fi',
     'fr',
-    'ga',
-    'hr',
-    'hu',
     'it',
     'ka',
-    'lt',
-    'lv',
-    'mt',
     'nl',
     'pl',
-    'pt',
     'ro',
     'ru',
     'sk',
-    'sl',
-    'sv',
     'uk',
     'uz',
   ].contains(locale.languageCode);
@@ -3392,58 +3344,30 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'bg':
-      return AppLocalizationsBg();
     case 'cs':
       return AppLocalizationsCs();
-    case 'da':
-      return AppLocalizationsDa();
     case 'de':
       return AppLocalizationsDe();
-    case 'el':
-      return AppLocalizationsEl();
     case 'en':
       return AppLocalizationsEn();
     case 'es':
       return AppLocalizationsEs();
-    case 'et':
-      return AppLocalizationsEt();
-    case 'fi':
-      return AppLocalizationsFi();
     case 'fr':
       return AppLocalizationsFr();
-    case 'ga':
-      return AppLocalizationsGa();
-    case 'hr':
-      return AppLocalizationsHr();
-    case 'hu':
-      return AppLocalizationsHu();
     case 'it':
       return AppLocalizationsIt();
     case 'ka':
       return AppLocalizationsKa();
-    case 'lt':
-      return AppLocalizationsLt();
-    case 'lv':
-      return AppLocalizationsLv();
-    case 'mt':
-      return AppLocalizationsMt();
     case 'nl':
       return AppLocalizationsNl();
     case 'pl':
       return AppLocalizationsPl();
-    case 'pt':
-      return AppLocalizationsPt();
     case 'ro':
       return AppLocalizationsRo();
     case 'ru':
       return AppLocalizationsRu();
     case 'sk':
       return AppLocalizationsSk();
-    case 'sl':
-      return AppLocalizationsSl();
-    case 'sv':
-      return AppLocalizationsSv();
     case 'uk':
       return AppLocalizationsUk();
     case 'uz':

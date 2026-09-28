@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
+import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/features/home/hero_card.dart';
 import 'package:tachogo/features/home/mode_buttons.dart';
@@ -58,6 +59,12 @@ void main() {
       await settleFrames(tester);
       expect(find.byType(WorkdayScreen), findsOneWidget);
       await tapVisible(tester, find.text(ru.workdayEndDay));
+      await settleFrames(tester);
+      // Шторка: вождение за день по записям — 9:00, водитель подтверждает
+      expect(find.text(ru.endDayDriving), findsOneWidget);
+      await tester.tap(
+        find.widgetWithText(PrimaryButton, ru.workdayEndDay).last,
+      );
       await settle(tester);
       expect(find.byType(WorkdayScreen), findsNothing);
       await scrollToTop(tester);

@@ -374,6 +374,13 @@ class AppLocalizationsUk extends AppLocalizations {
       'Відпочинок почнеться зараз і завершить зміну, навіть якщо він коротший за 9 год.';
 
   @override
+  String get endDayDriving => 'Керування за день';
+
+  @override
+  String get endDayDrivingHint =>
+      'Скільки ви сьогодні були за кермом? Точний час режимів не потрібен — лише сума.';
+
+  @override
   String todayDate(String date) {
     return 'Сьогодні, $date';
   }
@@ -893,9 +900,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get daySummary => 'Підсумки';
 
   @override
-  String get dayModes => 'Режими';
-
-  @override
   String get dayBreaks => 'Перерви';
 
   @override
@@ -918,14 +922,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get daySplitRest => 'розділений 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Зміну внесено вручну підсумками — записів режимів у неї немає.';
-
-  @override
   String get dayNotes => 'Нотатки';
-
-  @override
-  String get dayEndMark => 'кінець дня';
 
   @override
   String get dayEdit => 'Змінити зміну';

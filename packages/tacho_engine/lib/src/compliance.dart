@@ -473,7 +473,15 @@ ComplianceSnapshot calculateCompliance({
   // погасить несколько.
   final compensationHosts = [
     for (final p in timeline.rests) (start: p.start, rest: p.rest),
-    for (final r in manualRest) (start: r.start, rest: r.duration),
+    for (final r in manualRest)
+      // Тот же отдых уже есть в записях режимов (после «Завершить день» с
+      // вождением) — он не может погасить долг дважды
+      if (!timeline.rests.any(
+        (p) =>
+            p.start.isBefore(r.end ?? now) &&
+            (p.open ? now : p.end).isAfter(r.start),
+      ))
+        (start: r.start, rest: r.duration),
   ];
   final hostUsed = List.filled(compensationHosts.length, Duration.zero);
   final unpaid = <Compensation>[];

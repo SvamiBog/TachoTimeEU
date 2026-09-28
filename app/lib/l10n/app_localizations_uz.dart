@@ -371,6 +371,13 @@ class AppLocalizationsUz extends AppLocalizations {
       'Dam olish hozir boshlanadi va smenani yakunlaydi, hatto 9 soatdan qisqa boʻlsa ham.';
 
   @override
+  String get endDayDriving => 'Kun davomida haydash';
+
+  @override
+  String get endDayDrivingHint =>
+      'Bugun qancha vaqt rul ortida bo‘ldingiz? Rejimlarning aniq vaqti kerak emas — faqat jami.';
+
+  @override
   String todayDate(String date) {
     return 'Bugun, $date';
   }
@@ -882,9 +889,6 @@ class AppLocalizationsUz extends AppLocalizations {
   String get daySummary => 'Yakunlar';
 
   @override
-  String get dayModes => 'Rejimlar';
-
-  @override
   String get dayBreaks => 'Tanaffuslar';
 
   @override
@@ -907,14 +911,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get daySplitRest => 'boʻlingan 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Smena qoʻlda yakunlar bilan kiritilgan — rejim yozuvlari yoʻq.';
-
-  @override
   String get dayNotes => 'Izohlar';
-
-  @override
-  String get dayEndMark => 'kun oxiri';
 
   @override
   String get dayEdit => 'Smenani oʻzgartirish';

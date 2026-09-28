@@ -375,6 +375,13 @@ class AppLocalizationsPl extends AppLocalizations {
       'Odpoczynek zacznie się teraz i zakończy zmianę, nawet jeśli będzie krótszy niż 9 h.';
 
   @override
+  String get endDayDriving => 'Jazda za dzień';
+
+  @override
+  String get endDayDrivingHint =>
+      'Ile dziś byłeś za kierownicą? Dokładne godziny trybów nie są potrzebne — tylko suma.';
+
+  @override
   String todayDate(String date) {
     return 'Dziś, $date';
   }
@@ -896,9 +903,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get daySummary => 'Podsumowanie';
 
   @override
-  String get dayModes => 'Tryby';
-
-  @override
   String get dayBreaks => 'Przerwy';
 
   @override
@@ -921,14 +925,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get daySplitRest => 'dzielony 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Zmiana wprowadzona ręcznie jako podsumowanie — nie ma zapisów trybów.';
-
-  @override
   String get dayNotes => 'Notatki';
-
-  @override
-  String get dayEndMark => 'koniec dnia';
 
   @override
   String get dayEdit => 'Edytuj zmianę';
