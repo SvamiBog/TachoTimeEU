@@ -1,0 +1,57 @@
+name: Проблема в бете
+description: Жалоба водителя из закрытой беты — отчёт «Сообщить о проблеме» или отзыв в Play
+title: "[бета] "
+labels: ["бета"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Разбор и приоритеты — docs/beta/README.md. Журнал водителя сюда — только с его согласия; имя, номер карты и файлы .DDD не выкладываем.
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Приоритет
+      options:
+        - P0 — неверный расчёт или статья, потеря журнала, падение, нет уведомления о нарушении
+        - P1 — автоопределение ошибается, сервис умирает, перевод искажает правило
+        - P2 — неудобно, непонятный текст, вёрстка
+        - P3 — пожелание
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Где
+      multiple: true
+      options:
+        - Расчёт лимитов (движок)
+        - Главная и экраны лимитов
+        - Журнал, правки, экспорт
+        - Автоопределение и фон
+        - Уведомления о лимитах
+        - Онбординг и настройки
+        - Перевод
+        - Другое
+  - type: textarea
+    id: story
+    attributes:
+      label: Что случилось — словами водителя
+      description: Когда (время и пояс), что показывал тахограф, что — TachoGo
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Диагностика из отчёта
+      description: Блок после «———» из «Сообщить о проблеме»
+      render: text
+  - type: input
+    id: reporters
+    attributes:
+      label: Сколько водителей сообщили
+      value: "1"
+  - type: textarea
+    id: test
+    attributes:
+      label: Как проверить
+      description: Для расчёта — падающий тест по статье в packages/tacho_engine (docs/testing.md, «Общие правила»)

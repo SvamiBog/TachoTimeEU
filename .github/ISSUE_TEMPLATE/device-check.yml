@@ -1,0 +1,35 @@
+name: Проверка телефона (DEV-01, DEV-02)
+description: Результаты чек-листа docs/beta/device-checklist.md для одной модели
+title: "[телефон] "
+labels: ["бета", "устройства"]
+body:
+  - type: input
+    id: device
+    attributes:
+      label: Телефон
+      description: Производитель, модель, Android, оболочка — из строки Device диагностики
+      placeholder: Xiaomi Redmi Note 13, Android 14, HyperOS 1.0
+    validations:
+      required: true
+  - type: checkboxes
+    id: setup
+    attributes:
+      label: Настройка
+      options:
+        - label: Экономия батареи для TachoGo выключена
+        - label: Автозапуск разрешён
+        - label: Точное время уведомлений включено (Android 14+)
+        - label: Автоопределение включено
+  - type: textarea
+    id: results
+    attributes:
+      label: Результаты по пунктам чек-листа
+      description: Номер пункта — да / нет / время; опоздание уведомлений в минутах; батарея за смену и за ночь
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Диагностика
+      render: text
