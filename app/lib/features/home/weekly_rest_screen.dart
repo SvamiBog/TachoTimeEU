@@ -13,6 +13,7 @@ import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
 
@@ -112,10 +113,10 @@ class WeeklyRestScreen extends ConsumerWidget {
   }
 
   /// Отдых, который сразу завершает смену: станет недельным через 24 ч.
+  /// Как «Завершить день» — водитель вводит вождение за день.
   static Future<void> _startRest(BuildContext context, WidgetRef ref) async {
     final navigator = Navigator.of(context);
-    await ref.read(activityRepositoryProvider).endDay();
-    navigator.pop();
+    if (await finishDay(context, ref)) navigator.pop();
   }
 }
 

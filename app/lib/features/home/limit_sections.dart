@@ -14,6 +14,7 @@ import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/corrections.dart';
+import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/limit_row.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
@@ -311,6 +312,8 @@ class TodaySection extends StatelessWidget {
           BreakRow(),
         ],
       ),
+      // В конце дня — вождение за день итогом
+      const EndDayButton(),
     ],
   );
 }

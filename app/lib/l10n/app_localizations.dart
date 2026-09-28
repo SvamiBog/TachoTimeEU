@@ -680,6 +680,18 @@ abstract class AppLocalizations {
   /// **'Отдых начнётся сейчас и завершит смену, даже если он короче 9 ч.'**
   String get workdayEndDayHint;
 
+  /// Подпись поля в шторке «Завершить день»: сумма вождения за смену, которую вводит водитель.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение за день'**
+  String get endDayDriving;
+
+  /// Пояснение в шторке «Завершить день»: водителю не нужен журнал режимов по времени, только итог вождения.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сколько вы сегодня были за рулём? Точное время режимов не нужно — только сумма.'**
+  String get endDayDrivingHint;
+
   /// No description provided for @todayDate.
   ///
   /// In ru, this message translates to:
@@ -1335,12 +1347,6 @@ abstract class AppLocalizations {
   /// **'Итоги'**
   String get daySummary;
 
-  /// No description provided for @dayModes.
-  ///
-  /// In ru, this message translates to:
-  /// **'Режимы'**
-  String get dayModes;
-
   /// No description provided for @dayBreaks.
   ///
   /// In ru, this message translates to:
@@ -1371,23 +1377,11 @@ abstract class AppLocalizations {
   /// **'раздельный 3 + 9'**
   String get daySplitRest;
 
-  /// No description provided for @dayManualHint.
-  ///
-  /// In ru, this message translates to:
-  /// **'Смена внесена вручную итогами — записей режимов у неё нет.'**
-  String get dayManualHint;
-
   /// No description provided for @dayNotes.
   ///
   /// In ru, this message translates to:
   /// **'Заметки'**
   String get dayNotes;
-
-  /// No description provided for @dayEndMark.
-  ///
-  /// In ru, this message translates to:
-  /// **'конец дня'**
-  String get dayEndMark;
 
   /// No description provided for @dayEdit.
   ///

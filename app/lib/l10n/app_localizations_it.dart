@@ -370,6 +370,13 @@ class AppLocalizationsIt extends AppLocalizations {
       'Il riposo inizia ora e chiude il turno, anche se dura meno di 9 h.';
 
   @override
+  String get endDayDriving => 'Guida di oggi';
+
+  @override
+  String get endDayDrivingHint =>
+      'Quanto hai guidato oggi? Gli orari esatti dei modi non servono — solo il totale.';
+
+  @override
   String todayDate(String date) {
     return 'Oggi, $date';
   }
@@ -881,9 +888,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get daySummary => 'Riepilogo';
 
   @override
-  String get dayModes => 'Attività';
-
-  @override
   String get dayBreaks => 'Pause';
 
   @override
@@ -906,14 +910,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get daySplitRest => 'frazionato 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Turno inserito a mano come totali — senza registrazioni delle attività.';
-
-  @override
   String get dayNotes => 'Note';
-
-  @override
-  String get dayEndMark => 'fine giornata';
 
   @override
   String get dayEdit => 'Modifica turno';

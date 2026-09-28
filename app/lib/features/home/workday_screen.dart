@@ -14,8 +14,8 @@ import 'package:tachogo/core/widgets/limit_bar.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
-import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/corrections.dart';
+import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
 typedef _Workday = ({
@@ -117,11 +117,11 @@ class WorkdayScreen extends ConsumerWidget {
     );
   }
 
-  /// «Завершить день» — отдых, который сразу завершает смену.
+  /// «Завершить день» — отдых, который сразу завершает смену; водитель
+  /// вводит вождение за день.
   static Future<void> _endDay(BuildContext context, WidgetRef ref) async {
     final navigator = Navigator.of(context);
-    await ref.read(activityRepositoryProvider).endDay();
-    navigator.pop();
+    if (await finishDay(context, ref)) navigator.pop();
   }
 }
 

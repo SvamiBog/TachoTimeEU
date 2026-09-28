@@ -375,6 +375,13 @@ class AppLocalizationsSk extends AppLocalizations {
       'Odpočinok začne teraz a ukončí zmenu, aj keď bude kratší ako 9 h.';
 
   @override
+  String get endDayDriving => 'Jazda za deň';
+
+  @override
+  String get endDayDrivingHint =>
+      'Ako dlho ste dnes šoférovali? Presné časy režimov nie sú potrebné — len súčet.';
+
+  @override
   String todayDate(String date) {
     return 'Dnes, $date';
   }
@@ -894,9 +901,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get daySummary => 'Súhrn';
 
   @override
-  String get dayModes => 'Režimy';
-
-  @override
   String get dayBreaks => 'Prestávky';
 
   @override
@@ -919,14 +923,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get daySplitRest => 'rozdelený 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Zmena zadaná ručne ako súhrn — bez záznamov režimov.';
-
-  @override
   String get dayNotes => 'Poznámky';
-
-  @override
-  String get dayEndMark => 'koniec dňa';
 
   @override
   String get dayEdit => 'Upraviť zmenu';

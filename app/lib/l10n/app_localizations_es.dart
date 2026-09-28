@@ -370,6 +370,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'El descanso empieza ahora y cierra la jornada, aunque dure menos de 9 h.';
 
   @override
+  String get endDayDriving => 'Conducción del día';
+
+  @override
+  String get endDayDrivingHint =>
+      '¿Cuánto tiempo condujo hoy? No hacen falta las horas exactas de los modos, solo el total.';
+
+  @override
   String todayDate(String date) {
     return 'Hoy, $date';
   }
@@ -882,9 +889,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get daySummary => 'Resumen';
 
   @override
-  String get dayModes => 'Actividades';
-
-  @override
   String get dayBreaks => 'Pausas';
 
   @override
@@ -907,14 +911,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get daySplitRest => 'dividido 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Jornada introducida a mano como totales: no hay registros de actividades.';
-
-  @override
   String get dayNotes => 'Notas';
-
-  @override
-  String get dayEndMark => 'fin del día';
 
   @override
   String get dayEdit => 'Editar jornada';

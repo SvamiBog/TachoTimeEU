@@ -244,23 +244,29 @@ void main() {
   });
 
   group('детали дня', () {
-    testWidgets('касание смены — записи режимов и итоги', (tester) async {
+    testWidgets('касание смены — только суммы, без записей по времени', (
+      tester,
+    ) async {
       await _pumpJournal(tester);
       await tester.tap(find.text(_span(_u(22, 6, 30), _u(22, 19, 10))));
       await tester.pumpAndSettle();
       expect(find.byType(ShiftDayScreen), findsOneWidget);
       expect(find.text(formatWeekdayFull(_u(22, 6, 30), 'ru')), findsOneWidget);
-      // Запись — «с–по», через местную полночь — с датой конца
-      String block(DateTime a, DateTime b) => isSameLocalDay(a, b)
-          ? '${formatClock(a)}–${formatClock(b)}'
-          : '${formatClock(a)} – ${formatDayMonthClock(b)}';
-      expect(find.text(block(_u(22, 6, 30), _u(22, 6, 45))), findsOneWidget);
-      expect(find.text(block(_u(22, 6, 45), _u(22, 11, 15))), findsOneWidget);
-      expect(find.text(block(_u(22, 19, 10), _u(23, 6, 49))), findsOneWidget);
+      expect(find.text('ИТОГИ'), findsOneWidget);
+      expect(find.text('Другая работа'), findsOneWidget);
+      expect(find.text('Отдых после смены'), findsOneWidget);
+      // Записей режимов «с–по» нет: водителю нужны только суммы
+      expect(find.text('РЕЖИМЫ'), findsNothing);
+      expect(
+        find.text(
+          '${formatClock(_u(22, 6, 30))}–${formatClock(_u(22, 6, 45))}',
+        ),
+        findsNothing,
+      );
       expect(find.text('Изменить смену'), findsOneWidget);
     });
 
-    testWidgets('ручная смена — без записей, с подсказкой', (tester) async {
+    testWidgets('ручная смена — итоги, отдых и заметка', (tester) async {
       final manual = ManualShift(
         id: 7,
         start: DateTime.utc(2026, 9, 1, 6),
@@ -283,7 +289,10 @@ void main() {
           ],
         ),
       );
-      expect(find.textContaining('внесена вручную'), findsOneWidget);
+      expect(
+        find.textContaining('вручную', findRichText: true),
+        findsOneWidget,
+      );
       expect(find.text('до установки'), findsOneWidget);
       expect(find.textContaining('Недельный'), findsOneWidget);
     });

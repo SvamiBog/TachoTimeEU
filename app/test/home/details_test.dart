@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
+import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
@@ -268,6 +269,9 @@ void main() {
       );
       expect(find.textContaining('Нет данных о прошлом'), findsOneWidget);
       await tester.tap(find.text('Начать отдых'));
+      await tester.pumpAndSettle();
+      // Как «Завершить день»: вождение за день — по записям
+      await tester.tap(find.widgetWithText(PrimaryButton, 'Завершить день'));
       await settle(tester);
       final last = (await periods(tester, db)).last;
       expect((last.mode, last.dayEnd), (DriverMode.rest, true));

@@ -11,6 +11,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/infringement_text.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/alerts.dart';
@@ -244,6 +245,12 @@ void main() {
       expect(find.text(formatClock(t0)), findsOneWidget);
 
       await tester.tap(find.text('Завершить день'));
+      await tester.pumpAndSettle();
+      // Шторка: вождение по записям — 3:00, водитель его подтверждает
+      expect(find.text('Вождение за день'), findsOneWidget);
+      await tester.tap(
+        find.widgetWithText(PrimaryButton, 'Завершить день').last,
+      );
       await settle(tester);
       await tester.pumpAndSettle();
       expect(find.byType(WorkdayScreen), findsNothing);

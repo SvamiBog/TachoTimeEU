@@ -426,7 +426,9 @@ class _DaySheetState extends State<_DaySheet> {
 /// пределы, которые задают записи режимов (правка идущей смены); без
 /// [max] ограничений нет — значение проверит сохранение. [computed] —
 /// сколько насчитало приложение; [hint] — пояснение под полем для
-/// введённого значения. null — водитель передумал.
+/// введённого значения. [label] — подпись поля, иначе [title]; [action] —
+/// кнопка, иначе «Сохранить», неактивная, пока значение не изменили;
+/// с [action] подтвердить можно и прежнее. null — водитель передумал.
 Future<Duration?> showDurationSheet(
   BuildContext context, {
   required String title,
@@ -436,6 +438,8 @@ Future<Duration?> showDurationSheet(
   String? subtitle,
   Duration? computed,
   String Function(Duration value)? hint,
+  String? label,
+  String? action,
 }) => _showSheet(
   context,
   _DurationSheet(
@@ -446,6 +450,8 @@ Future<Duration?> showDurationSheet(
     max: max,
     computed: computed,
     hint: hint,
+    label: label,
+    action: action,
   ),
 );
 
@@ -458,6 +464,8 @@ class _DurationSheet extends StatefulWidget {
     required this.max,
     required this.computed,
     required this.hint,
+    required this.label,
+    required this.action,
   });
 
   final String title;
@@ -467,6 +475,8 @@ class _DurationSheet extends StatefulWidget {
   final Duration? max;
   final Duration? computed;
   final String Function(Duration value)? hint;
+  final String? label;
+  final String? action;
 
   @override
   State<_DurationSheet> createState() => _DurationSheetState();
@@ -547,7 +557,7 @@ class _DurationSheetState extends State<_DurationSheet> {
           ],
           const SizedBox(height: 16),
           HmField(
-            label: widget.title,
+            label: widget.label ?? widget.title,
             value: _clamped(widget.initial),
             clock: false,
             maxHours: max == null || max.inHours < _maxHours
@@ -574,8 +584,9 @@ class _DurationSheetState extends State<_DurationSheet> {
           ],
           const SizedBox(height: 16),
           _SheetButtons(
-            label: l.save,
-            onPressed: !valid || value == widget.initial
+            label: widget.action ?? l.save,
+            onPressed:
+                !valid || (widget.action == null && value == widget.initial)
                 ? null
                 : () => Navigator.of(context).pop(value),
           ),

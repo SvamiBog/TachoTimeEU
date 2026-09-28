@@ -169,6 +169,26 @@ class JournalEditRepository {
     await _deleteMeta(shift.start);
   });
 
+  /// «Завершить день» с вождением за день, которое ввёл водитель
+  /// (`endDayWithDriving`). Разошлось с записями — смена становится ручной
+  /// с этим итогом, её страны и заметка переезжают к ней.
+  Future<void> endDay({required Duration driving}) =>
+      _write((periods, now) async {
+        final result = endDayWithDriving(periods, driving, now);
+        await savePeriodChanges(
+          _db,
+          periods,
+          result.periods,
+          now,
+          EntrySource.live,
+        );
+        final manual = result.manual;
+        if (manual == null) return;
+        final meta = await _metaOf(manual.start);
+        await _deleteMeta(manual.start);
+        await _putManual(manual, meta, now);
+      });
+
   /// Длительность последнего перерыва текущей смены (экран 8).
   Future<void> setLastBreak(DateTime shiftStart, Duration duration) => _write((
     periods,
@@ -295,6 +315,20 @@ class JournalEditRepository {
     await (_db.update(_db.shifts)
           ..where((s) => s.startUtc.equals(from.toUtc())))
         .write(ShiftsCompanion(startUtc: Value(to.toUtc())));
+  }
+
+  /// Страны и заметка смены из записей; нет — пустые.
+  Future<ShiftMeta> _metaOf(DateTime shiftStart) async {
+    final row = await (_db.select(
+      _db.shifts,
+    )..where((s) => s.startUtc.equals(shiftStart.toUtc()))).getSingleOrNull();
+    return row == null
+        ? ShiftMeta.empty
+        : ShiftMeta(
+            startCountry: row.startCountry,
+            endCountry: row.endCountry,
+            note: row.note,
+          );
   }
 
   Future<void> _deleteMeta(DateTime shiftStart) => (_db.delete(

@@ -370,6 +370,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Rest starts now and ends the shift, even if it is shorter than 9 h.';
 
   @override
+  String get endDayDriving => 'Driving today';
+
+  @override
+  String get endDayDrivingHint =>
+      'How long were you at the wheel today? The exact mode times are not needed — only the total.';
+
+  @override
   String todayDate(String date) {
     return 'Today, $date';
   }
@@ -879,9 +886,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get daySummary => 'Summary';
 
   @override
-  String get dayModes => 'Modes';
-
-  @override
   String get dayBreaks => 'Breaks';
 
   @override
@@ -904,14 +908,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get daySplitRest => 'split 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Shift entered manually as totals — there are no mode records.';
-
-  @override
   String get dayNotes => 'Notes';
-
-  @override
-  String get dayEndMark => 'end of day';
 
   @override
   String get dayEdit => 'Edit shift';

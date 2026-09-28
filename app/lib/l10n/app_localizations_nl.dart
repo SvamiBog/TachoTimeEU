@@ -371,6 +371,13 @@ class AppLocalizationsNl extends AppLocalizations {
       'De rust begint nu en beëindigt de dienst, ook als die korter is dan 9 u.';
 
   @override
+  String get endDayDriving => 'Rijtijd vandaag';
+
+  @override
+  String get endDayDrivingHint =>
+      'Hoe lang heeft u vandaag gereden? Exacte tijden van de modi zijn niet nodig — alleen het totaal.';
+
+  @override
   String todayDate(String date) {
     return 'Vandaag, $date';
   }
@@ -882,9 +889,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get daySummary => 'Overzicht';
 
   @override
-  String get dayModes => 'Activiteiten';
-
-  @override
   String get dayBreaks => 'Pauzes';
 
   @override
@@ -907,14 +911,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get daySplitRest => 'gesplitst 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'Dienst handmatig als totalen ingevoerd — zonder registraties van activiteiten.';
-
-  @override
   String get dayNotes => 'Notities';
-
-  @override
-  String get dayEndMark => 'einde van de dag';
 
   @override
   String get dayEdit => 'Dienst bewerken';

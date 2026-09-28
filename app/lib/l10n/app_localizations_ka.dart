@@ -370,6 +370,13 @@ class AppLocalizationsKa extends AppLocalizations {
       'დასვენება ახლავე დაიწყება და დაასრულებს ცვლას, თუნდაც 9 სთ-ზე მოკლე იყოს.';
 
   @override
+  String get endDayDriving => 'მართვა დღეში';
+
+  @override
+  String get endDayDrivingHint =>
+      'რამდენი ხანი იყავით დღეს საჭესთან? რეჟიმების ზუსტი დრო საჭირო არ არის — მხოლოდ ჯამი.';
+
+  @override
   String todayDate(String date) {
     return 'დღეს, $date';
   }
@@ -881,9 +888,6 @@ class AppLocalizationsKa extends AppLocalizations {
   String get daySummary => 'შეჯამება';
 
   @override
-  String get dayModes => 'რეჟიმები';
-
-  @override
   String get dayBreaks => 'შესვენებები';
 
   @override
@@ -906,14 +910,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get daySplitRest => 'გაყოფილი 3 + 9';
 
   @override
-  String get dayManualHint =>
-      'ცვლა ხელით არის შეყვანილი ჯამებით — რეჟიმების ჩანაწერები არ აქვს.';
-
-  @override
   String get dayNotes => 'შენიშვნები';
-
-  @override
-  String get dayEndMark => 'დღის დასასრული';
 
   @override
   String get dayEdit => 'ცვლის შეცვლა';

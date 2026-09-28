@@ -8,7 +8,6 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
-import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
@@ -19,8 +18,9 @@ Future<void> openShiftDay(BuildContext context, ShiftKey key) => Navigator.of(
   context,
 ).push(MaterialPageRoute<void>(builder: (_) => ShiftDayScreen(shiftKey: key)));
 
-/// Детали дня: смена из журнала — итоги, записи режимов по порядку и отдых
-/// после неё. Смотреть бесплатно, «Изменить смену» — Premium.
+/// Детали дня: смена из журнала — только суммы и отдых после неё. Когда
+/// что было по времени, водителю не нужно (отзыв водителей, 28.09.2026).
+/// Смотреть бесплатно, «Изменить смену» — Premium.
 class ShiftDayScreen extends ConsumerWidget {
   const new({required this.shiftKey, super.key});
 
@@ -52,7 +52,6 @@ class ShiftDayScreen extends ConsumerWidget {
     }
     final meta = journal.metaOf(shift);
     final note = meta.note;
-    final recorded = shift.recorded;
     return DetailScaffold(
       title: l.dayTitle,
       subtitle: formatWeekdayFull(shift.start, context.localeTag),
@@ -62,11 +61,6 @@ class ShiftDayScreen extends ConsumerWidget {
       ),
       children: [
         _Summary(shift: shift, route: routeOf(meta)),
-        SectionTitle(l.dayModes),
-        if (recorded == null)
-          const _ManualHint()
-        else
-          _Modes(blocks: _blocks(journal.timeline, recorded)),
         SectionTitle(l.daySummary),
         _Totals(shift),
         if (note != null) ...[
@@ -82,16 +76,6 @@ class ShiftDayScreen extends ConsumerWidget {
     final navigator = Navigator.of(context);
     final saved = await openShiftEditor(context, shift: shift);
     if (saved) navigator.pop();
-  }
-
-  /// Блоки смены и отдыха после неё.
-  static List<Block> _blocks(Timeline timeline, Shift shift) {
-    final rest = shift.restAfter;
-    return [
-      ...shift.blocks,
-      if (rest != null)
-        ...timeline.blocks.sublist(rest.firstBlock, rest.lastBlock + 1),
-    ];
   }
 }
 
@@ -163,20 +147,6 @@ class _Summary extends StatelessWidget {
   }
 }
 
-class _ManualHint extends StatelessWidget {
-  const new();
-
-  @override
-  Widget build(BuildContext context) => CardGroup(
-    children: [
-      _TextBlock(
-        context.l10n.dayManualHint,
-        style: AppTextStyles.body.copyWith(color: context.colors.textSecondary),
-      ),
-    ],
-  );
-}
-
 /// Текст во всю ширину карточки.
 class _TextBlock extends StatelessWidget {
   const new(this.text, {required this.style});
@@ -192,115 +162,6 @@ class _TextBlock extends StatelessWidget {
       child: Text(text, style: style),
     ),
   );
-}
-
-/// Записи режимов смены: полоса по времени и список.
-class _Modes extends StatelessWidget {
-  const new({required this.blocks});
-
-  final List<Block> blocks;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return CardGroup(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(AppSpacing.cardPadding),
-          child: ExcludeSemantics(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppRadius.chip),
-              child: SizedBox(
-                height: 12,
-                child: Row(
-                  children: [
-                    for (final b in blocks)
-                      Expanded(
-                        flex: b.duration.inMinutes.clamp(1, 1 << 20),
-                        child: ColoredBox(
-                          color: colors.mode(b.mode),
-                          child: const SizedBox.expand(),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        for (final b in blocks) _BlockRow(b),
-      ],
-    );
-  }
-}
-
-class _BlockRow extends StatelessWidget {
-  const new(this.block);
-
-  final Block block;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-    final b = block;
-    // Отдых через полночь — с датой конца
-    final time = b.open
-        ? '${formatClock(b.start)} → ${l.journalOngoing}'
-        : isSameLocalDay(b.start, b.end)
-        ? '${formatClock(b.start)}–${formatClock(b.end)}'
-        : '${formatClock(b.start)} – ${formatDayMonthClock(b.end)}';
-    final marks = [if (b.ferry) l.ferryOn, if (b.dayEnd) l.dayEndMark];
-    return MergeSemantics(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: AppSize.listRow),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.cardPadding,
-            vertical: 10,
-          ),
-          child: Row(
-            children: [
-              IconTheme(
-                data: IconThemeData(color: colors.mode(b.mode)),
-                child: ModeIcon(b.mode, size: 24),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(l.modeName(b.mode), style: AppTextStyles.rowTitle),
-                        for (final m in marks) StatusChip(m),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      time,
-                      style: AppTextStyles.numericCaption.copyWith(
-                        color: colors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              DurationText(
-                formatHm(b.duration),
-                spoken: spokenDuration(l, b.duration),
-                style: AppTextStyles.value,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 /// Итоги смены: работа, готовность, перерывы, непрерывное вождение, отдых.
