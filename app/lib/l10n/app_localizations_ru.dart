@@ -1456,6 +1456,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notifyShiftEnd => 'Конец рабочего дня';
 
   @override
+  String get notifyShiftEndHint => 'Суточный и недельный отдых';
+
+  @override
   String get notifyDriving => 'Лимит вождения';
 
   @override
@@ -1491,6 +1494,51 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get notifyAllowed => 'Уведомления разрешены';
+
+  @override
+  String get notifyExact => 'Точное время уведомлений';
+
+  @override
+  String get notifyExactHint =>
+      'Разрешите «Будильники и напоминания» — иначе телефон может задержать предупреждение';
+
+  @override
+  String get notifyChannelLimits => 'Лимиты и нарушения';
+
+  @override
+  String get notifyChannelLimitsHint =>
+      'Перерыв, конец рабочего дня, вождение, недельный отдых, карта';
+
+  @override
+  String get notifyChannelRest => 'Отдых набран';
+
+  @override
+  String get notifyChannelRestHint =>
+      'Перерыв засчитан, суточный и недельный отдых набран';
+
+  @override
+  String get notifyBreakTakenTitle => 'Перерыв засчитан';
+
+  @override
+  String notifyBreakTakenText(int required, String time) {
+    return 'Перерыв $required мин набран. Можно ехать $time до следующего перерыва.';
+  }
+
+  @override
+  String get notifyDailyRestTakenTitle => 'Суточный отдых набран';
+
+  @override
+  String notifyDailyRestTakenText(String limit) {
+    return 'Полный отдых $limit — можно начинать смену.';
+  }
+
+  @override
+  String get notifyWeeklyRestTakenTitle => 'Недельный отдых набран';
+
+  @override
+  String notifyWeeklyRestTakenText(String limit) {
+    return 'Полный отдых $limit — можно начинать новую рабочую неделю.';
+  }
 
   @override
   String get autoTitle => 'Автоопределение вождения';

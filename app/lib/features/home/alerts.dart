@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/l10n/infringement_text.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
-import 'package:tachogo/features/home/infringement_text.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
 /// Предупреждения и нарушения из движка: нарушения выше предупреждений,

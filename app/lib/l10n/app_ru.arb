@@ -1213,6 +1213,7 @@
   },
   "notifyBreak": "Перерыв",
   "notifyShiftEnd": "Конец рабочего дня",
+  "notifyShiftEndHint": "Суточный и недельный отдых",
   "notifyDriving": "Лимит вождения",
   "notifyCard": "Считывание карты",
   "notifyCardHint": "Каждые 28 дней",
@@ -1233,6 +1234,45 @@
   "notifyAllow": "Разрешить уведомления",
   "notifyDenied": "Сейчас уведомления запрещены в телефоне",
   "notifyAllowed": "Уведомления разрешены",
+  "notifyExact": "Точное время уведомлений",
+  "notifyExactHint": "Разрешите «Будильники и напоминания» — иначе телефон может задержать предупреждение",
+  "notifyChannelLimits": "Лимиты и нарушения",
+  "notifyChannelLimitsHint": "Перерыв, конец рабочего дня, вождение, недельный отдых, карта",
+  "notifyChannelRest": "Отдых набран",
+  "notifyChannelRestHint": "Перерыв засчитан, суточный и недельный отдых набран",
+  "notifyBreakTakenTitle": "Перерыв засчитан",
+  "notifyBreakTakenText": "Перерыв {required} мин набран. Можно ехать {time} до следующего перерыва.",
+  "@notifyBreakTakenText": {
+    "description": "Уведомление: «Перерыв 45 мин набран. Можно ехать 4:30…»",
+    "placeholders": {
+      "required": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyDailyRestTakenTitle": "Суточный отдых набран",
+  "notifyDailyRestTakenText": "Полный отдых {limit} — можно начинать смену.",
+  "@notifyDailyRestTakenText": {
+    "description": "Уведомление: «Полный отдых 11 ч — можно начинать смену.»",
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyWeeklyRestTakenTitle": "Недельный отдых набран",
+  "notifyWeeklyRestTakenText": "Полный отдых {limit} — можно начинать новую рабочую неделю.",
+  "@notifyWeeklyRestTakenText": {
+    "description": "Уведомление: «Полный отдых 45 ч — можно начинать…»",
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
   "autoTitle": "Автоопределение вождения",
   "autoSwitch": "Определять вождение по GPS",
   "autoSwitchHint": "Поехали — вождение, остановились — другая работа. Нужна только скорость: координаты не сохраняются.",

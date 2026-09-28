@@ -14,6 +14,8 @@ import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
+import 'package:tachogo/notifications/alert_scheduler.dart';
+import 'package:tachogo/notifications/notification_platform.dart';
 
 /// Сообщение между движками: журнал изменился в другом движке.
 const journalChangedMessage = 'journal_changed';
@@ -25,14 +27,18 @@ void startTrackingTask() =>
     FlutterForegroundTask.setTaskHandler(TrackingTaskHandler());
 
 /// Автоопределение вождения в фоне и постоянное уведомление с текущим
-/// режимом и главным таймером.
+/// режимом и главным таймером. Журнал, который пишет сервис, меняет и
+/// расписание уведомлений о лимитах — его пересчитывает свой
+/// `AlertScheduler`: приложение может быть закрыто.
 class TrackingTaskHandler extends TaskHandler {
-  /// Параметры — для тестов: платформа, база и отчёты о падениях.
+  /// Параметры — для тестов: платформы, база и отчёты о падениях.
   new({
     this._platform = const TrackingPlatform(),
+    this._notifications = const NotificationPlatform(),
     this._database,
     CrashReporter Function()? crashReporter,
     DateTime Function()? clock,
+    this._alertForecaster,
   }) : _crashReporter = crashReporter ?? _backgroundCrashReporter,
        _clock = clock ?? DateTime.now;
 
@@ -43,12 +49,15 @@ class TrackingTaskHandler extends TaskHandler {
   static const refreshInterval = Duration(minutes: 1);
 
   final TrackingPlatform _platform;
+  final NotificationPlatform _notifications;
   final AppDatabase Function()? _database;
   final CrashReporter Function() _crashReporter;
   final DateTime Function() _clock;
+  final AlertForecaster? _alertForecaster;
 
   ProviderContainer? _container;
   AutoTracker? _tracker;
+  AlertScheduler? _alerts;
   StreamSubscription<AutoSwitch?>? _suggestionWatch;
 
   @override
@@ -81,6 +90,16 @@ class TrackingTaskHandler extends TaskHandler {
     _suggestionWatch = tracker.suggestions.listen((_) => _refreshLater());
     await tracker.start();
     await _refresh();
+    (_alerts = AlertScheduler(
+      journal: container.read(activityRepositoryProvider),
+      edits: container.read(journalEditRepositoryProvider),
+      cards: container.read(cardDownloadRepositoryProvider),
+      settings: settings,
+      platform: _notifications,
+      clock: _clock,
+      forecaster: _alertForecaster,
+      onError: _report,
+    )).start(container.read(databaseProvider));
   }
 
   @override
@@ -113,6 +132,7 @@ class TrackingTaskHandler extends TaskHandler {
   Future<void> onDestroy(DateTime timestamp, bool isTimeout) async {
     await _suggestionWatch?.cancel();
     await _tracker?.stop();
+    await _alerts?.dispose();
     _container?.dispose();
   }
 

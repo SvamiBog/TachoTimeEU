@@ -7,6 +7,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/background/tracking_service.dart';
 import 'package:tachogo/background/tracking_task.dart';
@@ -17,9 +18,14 @@ import 'package:tachogo/core/observability/observability_providers.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
+import 'package:tachogo/data/journal/card_download_repository.dart';
+import 'package:tachogo/data/journal/journal_edit_repository.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
+import 'package:tachogo/notifications/alert_providers.dart';
+import 'package:tachogo/notifications/alert_scheduler.dart';
 
 import 'background/fake_tracking_platform.dart';
+import 'notifications/fake_notification_platform.dart';
 
 class _Analytics implements Analytics {
   final consents = <bool>[];
@@ -49,6 +55,7 @@ void main() {
   late _Analytics analytics;
   late _Crashes crashes;
   late FakeTrackingPlatform platform;
+  late FakeNotificationPlatform alerts;
   late ProviderContainer container;
 
   // Обработчики ошибок меняет bootstrap — после теста возвращаем прежние.
@@ -62,8 +69,20 @@ void main() {
     analytics = _Analytics();
     crashes = _Crashes();
     platform = FakeTrackingPlatform();
+    alerts = FakeNotificationPlatform();
     container = ProviderContainer(
       overrides: [
+        alertSchedulerProvider.overrideWithValue(
+          AlertScheduler(
+            journal: ActivityRepository(db),
+            edits: JournalEditRepository(db, SettingsRepository(db)),
+            cards: CardDownloadRepository(db),
+            settings: SettingsRepository(db),
+            platform: alerts,
+            forecaster: (inputs) async => computeAlertForecast(inputs),
+            deviceLocales: () => const [Locale('ru')],
+          ),
+        ),
         databaseProvider.overrideWithValue(db),
         analyticsProvider.overrideWithValue(analytics),
         crashReporterProvider.overrideWithValue(crashes),
@@ -139,6 +158,16 @@ void main() {
     platform.deliverToMain(journalChangedMessage);
     await pumpEventQueue();
     expect(updates, isNotEmpty);
+  });
+
+  test('NTF-02: расписание уведомлений — при запуске и после изменений '
+      'журнала', () async {
+    int runs() => alerts.calls.where((c) => c == 'cancelAllPending').length;
+    expect(runs(), 1);
+    await ActivityRepository(db).switchMode(DriverMode.driving);
+    await pumpEventQueue();
+    expect(runs(), 2);
+    expect(alerts.pending, isNotEmpty);
   });
 
   test('сервис приводится к настройке при запуске', () {

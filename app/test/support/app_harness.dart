@@ -25,8 +25,11 @@ import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
+import 'package:tachogo/notifications/alert_providers.dart';
+import 'package:tachogo/notifications/alert_scheduler.dart';
 
 import '../background/fake_tracking_platform.dart';
+import '../notifications/fake_notification_platform.dart';
 
 /// Часы, которые двигает тест: `clock.now = t`.
 class TestClock extends Clock {
@@ -110,10 +113,13 @@ List<Override> journalOverrides({
 /// База в памяти: запись режимов и считываний идёт через настоящие
 /// репозитории, время записи — [now]. Разрешения и сервис
 /// автоопределения — [platform] (по умолчанию Android, всё разрешено).
+/// Уведомления о лимитах — [notifications]; без него платформа настоящая,
+/// а в тестах это не Android — расписания нет.
 List<Override> databaseOverrides(
   AppDatabase db, {
   required DateTime Function() now,
   FakeTrackingPlatform? platform,
+  FakeNotificationPlatform? notifications,
 }) {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   return [
@@ -135,6 +141,21 @@ List<Override> databaseOverrides(
       JournalEditRepository(db, SettingsRepository(db), clock: now),
     ),
     clockProvider.overrideWith(() => TestClock(now())),
+    if (notifications != null) ...[
+      notificationPlatformProvider.overrideWithValue(notifications),
+      alertSchedulerProvider.overrideWithValue(
+        AlertScheduler(
+          journal: ActivityRepository(db, clock: now),
+          edits: JournalEditRepository(db, SettingsRepository(db), clock: now),
+          cards: CardDownloadRepository(db, clock: now),
+          settings: SettingsRepository(db),
+          platform: notifications,
+          clock: now,
+          forecaster: (inputs) async => computeAlertForecast(inputs),
+          deviceLocales: () => const [Locale('ru')],
+        ),
+      ),
+    ],
   ];
 }
 

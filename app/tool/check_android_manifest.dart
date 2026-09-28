@@ -1,7 +1,8 @@
 // Итоговый манифест Android вместе с манифестами плагинов (CI-06 в
-// docs/testing.md): без фонового доступа к геолокации и прямого запроса на
-// исключение из экономии батареи, сервис автоопределения с типом location,
-// PostHog не стартует до согласия.
+// docs/testing.md): без фонового доступа к геолокации, прямого запроса на
+// исключение из экономии батареи и USE_EXACT_ALARM, сервис автоопределения
+// с типом location, уведомления о лимитах по расписанию переживают
+// перезагрузку, PostHog не стартует до согласия.
 //
 //   dart tool/check_android_manifest.dart [AndroidManifest.xml …]
 //
@@ -21,6 +22,8 @@ List<String> manifestProblems(String xml) {
   for (final permission in const [
     'android.permission.ACCESS_BACKGROUND_LOCATION',
     'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
+    // Google Play даёт его только будильникам и календарям.
+    'android.permission.USE_EXACT_ALARM',
   ]) {
     if (tags('uses-permission').any((t) => named(t, permission))) {
       problems.add('Запрещённое разрешение $permission');
@@ -36,6 +39,31 @@ List<String> manifestProblems(String xml) {
     (t) => t.contains('android:foregroundServiceType="location"'),
   )) {
     problems.add('Сервис автоопределения без типа location');
+  }
+
+  for (final permission in const [
+    'android.permission.RECEIVE_BOOT_COMPLETED',
+    'android.permission.SCHEDULE_EXACT_ALARM',
+  ]) {
+    if (!tags('uses-permission').any((t) => named(t, permission))) {
+      problems.add('Нет разрешения $permission для уведомлений о лимитах');
+    }
+  }
+  const receivers = 'com.dexterous.flutterlocalnotifications';
+  for (final receiver in const [
+    '$receivers.ScheduledNotificationReceiver',
+    '$receivers.ScheduledNotificationBootReceiver',
+  ]) {
+    if (!tags('receiver').any((t) => named(t, receiver))) {
+      problems.add('Нет $receiver: уведомления по расписанию не придут');
+    }
+  }
+  final boot = RegExp(
+    '<receiver[^>]*ScheduledNotificationBootReceiver[^>]*>'
+    r'[\s\S]*?</receiver>',
+  ).firstMatch(xml)?[0];
+  if (boot != null && !boot.contains('android.intent.action.BOOT_COMPLETED')) {
+    problems.add('Расписание уведомлений не восстановится после перезагрузки');
   }
 
   const posthogAutoInit = 'com.posthog.posthog.AUTO_INIT';

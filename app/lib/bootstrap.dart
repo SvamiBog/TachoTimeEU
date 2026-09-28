@@ -10,9 +10,11 @@ import 'package:tachogo/core/observability/crash_reporter.dart';
 import 'package:tachogo/core/observability/observability_providers.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
+import 'package:tachogo/notifications/alert_providers.dart';
 
 /// Подготовка приложения до `runApp`: отчёты о падениях, перехват ошибок,
-/// согласие на аналитику, связь с фоновым сервисом, лицензии шрифтов.
+/// согласие на аналитику, связь с фоновым сервисом, лицензии шрифтов,
+/// расписание уведомлений.
 /// Отдельно от `main()`, чтобы её проверяли тесты.
 Future<void> bootstrap(
   ProviderContainer container, {
@@ -42,6 +44,12 @@ Future<void> bootstrap(
   // Сервис не поднялся после перезагрузки или приложение обновили. Ошибки
   // уходят в PlatformDispatcher.onError.
   unawaited(container.read(trackingServiceProvider).sync());
+
+  // Уведомления о лимитах: расписание по журналу и настройкам, заново при
+  // каждом их изменении.
+  container
+      .read(alertSchedulerProvider)
+      .start(container.read(databaseProvider));
 }
 
 /// Ошибки Flutter и необработанные асинхронные ошибки — в [crash]. Они не

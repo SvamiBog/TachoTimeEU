@@ -71,9 +71,10 @@ class AppPreferences {
       Object.hash(theme, language, onboardingDone, vehicle, tachograph);
 }
 
-/// Какие уведомления о лимитах присылать (экран 3). Сами уведомления —
-/// Фаза 3; порог и срок считывания карты — в `ComplianceSettings`
-/// (`warningLead`, `cardAlertDays`), от них уже зависят плашки на экране.
+/// Какие уведомления о лимитах присылать (экран 3): расписание —
+/// `AlertScheduler`. Порог и срок считывания карты — в
+/// `ComplianceSettings` (`warningLead`, `cardAlertDays`): от них зависят
+/// и плашки на экране, и момент уведомления.
 @immutable
 class NotificationSettings {
   const new({
@@ -83,10 +84,11 @@ class NotificationSettings {
     this.card = true,
   });
 
-  /// Перерыв после 4:30 вождения.
+  /// Перерыв после 4:30 вождения и «перерыв засчитан».
   final bool breaks;
 
-  /// Конец рабочего дня: 13 / 15 ч.
+  /// Обязательный отдых: конец рабочего дня 13 / 15 ч, недельный отдых
+  /// после 144 ч и компенсация, «отдых набран».
   final bool shiftEnd;
 
   /// Суточное, недельное и двухнедельное вождение.
@@ -226,6 +228,10 @@ class SettingsRepository {
 
   Stream<NotificationSettings> watchNotifications() =>
       _watchAll().map(_notificationsFrom).distinct();
+
+  /// Категории для расписания уведомлений вне экрана.
+  Future<NotificationSettings> notifications() async =>
+      _notificationsFrom(await _all());
 
   Future<void> setNotifications(NotificationSettings s) => _putAll({
     _notifyBreak: '${s.breaks}',

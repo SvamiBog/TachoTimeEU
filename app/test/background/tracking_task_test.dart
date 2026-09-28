@@ -12,7 +12,10 @@ import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/journal/journal_edit_repository.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
+import 'package:tachogo/notifications/alert_notifications.dart';
+import 'package:tachogo/notifications/alert_scheduler.dart';
 
+import '../notifications/fake_notification_platform.dart';
 import 'fake_tracking_platform.dart';
 
 class _Errors implements CrashReporter {
@@ -173,6 +176,38 @@ void main() {
       expect((await journal.periods()).single.mode, DriverMode.rest);
       expect(platform.updates.last.buttons, isEmpty);
     });
+  });
+
+  test('NTF-02: журнал, записанный сервисом, пересчитывает уведомления о '
+      'лимитах — приложение может быть закрыто', () async {
+    final alerts = FakeNotificationPlatform();
+    handler = TrackingTaskHandler(
+      platform: platform,
+      notifications: alerts,
+      database: () => db,
+      crashReporter: () => crashes,
+      clock: () => now,
+      alertForecaster: (inputs) async => computeAlertForecast(inputs),
+    );
+    await journal.switchMode(DriverMode.otherWork);
+    now = t0;
+    await start();
+    expect(alerts.pending, contains(alertId(InfringementType.shiftSoon)));
+    expect(
+      alerts.pending,
+      isNot(contains(alertId(InfringementType.breakSoon))),
+    );
+
+    await drive(5, 50);
+    await pumpEventQueue();
+    expect((await journal.periods()).last.mode, DriverMode.driving);
+    expect(alerts.pending, contains(alertId(InfringementType.breakSoon)));
+
+    await handler.onDestroy(now, false);
+    final before = alerts.calls.length;
+    await journal.switchMode(DriverMode.rest);
+    await pumpEventQueue();
+    expect(alerts.calls, hasLength(before));
   });
 
   test('нажатие на уведомление открывает приложение', () async {
