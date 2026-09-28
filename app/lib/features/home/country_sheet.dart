@@ -79,9 +79,23 @@ Future<void> showCountrySheet(BuildContext context) =>
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (_) =>
-          const FractionallySizedBox(heightFactor: 0.9, child: CountrySheet()),
+      builder: (_) => const _AboveKeyboard(
+        child: FractionallySizedBox(heightFactor: 0.9, child: CountrySheet()),
+      ),
     );
+
+/// Шторка с поиском поднимается над клавиатурой: список не уходит под неё.
+class _AboveKeyboard extends StatelessWidget {
+  const new({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+    child: child,
+  );
+}
 
 /// Страны смены на главной: выбор сразу пишется в смену (бесплатно, как
 /// переключение режима).
@@ -145,9 +159,11 @@ Future<({String? start, String? end})?> showCountryPicker(
   context: context,
   showDragHandle: true,
   isScrollControlled: true,
-  builder: (_) => FractionallySizedBox(
-    heightFactor: 0.9,
-    child: _LocalCountries(start: start, end: end, target: target),
+  builder: (_) => _AboveKeyboard(
+    child: FractionallySizedBox(
+      heightFactor: 0.9,
+      child: _LocalCountries(start: start, end: end, target: target),
+    ),
   ),
 );
 

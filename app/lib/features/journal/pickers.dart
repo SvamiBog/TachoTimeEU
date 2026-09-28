@@ -45,13 +45,20 @@ class _SheetButtons extends StatelessWidget {
   );
 }
 
+/// Шторка поднимается над клавиатурой: поле ввода и «Сохранить» не
+/// прячутся под ней.
 Future<T?> _showSheet<T>(BuildContext context, Widget child) =>
     showModalBottomSheet<T>(
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (_) => SafeArea(
-        child: SingleChildScrollView(padding: _sheetPadding, child: child),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(padding: _sheetPadding, child: child),
+        ),
       ),
     );
 

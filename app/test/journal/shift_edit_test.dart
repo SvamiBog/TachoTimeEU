@@ -191,6 +191,31 @@ void main() {
       await unmount(tester);
     });
 
+    testWidgets('шторка длительности — над клавиатурой, поле и «Сохранить» '
+        'видны', (tester) async {
+      await defaultCountry(tester, 'PL');
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.text('Смена'));
+      await tap(tester, find.text('Суточный'));
+      await tap(tester, find.text('За день'));
+
+      // Клавиатура поднялась: 300 dp снизу экрана
+      const keyboard = 300.0;
+      final ratio = tester.view.devicePixelRatio;
+      tester.view.viewInsets = FakeViewPadding(bottom: keyboard * ratio);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+
+      final top = tester.view.physicalSize.height / ratio - keyboard;
+      final save = find.widgetWithText(PrimaryButton, 'Сохранить');
+      expect(tester.getRect(find.byType(HmField).last).bottom, lessThan(top));
+      expect(tester.getRect(save).bottom, lessThanOrEqualTo(top));
+      await enterHm(tester, '100');
+      await tap(tester, save);
+      expect(find.text('1:00'), findsOneWidget);
+      await unmount(tester);
+    });
+
     testWidgets('лимиты сохранению не мешают — нарушения после сохранения', (
       tester,
     ) async {
