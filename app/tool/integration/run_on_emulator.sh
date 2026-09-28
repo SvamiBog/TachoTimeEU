@@ -24,9 +24,10 @@ agent=$!
 (
   while sleep 120; do
     echo "── logcat $(date -u +%H:%M:%S) ──"
-    adb logcat -d -t 400 2>/dev/null |
-      grep -E 'flutter|AndroidRuntime|FATAL|ANR|Impeller|E/Vulkan|TACHOGO' |
-      tail -n 25 || true
+    adb logcat -d -t 2000 2>/dev/null |
+      grep -v 'TACHOGO_HOST geo' |
+      grep -E 'flutter|AndroidRuntime|FATAL|ANR|ForegroundService|LocationManager|GnssLocation|FusedLocation|geolocator|TACHOGO' |
+      tail -n 40 || true
   done
 ) &
 watch=$!

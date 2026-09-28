@@ -18,6 +18,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/app.dart';
+import 'package:tachogo/background/motion_source.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/background/tracking_service.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
@@ -130,6 +131,18 @@ void main() {
           (await tester.runAsync(repo.periods))!;
       Future<DriverMode> lastMode() async => (await repo.periods()).last.mode;
 
+      // Отметки GPS, какими их видит и сервис: для разбора, если сервис
+      // не переключил режим, — дошла ли скорость и какая точность.
+      final seen = <MotionSample>[];
+      final gps = gpsSamples(fast: true).listen(seen.add);
+      addTearDown(gps.cancel);
+      String gpsSummary() {
+        final last = seen.isEmpty ? null : seen.last;
+        return 'отметок GPS в приложении: ${seen.length}, последняя: '
+            '${last == null ? '—' : '${last.speedKmh.toStringAsFixed(1)} км/ч, '
+                      'точность ${last.accuracyMeters}'}';
+      }
+
       // Едем 90 с: первые точки — редкие (стоянка), дальше раз в 5 с
       final driveStart = DateTime.now().toUtc();
       await feedGps(
@@ -138,11 +151,13 @@ void main() {
         knots: driveKnots,
         lat: (i) => startLat + stepLat * i,
       );
+      hostCommand('dumpsys location');
       await waitFor(
         tester,
         () async => await lastMode() == DriverMode.driving,
         timeout: const Duration(seconds: 60),
         reason: 'сервис записал вождение',
+        details: gpsSummary,
       );
       final driving = (await periods()).last;
       expect(

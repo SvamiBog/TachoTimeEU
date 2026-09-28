@@ -214,18 +214,23 @@ Future<void> settleFrames(WidgetTester tester) => tester.pumpAndSettle(
 );
 
 /// Ждёт, пока [condition] станет истинным, до [timeout]; экран
-/// дорисовывается между проверками.
+/// дорисовывается между проверками. [details] — что добавить к ошибке,
+/// считается в момент ошибки.
 Future<void> waitFor(
   WidgetTester tester,
   Future<bool> Function() condition, {
   Duration timeout = const Duration(seconds: 30),
   Duration step = const Duration(seconds: 1),
   String? reason,
+  String Function()? details,
 }) async {
   final watch = Stopwatch()..start();
   while (!(await tester.runAsync(condition) ?? false)) {
     if (watch.elapsed > timeout) {
-      fail('Не дождались за ${timeout.inSeconds} с: ${reason ?? condition}');
+      final more = details == null ? '' : '; ${details()}';
+      fail(
+        'Не дождались за ${timeout.inSeconds} с: ${reason ?? condition}$more',
+      );
     }
     await tester.runAsync(() => Future<void>.delayed(step));
     await tester.pump();

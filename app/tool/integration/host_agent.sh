@@ -7,6 +7,7 @@
 #   grant <разрешение>              pm grant, например ACCESS_FINE_LOCATION
 #   geo <долгота> <широта> <узлы>   точка GPS со скоростью (adb emu geo fix)
 #   timezone <зона IANA>            часовой пояс эмулятора
+#   dumpsys location                последние точки у провайдеров — в лог
 #
 # Ответа нет: результат тест проверяет сам. Запускает run_on_emulator.sh.
 #
@@ -65,6 +66,11 @@ adb logcat -v raw -s flutter:I | while IFS= read -r line; do
       ;;
     geo) adb emu geo fix "$2" "$3" 100 12 "$4" </dev/null >/dev/null ;;
     timezone) set_timezone "$2" ;;
+    dumpsys)
+      log "dumpsys $2:"
+      adb shell dumpsys "$2" </dev/null |
+        grep -iE 'last location|Location\[|provider|enabled' | head -n 40
+      ;;
     *) log "неизвестная команда: $command" ;;
   esac
 done
