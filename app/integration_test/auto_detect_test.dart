@@ -125,8 +125,10 @@ void main() {
       );
 
       final repo = ActivityRepository(db);
+      // Условия waitFor уже идут внутри runAsync — там база читается прямо.
       Future<List<ActivityPeriod>> periods() async =>
           (await tester.runAsync(repo.periods))!;
+      Future<DriverMode> lastMode() async => (await repo.periods()).last.mode;
 
       // Едем 90 с: первые точки — редкие (стоянка), дальше раз в 5 с
       final driveStart = DateTime.now().toUtc();
@@ -138,7 +140,7 @@ void main() {
       );
       await waitFor(
         tester,
-        () async => (await periods()).last.mode == DriverMode.driving,
+        () async => await lastMode() == DriverMode.driving,
         timeout: const Duration(seconds: 60),
         reason: 'сервис записал вождение',
       );
@@ -164,7 +166,7 @@ void main() {
       await feedGps(tester, seconds: 240, knots: 0, lat: (_) => stopLat);
       await waitFor(
         tester,
-        () async => (await periods()).last.mode == DriverMode.otherWork,
+        () async => await lastMode() == DriverMode.otherWork,
         timeout: const Duration(seconds: 90),
         reason: 'сервис записал другую работу после стоянки',
       );
