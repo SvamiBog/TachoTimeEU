@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/compliance.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
 import 'package:tacho_engine/src/eu_limits.dart';
+import 'package:tacho_engine/src/manual_rest.dart';
 import 'package:tacho_engine/src/manual_shift.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
@@ -192,16 +193,18 @@ List<JournalWeek> buildJournal({
     );
   }
 
-  for (final m in manual) {
+  final restOfManual = manualRests(manual, timeline, now);
+  for (final (i, m) in manual.indexed) {
     final span = durationBetween(m.start, m.end ?? now);
-    final status = switch (m.restKind) {
-      RestKind.daily => dailyRestStatus(
-        restInWindow(span, m.rest, crew),
-        split: m.splitRest,
-      ),
-      RestKind.weekly => weeklyRestStatus(m.rest),
-      RestKind.none => null,
-    };
+    final r = restOfManual[i];
+    final status = r == null || r.ongoing
+        ? null
+        : r.kind == RestKind.weekly
+        ? weeklyRestStatus(r.duration)
+        : dailyRestStatus(
+            restInWindow(span, r.duration, crew),
+            split: m.splitRest,
+          );
     shifts.add(
       JournalShift(
         recorded: null,
@@ -215,14 +218,14 @@ List<JournalWeek> buildJournal({
         span: span,
         continuousDrivingAtEnd: m.continuousDrivingAtEnd,
         rest: JournalRest(
-          kind: m.restKind,
-          duration: m.rest,
-          ongoing: false,
+          kind: r?.kind ?? RestKind.none,
+          duration: r?.duration ?? Duration.zero,
+          ongoing: r?.ongoing ?? false,
           split: m.splitRest,
           status: status,
         ),
         live: false,
-        restEnd: m.restEnd,
+        restEnd: r?.end,
         driveLevel: driveLevel(m.driving),
         spanLevel: spanLevel(span),
         restLevel: restLevel(status),
@@ -259,19 +262,19 @@ List<JournalWeek> buildJournal({
         duration: p.rest,
         status: weeklyRestStatus(p.rest),
       ),
-    for (final m in manual)
-      if (m.restKind == RestKind.weekly && m.end != null)
+    for (final r in restOfManual.nonNulls)
+      if (r.kind == RestKind.weekly)
         // Тот же отдых уже есть в записях режимов — не показываем его дважды
         if (!recordedWeekly.any(
           (p) =>
-              p.start.isBefore(m.restEnd!) &&
-              (p.open ? now : p.end).isAfter(m.end!),
+              p.start.isBefore(r.end ?? now) &&
+              (p.open ? now : p.end).isAfter(r.start),
         ))
           WeeklyRest(
-            start: m.end!,
-            end: m.restEnd,
-            duration: m.rest,
-            status: weeklyRestStatus(m.rest),
+            start: r.start,
+            end: r.end,
+            duration: r.duration,
+            status: weeklyRestStatus(r.duration),
           ),
   ];
 

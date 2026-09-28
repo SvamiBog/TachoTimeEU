@@ -53,6 +53,9 @@ void main() {
     );
     await SettingsRepository(db)
         .setAutoDetect(const AutoDetectSettings(enabled: true));
+    // Телефон в тестах — на английском, а он теперь среди переводов:
+    // язык уведомлений — из настроек
+    await SettingsRepository(db).setLanguage('ru');
   });
   tearDown(() async {
     await handler.onDestroy(now, false);
@@ -103,7 +106,6 @@ void main() {
           end: DateTime.utc(2026, 9, day, 14),
           driving: const Duration(hours: 9, minutes: 30),
           restKind: RestKind.daily,
-          rest: const Duration(hours: 11),
         ),
         ShiftMeta.empty,
       );

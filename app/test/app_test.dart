@@ -12,6 +12,9 @@ import 'support/app_harness.dart';
 
 void main() {
   Future<void> launch(WidgetTester tester, List<Override> overrides) async {
+    // Телефон на русском: язык при первом запуске — как в телефоне
+    tester.platformDispatcher.localesTestValue = const [Locale('ru')];
+    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
     await tester.pumpWidget(
       ProviderScope(overrides: overrides, child: const TachoGoApp()),
     );

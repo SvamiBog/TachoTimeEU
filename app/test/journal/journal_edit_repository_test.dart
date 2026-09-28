@@ -216,7 +216,6 @@ void main() {
       driving: h(8, 30),
       continuousDrivingAtEnd: h(2),
       restKind: RestKind.daily,
-      rest: h(9, 30),
       splitRest: true,
     );
 
@@ -233,7 +232,6 @@ void main() {
       expect(record.shift.driving, h(8, 30));
       expect(record.shift.continuousDrivingAtEnd, h(2));
       expect(record.shift.restKind, RestKind.daily);
-      expect(record.shift.rest, h(9, 30));
       expect(record.shift.splitRest, isTrue);
       expect(
         record.meta,
@@ -255,7 +253,6 @@ void main() {
           end: start.add(h(9)),
           driving: h(7),
           restKind: RestKind.weekly,
-          rest: h(45),
         ),
         const ShiftMeta(note: ''),
       );
@@ -333,7 +330,6 @@ void main() {
           end: DateTime.utc(2026, 9, 21, 16),
           driving: h(8),
           restKind: RestKind.daily,
-          rest: h(11),
         ),
         const ShiftMeta(startCountry: 'PL'),
       );
@@ -373,7 +369,6 @@ void main() {
           end: DateTime.utc(2026, 9, 21, 16),
           driving: h(7),
           restKind: RestKind.daily,
-          rest: h(14),
         ),
         const ShiftMeta(startCountry: 'D', note: 'поправил'),
       );
@@ -422,7 +417,6 @@ void main() {
           end: DateTime.utc(2026, 9, 23, 10),
           driving: h(1),
           restKind: RestKind.daily,
-          rest: h(11),
         ),
         ShiftMeta.empty,
       );

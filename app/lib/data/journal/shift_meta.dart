@@ -45,7 +45,6 @@ class ManualShiftRecord {
       other.shift.driving == shift.driving &&
       other.shift.continuousDrivingAtEnd == shift.continuousDrivingAtEnd &&
       other.shift.restKind == shift.restKind &&
-      other.shift.rest == shift.rest &&
       other.shift.splitRest == shift.splitRest;
 
   @override

@@ -12,6 +12,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/background/tracking_service.dart';
 import 'package:tachogo/core/config/app_info.dart';
+import 'package:tachogo/core/l10n/fallback_localizations.dart';
 import 'package:tachogo/core/theme/app_theme.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
@@ -199,7 +200,8 @@ Future<void> pumpScreen(
         debugShowCheckedModeBanner: false,
         theme: buildTheme(brightness),
         locale: locale,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        // Как в приложении: с запасными системными подписями (мальтийский)
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: child,
       ),
@@ -231,10 +233,18 @@ Future<void> loadAppFonts() async {
     mono.addFont(rootBundle.load('assets/fonts/JetBrainsMono-$w.ttf'));
   }
   final georgian = FontLoader('Noto Sans Georgian');
+  final greek = FontLoader('Noto Sans Greek');
   for (final w in ['Regular', 'Bold']) {
     georgian.addFont(rootBundle.load('assets/fonts/NotoSansGeorgian-$w.ttf'));
+    greek.addFont(rootBundle.load('assets/fonts/NotoSansGreek-$w.ttf'));
   }
   final icons = FontLoader('MaterialIcons')
     ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
-  await Future.wait([onest.load(), mono.load(), georgian.load(), icons.load()]);
+  await Future.wait([
+    onest.load(),
+    mono.load(),
+    georgian.load(),
+    greek.load(),
+    icons.load(),
+  ]);
 }

@@ -64,9 +64,9 @@ void main() {
       expect(AppFonts.fallback, fonts['fallback']);
     });
 
-    test('у каждого стиля — запасной шрифт для грузинского', () {
+    test('у каждого стиля — запасные шрифты для грузинского и греческого', () {
       for (final style in AppTextStyles.all) {
-        expect(style.fontFamilyFallback, [AppFonts.fallback]);
+        expect(style.fontFamilyFallback, AppFonts.fallback);
       }
     });
 

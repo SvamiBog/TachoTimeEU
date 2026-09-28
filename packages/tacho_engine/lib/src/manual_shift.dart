@@ -6,6 +6,9 @@ enum RestKind { none, daily, weekly }
 /// Смена, добавленная вручную итогами (например, за дни до установки
 /// приложения): без записей режимов, только суммы.
 ///
+/// Водитель указывает только вид отдыха после смены, длительность движок
+/// считает сам — до начала следующей смены (`manualRests`).
+///
 /// Страны и заметки движку не нужны — они хранятся в приложении.
 @immutable
 class ManualShift {
@@ -16,7 +19,6 @@ class ManualShift {
     this.id,
     this.continuousDrivingAtEnd = Duration.zero,
     this.restKind = RestKind.none,
-    this.rest = Duration.zero,
     this.splitRest = false,
   }) {
     if (!start.isUtc) {
@@ -34,9 +36,6 @@ class ManualShift {
     if (driving.isNegative) {
       throw ArgumentError.value(driving, 'driving', 'отрицательное');
     }
-    if (rest.isNegative) {
-      throw ArgumentError.value(rest, 'rest', 'отрицательный');
-    }
   }
 
   /// Идентификатор в хранилище; null — ещё не сохранена.
@@ -47,17 +46,10 @@ class ManualShift {
   final DateTime? end;
   final Duration driving;
   final Duration continuousDrivingAtEnd;
-  final RestKind restKind;
 
-  /// Длительность отдыха после смены.
-  final Duration rest;
+  /// Вид отдыха после смены; [RestKind.none] — отдых не начат.
+  final RestKind restKind;
 
   /// Отдых раздельный: в смене была первая часть 3 ч.
   final bool splitRest;
-
-  /// Конец отдыха после смены, если он записан.
-  DateTime? get restEnd {
-    final end = this.end;
-    return end == null || restKind == RestKind.none ? null : end.add(rest);
-  }
 }

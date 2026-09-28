@@ -89,6 +89,60 @@ class LanguageSheet extends ConsumerWidget {
   }
 }
 
+/// Шторка «Язык отчёта» (экран 16): переводы из ARB без «Как в
+/// телефоне». Возвращает код выбранного языка; null — водитель закрыл
+/// шторку.
+Future<String?> showReportLanguageSheet(
+  BuildContext context, {
+  required String selected,
+}) => showModalBottomSheet<String>(
+  context: context,
+  showDragHandle: true,
+  isScrollControlled: true,
+  builder: (context) {
+    final l = context.l10n;
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 24),
+        child: Semantics(
+          scopesRoute: true,
+          namesRoute: true,
+          label: l.exportLanguage,
+          explicitChildNodes: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.screenPadding + 4,
+                  0,
+                  AppSpacing.screenPadding + 4,
+                  16,
+                ),
+                child: Text(l.exportLanguage, style: AppTextStyles.header),
+              ),
+              CardGroup(
+                children: [
+                  for (final locale in languagesInOrder(
+                    AppLocalizations.supportedLocales,
+                  ))
+                    _LanguageRow(
+                      title: languageName(locale),
+                      selected: selected == locale.languageCode,
+                      onTap: () =>
+                          Navigator.of(context).pop(locale.languageCode),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  },
+);
+
 class _LanguageRow extends StatelessWidget {
   const new({required this.title, required this.selected, required this.onTap});
 

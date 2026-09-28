@@ -227,9 +227,6 @@ enum ShiftEditError {
   /// Смена пересекается с другой ([ShiftEditProblem.conflict]).
   overlap,
 
-  /// Отдых после смены заходит на другую смену.
-  restOverlap,
-
   /// Смена не последняя в журнале, а идти может только последняя.
   notLast,
 }
@@ -244,9 +241,12 @@ class ShiftEditProblem {
 }
 
 /// Проверяет ручную смену перед сохранением: время, суммы и пересечения
-/// с остальными сменами журнала [shifts]. [except] — смена, которую
-/// правят. Смена без конца ([end] == null) идёт сейчас и станет текущей:
-/// после неё не должно быть других смен.
+/// с остальными сменами журнала [shifts]. [except] — смена, которую правят.
+/// Смена без конца ([end] == null) идёт сейчас и станет текущей: после неё
+/// не должно быть других смен.
+///
+/// Нарушения лимитов сохранению не мешают — их покажет журнал после
+/// сохранения. Здесь только данные, которых не может быть.
 ShiftEditProblem? checkManualShift({
   required DateTime start,
   required DateTime? end,
@@ -254,7 +254,6 @@ ShiftEditProblem? checkManualShift({
   required DateTime now,
   Duration driving = Duration.zero,
   Duration continuousDrivingAtEnd = Duration.zero,
-  Duration rest = Duration.zero,
   JournalShift? except,
 }) {
   final spanEnd = end ?? now;
@@ -289,18 +288,15 @@ ShiftEditProblem? checkManualShift({
   if (work != null) {
     return ShiftEditProblem(ShiftEditError.overlap, conflict: work);
   }
-  if (end != null && rest > Duration.zero) {
-    final hit = findOverlap(others, (start: end, end: end.add(rest)), now: now);
-    if (hit != null) {
-      return ShiftEditProblem(ShiftEditError.restOverlap, conflict: hit);
-    }
-  }
   return null;
 }
 
 /// Время новой ручной смены по умолчанию: [span], заканчивающиеся сейчас,
 /// или, если это время занято сменой или отдыхом после неё, ближайшее
 /// более раннее свободное окно с отдыхом [rest] до следующей смены.
+///
+/// Идущий отдых после ручной смены длится до начала следующей смены, поэтому
+/// новая смена может начаться после него — но не раньше, чем через [rest].
 TimeRange freeShiftSlot(
   Iterable<JournalShift> shifts,
   DateTime now, {
@@ -308,8 +304,14 @@ TimeRange freeShiftSlot(
   Duration rest = const Duration(hours: 11),
 }) {
   final sorted = shifts.toList()..sort((a, b) => b.start.compareTo(a.start));
-  DateTime busyUntil(JournalShift s) =>
-      s.restEnd ?? (s.end == null || s.rest.ongoing ? now : s.end!);
+  DateTime busyUntil(JournalShift s) {
+    final end = s.end;
+    if (s.restEnd case final restEnd?) return restEnd;
+    if (end == null) return now;
+    if (s.manual != null) return end.add(rest);
+    return s.rest.ongoing ? now : end;
+  }
+
   var end = floorTimeToMinute(now);
   // Не больше 60 попыток: на плотном журнале окно ищется глубже в прошлом
   for (var i = 0; i < 60; i++) {

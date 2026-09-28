@@ -72,3 +72,72 @@ Future<bool?> showConfirmSheet(
     );
   },
 );
+
+/// Шторка-сообщение: заголовок, пояснение, список пунктов и одна кнопка.
+Future<void> showNoticeSheet(
+  BuildContext context, {
+  required String title,
+  required String text,
+  required List<String> items,
+  required String button,
+}) => showModalBottomSheet<void>(
+  context: context,
+  showDragHandle: true,
+  isScrollControlled: true,
+  builder: (context) {
+    final colors = context.colors;
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.screenPadding + 4,
+          0,
+          AppSpacing.screenPadding + 4,
+          24,
+        ),
+        child: Semantics(
+          scopesRoute: true,
+          namesRoute: true,
+          label: title,
+          explicitChildNodes: true,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(title, style: AppTextStyles.header),
+              const SizedBox(height: 8),
+              Text(
+                text,
+                style: AppTextStyles.body.copyWith(color: colors.textSecondary),
+              ),
+              const SizedBox(height: 12),
+              for (final item in items)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Icon(
+                          Icons.error_outline,
+                          size: 18,
+                          color: colors.errorText,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(child: Text(item, style: AppTextStyles.body)),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 20),
+              PrimaryButton(
+                label: button,
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  },
+);

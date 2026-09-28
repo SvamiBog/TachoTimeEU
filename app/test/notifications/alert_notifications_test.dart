@@ -168,7 +168,8 @@ void main() {
     test('язык — из настроек, иначе телефона; без перевода — русский', () {
       expect(appLocale('ru', const [Locale('pl')]), const Locale('ru'));
       expect(appLocale(null, const [Locale('ru', 'UA')]), const Locale('ru'));
-      expect(appLocale(null, const [Locale('de')]), const Locale('ru'));
+      expect(appLocale(null, const [Locale('hi')]), const Locale('ru'));
+      expect(appLocale(null, const [Locale('de')]), const Locale('de'));
       expect(appLocale(null, const <Locale>[]), const Locale('ru'));
     });
   });

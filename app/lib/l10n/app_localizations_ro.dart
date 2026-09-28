@@ -1034,6 +1034,18 @@ class AppLocalizationsRo extends AppLocalizations {
   String get shiftSplitHint => 'Întâi 3 h, apoi 9 h';
 
   @override
+  String shiftRestUntilNext(String when) {
+    return 'Până la începutul turei: $when';
+  }
+
+  @override
+  String get shiftRestAutoHint => 'Durează până la începutul turei următoare';
+
+  @override
+  String get shiftRestCountsWeekly =>
+      'De la 24 h repausul se consideră săptămânal';
+
+  @override
   String get shiftNotesHint => 'De exemplu: feribot, așteptare la încărcare';
 
   @override
@@ -1077,16 +1089,21 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
-  String shiftErrRestOverlap(String range) {
-    return 'Repausul de după tură se suprapune cu tura $range';
-  }
-
-  @override
   String get shiftErrNotLast =>
       'După această tură mai sunt altele — nu poate fi în curs acum';
 
   @override
   String get shiftSaveFailed => 'Nu s-a putut salva. Încercați din nou.';
+
+  @override
+  String get shiftSavedViolations => 'Tura a fost salvată. Există încălcări';
+
+  @override
+  String get shiftSavedViolationsText =>
+      'Verificați ora. Dacă totul a fost așa, încălcările vor apărea în jurnal și în raport.';
+
+  @override
+  String get gotIt => 'Am înțeles';
 
   @override
   String get shiftLiveHint =>
@@ -1216,6 +1233,9 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get exportCsvHint =>
       'Înregistrările de moduri pe rânduri, ora în UTC — pentru Excel și programe de evidență.';
+
+  @override
+  String get exportLanguage => 'Limba raportului';
 
   @override
   String get exportNotes => 'Țări și note';

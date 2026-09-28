@@ -156,13 +156,13 @@ List<JournalShift> journalShifts(
   ]..sort((a, b) => a.start.compareTo(b.start));
 }
 
-/// Ручная смена: вождение и отдых после неё.
+/// Ручная смена: вождение и вид отдыха после неё. Длительность отдыха
+/// движок считает до начала следующей смены.
 ManualShift manualShift(
   DateTime start, {
   Object span = '10:00',
   Object drive = '9:00',
   RestKind restKind = RestKind.daily,
-  Object rest = '11:00',
   bool split = false,
   int? id,
 }) => ManualShift(
@@ -171,9 +171,38 @@ ManualShift manualShift(
   end: start.add(dur(span)),
   driving: dur(drive),
   restKind: restKind,
-  rest: dur(rest),
   splitRest: split,
 );
+
+/// Ручные смены подряд: каждая следующая начинается после отдыха [rests]
+/// предыдущей. Последняя смена — час без вождения и без отдыха после неё:
+/// она только завершает отдых предыдущей.
+List<ManualShift> manualChain(
+  DateTime start,
+  List<Object> rests, {
+  Object span = '10:00',
+  Object drive = '9:00',
+  RestKind restKind = RestKind.daily,
+  bool split = false,
+}) {
+  final result = <ManualShift>[];
+  var t = start;
+  for (final r in rests) {
+    final shift = manualShift(
+      t,
+      span: span,
+      drive: drive,
+      restKind: restKind,
+      split: split,
+    );
+    result.add(shift);
+    t = shift.end!.add(dur(r));
+  }
+  return [
+    ...result,
+    manualShift(t, span: 60, drive: 0, restKind: RestKind.none),
+  ];
+}
 
 /// Детерминированный генератор псевдослучайных чисел (mulberry32, как в
 /// прототипе): одинаковый seed — одинаковые сценарии при каждом запуске.

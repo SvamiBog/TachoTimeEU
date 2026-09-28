@@ -18,6 +18,7 @@ import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
+import 'package:tachogo/features/export/report_violations.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/journal/pickers.dart';
@@ -44,7 +45,6 @@ class _Form {
     required this.start,
     required this.end,
     required this.restKind,
-    required this.rest,
     required this.split,
     required this.driving,
     required this.continuous,
@@ -58,7 +58,6 @@ class _Form {
   /// null — смена идёт, отдых не начат.
   DateTime? end;
   RestKind restKind;
-  Duration rest;
   bool split;
   Duration driving;
   Duration continuous;
@@ -70,7 +69,6 @@ class _Form {
     start: start,
     end: end,
     restKind: restKind,
-    rest: rest,
     split: split,
     driving: driving,
     continuous: continuous,
@@ -83,7 +81,6 @@ class _Form {
       start == o.start &&
       end == o.end &&
       restKind == o.restKind &&
-      rest == o.rest &&
       split == o.split &&
       driving == o.driving &&
       continuous == o.continuous;
@@ -110,9 +107,6 @@ class ShiftEditScreen extends ConsumerStatefulWidget {
 }
 
 class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
-  static const _dailyRest = Duration(hours: 11);
-  static const _weeklyRest = Duration(hours: 45);
-
   _Form? _initial;
   late _Form _form;
   String? _error;
@@ -141,20 +135,23 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     final slot = s == null ? freeShiftSlot(journal.shifts, now) : null;
     final meta = s == null ? ShiftMeta.empty : journal.metaOf(s);
     final manual = s?.manual;
+    // Новая смена по умолчанию идёт: отдых водитель отметит, когда закончит
+    // её. Если после неё в журнале уже есть смены, идти она не может.
     final restKind =
-        manual?.restKind ?? s?.rest.kind ?? widget.presetRest ?? RestKind.daily;
+        manual?.restKind ??
+        s?.rest.kind ??
+        widget.presetRest ??
+        (journal.shifts.any((x) => x.start.isAfter(slot!.start))
+            ? RestKind.daily
+            : RestKind.none);
     final startCountry = meta.startCountry ?? defaultCountry;
+    if (slot != null && restKind == RestKind.none) {
+      _beforeNone = (end: slot.end, country: startCountry);
+    }
     final initial = _Form(
       start: s?.start ?? slot!.start,
-      end: s == null ? slot!.end : s.end,
+      end: s == null ? (restKind == RestKind.none ? null : slot!.end) : s.end,
       restKind: restKind,
-      rest: manual != null
-          ? manual.rest
-          : s != null && s.rest.kind != RestKind.none
-          ? floorToMinute(s.rest.duration)
-          : restKind == RestKind.weekly
-          ? _weeklyRest
-          : _dailyRest,
       split: manual?.splitRest ?? s?.rest.split ?? false,
       driving: floorToMinute(s?.driving ?? Duration.zero),
       continuous: floorToMinute(s?.continuousDrivingAtEnd ?? Duration.zero),
@@ -353,13 +350,6 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
               : floorTimeToMinute(journal?.now ?? f.start));
       f.endCountry ??= before?.country ?? (_isNew ? f.startCountry : null);
     }
-    if (kind == RestKind.weekly && f.rest < EuLimits.weeklyRestReduced) {
-      f.rest = _weeklyRest;
-    }
-    if (kind == RestKind.daily &&
-        (f.rest == Duration.zero || f.rest >= EuLimits.weeklyRestReduced)) {
-      f.rest = _dailyRest;
-    }
   });
 
   // ───────────────────────── карточки ─────────────────────────
@@ -368,30 +358,29 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     final f = _form;
     final initial = _initial!;
     final shift = _shift;
-    final span = durationBetween(f.start, f.end ?? now);
     final bounds = _live && shift != null && journal != null
         ? drivingAdjustmentBounds(journal.periods, shift.start, now)
         : null;
-    final (Duration min, Duration max) = _live
+    // У «живой» смены вождение берётся у соседних записей — пределы от
+    // них. Ручную водитель вводит любую, проверка — при сохранении.
+    final (Duration min, Duration? max) = _live
         ? bounds == null
               ? (initial.driving, initial.driving)
               : (initial.driving + bounds.min, initial.driving + bounds.max)
-        : (Duration.zero, floorToMinute(span));
+        : (Duration.zero, null);
     final continuousAuto = _live || _becomesCurrent;
     return CardGroup(
       children: [
         _ValueRow(
           label: l.shiftPerDay,
           value: f.driving,
-          onTap: max > min
+          onTap: max == null || max > min
               ? () => unawaited(
                   _pickDuration(
                     title: l.shiftPerDay,
                     value: f.driving,
                     min: min < Duration.zero ? Duration.zero : min,
-                    max: max < const Duration(hours: 24)
-                        ? max
-                        : const Duration(hours: 24),
+                    max: max,
                     onPicked: (v) {
                       f.driving = v;
                       // Непрерывное не больше суточного
@@ -411,12 +400,67 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
                   _pickDuration(
                     title: l.dayContinuousAtEnd,
                     value: f.continuous,
-                    max: f.driving,
                     onPicked: (v) => f.continuous = v,
                   ),
                 ),
         ),
       ],
+    );
+  }
+
+  /// Отдых после смены, как его посчитает журнал: у «живой» или не
+  /// изменённой смены из записей — по записям, иначе — до начала следующей
+  /// смены журнала. null — отдых не начат.
+  ({
+    RestKind kind,
+    Duration duration,
+    DateTime? end,
+    bool ongoing,
+    RestStatus? status,
+  })?
+  _restPreview(Journal? journal, DateTime now, CrewMode crew) {
+    final f = _form;
+    final shift = _shift;
+    final end = f.end;
+    if (f.restKind == RestKind.none || end == null) return null;
+    if (shift != null && (_live || (_recorded && !_timingChanged))) {
+      final r = shift.rest;
+      return (
+        kind: r.kind == RestKind.none ? f.restKind : r.kind,
+        duration: _liveEnded || !_live ? r.duration : Duration.zero,
+        end: shift.restEnd,
+        ongoing: _live || r.ongoing,
+        status: r.status,
+      );
+    }
+    final rest = manualRestAfter(
+      ManualShift(
+        start: f.start,
+        end: end.isBefore(f.start) ? f.start : end,
+        driving: Duration.zero,
+        restKind: f.restKind,
+      ),
+      [
+        for (final s in journal?.shifts ?? const <JournalShift>[])
+          if (shift == null || !sameShift(s, shift)) s.start,
+      ],
+      now,
+    );
+    if (rest == null) return null;
+    final span = durationBetween(f.start, end);
+    return (
+      kind: rest.kind,
+      duration: rest.duration,
+      end: rest.end,
+      ongoing: rest.ongoing,
+      status: rest.ongoing
+          ? null
+          : rest.kind == RestKind.weekly
+          ? weeklyRestStatus(rest.duration)
+          : dailyRestStatus(
+              restInWindow(span, rest.duration, crew),
+              split: f.split,
+            ),
     );
   }
 
@@ -427,21 +471,9 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     CrewMode crew,
   ) {
     final f = _form;
-    final ongoing = _restOngoing;
-    final span = durationBetween(f.start, f.end ?? now);
-    final status = ongoing
-        ? null
-        : switch (f.restKind) {
-            RestKind.daily => dailyRestStatus(
-              restInWindow(span, f.rest, crew),
-              split: f.split,
-            ),
-            RestKind.weekly => weeklyRestStatus(f.rest),
-            RestKind.none => null,
-          };
-    final shown = ongoing
-        ? (_liveEnded ? _shift!.rest.duration : Duration.zero)
-        : f.rest;
+    final rest = _restPreview(journal, now, crew);
+    final status = rest?.status;
+    final restEnd = rest?.end;
     return CardGroup(
       children: [
         Padding(
@@ -456,7 +488,7 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
             onChanged: (k) => _selectRest(k, journal),
           ),
         ),
-        if (f.restKind == RestKind.daily && !ongoing)
+        if (f.restKind == RestKind.daily && !_restOngoing)
           MergeSemantics(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -490,11 +522,21 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
               ),
             ),
           ),
-        if (f.restKind != RestKind.none)
+        if (rest != null)
+          // Длительность не вводится: отдых длится до начала следующей смены
           _ValueRow(
             label: l.shiftDuration,
-            value: shown,
-            chip: ongoing
+            caption:
+                rest.kind == RestKind.weekly && f.restKind == RestKind.daily
+                ? l.shiftRestCountsWeekly
+                : restEnd != null
+                ? l.shiftRestUntilNext(
+                    '${formatWeekdayDay(restEnd, context.localeTag)} '
+                    '${formatClock(restEnd)}',
+                  )
+                : l.shiftRestAutoHint,
+            value: floorToMinute(rest.duration),
+            chip: rest.ongoing
                 ? StatusChip(l.journalOngoing, tone: Tone.rest)
                 : status == null
                 ? null
@@ -506,18 +548,6 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
                       RestStatus.insufficient => Tone.violation,
                     },
                   ),
-            onTap: ongoing
-                ? null
-                : () => unawaited(
-                    _pickDuration(
-                      title: l.shiftDuration,
-                      value: f.rest,
-                      max: f.restKind == RestKind.weekly
-                          ? const Duration(hours: 99)
-                          : const Duration(hours: 23, minutes: 59),
-                      onPicked: (v) => f.rest = v,
-                    ),
-                  ),
           ),
       ],
     );
@@ -528,16 +558,16 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
   Future<void> _pickDuration({
     required String title,
     required Duration value,
-    required Duration max,
     required void Function(Duration) onPicked,
     Duration min = Duration.zero,
+    Duration? max,
   }) async {
     final picked = await showDurationSheet(
       context,
       title: title,
       initial: value,
       min: min,
-      max: max < min ? min : max,
+      max: max != null && max < min ? min : max,
     );
     if (picked != null && mounted) {
       setState(() {
@@ -692,7 +722,6 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
         end: ongoing ? null : f.end,
         driving: f.driving,
         continuousDrivingAtEnd: _becomesCurrent ? f.driving : f.continuous,
-        rest: ongoing ? Duration.zero : f.rest,
         shifts: journal.shifts,
         now: now,
         except: shift,
@@ -707,7 +736,6 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
         driving: f.driving,
         continuousDrivingAtEnd: _becomesCurrent ? f.driving : f.continuous,
         restKind: f.restKind,
-        rest: ongoing ? Duration.zero : f.rest,
         splitRest: f.restKind == RestKind.daily && f.split,
       );
       final meta = f.meta;
@@ -733,7 +761,6 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     });
     try {
       await write!();
-      navigator.pop(true);
     } on Object {
       if (mounted) {
         setState(() {
@@ -741,6 +768,75 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
           _error = l.shiftSaveFailed;
         });
       }
+      return;
+    }
+    // Лимиты сохранению не мешают — о нарушениях водитель узнаёт после
+    final violations = await _violationsAfterSave(f.start, f.end, now);
+    if (violations.isNotEmpty && mounted) {
+      await showNoticeSheet(
+        context,
+        title: l.shiftSavedViolations,
+        text: l.shiftSavedViolationsText,
+        items: violations,
+        button: l.gotIt,
+      );
+    }
+    navigator.pop(true);
+  }
+
+  /// Нарушения по журналу после сохранения: в самой смене, в отдыхе перед
+  /// ней (новая смена его завершила) и в неделях, куда она попала. Пусто —
+  /// нарушений нет или журнал не прочитался.
+  Future<List<String>> _violationsAfterSave(
+    DateTime start,
+    DateTime? end,
+    DateTime now,
+  ) async {
+    final l = context.l10n;
+    final locale = context.localeTag;
+    final crew =
+        ref.read(complianceSettingsProvider).value?.crew ?? CrewMode.solo;
+    try {
+      final periods = await ref.read(activityRepositoryProvider).periods();
+      final manual = await ref
+          .read(journalEditRepositoryProvider)
+          .manualShifts();
+      final timeline = analyzeTimeline(periods, now);
+      final journal = Journal(
+        now: now,
+        periods: periods,
+        timeline: timeline,
+        weeks: buildJournal(
+          timeline: timeline,
+          now: now,
+          manualShifts: manual,
+          crew: crew,
+        ),
+        recordedMeta: const {},
+        manualMeta: const {},
+      );
+      DateTime? previous;
+      for (final s in journal.shifts) {
+        if (s.start.isBefore(start) &&
+            (previous == null || s.start.isAfter(previous))) {
+          previous = s.start;
+        }
+      }
+      return [
+        for (final v in reportViolations(
+          journal,
+          (
+            start: previous ?? start,
+            end: (end ?? now).add(const Duration(minutes: 1)),
+          ),
+          crew: crew,
+          l: l,
+          locale: locale,
+        ))
+          v.text,
+      ];
+    } on Object {
+      return const [];
     }
   }
 
@@ -752,9 +848,6 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
         ShiftEditError.drivingTooLong => l.shiftErrDrivingTooLong,
         ShiftEditError.continuousTooLong => l.shiftErrContinuous,
         ShiftEditError.overlap => l.shiftErrOverlap(_range(l, p.conflict!)),
-        ShiftEditError.restOverlap => l.shiftErrRestOverlap(
-          _range(l, p.conflict!),
-        ),
         ShiftEditError.notLast => l.shiftErrNotLast,
       };
 

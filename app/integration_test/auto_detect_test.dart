@@ -18,6 +18,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/app.dart';
+import 'package:tachogo/background/motion_source.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/background/tracking_service.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
@@ -130,6 +131,20 @@ void main() {
           (await tester.runAsync(repo.periods))!;
       Future<DriverMode> lastMode() async => (await repo.periods()).last.mode;
 
+      // Отметки GPS, какими их видит и сервис: для разбора, если сервис
+      // не переключил режим, — дошла ли скорость и какая точность.
+      final seen = <MotionSample>[];
+      final gps = gpsSamples(fast: true).listen(seen.add);
+      addTearDown(gps.cancel);
+      String gpsSummary() {
+        final recent = seen.length > 8 ? seen.sublist(seen.length - 8) : seen;
+        String show(MotionSample s) =>
+            '${s.speedKmh.toStringAsFixed(1)} км/ч '
+            '±${s.accuracyMeters?.toStringAsFixed(0)} м';
+        return 'отметок GPS в приложении: ${seen.length}, последние: '
+            '${recent.isEmpty ? '—' : recent.map(show).join('; ')}';
+      }
+
       // Едем 90 с: первые точки — редкие (стоянка), дальше раз в 5 с
       final driveStart = DateTime.now().toUtc();
       await feedGps(
@@ -138,11 +153,13 @@ void main() {
         knots: driveKnots,
         lat: (i) => startLat + stepLat * i,
       );
+      hostCommand('dumpsys location');
       await waitFor(
         tester,
         () async => await lastMode() == DriverMode.driving,
         timeout: const Duration(seconds: 60),
         reason: 'сервис записал вождение',
+        details: gpsSummary,
       );
       final driving = (await periods()).last;
       expect(
@@ -154,7 +171,11 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(CurrentModeRow),
-          matching: find.text(ru.modeName(DriverMode.driving)),
+          // «Вождение с 10:52» — одна строка Text.rich
+          matching: find.textContaining(
+            ru.modeName(DriverMode.driving),
+            findRichText: true,
+          ),
         ),
         findsOneWidget,
         reason: 'приложение видит запись другого движка',
@@ -164,11 +185,13 @@ void main() {
       const stopLat = startLat + stepLat * 90;
       final stopStart = DateTime.now().toUtc();
       await feedGps(tester, seconds: 240, knots: 0, lat: (_) => stopLat);
+      hostCommand('dumpsys location');
       await waitFor(
         tester,
         () async => await lastMode() == DriverMode.otherWork,
         timeout: const Duration(seconds: 90),
         reason: 'сервис записал другую работу после стоянки',
+        details: gpsSummary,
       );
       final journal = await periods();
       expect(journal.map((p) => p.mode), [
@@ -185,7 +208,11 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(CurrentModeRow),
-          matching: find.text(ru.modeName(DriverMode.otherWork)),
+          // «Вождение с 10:52» — одна строка Text.rich
+          matching: find.textContaining(
+            ru.modeName(DriverMode.otherWork),
+            findRichText: true,
+          ),
         ),
         findsOneWidget,
       );
