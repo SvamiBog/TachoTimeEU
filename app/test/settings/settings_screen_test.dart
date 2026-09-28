@@ -1,5 +1,5 @@
 // Настройки (экран 3) на базе в памяти. План тестов: UI-10, UI-11, UI-12,
-// UI-14, UI-16 в docs/testing.md.
+// UI-14, UI-16, UI-18 в docs/testing.md.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart'
@@ -155,6 +155,35 @@ void main() {
       );
       await unmount(tester);
     });
+  });
+
+  testWidgets('UI-18: тип транспорта — у фургона тахограф цифровой без '
+      'выбора и срок правил; расчёт не меняется', (tester) async {
+    await seedJournal(tester);
+    await pump(tester);
+    await watchCompliance(tester);
+    final before = warnings(tester);
+    await tapText(tester, 'Аналоговый');
+    expect(find.textContaining('01.07.2026'), findsNothing);
+
+    await tapText(tester, 'Фургон 2,5–3,5 т');
+    expect(find.text('Аналоговый'), findsNothing);
+    expect(
+      find.text(
+        'Правила — с 01.07.2026 в международных рейсах и каботаже по найму',
+      ),
+      findsOneWidget,
+    );
+    var prefs = (await tester.runAsync(settings.preferences))!;
+    expect(prefs.vehicle, VehicleType.van);
+    expect(prefs.tachograph, TachographType.digital);
+    expect(warnings(tester), before);
+
+    await tapText(tester, 'Грузовик или автобус');
+    expect(find.text('Аналоговый'), findsOneWidget);
+    prefs = (await tester.runAsync(settings.preferences))!;
+    expect(prefs.vehicle, VehicleType.truckOrBus);
+    await unmount(tester);
   });
 
   testWidgets('UI-11: оформление «Система / Светлая / Тёмная», по умолчанию '

@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/background/tracking_service.dart';
+import 'package:tachogo/core/config/app_info.dart';
 import 'package:tachogo/core/theme/app_theme.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
@@ -80,6 +81,7 @@ List<Override> journalOverrides({
     (ref) => Stream.value(analyticsConsent),
   ),
   trackingHealthProvider.overrideWith((ref) async => health),
+  appVersionProvider.overrideWith((ref) async => '0.1.0'),
   // Пустая база в памяти для репозиториев, которые экран берёт сам:
   // настоящая открылась бы через path_provider, которого в тестах нет.
   // Данные экрана — из значений выше, не из неё.

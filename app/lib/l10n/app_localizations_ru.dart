@@ -25,10 +25,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navMore => 'Ещё';
 
   @override
-  String get tabInProgress =>
-      'Экран в работе — появится в следующих обновлениях.';
-
-  @override
   String get close => 'Закрыть';
 
   @override
@@ -1714,4 +1710,265 @@ class AppLocalizationsRu extends AppLocalizations {
   String languageButton(String language) {
     return 'Язык: $language';
   }
+
+  @override
+  String get settingsVehicle => 'Транспорт';
+
+  @override
+  String get vehicleTruckOrBus => 'Грузовик или автобус';
+
+  @override
+  String get vehicleVan => 'Фургон 2,5–3,5 т';
+
+  @override
+  String settingsVanHint(String date) {
+    return 'Правила — с $date в международных рейсах и каботаже по найму';
+  }
+
+  @override
+  String onbVanText(String date) {
+    return 'Правила ЕС для фургонов действуют с $date — в международных рейсах и каботаже по найму. В фургоне — умный тахограф второго поколения, у водителя — карта.';
+  }
+
+  @override
+  String get onbRulesTitle => 'Главные правила';
+
+  @override
+  String get onbRulesText =>
+      'Одни и те же для грузовиков, автобусов и фургонов. Приложение считает их само и заранее предупреждает.';
+
+  @override
+  String get onbRulesMore =>
+      'Все правила с пояснениями — «Ещё» → «Инструкция и правила».';
+
+  @override
+  String get guideTitle => 'Инструкция и правила';
+
+  @override
+  String get guideHowTo => 'Как пользоваться';
+
+  @override
+  String get guideStep1 =>
+      'Переключайте режим кнопками на главном экране: вождение, отдых, работа или готовность.';
+
+  @override
+  String get guideStep2 =>
+      'Укажите страну начала и конца смены — как на тахографе.';
+
+  @override
+  String get guideStep3 =>
+      'Следите за лимитами. Приложение заранее предупредит о перерыве и конце дня. Любое время можно поправить вручную.';
+
+  @override
+  String get guideRules => 'Правила ЕС 561/2006 и ЕСТР';
+
+  @override
+  String get guideContinuous => 'Непрерывное вождение';
+
+  @override
+  String guideContinuousText(String full, String first, String second) {
+    return 'Затем перерыв $full. Можно разделить: сначала $first, потом $second.';
+  }
+
+  @override
+  String get guideDailyDriving => 'Вождение за день';
+
+  @override
+  String guideDailyDrivingText(String extended) {
+    return 'Дважды в неделю можно до $extended.';
+  }
+
+  @override
+  String get guideWeeklyDriving => 'Вождение за неделю';
+
+  @override
+  String guideWeeklyDrivingText(String fortnight) {
+    return 'За любые две недели подряд — не больше $fortnight.';
+  }
+
+  @override
+  String get guideDailyRest => 'Суточный отдых';
+
+  @override
+  String guideDailyRestText(String reduced, String first, String second) {
+    return 'До трёх раз между недельными отдыхами можно сократить до $reduced. Раздельный вариант — $first + $second.';
+  }
+
+  @override
+  String get guideWorkday => 'Рабочий день';
+
+  @override
+  String guideWorkdayText(String window, String regular, String reduced) {
+    return 'Отдых должен закончиться в пределах $window от начала смены: $regular при полном отдыхе, $reduced при сокращённом.';
+  }
+
+  @override
+  String guideWorkdaySpoken(int first, int second) {
+    String _temp0 = intl.Intl.pluralLogic(
+      second,
+      locale: localeName,
+      other: '$second часа',
+      many: '$second часов',
+      few: '$second часа',
+      one: '$second час',
+    );
+    return '$first или $_temp0';
+  }
+
+  @override
+  String get guideWeeklyRest => 'Недельный отдых';
+
+  @override
+  String guideWeeklyRestText(String reduced) {
+    return 'Сокращённый — $reduced, с компенсацией до конца третьей недели. Полный отдых нельзя проводить в кабине.';
+  }
+
+  @override
+  String get guideWorkWeek => 'Рабочая неделя';
+
+  @override
+  String guideWorkWeekText(String period) {
+    return 'Недельный отдых начинается не позже чем через шесть периодов по $period после предыдущего.';
+  }
+
+  @override
+  String get guideCard => 'Карта водителя';
+
+  @override
+  String guideCardText(String days) {
+    return 'Данные карты нужно считывать не реже раза в $days.';
+  }
+
+  @override
+  String get guideModes => 'Цвета и значки';
+
+  @override
+  String get guideNewbie => 'Впервые с тахографом';
+
+  @override
+  String get guideNewbieCard => 'Карта — в тахографе всю смену';
+
+  @override
+  String get guideNewbieCardText =>
+      'Вставьте карту в начале смены и выньте в конце. Что вы делали без карты — работу, готовность или отдых, — введите вручную при следующей вставке.';
+
+  @override
+  String get guideNewbieApp => 'Приложение не заменяет тахограф';
+
+  @override
+  String get guideNewbieAppText =>
+      'Официальная запись — в тахографе. Переключайте режим и там, и здесь — тогда таймеры совпадут.';
+
+  @override
+  String get guideNewbieBreak => 'Перерыв — только отдых';
+
+  @override
+  String get guideNewbieBreakText =>
+      'Во время перерыва нельзя водить и работать. Погрузка и разгрузка — другая работа, а не перерыв.';
+
+  @override
+  String get guideNewbieRestPlace => 'Где отдыхать';
+
+  @override
+  String get guideNewbieRestPlaceText =>
+      'Суточный и сокращённый недельный отдых можно провести в машине, если в ней есть спальное место и она стоит. Регулярный недельный отдых и компенсацию — только вне машины.';
+
+  @override
+  String get guideNewbieCountry => 'Страны';
+
+  @override
+  String get guideNewbieCountryText =>
+      'Страну вводят в тахограф в начале и в конце смены. Пересечение границы умный тахограф второго поколения записывает сам, в старых — страну вводят на первой остановке после границы.';
+
+  @override
+  String guideVanText(String date) {
+    return 'Правила те же, что у грузовиков. С $date они действуют для фургонов тяжелее 2,5 т вместе с прицепом — в международных перевозках грузов и каботаже. В таком фургоне — умный тахограф второго поколения, у водителя — карта.';
+  }
+
+  @override
+  String get guideVanCheck => 'Касаются ли правила вашего рейса';
+
+  @override
+  String get guideVanTrip => 'Рейс';
+
+  @override
+  String get guideVanTripHint => 'Каботаж — перевозка внутри другой страны ЕС';
+
+  @override
+  String get guideVanDomestic => 'Внутри страны';
+
+  @override
+  String get guideVanCrossBorder => 'За границу или каботаж';
+
+  @override
+  String get guideVanCarriage => 'Перевозка';
+
+  @override
+  String get guideVanHire => 'По найму';
+
+  @override
+  String get guideVanOwn => 'Свой груз';
+
+  @override
+  String get guideVanNonCommercial => 'Некоммерческая';
+
+  @override
+  String get guideVanCarriageHint =>
+      'Свой груз — товар, материалы или инструмент вашей фирмы. Некоммерческая — без оплаты и дохода, не связана с работой';
+
+  @override
+  String get guideVanMain => 'Вождение — ваша основная работа?';
+
+  @override
+  String get yes => 'Да';
+
+  @override
+  String get no => 'Нет';
+
+  @override
+  String get guideVanApplies => 'Правила действуют';
+
+  @override
+  String get guideVanNotApply => 'Правила не действуют';
+
+  @override
+  String get guideVanAppliesText =>
+      'Нужны тахограф и карта водителя, лимиты — как у грузовика.';
+
+  @override
+  String guideVanNotYetText(String date) {
+    return 'До $date фургоны в правила не входили.';
+  }
+
+  @override
+  String get guideVanDomesticText =>
+      'Регламент ЕС внутри страны фургоны не касается. Проверьте правила своей страны.';
+
+  @override
+  String get guideVanOwnText =>
+      'Исключение: своя перевозка, и вождение — не основная работа.';
+
+  @override
+  String get guideVanNonCommercialText =>
+      'Исключение: перевозка без оплаты и дохода, не связанная с работой.';
+
+  @override
+  String guideArticle(String article) {
+    return 'Регламент 561/2006, ст. $article';
+  }
+
+  @override
+  String get guideVanNotes =>
+      'С прицепом тяжелее 3,5 т вместе — правила как у грузовика, и внутри страны. Рейс частично вне ЕС — в Украину, Молдову, Турцию, на Балканы — уточните у перевозчика: единого толкования нет.';
+
+  @override
+  String get guideDisclaimer =>
+      'TachoGo помогает планировать время, но не заменяет тахограф и не является юридической консультацией. Официальный текст правил — Регламент (ЕС) 561/2006 и Соглашение ЕСТР.';
+
+  @override
+  String get moreAbout => 'О приложении';
+
+  @override
+  String get moreDisclaimer =>
+      'TachoGo помогает планировать время за рулём и отдых, но не заменяет тахограф и не является юридической консультацией.';
 }

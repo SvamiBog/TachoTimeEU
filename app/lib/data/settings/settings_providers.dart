@@ -10,7 +10,7 @@ final analyticsConsentProvider = StreamProvider<bool>(
   (ref) => ref.watch(settingsRepositoryProvider).watchAnalyticsConsent(),
 );
 
-/// Тема, язык, онбординг, тахограф.
+/// Тема, язык, онбординг, транспорт, тахограф.
 final preferencesProvider = StreamProvider<AppPreferences>(
   (ref) => ref.watch(settingsRepositoryProvider).watchPreferences(),
 );

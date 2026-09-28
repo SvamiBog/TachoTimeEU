@@ -69,6 +69,13 @@ String _two(int n) => n.toString().padLeft(2, '0');
 String _capitalize(String s) =>
     s.isEmpty ? s : '${s[0].toUpperCase()}${s.substring(1)}';
 
+/// «01.07.2026» — дата из регламента: день по UTC, без перевода в местное
+/// время, иначе западнее Гринвича 1 июля показалось бы 30 июня.
+String formatUtcDate(DateTime t) {
+  final u = t.toUtc();
+  return '${_two(u.day)}.${_two(u.month)}.${u.year}';
+}
+
 /// «02.09.2026».
 String formatDayMonthYear(DateTime t) =>
     '${formatDayMonth(t)}.${t.toLocal().year}';

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/background/tracking_platform.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/background/tracking_service.dart';
+import 'package:tachogo/core/config/app_info.dart';
 import 'package:tachogo/core/observability/crash_reporter.dart';
 import 'package:tachogo/core/observability/observability_providers.dart';
 import 'package:tachogo/data/db/database_provider.dart';
@@ -12,12 +13,14 @@ import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/notifications/alert_providers.dart';
 
 /// Подготовка приложения до `runApp`: отчёты о падениях, перехват ошибок,
-/// согласие на аналитику, связь с фоновым сервисом, расписание уведомлений.
+/// согласие на аналитику, связь с фоновым сервисом, лицензии шрифтов,
+/// расписание уведомлений.
 /// Отдельно от `main()`, чтобы её проверяли тесты.
 Future<void> bootstrap(
   ProviderContainer container, {
   TrackingPlatform platform = const TrackingPlatform(),
 }) async {
+  registerFontLicenses();
   final crash = container.read(crashReporterProvider);
   await crash.init();
   installErrorHandlers(crash);

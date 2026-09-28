@@ -184,14 +184,15 @@ void main() {
     expect(s.rules.startFromRest, isTrue);
   });
 
-  group('интерфейс: тема, язык, онбординг, тахограф', () {
+  group('интерфейс: тема, язык, онбординг, транспорт, тахограф', () {
     test('по умолчанию: тёмная тема, язык телефона, онбординг не пройден, '
-        'цифровой тахограф', () async {
+        'грузовик или автобус, цифровой тахограф', () async {
       expect(await repo.preferences(), const AppPreferences());
       const d = AppPreferences();
       expect(d.theme, ThemeChoice.dark);
       expect(d.language, isNull);
       expect(d.onboardingDone, isFalse);
+      expect(d.vehicle, VehicleType.truckOrBus);
       expect(d.tachograph, TachographType.digital);
     });
 
@@ -210,6 +211,10 @@ void main() {
           tachograph: TachographType.analog,
         ),
       );
+      expect(
+        const AppPreferences(vehicle: VehicleType.van),
+        isNot(const AppPreferences()),
+      );
 
       await repo.setLanguage(null);
       expect((await repo.preferences()).language, isNull);
@@ -220,6 +225,7 @@ void main() {
         ('theme', 'sepia'),
         ('language', ''),
         ('onboarding_done', 'yes'),
+        ('vehicle', 'tractor'),
         ('tachograph', 'smart3'),
       ]) {
         await db
@@ -230,6 +236,31 @@ void main() {
       }
       expect(await repo.preferences(), const AppPreferences());
     });
+  });
+
+  test('фургон: тахограф становится цифровым, у грузовика выбор остаётся '
+      '(UI-18)', () async {
+    await repo.setTachograph(TachographType.analog);
+    await repo.setVehicle(VehicleType.van);
+    var p = await repo.preferences();
+    expect(p.vehicle, VehicleType.van);
+    expect(p.tachograph, TachographType.digital);
+
+    await repo.setVehicle(VehicleType.truckOrBus);
+    await repo.setTachograph(TachographType.analog);
+    p = await repo.preferences();
+    expect(p.vehicle, VehicleType.truckOrBus);
+    expect(p.tachograph, TachographType.analog);
+  });
+
+  test('тип транспорта не пересчитывает таймеры', () async {
+    final emitted = <ComplianceSettings>[];
+    final sub = repo.watchComplianceSettings().listen(emitted.add);
+    await pumpEventQueue();
+    await repo.setVehicle(VehicleType.van);
+    await pumpEventQueue();
+    await sub.cancel();
+    expect(emitted, hasLength(1));
   });
 
   group('уведомления', () {

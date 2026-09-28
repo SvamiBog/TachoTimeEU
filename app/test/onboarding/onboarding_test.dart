@@ -1,6 +1,6 @@
-// Онбординг (экраны 13–14, режимы, автоопределение) на базе в памяти.
-// План тестов: UI-12, UI-13, UI-14 в docs/testing.md. «Показывается один
-// раз» — в app_test.dart.
+// Онбординг (экраны 13–14, режимы, главные правила, автоопределение) на
+// базе в памяти. План тестов: UI-12, UI-13, UI-14, UI-18 в docs/testing.md.
+// «Показывается один раз» — в app_test.dart.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart'
@@ -60,10 +60,9 @@ void main() {
       .isSelected
       .toBoolOrNull()!;
 
-  testWidgets('UI-13: язык, режимы, тахограф, пакет мобильности, '
-      'уведомления, согласие на аналитику (UI-12), автоопределение, «Готово»', (
-    tester,
-  ) async {
+  testWidgets('UI-13: язык, режимы, главные правила, транспорт, тахограф, '
+      'пакет мобильности, уведомления, согласие на аналитику (UI-12), '
+      'автоопределение, «Готово»', (tester) async {
     platform
       ..notificationPermission = NotificationPermission.denied
       ..notificationAnswer = NotificationPermission.granted;
@@ -72,7 +71,7 @@ void main() {
     // 1. Приветствие (экран 13) и язык
     expect(find.text('Время за рулём — под контролем'), findsOneWidget);
     expect(find.text('4:30'), findsOneWidget);
-    expect(find.bySemanticsLabel('Шаг 1 из 4'), findsOneWidget);
+    expect(find.bySemanticsLabel('Шаг 1 из 5'), findsOneWidget);
     await tap(tester, 'Русский');
     expect(find.text('Как в телефоне'), findsOneWidget);
     await tap(tester, 'Как в телефоне');
@@ -86,8 +85,17 @@ void main() {
     }
     await tap(tester, 'Далее');
 
-    // 3. Настройка (экран 14)
+    // 3. Главные правила — значения из движка
+    expect(find.text('Главные правила'), findsOneWidget);
+    expect(find.text('4:30'), findsOneWidget);
+    expect(find.text('Непрерывное вождение'), findsOneWidget);
+    expect(find.text('Суточный отдых'), findsOneWidget);
+    expect(find.text('Недельный отдых'), findsOneWidget);
+    await tap(tester, 'Далее');
+
+    // 4. Настройка (экран 14)
     expect(find.text('Настроим под вас'), findsOneWidget);
+    expect(selected(tester, 'Грузовик или автобус'), isTrue);
     expect(selected(tester, 'Цифровой'), isTrue);
     await tap(tester, 'Аналоговый');
     expect(selected(tester, 'Аналоговый'), isTrue);
@@ -102,7 +110,7 @@ void main() {
     await tap(tester, 'Анонимная статистика');
     await tap(tester, 'Далее');
 
-    // 4. Автоопределение
+    // 5. Автоопределение
     expect(find.text('Автоопределение вождения'), findsOneWidget);
     await tap(tester, 'Включить автоопределение');
     expect(find.text('Автоопределение включено'), findsOneWidget);
@@ -113,6 +121,7 @@ void main() {
     final prefs = (await tester.runAsync(settings.preferences))!;
     expect(prefs.onboardingDone, isTrue);
     expect(prefs.language, isNull);
+    expect(prefs.vehicle, VehicleType.truckOrBus);
     expect(prefs.tachograph, TachographType.analog);
     expect(
       (await tester.runAsync(settings.complianceSettings))!.mobilityPackage,
@@ -130,6 +139,7 @@ void main() {
       'по желанию: без него «Готово» тоже работает', (tester) async {
     await pump(tester);
     await tap(tester, 'Начать');
+    await tap(tester, 'Далее');
     await tap(tester, 'Далее');
     await tester.scrollUntilVisible(
       find.text('Анонимная статистика'),
@@ -166,7 +176,12 @@ void main() {
     await pump(tester);
     await tap(tester, 'Начать');
     await tap(tester, 'Далее');
+    await tap(tester, 'Далее');
     expect(find.text('Настроим под вас'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Назад'));
+    await tester.pumpAndSettle();
+    expect(find.text('Главные правила'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Назад'));
     await tester.pumpAndSettle();
@@ -183,7 +198,7 @@ void main() {
       'настройки телефона', (tester) async {
     platform.permission = LocationPermission.deniedForever;
     await pump(tester);
-    for (final step in ['Начать', 'Далее', 'Далее']) {
+    for (final step in ['Начать', 'Далее', 'Далее', 'Далее']) {
       await tap(tester, step);
     }
     await tap(tester, 'Включить автоопределение');
@@ -199,10 +214,47 @@ void main() {
     await pump(tester);
     await tap(tester, 'Начать');
     await tap(tester, 'Далее');
+    await tap(tester, 'Далее');
     await tap(tester, 'Разрешить уведомления');
     expect(find.text('Уведомления разрешены'), findsNothing);
     await tap(tester, 'Открыть настройки');
     expect(platform.calls, contains('openAppSettings'));
+    await unmount(tester);
+  });
+
+  testWidgets('UI-18: фургон 2,5–3,5 т — тахограф цифровой без выбора, '
+      'пояснение о правилах и переход к проверке рейса', (tester) async {
+    await pump(tester);
+    for (final step in ['Начать', 'Далее', 'Далее']) {
+      await tap(tester, step);
+    }
+    await tap(tester, 'Аналоговый');
+    // Касание прокрутило список — транспорт выше
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 800));
+    await tester.pumpAndSettle();
+    await tap(tester, 'Фургон 2,5–3,5 т');
+    expect(selected(tester, 'Фургон 2,5–3,5 т'), isTrue);
+    expect(selected(tester, 'Грузовик или автобус'), isFalse);
+    expect(find.text('Тахограф в машине'.toUpperCase()), findsNothing);
+    expect(find.text('Аналоговый'), findsNothing);
+    expect(find.textContaining('действуют с 01.07.2026'), findsOneWidget);
+
+    var prefs = (await tester.runAsync(settings.preferences))!;
+    expect(prefs.vehicle, VehicleType.van);
+    expect(prefs.tachograph, TachographType.digital);
+
+    await tap(tester, 'Касаются ли правила вашего рейса');
+    expect(find.text('Инструкция и правила'), findsOneWidget);
+    await tester.tap(find.byTooltip('Назад'));
+    await tester.pumpAndSettle();
+    expect(find.text('Инструкция и правила'), findsNothing);
+
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 800));
+    await tester.pumpAndSettle();
+    await tap(tester, 'Грузовик или автобус');
+    expect(find.text('Аналоговый'), findsOneWidget);
+    prefs = (await tester.runAsync(settings.preferences))!;
+    expect(prefs.vehicle, VehicleType.truckOrBus);
     await unmount(tester);
   });
 }

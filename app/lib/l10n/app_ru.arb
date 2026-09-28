@@ -5,10 +5,6 @@
   "navJournal": "Журнал",
   "navSettings": "Настройки",
   "navMore": "Ещё",
-  "tabInProgress": "Экран в работе — появится в следующих обновлениях.",
-  "@tabInProgress": {
-    "description": "Заглушка вкладки, которая ещё не сделана"
-  },
   "close": "Закрыть",
   "back": "Назад",
   "ofLimit": "из {limit}",
@@ -1349,5 +1345,196 @@
         "type": "String"
       }
     }
-  }
+  },
+  "settingsVehicle": "Транспорт",
+  "vehicleTruckOrBus": "Грузовик или автобус",
+  "vehicleVan": "Фургон 2,5–3,5 т",
+  "settingsVanHint": "Правила — с {date} в международных рейсах и каботаже по найму",
+  "@settingsVanHint": {
+    "description": "Пояснение под типом транспорта для фургона",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "onbVanText": "Правила ЕС для фургонов действуют с {date} — в международных рейсах и каботаже по найму. В фургоне — умный тахограф второго поколения, у водителя — карта.",
+  "@onbVanText": {
+    "description": "Онбординг, шаг «Настройка», выбран фургон",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "onbRulesTitle": "Главные правила",
+  "onbRulesText": "Одни и те же для грузовиков, автобусов и фургонов. Приложение считает их само и заранее предупреждает.",
+  "onbRulesMore": "Все правила с пояснениями — «Ещё» → «Инструкция и правила».",
+  "guideTitle": "Инструкция и правила",
+  "guideHowTo": "Как пользоваться",
+  "guideStep1": "Переключайте режим кнопками на главном экране: вождение, отдых, работа или готовность.",
+  "guideStep2": "Укажите страну начала и конца смены — как на тахографе.",
+  "guideStep3": "Следите за лимитами. Приложение заранее предупредит о перерыве и конце дня. Любое время можно поправить вручную.",
+  "guideRules": "Правила ЕС 561/2006 и ЕСТР",
+  "guideContinuous": "Непрерывное вождение",
+  "guideContinuousText": "Затем перерыв {full}. Можно разделить: сначала {first}, потом {second}.",
+  "@guideContinuousText": {
+    "placeholders": {
+      "full": {
+        "type": "String"
+      },
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "guideDailyDriving": "Вождение за день",
+  "guideDailyDrivingText": "Дважды в неделю можно до {extended}.",
+  "@guideDailyDrivingText": {
+    "placeholders": {
+      "extended": {
+        "type": "String"
+      }
+    }
+  },
+  "guideWeeklyDriving": "Вождение за неделю",
+  "guideWeeklyDrivingText": "За любые две недели подряд — не больше {fortnight}.",
+  "@guideWeeklyDrivingText": {
+    "placeholders": {
+      "fortnight": {
+        "type": "String"
+      }
+    }
+  },
+  "guideDailyRest": "Суточный отдых",
+  "guideDailyRestText": "До трёх раз между недельными отдыхами можно сократить до {reduced}. Раздельный вариант — {first} + {second}.",
+  "@guideDailyRestText": {
+    "placeholders": {
+      "reduced": {
+        "type": "String"
+      },
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "guideWorkday": "Рабочий день",
+  "guideWorkdayText": "Отдых должен закончиться в пределах {window} от начала смены: {regular} при полном отдыхе, {reduced} при сокращённом.",
+  "@guideWorkdayText": {
+    "placeholders": {
+      "window": {
+        "type": "String"
+      },
+      "regular": {
+        "type": "String"
+      },
+      "reduced": {
+        "type": "String"
+      }
+    }
+  },
+  "guideWorkdaySpoken": "{first} или {second, plural, one{{second} час} few{{second} часа} many{{second} часов} other{{second} часа}}",
+  "@guideWorkdaySpoken": {
+    "description": "«13/15» для диктора",
+    "placeholders": {
+      "first": {
+        "type": "int"
+      },
+      "second": {
+        "type": "int"
+      }
+    }
+  },
+  "guideWeeklyRest": "Недельный отдых",
+  "guideWeeklyRestText": "Сокращённый — {reduced}, с компенсацией до конца третьей недели. Полный отдых нельзя проводить в кабине.",
+  "@guideWeeklyRestText": {
+    "placeholders": {
+      "reduced": {
+        "type": "String"
+      }
+    }
+  },
+  "guideWorkWeek": "Рабочая неделя",
+  "guideWorkWeekText": "Недельный отдых начинается не позже чем через шесть периодов по {period} после предыдущего.",
+  "@guideWorkWeekText": {
+    "placeholders": {
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "guideCard": "Карта водителя",
+  "guideCardText": "Данные карты нужно считывать не реже раза в {days}.",
+  "@guideCardText": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "guideModes": "Цвета и значки",
+  "guideNewbie": "Впервые с тахографом",
+  "guideNewbieCard": "Карта — в тахографе всю смену",
+  "guideNewbieCardText": "Вставьте карту в начале смены и выньте в конце. Что вы делали без карты — работу, готовность или отдых, — введите вручную при следующей вставке.",
+  "guideNewbieApp": "Приложение не заменяет тахограф",
+  "guideNewbieAppText": "Официальная запись — в тахографе. Переключайте режим и там, и здесь — тогда таймеры совпадут.",
+  "guideNewbieBreak": "Перерыв — только отдых",
+  "guideNewbieBreakText": "Во время перерыва нельзя водить и работать. Погрузка и разгрузка — другая работа, а не перерыв.",
+  "guideNewbieRestPlace": "Где отдыхать",
+  "guideNewbieRestPlaceText": "Суточный и сокращённый недельный отдых можно провести в машине, если в ней есть спальное место и она стоит. Регулярный недельный отдых и компенсацию — только вне машины.",
+  "guideNewbieCountry": "Страны",
+  "guideNewbieCountryText": "Страну вводят в тахограф в начале и в конце смены. Пересечение границы умный тахограф второго поколения записывает сам, в старых — страну вводят на первой остановке после границы.",
+  "guideVanText": "Правила те же, что у грузовиков. С {date} они действуют для фургонов тяжелее 2,5 т вместе с прицепом — в международных перевозках грузов и каботаже. В таком фургоне — умный тахограф второго поколения, у водителя — карта.",
+  "@guideVanText": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "guideVanCheck": "Касаются ли правила вашего рейса",
+  "guideVanTrip": "Рейс",
+  "guideVanTripHint": "Каботаж — перевозка внутри другой страны ЕС",
+  "guideVanDomestic": "Внутри страны",
+  "guideVanCrossBorder": "За границу или каботаж",
+  "guideVanCarriage": "Перевозка",
+  "guideVanHire": "По найму",
+  "guideVanOwn": "Свой груз",
+  "guideVanNonCommercial": "Некоммерческая",
+  "guideVanCarriageHint": "Свой груз — товар, материалы или инструмент вашей фирмы. Некоммерческая — без оплаты и дохода, не связана с работой",
+  "guideVanMain": "Вождение — ваша основная работа?",
+  "yes": "Да",
+  "no": "Нет",
+  "guideVanApplies": "Правила действуют",
+  "guideVanNotApply": "Правила не действуют",
+  "guideVanAppliesText": "Нужны тахограф и карта водителя, лимиты — как у грузовика.",
+  "guideVanNotYetText": "До {date} фургоны в правила не входили.",
+  "@guideVanNotYetText": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "guideVanDomesticText": "Регламент ЕС внутри страны фургоны не касается. Проверьте правила своей страны.",
+  "guideVanOwnText": "Исключение: своя перевозка, и вождение — не основная работа.",
+  "guideVanNonCommercialText": "Исключение: перевозка без оплаты и дохода, не связанная с работой.",
+  "guideArticle": "Регламент 561/2006, ст. {article}",
+  "@guideArticle": {
+    "placeholders": {
+      "article": {
+        "type": "String"
+      }
+    }
+  },
+  "guideVanNotes": "С прицепом тяжелее 3,5 т вместе — правила как у грузовика, и внутри страны. Рейс частично вне ЕС — в Украину, Молдову, Турцию, на Балканы — уточните у перевозчика: единого толкования нет.",
+  "guideDisclaimer": "TachoGo помогает планировать время, но не заменяет тахограф и не является юридической консультацией. Официальный текст правил — Регламент (ЕС) 561/2006 и Соглашение ЕСТР.",
+  "moreAbout": "О приложении",
+  "moreDisclaimer": "TachoGo помогает планировать время за рулём и отдых, но не заменяет тахограф и не является юридической консультацией."
 }

@@ -19,6 +19,7 @@ dependencies:
   flutter_riverpod: ^3.4.3
   geolocator: ^14.0.3
   intl: ^0.20.2
+  package_info_plus: ^10.2.1
   path_provider: ^2.1.6
   pdf: ^3.13.1
   posthog_flutter: ^5.48.0
@@ -41,6 +42,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  # Лицензии шрифтов — в списке лицензий «Ещё» → «О приложении».
+  assets:
+    - assets/fonts/Onest-OFL.txt
+    - assets/fonts/JetBrainsMono-OFL.txt
   # Onest и JetBrains Mono (OFL, лицензии рядом): статические начертания,
   # нарезанные из вариативных шрифтов Google Fonts, — assets/fonts/README.md.
   fonts:
