@@ -1517,6 +1517,10 @@ class ManualShiftRow extends DataClass implements Insertable<ManualShiftRow> {
   final int drivingMinutes;
   final int continuousDrivingMinutes;
   final RestKind restKind;
+
+  /// Не используется: длительность отдыха движок считает до начала
+  /// следующей смены (решение по отзывам водителей, 28.09.2026). Колонка
+  /// осталась из схемы v1, новые строки пишут 0.
   final int restMinutes;
 
   /// Раздельный суточный отдых 3 + 9.
