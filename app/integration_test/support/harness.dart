@@ -7,6 +7,7 @@
 // Без устройства плагинов нет — автоопределение и уведомления заменены
 // фейками, база открывается во временном каталоге.
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/drift.dart' show QueryExecutor, driftRuntimeOptions;
@@ -356,7 +357,8 @@ const hostPrefix = 'TACHOGO_HOST';
 /// разрешения, задаёт точку GPS, меняет часовой пояс. Результат тест
 /// проверяет сам: помощник ничего не отвечает.
 void hostCommand(String command) {
-  // Вывод print на Android идёт в logcat с тегом flutter.
-  // ignore: avoid_print
-  print('$hostPrefix $command');
+  // print внутри теста перехватывает тестовый фреймворк и отправляет на
+  // хост через flutter test. Корневая зона печатает мимо него — на Android
+  // это logcat с тегом flutter, который читает помощник.
+  Zone.root.print('$hostPrefix $command');
 }
