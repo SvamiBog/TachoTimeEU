@@ -1,5 +1,6 @@
 // Документы не расходятся с кодом: таблица лимитов, пороги детектора
-// движения, статусы водителя. План тестов: DOC-01…03 в docs/testing.md.
+// движения, статусы водителя, правила для фургонов. План тестов: DOC-01…03
+// и DOC-06 в docs/testing.md.
 
 import 'dart:io';
 
@@ -156,5 +157,63 @@ void main() {
       };
       expect(names, {for (final s in DriverStatus.values) s.name});
     });
+  });
+
+  group('DOC-06: таблица фургонов совпадает с vanRules', () {
+    final rows = {
+      for (final row in tableRows(
+        repoFile('docs/domain/eu-561-rules.md'),
+        '## Фургоны 2,5–3,5 т',
+      ))
+        row[0]: (result: row[1], article: row[2]),
+    };
+    final from = vanRulesFrom;
+    String two(int n) => n.toString().padLeft(2, '0');
+    final date = '${two(from.day)}.${two(from.month)}.${from.year}';
+    VanRules rules({
+      bool before = false,
+      bool crossBorder = true,
+      VanCarriage carriage = VanCarriage.hireOrReward,
+      bool main = true,
+    }) => vanRules(
+      at: before ? from.subtract(const Duration(minutes: 1)) : from,
+      crossBorder: crossBorder,
+      carriage: carriage,
+      drivingMainActivity: main,
+    );
+    final expected = {
+      'До $date': rules(before: true),
+      'Внутри одной страны, не каботаж': rules(crossBorder: false),
+      'Некоммерческая перевозка': rules(carriage: VanCarriage.nonCommercial),
+      'Своя перевозка, вождение — не основная работа': rules(
+        carriage: VanCarriage.ownAccount,
+        main: false,
+      ),
+      'Своя перевозка, вождение — основная работа': rules(
+        carriage: VanCarriage.ownAccount,
+      ),
+      'По найму': rules(main: false),
+    };
+
+    test('строки таблицы — ровно случаи vanRules', () {
+      expect(rows.keys.toList(), expected.keys.toList());
+      expect(expected.values.toSet(), VanRules.values.toSet());
+    });
+
+    for (final MapEntry(key: trip, value: result) in expected.entries) {
+      test('$trip — ${result.name}, ст. ${result.article}', () {
+        final row = rows[trip]!;
+        expect(row.article, result.article);
+        expect(
+          row.result,
+          startsWith(switch (result) {
+            VanRules.applies => 'Действуют',
+            VanRules.notYet || VanRules.domestic => 'Не действуют',
+            VanRules.ownAccountExempt ||
+            VanRules.nonCommercialExempt => 'Исключение',
+          }),
+        );
+      });
+    }
   });
 }

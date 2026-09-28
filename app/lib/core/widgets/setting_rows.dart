@@ -101,6 +101,7 @@ class NavRow extends StatelessWidget {
     required this.onTap,
     this.subtitle,
     this.value,
+    this.numericValue = false,
     this.icon,
     this.chevron = true,
     super.key,
@@ -111,6 +112,9 @@ class NavRow extends StatelessWidget {
 
   /// Текущее значение справа: «Русский».
   final String? value;
+
+  /// Значение из цифр — JetBrains Mono: версия «0.1.0».
+  final bool numericValue;
 
   /// Значок слева: «Экономия батареи».
   final IconData? icon;
@@ -158,9 +162,11 @@ class NavRow extends StatelessWidget {
                       child: Text(
                         value,
                         textAlign: TextAlign.end,
-                        style: AppTextStyles.body.copyWith(
-                          color: colors.textSecondary,
-                        ),
+                        style:
+                            (numericValue
+                                    ? AppTextStyles.numericCaption
+                                    : AppTextStyles.body)
+                                .copyWith(color: colors.textSecondary),
                       ),
                     ),
                   ],

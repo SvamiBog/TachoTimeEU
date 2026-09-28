@@ -9,6 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/app.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
@@ -17,6 +18,7 @@ import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
+import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
@@ -27,6 +29,7 @@ import 'package:tachogo/features/journal/journal_parts.dart';
 import 'package:tachogo/features/journal/journal_screen.dart';
 import 'package:tachogo/features/journal/shift_day_screen.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
+import 'package:tachogo/features/more/more_screen.dart';
 import 'package:tachogo/features/onboarding/onboarding_screen.dart';
 import 'package:tachogo/features/settings/settings_screen.dart';
 import 'package:tachogo/features/shell/app_shell.dart';
@@ -146,14 +149,30 @@ final _screens = <String, _Screen>{
   ),
   'Онбординг · приветствие': (build: OnboardingScreen.new, open: null),
   'Онбординг · режимы': (build: OnboardingScreen.new, open: _onboardingStep(1)),
-  'Онбординг · настройка': (
+  'Онбординг · главные правила': (
     build: OnboardingScreen.new,
     open: _onboardingStep(2),
   ),
-  'Онбординг · автоопределение': (
+  'Онбординг · настройка': (
     build: OnboardingScreen.new,
     open: _onboardingStep(3),
   ),
+  'Онбординг · настройка · фургон': (
+    build: OnboardingScreen.new,
+    open: _onboardingStep(3),
+  ),
+  'Онбординг · автоопределение': (
+    build: OnboardingScreen.new,
+    open: _onboardingStep(4),
+  ),
+  'Ещё': (build: MoreScreen.new, open: null),
+  'Инструкция и правила': (build: GuideScreen.new, open: null),
+  'Инструкция и правила · фургон': (build: GuideScreen.new, open: null),
+  'Инструкция · своя перевозка': (
+    build: GuideScreen.new,
+    open: _tapText('Свой груз'),
+  ),
+  'Настройки · фургон': (build: SettingsScreen.new, open: null),
   'Шторка «Свой период»': (
     build: JournalScreen.new,
     open: (tester) async {
@@ -165,13 +184,25 @@ final _screens = <String, _Screen>{
 };
 
 /// Экраны без времени и цифр: проверка JetBrains Mono им не нужна.
+/// У инструкции для фургона на первом экране — проверка рейса, лимиты ниже.
 const _withoutNumbers = {
+  'Инструкция и правила · фургон',
+  'Инструкция · своя перевозка',
   'Настройки',
+  'Настройки · фургон',
   'Шторка «Язык»',
   'Шторка «Очистить все данные?»',
   'Онбординг · режимы',
   'Онбординг · настройка',
+  'Онбординг · настройка · фургон',
   'Онбординг · автоопределение',
+};
+
+/// Экраны водителя фургона 2,5–3,5 т: другой набор строк и разделов.
+const _van = {
+  'Онбординг · настройка · фургон',
+  'Инструкция и правила · фургон',
+  'Настройки · фургон',
 };
 
 /// Экраны телефона, dp: основной таргет и небольшой Android.
@@ -188,6 +219,7 @@ const _minTapTarget = MinimumTapTargetGuideline(
 Future<void> _pump(
   WidgetTester tester,
   _Screen screen, {
+  bool van = false,
   Brightness brightness = Brightness.dark,
   Size viewport = const Size(412, 915),
   double textScale = 1,
@@ -205,6 +237,10 @@ Future<void> _pump(
       },
       recentCountries: ['PL', 'D', 'CZ'],
       defaultCountry: 'PL',
+      preferences: AppPreferences(
+        onboardingDone: true,
+        vehicle: van ? VehicleType.van : VehicleType.truckOrBus,
+      ),
       // Настройки и онбординг со всеми строками: автоопределение включено,
       // уведомления запрещены, экономия батареи мешает (Android).
       autoDetect: const AutoDetectSettings(enabled: true),
@@ -271,6 +307,7 @@ void main() {
               await _pump(
                 tester,
                 screen,
+                van: _van.contains(name),
                 brightness: brightness,
                 viewport: viewport,
                 textScale: scale,
@@ -283,7 +320,12 @@ void main() {
         testWidgets(
           '$theme: контраст отрисованного текста',
           (tester) async {
-            await _pump(tester, screen, brightness: brightness);
+            await _pump(
+              tester,
+              screen,
+              van: _van.contains(name),
+              brightness: brightness,
+            );
             await expectLater(tester, meetsGuideline(textContrastGuideline));
           },
           // Таймер цвета вождения на фоне светлой темы — 2.5:1,
@@ -294,7 +336,12 @@ void main() {
         testWidgets('$theme: зоны касания ≥ 44 dp и с подписью', (
           tester,
         ) async {
-          await _pump(tester, screen, brightness: brightness);
+          await _pump(
+            tester,
+            screen,
+            van: _van.contains(name),
+            brightness: brightness,
+          );
           await expectLater(tester, meetsGuideline(_minTapTarget));
           await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
         });
@@ -303,7 +350,7 @@ void main() {
       testWidgets('время и цифры — JetBrains Mono, цифры одной ширины', (
         tester,
       ) async {
-        await _pump(tester, screen);
+        await _pump(tester, screen, van: _van.contains(name));
         final numbers = [
           for (final text in tester.widgetList<RichText>(find.byType(RichText)))
             if (_numeric.hasMatch(text.text.toPlainText().trim())) text,
@@ -326,7 +373,7 @@ void main() {
       });
 
       testWidgets('поля экрана — 16 dp', (tester) async {
-        await _pump(tester, screen);
+        await _pump(tester, screen, van: _van.contains(name));
         final screenRect = tester.getRect(find.byType(Scaffold).first);
         for (final text in find.byType(Text).evaluate()) {
           final rect = tester.getRect(

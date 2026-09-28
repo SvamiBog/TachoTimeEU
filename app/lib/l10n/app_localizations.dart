@@ -124,12 +124,6 @@ abstract class AppLocalizations {
   /// **'Ещё'**
   String get navMore;
 
-  /// Заглушка вкладки, которая ещё не сделана
-  ///
-  /// In ru, this message translates to:
-  /// **'Экран в работе — появится в следующих обновлениях.'**
-  String get tabInProgress;
-
   /// No description provided for @close.
   ///
   /// In ru, this message translates to:
@@ -2602,6 +2596,420 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Язык: {language}'**
   String languageButton(String language);
+
+  /// No description provided for @settingsVehicle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Транспорт'**
+  String get settingsVehicle;
+
+  /// No description provided for @vehicleTruckOrBus.
+  ///
+  /// In ru, this message translates to:
+  /// **'Грузовик или автобус'**
+  String get vehicleTruckOrBus;
+
+  /// No description provided for @vehicleVan.
+  ///
+  /// In ru, this message translates to:
+  /// **'Фургон 2,5–3,5 т'**
+  String get vehicleVan;
+
+  /// Пояснение под типом транспорта для фургона
+  ///
+  /// In ru, this message translates to:
+  /// **'Правила — с {date} в международных рейсах и каботаже по найму'**
+  String settingsVanHint(String date);
+
+  /// Онбординг, шаг «Настройка», выбран фургон
+  ///
+  /// In ru, this message translates to:
+  /// **'Правила ЕС для фургонов действуют с {date} — в международных рейсах и каботаже по найму. В фургоне — умный тахограф второго поколения, у водителя — карта.'**
+  String onbVanText(String date);
+
+  /// No description provided for @onbRulesTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Главные правила'**
+  String get onbRulesTitle;
+
+  /// No description provided for @onbRulesText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Одни и те же для грузовиков, автобусов и фургонов. Приложение считает их само и заранее предупреждает.'**
+  String get onbRulesText;
+
+  /// No description provided for @onbRulesMore.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все правила с пояснениями — «Ещё» → «Инструкция и правила».'**
+  String get onbRulesMore;
+
+  /// No description provided for @guideTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Инструкция и правила'**
+  String get guideTitle;
+
+  /// No description provided for @guideHowTo.
+  ///
+  /// In ru, this message translates to:
+  /// **'Как пользоваться'**
+  String get guideHowTo;
+
+  /// No description provided for @guideStep1.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переключайте режим кнопками на главном экране: вождение, отдых, работа или готовность.'**
+  String get guideStep1;
+
+  /// No description provided for @guideStep2.
+  ///
+  /// In ru, this message translates to:
+  /// **'Укажите страну начала и конца смены — как на тахографе.'**
+  String get guideStep2;
+
+  /// No description provided for @guideStep3.
+  ///
+  /// In ru, this message translates to:
+  /// **'Следите за лимитами. Приложение заранее предупредит о перерыве и конце дня. Любое время можно поправить вручную.'**
+  String get guideStep3;
+
+  /// No description provided for @guideRules.
+  ///
+  /// In ru, this message translates to:
+  /// **'Правила ЕС 561/2006 и ЕСТР'**
+  String get guideRules;
+
+  /// No description provided for @guideContinuous.
+  ///
+  /// In ru, this message translates to:
+  /// **'Непрерывное вождение'**
+  String get guideContinuous;
+
+  /// No description provided for @guideContinuousText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Затем перерыв {full}. Можно разделить: сначала {first}, потом {second}.'**
+  String guideContinuousText(String full, String first, String second);
+
+  /// No description provided for @guideDailyDriving.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение за день'**
+  String get guideDailyDriving;
+
+  /// No description provided for @guideDailyDrivingText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дважды в неделю можно до {extended}.'**
+  String guideDailyDrivingText(String extended);
+
+  /// No description provided for @guideWeeklyDriving.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение за неделю'**
+  String get guideWeeklyDriving;
+
+  /// No description provided for @guideWeeklyDrivingText.
+  ///
+  /// In ru, this message translates to:
+  /// **'За любые две недели подряд — не больше {fortnight}.'**
+  String guideWeeklyDrivingText(String fortnight);
+
+  /// No description provided for @guideDailyRest.
+  ///
+  /// In ru, this message translates to:
+  /// **'Суточный отдых'**
+  String get guideDailyRest;
+
+  /// No description provided for @guideDailyRestText.
+  ///
+  /// In ru, this message translates to:
+  /// **'До трёх раз между недельными отдыхами можно сократить до {reduced}. Раздельный вариант — {first} + {second}.'**
+  String guideDailyRestText(String reduced, String first, String second);
+
+  /// No description provided for @guideWorkday.
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочий день'**
+  String get guideWorkday;
+
+  /// No description provided for @guideWorkdayText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отдых должен закончиться в пределах {window} от начала смены: {regular} при полном отдыхе, {reduced} при сокращённом.'**
+  String guideWorkdayText(String window, String regular, String reduced);
+
+  /// «13/15» для диктора
+  ///
+  /// In ru, this message translates to:
+  /// **'{first} или {second, plural, one{{second} час} few{{second} часа} many{{second} часов} other{{second} часа}}'**
+  String guideWorkdaySpoken(int first, int second);
+
+  /// No description provided for @guideWeeklyRest.
+  ///
+  /// In ru, this message translates to:
+  /// **'Недельный отдых'**
+  String get guideWeeklyRest;
+
+  /// No description provided for @guideWeeklyRestText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сокращённый — {reduced}, с компенсацией до конца третьей недели. Полный отдых нельзя проводить в кабине.'**
+  String guideWeeklyRestText(String reduced);
+
+  /// No description provided for @guideWorkWeek.
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочая неделя'**
+  String get guideWorkWeek;
+
+  /// No description provided for @guideWorkWeekText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Недельный отдых начинается не позже чем через шесть периодов по {period} после предыдущего.'**
+  String guideWorkWeekText(String period);
+
+  /// No description provided for @guideCard.
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта водителя'**
+  String get guideCard;
+
+  /// No description provided for @guideCardText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные карты нужно считывать не реже раза в {days}.'**
+  String guideCardText(String days);
+
+  /// No description provided for @guideModes.
+  ///
+  /// In ru, this message translates to:
+  /// **'Цвета и значки'**
+  String get guideModes;
+
+  /// No description provided for @guideNewbie.
+  ///
+  /// In ru, this message translates to:
+  /// **'Впервые с тахографом'**
+  String get guideNewbie;
+
+  /// No description provided for @guideNewbieCard.
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта — в тахографе всю смену'**
+  String get guideNewbieCard;
+
+  /// No description provided for @guideNewbieCardText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вставьте карту в начале смены и выньте в конце. Что вы делали без карты — работу, готовность или отдых, — введите вручную при следующей вставке.'**
+  String get guideNewbieCardText;
+
+  /// No description provided for @guideNewbieApp.
+  ///
+  /// In ru, this message translates to:
+  /// **'Приложение не заменяет тахограф'**
+  String get guideNewbieApp;
+
+  /// No description provided for @guideNewbieAppText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Официальная запись — в тахографе. Переключайте режим и там, и здесь — тогда таймеры совпадут.'**
+  String get guideNewbieAppText;
+
+  /// No description provided for @guideNewbieBreak.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерыв — только отдых'**
+  String get guideNewbieBreak;
+
+  /// No description provided for @guideNewbieBreakText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Во время перерыва нельзя водить и работать. Погрузка и разгрузка — другая работа, а не перерыв.'**
+  String get guideNewbieBreakText;
+
+  /// No description provided for @guideNewbieRestPlace.
+  ///
+  /// In ru, this message translates to:
+  /// **'Где отдыхать'**
+  String get guideNewbieRestPlace;
+
+  /// No description provided for @guideNewbieRestPlaceText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Суточный и сокращённый недельный отдых можно провести в машине, если в ней есть спальное место и она стоит. Регулярный недельный отдых и компенсацию — только вне машины.'**
+  String get guideNewbieRestPlaceText;
+
+  /// No description provided for @guideNewbieCountry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Страны'**
+  String get guideNewbieCountry;
+
+  /// No description provided for @guideNewbieCountryText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Страну вводят в тахограф в начале и в конце смены. Пересечение границы умный тахограф второго поколения записывает сам, в старых — страну вводят на первой остановке после границы.'**
+  String get guideNewbieCountryText;
+
+  /// No description provided for @guideVanText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Правила те же, что у грузовиков. С {date} они действуют для фургонов тяжелее 2,5 т вместе с прицепом — в международных перевозках грузов и каботаже. В таком фургоне — умный тахограф второго поколения, у водителя — карта.'**
+  String guideVanText(String date);
+
+  /// No description provided for @guideVanCheck.
+  ///
+  /// In ru, this message translates to:
+  /// **'Касаются ли правила вашего рейса'**
+  String get guideVanCheck;
+
+  /// No description provided for @guideVanTrip.
+  ///
+  /// In ru, this message translates to:
+  /// **'Рейс'**
+  String get guideVanTrip;
+
+  /// No description provided for @guideVanTripHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Каботаж — перевозка внутри другой страны ЕС'**
+  String get guideVanTripHint;
+
+  /// No description provided for @guideVanDomestic.
+  ///
+  /// In ru, this message translates to:
+  /// **'Внутри страны'**
+  String get guideVanDomestic;
+
+  /// No description provided for @guideVanCrossBorder.
+  ///
+  /// In ru, this message translates to:
+  /// **'За границу или каботаж'**
+  String get guideVanCrossBorder;
+
+  /// No description provided for @guideVanCarriage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перевозка'**
+  String get guideVanCarriage;
+
+  /// No description provided for @guideVanHire.
+  ///
+  /// In ru, this message translates to:
+  /// **'По найму'**
+  String get guideVanHire;
+
+  /// No description provided for @guideVanOwn.
+  ///
+  /// In ru, this message translates to:
+  /// **'Свой груз'**
+  String get guideVanOwn;
+
+  /// No description provided for @guideVanNonCommercial.
+  ///
+  /// In ru, this message translates to:
+  /// **'Некоммерческая'**
+  String get guideVanNonCommercial;
+
+  /// No description provided for @guideVanCarriageHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Свой груз — товар, материалы или инструмент вашей фирмы. Некоммерческая — без оплаты и дохода, не связана с работой'**
+  String get guideVanCarriageHint;
+
+  /// No description provided for @guideVanMain.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение — ваша основная работа?'**
+  String get guideVanMain;
+
+  /// No description provided for @yes.
+  ///
+  /// In ru, this message translates to:
+  /// **'Да'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет'**
+  String get no;
+
+  /// No description provided for @guideVanApplies.
+  ///
+  /// In ru, this message translates to:
+  /// **'Правила действуют'**
+  String get guideVanApplies;
+
+  /// No description provided for @guideVanNotApply.
+  ///
+  /// In ru, this message translates to:
+  /// **'Правила не действуют'**
+  String get guideVanNotApply;
+
+  /// No description provided for @guideVanAppliesText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нужны тахограф и карта водителя, лимиты — как у грузовика.'**
+  String get guideVanAppliesText;
+
+  /// No description provided for @guideVanNotYetText.
+  ///
+  /// In ru, this message translates to:
+  /// **'До {date} фургоны в правила не входили.'**
+  String guideVanNotYetText(String date);
+
+  /// No description provided for @guideVanDomesticText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Регламент ЕС внутри страны фургоны не касается. Проверьте правила своей страны.'**
+  String get guideVanDomesticText;
+
+  /// No description provided for @guideVanOwnText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Исключение: своя перевозка, и вождение — не основная работа.'**
+  String get guideVanOwnText;
+
+  /// No description provided for @guideVanNonCommercialText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Исключение: перевозка без оплаты и дохода, не связанная с работой.'**
+  String get guideVanNonCommercialText;
+
+  /// No description provided for @guideArticle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Регламент 561/2006, ст. {article}'**
+  String guideArticle(String article);
+
+  /// No description provided for @guideVanNotes.
+  ///
+  /// In ru, this message translates to:
+  /// **'С прицепом тяжелее 3,5 т вместе — правила как у грузовика, и внутри страны. Рейс частично вне ЕС — в Украину, Молдову, Турцию, на Балканы — уточните у перевозчика: единого толкования нет.'**
+  String get guideVanNotes;
+
+  /// No description provided for @guideDisclaimer.
+  ///
+  /// In ru, this message translates to:
+  /// **'TachoGo помогает планировать время, но не заменяет тахограф и не является юридической консультацией. Официальный текст правил — Регламент (ЕС) 561/2006 и Соглашение ЕСТР.'**
+  String get guideDisclaimer;
+
+  /// No description provided for @moreAbout.
+  ///
+  /// In ru, this message translates to:
+  /// **'О приложении'**
+  String get moreAbout;
+
+  /// No description provided for @moreDisclaimer.
+  ///
+  /// In ru, this message translates to:
+  /// **'TachoGo помогает планировать время за рулём и отдых, но не заменяет тахограф и не является юридической консультацией.'**
+  String get moreDisclaimer;
 }
 
 class _AppLocalizationsDelegate

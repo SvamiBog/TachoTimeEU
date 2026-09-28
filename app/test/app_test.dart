@@ -30,7 +30,7 @@ void main() {
     expect(find.byType(OnboardingScreen), findsOneWidget);
     expect(find.byType(AppShell), findsNothing);
 
-    for (final button in ['Начать', 'Далее', 'Далее', 'Готово']) {
+    for (final button in ['Начать', 'Далее', 'Далее', 'Далее', 'Готово']) {
       await tester.tap(find.text(button));
       await settle(tester);
     }
