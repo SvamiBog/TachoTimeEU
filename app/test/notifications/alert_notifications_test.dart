@@ -4,10 +4,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
-import 'package:tachogo/l10n/app_localizations.dart';
 import 'package:tachogo/notifications/alert_notifications.dart';
-import 'package:tachogo/notifications/alert_scheduler.dart';
 import 'package:tachogo/notifications/notification_platform.dart';
 
 void main() {
@@ -167,10 +166,10 @@ void main() {
     });
 
     test('язык — из настроек, иначе телефона; без перевода — русский', () {
-      expect(alertLocale('ru', const [Locale('pl')]), const Locale('ru'));
-      expect(alertLocale(null, const [Locale('ru', 'UA')]), const Locale('ru'));
-      expect(alertLocale(null, const [Locale('de')]), const Locale('ru'));
-      expect(alertLocale(null, const []), const Locale('ru'));
+      expect(appLocale('ru', const [Locale('pl')]), const Locale('ru'));
+      expect(appLocale(null, const [Locale('ru', 'UA')]), const Locale('ru'));
+      expect(appLocale(null, const [Locale('de')]), const Locale('ru'));
+      expect(appLocale(null, const <Locale>[]), const Locale('ru'));
     });
   });
 }

@@ -61,6 +61,13 @@ void main() {
     test('шрифты: Onest для интерфейса, JetBrains Mono для цифр', () {
       expect(AppFonts.ui, fonts['ui']);
       expect(AppFonts.numeric, fonts['numeric']);
+      expect(AppFonts.fallback, fonts['fallback']);
+    });
+
+    test('у каждого стиля — запасной шрифт для грузинского', () {
+      for (final style in AppTextStyles.all) {
+        expect(style.fontFamilyFallback, [AppFonts.fallback]);
+      }
     });
 
     test('в коде ровно те стили, что в tokens.json', () {

@@ -33,17 +33,18 @@ import 'package:tachogo/features/more/more_screen.dart';
 import 'package:tachogo/features/onboarding/onboarding_screen.dart';
 import 'package:tachogo/features/settings/settings_screen.dart';
 import 'package:tachogo/features/shell/app_shell.dart';
+import 'package:tachogo/l10n/app_localizations.dart';
 
 import '../support/app_harness.dart';
 import '../support/journal_fixtures.dart';
 
-/// Экран и, для шторки, как её открыть.
-typedef _Screen = ({
-  Widget Function() build,
-  Future<void> Function(WidgetTester tester)? open,
-});
+/// Как открыть шторку: строки — на языке, в котором отрисован экран.
+typedef _Open = Future<void> Function(WidgetTester tester, AppLocalizations l);
 
-Future<void> _openCardSheet(WidgetTester tester) async {
+/// Экран и, для шторки, как её открыть.
+typedef _Screen = ({Widget Function() build, _Open? open});
+
+Future<void> _openCardSheet(WidgetTester tester, AppLocalizations l) async {
   await tester.scrollUntilVisible(
     find.byType(CardReadingTile),
     300,
@@ -56,7 +57,7 @@ Future<void> _openCardSheet(WidgetTester tester) async {
   expect(find.byType(CardSheet), findsOneWidget);
 }
 
-Future<void> _openCountrySheet(WidgetTester tester) async {
+Future<void> _openCountrySheet(WidgetTester tester, AppLocalizations l) async {
   await tester.tap(find.byType(CountryChip));
   await tester.pumpAndSettle();
   expect(find.byType(CountrySheet), findsOneWidget);
@@ -76,7 +77,8 @@ Widget _editor() => Consumer(
   },
 );
 
-Future<void> Function(WidgetTester) _tapText(String text) => (tester) async {
+_Open _tapText(String Function(AppLocalizations l) label) => (tester, l) async {
+  final text = label(l);
   // Ленивый список: на маленьком экране строка ещё не построена
   await tester.scrollUntilVisible(
     find.text(text),
@@ -89,30 +91,32 @@ Future<void> Function(WidgetTester) _tapText(String text) => (tester) async {
   await tester.pumpAndSettle();
 };
 
-Future<void> _openDrivingCorrection(WidgetTester tester) async {
+Future<void> _openDrivingCorrection(
+  WidgetTester tester,
+  AppLocalizations l,
+) async {
   await tester.scrollUntilVisible(
-    find.text('Суточное вождение'),
+    find.text(l.rowDailyDriving),
     300,
     scrollable: find.byType(Scrollable).first,
   );
-  await _tapText('Суточное вождение')(tester);
-  expect(find.text('Посчитано приложением'), findsOneWidget);
+  await _tapText((l) => l.rowDailyDriving)(tester, l);
+  expect(find.text(l.driveEditComputed), findsOneWidget);
 }
 
-Future<void> _openExport(WidgetTester tester) async {
-  await tester.tap(find.byTooltip('Экспорт отчёта'));
+Future<void> _openExport(WidgetTester tester, AppLocalizations l) async {
+  await tester.tap(find.byTooltip(l.journalExport));
   await tester.pumpAndSettle();
-  expect(find.text('Создать отчёт'), findsOneWidget);
+  expect(find.text(l.exportCreate), findsOneWidget);
 }
 
 /// Шаги онбординга: «Начать», затем «Далее».
-Future<void> Function(WidgetTester) _onboardingStep(int step) =>
-    (tester) async {
-      for (var i = 0; i < step; i++) {
-        await tester.tap(find.text(i == 0 ? 'Начать' : 'Далее'));
-        await tester.pumpAndSettle();
-      }
-    };
+_Open _onboardingStep(int step) => (tester, l) async {
+  for (var i = 0; i < step; i++) {
+    await tester.tap(find.text(i == 0 ? l.onbStart : l.onbNext));
+    await tester.pumpAndSettle();
+  }
+};
 
 final _screens = <String, _Screen>{
   'Главная': (build: HomeScreen.new, open: null),
@@ -135,17 +139,26 @@ final _screens = <String, _Screen>{
   'Новая смена': (build: ShiftEditScreen.new, open: null),
   'Шторка «Дата и время»': (
     build: _editor,
-    open: _tapText(formatClock(_shiftStart)),
+    open: _tapText((_) => formatClock(_shiftStart)),
   ),
-  'Шторка «Длительность»': (build: _editor, open: _tapText('За день')),
-  'Шторка «Удалить смену?»': (build: _editor, open: _tapText('Удалить смену')),
-  'Шторка страны в форме смены': (build: _editor, open: _tapText('PL')),
+  'Шторка «Длительность»': (
+    build: _editor,
+    open: _tapText((l) => l.shiftPerDay),
+  ),
+  'Шторка «Удалить смену?»': (
+    build: _editor,
+    open: _tapText((l) => l.shiftDelete),
+  ),
+  'Шторка страны в форме смены': (build: _editor, open: _tapText((_) => 'PL')),
   'Шторка «Экспорт отчёта»': (build: JournalScreen.new, open: _openExport),
   'Настройки': (build: SettingsScreen.new, open: null),
-  'Шторка «Язык»': (build: SettingsScreen.new, open: _tapText('Язык')),
+  'Шторка «Язык»': (
+    build: SettingsScreen.new,
+    open: _tapText((l) => l.settingsLanguage),
+  ),
   'Шторка «Очистить все данные?»': (
     build: SettingsScreen.new,
-    open: _tapText('Очистить все данные'),
+    open: _tapText((l) => l.settingsClear),
   ),
   'Онбординг · приветствие': (build: OnboardingScreen.new, open: null),
   'Онбординг · режимы': (build: OnboardingScreen.new, open: _onboardingStep(1)),
@@ -170,15 +183,15 @@ final _screens = <String, _Screen>{
   'Инструкция и правила · фургон': (build: GuideScreen.new, open: null),
   'Инструкция · своя перевозка': (
     build: GuideScreen.new,
-    open: _tapText('Свой груз'),
+    open: _tapText((l) => l.guideVanOwn),
   ),
   'Настройки · фургон': (build: SettingsScreen.new, open: null),
   'Шторка «Свой период»': (
     build: JournalScreen.new,
-    open: (tester) async {
-      await _openExport(tester);
-      await _tapText('Свой период')(tester);
-      await _tapText('По 23.09')(tester);
+    open: (tester, l) async {
+      await _openExport(tester, l);
+      await _tapText((l) => l.exportCustom)(tester, l);
+      await _tapText((l) => l.exportToDay('23.09'))(tester, l);
     },
   ),
 };
@@ -223,6 +236,7 @@ Future<void> _pump(
   Brightness brightness = Brightness.dark,
   Size viewport = const Size(412, 915),
   double textScale = 1,
+  Locale locale = const Locale('ru'),
 }) async {
   final week = designWeek(driving: true);
   await pumpScreen(
@@ -249,8 +263,36 @@ Future<void> _pump(
     brightness: brightness,
     viewport: viewport,
     textScale: textScale,
+    locale: locale,
   );
-  await screen.open?.call(tester);
+  await screen.open?.call(tester, lookupAppLocalizations(locale));
+}
+
+/// Время и цифры на экране — JetBrains Mono с цифрами одной ширины.
+/// [all] — весь экран построен: на узком экране с крупным шрифтом
+/// ленивый список строит только верх, цифр там может не быть.
+void _expectNumericFont(WidgetTester tester, String name, {bool all = true}) {
+  final numbers = [
+    for (final text in tester.widgetList<RichText>(find.byType(RichText)))
+      if (_numeric.hasMatch(text.text.toPlainText().trim())) text,
+  ];
+  if (_withoutNumbers.contains(name)) {
+    expect(numbers, isEmpty, reason: 'цифры есть — убрать из списка');
+    return;
+  }
+  if (all) {
+    expect(numbers, isNotEmpty, reason: 'на экране нет ни одной цифры');
+  }
+  for (final text in numbers) {
+    final style = text.text.style;
+    final plain = text.text.toPlainText();
+    expect(style?.fontFamily, AppFonts.numeric, reason: plain);
+    expect(
+      style?.fontFeatures,
+      contains(const FontFeature.tabularFigures()),
+      reason: plain,
+    );
+  }
 }
 
 /// Текст из одних цифр и знаков времени: «4:30», «56:00», «12 / 90», «−0:15».
@@ -351,25 +393,7 @@ void main() {
         tester,
       ) async {
         await _pump(tester, screen, van: _van.contains(name));
-        final numbers = [
-          for (final text in tester.widgetList<RichText>(find.byType(RichText)))
-            if (_numeric.hasMatch(text.text.toPlainText().trim())) text,
-        ];
-        if (_withoutNumbers.contains(name)) {
-          expect(numbers, isEmpty, reason: 'цифры есть — убрать из списка');
-          return;
-        }
-        expect(numbers, isNotEmpty, reason: 'на экране нет ни одной цифры');
-        for (final text in numbers) {
-          final style = text.text.style;
-          final plain = text.text.toPlainText();
-          expect(style?.fontFamily, AppFonts.numeric, reason: plain);
-          expect(
-            style?.fontFeatures,
-            contains(const FontFeature.tabularFigures()),
-            reason: plain,
-          );
-        }
+        _expectNumericFont(tester, name);
       });
 
       testWidgets('поля экрана — 16 dp', (tester) async {
@@ -391,6 +415,30 @@ void main() {
           );
         }
       });
+    });
+  }
+
+  // L10N-06, L10N-07: каждый перевод — на узком экране с максимальным
+  // шрифтом, где длинные строки переносятся хуже всего. Время и цифры —
+  // JetBrains Mono на любом языке.
+  for (final locale in AppLocalizations.supportedLocales) {
+    if (locale.languageCode == 'ru') continue;
+    group('перевод ${locale.languageCode}', () {
+      for (final MapEntry(key: name, value: screen) in _screens.entries) {
+        testWidgets('«$name»: 360 dp, шрифт ×2.0 — без переполнения, '
+            'цифры — JetBrains Mono', (tester) async {
+          await _pump(
+            tester,
+            screen,
+            van: _van.contains(name),
+            viewport: _viewports['360 dp']!,
+            textScale: _textScales.last,
+            locale: locale,
+          );
+          expect(tester.takeException(), isNull);
+          _expectNumericFont(tester, name, all: false);
+        });
+      }
     });
   }
 }

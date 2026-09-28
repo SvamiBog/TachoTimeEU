@@ -7,6 +7,7 @@ import 'package:tachogo/background/auto_tracker.dart';
 import 'package:tachogo/background/tracking_notification.dart';
 import 'package:tachogo/background/tracking_platform.dart';
 import 'package:tachogo/core/config/app_env.dart';
+import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/observability/crash_reporter.dart';
 import 'package:tachogo/core/observability/observability_providers.dart';
 import 'package:tachogo/core/observability/sentry_crash_reporter.dart';
@@ -157,15 +158,19 @@ class TrackingTaskHandler extends TaskHandler {
           .last(),
     );
     final suggestion = _tracker?.suggestion;
-    final n = trackingNotification(m, suggestion: suggestion);
+    // Язык — при каждом обновлении: водитель мог сменить его в настройках.
+    final l = appStrings(
+      (await container.read(settingsRepositoryProvider).preferences()).language,
+    );
+    final n = trackingNotification(l, m, suggestion: suggestion);
     await _platform.updateService(
       notificationTitle: n.title,
       notificationText: n.text,
       notificationButtons: suggestion == null
           ? const []
-          : const [
-              NotificationButton(id: acceptButton, text: 'Вождение'),
-              NotificationButton(id: dismissButton, text: 'Нет'),
+          : [
+              NotificationButton(id: acceptButton, text: l.modeDriving),
+              NotificationButton(id: dismissButton, text: l.no),
             ],
     );
   }

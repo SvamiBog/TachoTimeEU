@@ -1,92 +1,86 @@
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/l10n/format.dart';
+import 'package:tachogo/core/l10n/l10n.dart';
 
 /// Текст постоянного уведомления сервиса: текущий режим и главный таймер.
-/// Строки на русском до локализации (Фаза 3, ARB).
+/// Строки — из ARB на языке интерфейса (`appStrings`).
 ({String title, String text}) trackingNotification(
+  AppLocalizations l,
   ComplianceSnapshot m, {
   AutoSwitch? suggestion,
 }) {
   if (suggestion case AutoSwitch(:final at?)) {
-    final since = _clock(at);
+    final since = formatClock(at);
     return switch (suggestion.reason) {
       AutoSwitchReason.team => (
-        title: 'Машина едет',
-        text: 'Вы за рулём? Вождение с $since',
+        title: l.serviceTeamTitle,
+        text: l.serviceTeamText(since),
       ),
-      _ => (
-        title: 'Похоже, вы едете',
-        text: 'Начать вождение с $since? Отдых будет прерван',
-      ),
+      _ => (title: l.serviceSuggestTitle, text: l.serviceSuggestText(since)),
     };
   }
 
-  final inMode = _hm(m.currentModeDuration);
+  String title(String mode) =>
+      l.serviceModeTitle(mode, _hm(m.currentModeDuration));
   switch (m.status) {
     case DriverStatus.driving:
       final over = m.continuousDriving - EuLimits.continuousDriving;
       return (
-        title: 'Вождение · $inMode',
+        title: title(l.modeDriving),
         text: over > Duration.zero
-            ? 'Нужен перерыв: превышение ${_hm(over)}'
-            : 'До перерыва ${_hm(m.drivingUntilBreak)} · '
-                  'за день осталось ${_hm(m.dailyDrivingRemaining)}',
+            ? l.serviceDrivingOver(_hm(over))
+            : l.serviceDriving(
+                _hm(m.drivingUntilBreak),
+                _hm(m.dailyDrivingRemaining),
+              ),
       );
     case DriverStatus.onBreak:
       final b = m.currentBreak;
       final left = b == null ? Duration.zero : b.required - b.duration;
       return (
-        title: 'Перерыв · $inMode',
+        title: title(l.heroBreak),
         text: left > Duration.zero
-            ? 'До полного перерыва ${_hm(left)}'
-            : 'Перерыв засчитан, можно ехать ${_hm(m.drivingUntilBreak)}',
+            ? l.serviceBreakLeft(_hm(left))
+            : l.serviceBreakDone(_hm(m.drivingUntilBreak)),
       );
     case DriverStatus.otherWork:
     case DriverStatus.availability:
-      final mode = m.status == DriverStatus.otherWork
-          ? 'Другая работа'
-          : 'Готовность';
       return (
-        title: '$mode · $inMode',
-        text: 'Рабочий день ${_hm(m.shiftDuration)} из ${_hm(m.shiftLimit)}',
+        title: title(
+          m.status == DriverStatus.otherWork
+              ? l.modeWorkFull
+              : l.modeAvailability,
+        ),
+        text: l.serviceWorkday(_hm(m.shiftDuration), _hm(m.shiftLimit)),
       );
     case DriverStatus.dailyRest:
       final left = m.dailyRestRemaining ?? Duration.zero;
       return (
-        title: 'Суточный отдых · $inMode',
+        title: title(l.heroDailyRest),
         text: left > Duration.zero
-            ? 'До полного отдыха 11 ч: ${_hm(left)}'
-            : 'Полный суточный отдых набран',
+            ? l.serviceRestLeft(
+                formatLimit(l, EuLimits.dailyRestRegular),
+                _hm(left),
+              )
+            : l.serviceDailyRestDone,
       );
     case DriverStatus.weeklyRest:
       final left = m.weeklyRestRemaining ?? Duration.zero;
       return (
-        title: 'Недельный отдых · $inMode',
+        title: title(l.heroWeeklyRest),
         text: left > Duration.zero
-            ? 'До полного отдыха 45 ч: ${_hm(left)}'
-            : 'Полный недельный отдых набран',
+            ? l.serviceRestLeft(
+                formatLimit(l, EuLimits.weeklyRestRegular),
+                _hm(left),
+              )
+            : l.serviceWeeklyRestDone,
       );
     case DriverStatus.notStarted:
-      return (
-        title: 'Смена не начата',
-        text: 'Вождение включится само, когда машина поедет',
-      );
+      return (title: l.workdayNoShift, text: l.serviceNotStartedText);
     case DriverStatus.unknown:
-      return (
-        title: 'Режим не выбран',
-        text: 'Откройте TachoGo и выберите режим',
-      );
+      return (title: l.modeNone, text: l.serviceNoModeText);
   }
 }
 
-/// «4:05»: часы без ограничения, минуты с округлением вниз.
-String _hm(Duration d) {
-  final total = d.isNegative ? 0 : d.inMinutes;
-  return '${total ~/ 60}:${(total % 60).toString().padLeft(2, '0')}';
-}
-
-/// Местное время устройства «06:05».
-String _clock(DateTime t) {
-  final local = t.toLocal();
-  String two(int n) => n.toString().padLeft(2, '0');
-  return '${two(local.hour)}:${two(local.minute)}';
-}
+/// «4:05»: часы без ограничения, минуты с округлением вниз, без минуса.
+String _hm(Duration d) => formatHm(d.isNegative ? Duration.zero : d);

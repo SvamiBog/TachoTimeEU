@@ -1195,6 +1195,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get exportTo => 'По';
 
   @override
+  String exportFromDay(String date) {
+    return 'С $date';
+  }
+
+  @override
+  String exportToDay(String date) {
+    return 'По $date';
+  }
+
+  @override
   String get exportFormat => 'Формат';
 
   @override
@@ -1539,6 +1549,80 @@ class AppLocalizationsRu extends AppLocalizations {
   String notifyWeeklyRestTakenText(String limit) {
     return 'Полный отдых $limit — можно начинать новую рабочую неделю.';
   }
+
+  @override
+  String get serviceChannel => 'Автоопределение вождения';
+
+  @override
+  String get serviceChannelHint =>
+      'Текущий режим и таймеры, пока работает автоопределение';
+
+  @override
+  String get serviceStarted => 'Автоопределение вождения включено';
+
+  @override
+  String serviceModeTitle(String mode, String time) {
+    return '$mode · $time';
+  }
+
+  @override
+  String get serviceTeamTitle => 'Машина едет';
+
+  @override
+  String serviceTeamText(String time) {
+    return 'Вы за рулём? Вождение с $time';
+  }
+
+  @override
+  String get serviceSuggestTitle => 'Похоже, вы едете';
+
+  @override
+  String serviceSuggestText(String time) {
+    return 'Начать вождение с $time? Отдых будет прерван';
+  }
+
+  @override
+  String serviceDriving(String untilBreak, String dayLeft) {
+    return 'До перерыва $untilBreak · за день осталось $dayLeft';
+  }
+
+  @override
+  String serviceDrivingOver(String time) {
+    return 'Нужен перерыв: превышение $time';
+  }
+
+  @override
+  String serviceBreakLeft(String time) {
+    return 'До полного перерыва $time';
+  }
+
+  @override
+  String serviceBreakDone(String time) {
+    return 'Перерыв засчитан, можно ехать $time';
+  }
+
+  @override
+  String serviceWorkday(String time, String limit) {
+    return 'Рабочий день $time из $limit';
+  }
+
+  @override
+  String serviceRestLeft(String limit, String time) {
+    return 'До полного отдыха $limit: $time';
+  }
+
+  @override
+  String get serviceDailyRestDone => 'Полный суточный отдых набран';
+
+  @override
+  String get serviceWeeklyRestDone => 'Полный недельный отдых набран';
+
+  @override
+  String get serviceNotStartedText =>
+      'Вождение включится само, когда машина поедет';
+
+  @override
+  String get serviceNoModeText => 'Откройте TachoGo и выберите режим';
 
   @override
   String get autoTitle => 'Автоопределение вождения';

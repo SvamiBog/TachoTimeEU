@@ -12,6 +12,7 @@ final appVersionProvider = FutureProvider<String>(
 const fontLicenses = {
   'Onest': 'assets/fonts/Onest-OFL.txt',
   'JetBrains Mono': 'assets/fonts/JetBrainsMono-OFL.txt',
+  'Noto Sans Georgian': 'assets/fonts/NotoSansGeorgian-OFL.txt',
 };
 
 /// Лицензии шрифтов — в списке лицензий «О приложении»: OFL требует

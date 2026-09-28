@@ -24,13 +24,23 @@ abstract final class _Pt {
 
 /// Шрифты отчёта из ресурсов приложения.
 class ReportFonts {
-  const new({required this.regular, required this.bold, required this.mono});
+  const new({
+    required this.regular,
+    required this.bold,
+    required this.mono,
+    this.fallback = const [],
+  });
 
   final pw.Font regular;
   final pw.Font bold;
 
   /// Время и цифры.
   final pw.Font mono;
+
+  /// Письменности, которых нет в Onest: грузинская. На экране их берёт
+  /// система, в PDF шрифт встраивается. Пакет `pdf` берёт первый шрифт
+  /// с нужной буквой, поэтому начертание одно — обычное.
+  final List<pw.Font> fallback;
 
   static Future<ReportFonts> load(AssetBundle bundle) async {
     Future<pw.Font> font(String name) async =>
@@ -39,6 +49,7 @@ class ReportFonts {
       regular: await font('Onest-Regular'),
       bold: await font('Onest-Bold'),
       mono: await font('JetBrainsMono-Medium'),
+      fallback: [await font('NotoSansGeorgian-Regular')],
     );
   }
 }
@@ -154,6 +165,7 @@ pw.Document buildPdfDocument({
   final base = pw.TextStyle(
     fontNormal: fonts.regular,
     fontBold: fonts.bold,
+    fontFallback: fonts.fallback,
     fontSize: _Pt.body,
   );
   final bold = base.copyWith(fontWeight: pw.FontWeight.bold);
@@ -314,7 +326,11 @@ pw.Document buildPdfDocument({
   final doc = pw.Document(
     title: l.reportTitle,
     author: 'TachoGo',
-    theme: pw.ThemeData.withFont(base: fonts.regular, bold: fonts.bold),
+    theme: pw.ThemeData.withFont(
+      base: fonts.regular,
+      bold: fonts.bold,
+      fontFallback: fonts.fallback,
+    ),
   );
   final blank = '_' * 28;
   doc.addPage(

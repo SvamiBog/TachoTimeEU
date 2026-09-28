@@ -26,8 +26,11 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final declared = _declaredFonts();
 
-  test('объявлены оба семейства из темы', () {
-    expect(declared.keys, unorderedEquals([AppFonts.ui, AppFonts.numeric]));
+  test('объявлены семейства из темы и запасной для грузинского', () {
+    expect(
+      declared.keys,
+      unorderedEquals([AppFonts.ui, AppFonts.numeric, AppFonts.fallback]),
+    );
   });
 
   test('каждое начертание из AppTextStyles есть в pubspec.yaml', () {

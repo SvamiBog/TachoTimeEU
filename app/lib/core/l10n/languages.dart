@@ -23,3 +23,15 @@ const _names = {
 /// «Русский» для `ru`; язык без названия — его код.
 String languageName(Locale locale) =>
     _names[locale.languageCode] ?? locale.toLanguageTag();
+
+/// Переводы в порядке списка выше — сначала языки Tier 1, от самых
+/// частых у водителей; язык без названия — в конце.
+List<Locale> languagesInOrder(Iterable<Locale> locales) {
+  final order = _names.keys.toList();
+  int rank(Locale l) {
+    final i = order.indexOf(l.languageCode);
+    return i < 0 ? order.length : i;
+  }
+
+  return locales.toList()..sort((a, b) => rank(a).compareTo(rank(b)));
+}

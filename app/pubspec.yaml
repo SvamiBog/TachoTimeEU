@@ -46,6 +46,7 @@ flutter:
   assets:
     - assets/fonts/Onest-OFL.txt
     - assets/fonts/JetBrainsMono-OFL.txt
+    - assets/fonts/NotoSansGeorgian-OFL.txt
   # Onest и JetBrains Mono (OFL, лицензии рядом): статические начертания,
   # нарезанные из вариативных шрифтов Google Fonts, — assets/fonts/README.md.
   fonts:
@@ -64,4 +65,11 @@ flutter:
         - asset: assets/fonts/JetBrainsMono-Medium.ttf
           weight: 500
         - asset: assets/fonts/JetBrainsMono-Bold.ttf
+          weight: 700
+    # Запасной для грузинского: в Onest и JetBrains Mono его букв нет.
+    - family: Noto Sans Georgian
+      fonts:
+        - asset: assets/fonts/NotoSansGeorgian-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansGeorgian-Bold.ttf
           weight: 700

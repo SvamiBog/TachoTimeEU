@@ -1,8 +1,11 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/tracking_notification.dart';
+import 'package:tachogo/l10n/app_localizations.dart';
 
 void main() {
+  final ru = lookupAppLocalizations(const Locale('ru'));
   final now = DateTime.utc(2026, 9, 23, 12);
 
   ComplianceSnapshot snapshot(List<(DriverMode, Duration)> segs) {
@@ -28,6 +31,7 @@ void main() {
 
   test('вождение: время режима, до перерыва и остаток за день', () {
     final n = trackingNotification(
+      ru,
       snapshot([(DriverMode.rest, h * 11), (DriverMode.driving, m * 85)]),
     );
     expect(n.title, 'Вождение · 1:25');
@@ -36,6 +40,7 @@ void main() {
 
   test('вождение без перерыва дольше 4:30 — превышение', () {
     final n = trackingNotification(
+      ru,
       snapshot([(DriverMode.rest, h * 11), (DriverMode.driving, m * 280)]),
     );
     expect(n.text, 'Нужен перерыв: превышение 0:10');
@@ -43,6 +48,7 @@ void main() {
 
   test('перерыв: сколько осталось до полного', () {
     final n = trackingNotification(
+      ru,
       snapshot([
         (DriverMode.rest, h * 11),
         (DriverMode.driving, h * 2),
@@ -55,6 +61,7 @@ void main() {
 
   test('работа: рабочий день из лимита', () {
     final n = trackingNotification(
+      ru,
       snapshot([(DriverMode.rest, h * 11), (DriverMode.otherWork, h * 2)]),
     );
     expect(n.title, 'Другая работа · 2:00');
@@ -63,6 +70,7 @@ void main() {
 
   test('суточный отдых: до 11 ч', () {
     final n = trackingNotification(
+      ru,
       snapshot([(DriverMode.driving, h * 4), (DriverMode.rest, h * 9)]),
     );
     expect(n.title, 'Суточный отдых · 9:00');
@@ -76,6 +84,7 @@ void main() {
         '${local.hour.toString().padLeft(2, '0')}:'
         '${local.minute.toString().padLeft(2, '0')}';
     final n = trackingNotification(
+      ru,
       snapshot([(DriverMode.driving, h * 4), (DriverMode.rest, h * 9)]),
       suggestion: AutoSwitch(
         AutoSwitchKind.suggest,
@@ -91,6 +100,7 @@ void main() {
   group('BG-02: остальные состояния', () {
     test('готовность', () {
       final n = trackingNotification(
+        ru,
         snapshot([
           (DriverMode.rest, h * 11),
           (DriverMode.availability, m * 30),
@@ -102,6 +112,7 @@ void main() {
 
     test('недельный отдых: до 45 ч, часы без ограничения', () {
       final n = trackingNotification(
+        ru,
         snapshot([(DriverMode.driving, h * 4), (DriverMode.rest, h * 30)]),
       );
       expect(n.title, 'Недельный отдых · 30:00');
@@ -110,6 +121,7 @@ void main() {
 
     test('недельный отдых набран', () {
       final n = trackingNotification(
+        ru,
         snapshot([(DriverMode.driving, h * 4), (DriverMode.rest, h * 46)]),
       );
       expect(n.text, 'Полный недельный отдых набран');
@@ -117,6 +129,7 @@ void main() {
 
     test('суточный отдых набран', () {
       final n = trackingNotification(
+        ru,
         snapshot([(DriverMode.driving, h * 4), (DriverMode.rest, h * 12)]),
       );
       expect(n.text, 'Полный суточный отдых набран');
@@ -124,6 +137,7 @@ void main() {
 
     test('перерыв засчитан', () {
       final n = trackingNotification(
+        ru,
         snapshot([
           (DriverMode.rest, h * 11),
           (DriverMode.driving, h * 4),
@@ -135,7 +149,7 @@ void main() {
     });
 
     test('смена не начата', () {
-      final n = trackingNotification(snapshot([(DriverMode.rest, m * 30)]));
+      final n = trackingNotification(ru, snapshot([(DriverMode.rest, m * 30)]));
       expect(n.title, 'Смена не начата');
       expect(n.text, 'Вождение включится само, когда машина поедет');
     });
@@ -154,6 +168,7 @@ void main() {
         ),
       ];
       final n = trackingNotification(
+        ru,
         calculateCompliance(periods: periods, now: now),
       );
       expect(n.title, 'Режим не выбран');
@@ -163,6 +178,7 @@ void main() {
     test('предложение экипажу', () {
       final at = now.subtract(m * 2);
       final n = trackingNotification(
+        ru,
         snapshot([(DriverMode.rest, h * 11), (DriverMode.otherWork, h)]),
         suggestion: AutoSwitch(
           AutoSwitchKind.suggest,
@@ -185,6 +201,7 @@ void main() {
         ActivityPeriod(mode: DriverMode.driving, start: now.add(h)),
       ];
       final n = trackingNotification(
+        ru,
         calculateCompliance(periods: periods, now: now),
       );
       expect(n.title, 'Вождение · 0:00');

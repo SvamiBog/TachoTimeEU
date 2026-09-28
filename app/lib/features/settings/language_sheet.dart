@@ -71,7 +71,9 @@ class LanguageSheet extends ConsumerWidget {
                     selected: current == null,
                     onTap: () => pick(null),
                   ),
-                  for (final locale in AppLocalizations.supportedLocales)
+                  for (final locale in languagesInOrder(
+                    AppLocalizations.supportedLocales,
+                  ))
                     _LanguageRow(
                       title: languageName(locale),
                       selected: current == locale.languageCode,
