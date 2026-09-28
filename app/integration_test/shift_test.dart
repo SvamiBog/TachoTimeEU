@@ -55,7 +55,7 @@ void main() {
 
       // «Завершить день» с экрана «Рабочий день»
       await tester.tap(find.text(ru.rowWorkday));
-      await tester.pumpAndSettle();
+      await settleFrames(tester);
       expect(find.byType(WorkdayScreen), findsOneWidget);
       await tester.tap(find.text(ru.workdayEndDay));
       await settle(tester);

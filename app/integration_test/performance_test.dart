@@ -78,13 +78,18 @@ Future<void> seed(AppDatabase db, List<ActivityPeriod> periods) =>
       ]);
     });
 
-/// Ждёт кадра, на котором кольцо главной показывает таймер.
+/// Ждёт кадра, на котором кольцо главной показывает таймер; дольше
+/// минуты — тест падает, а не висит.
 Future<void> pumpUntilTimers(WidgetTester tester) async {
   final timer = find.descendant(
     of: find.byType(HeroRing),
     matching: find.byType(DurationText),
   );
+  final watch = Stopwatch()..start();
   while (timer.evaluate().isEmpty) {
+    if (watch.elapsed > const Duration(minutes: 1)) {
+      fail('Таймеры на главной не появились за минуту');
+    }
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(milliseconds: 2)),
     );
@@ -140,6 +145,9 @@ void main() {
       final watch = Stopwatch()..start();
       await tapMode(tester, mode, settleAfter: false);
       while ((await tester.runAsync(repo.periods))!.last.mode != mode) {
+        if (watch.elapsed > const Duration(minutes: 1)) {
+          fail('Переключение на $mode не записалось за минуту');
+        }
         await tester.pump();
       }
       await tester.pump();

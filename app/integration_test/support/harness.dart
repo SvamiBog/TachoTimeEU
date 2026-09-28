@@ -201,8 +201,16 @@ Future<void> settle(WidgetTester tester) async {
     );
     await tester.pump();
   }
-  await tester.pumpAndSettle();
+  await settleFrames(tester);
 }
+
+/// Дорисовывает кадры, пока идут анимации, — не дольше 30 с: вечная
+/// анимация на устройстве — ошибка сразу, а не через 10 мин по умолчанию.
+Future<void> settleFrames(WidgetTester tester) => tester.pumpAndSettle(
+  const Duration(milliseconds: 100),
+  EnginePhase.sendSemanticsUpdate,
+  const Duration(seconds: 30),
+);
 
 /// Ждёт, пока [condition] станет истинным, до [timeout]; экран
 /// дорисовывается между проверками.
@@ -235,7 +243,7 @@ Future<void> showRow(WidgetTester tester, String title) async {
     200,
     scrollable: find.byType(Scrollable).first,
   );
-  await tester.pumpAndSettle();
+  await settleFrames(tester);
 }
 
 /// Главная — к началу: кольцо, текущий режим и кнопки режимов.
@@ -245,7 +253,7 @@ Future<void> scrollToTop(WidgetTester tester) async {
     -300,
     scrollable: find.byType(Scrollable).first,
   );
-  await tester.pumpAndSettle();
+  await settleFrames(tester);
 }
 
 /// Расчёт движка по журналу из базы — независимо от провайдеров экрана.
