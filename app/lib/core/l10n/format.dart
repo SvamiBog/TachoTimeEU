@@ -1,5 +1,12 @@
 // Форматы времени на экранах. Движок считает в UTC, водитель видит
 // местное время телефона; длительности от часового пояса не зависят.
+//
+// Цифрами — как на распечатке тахографа во всех языках: день перед
+// месяцем («23.09»), 24 часа («06:49»). Водитель сверяет их с
+// распечаткой, а формат «мм/дд» ругают в отзывах о конкурентах
+// (docs/market/competitors.md). Словами — по шаблонам локали из intl:
+// названия и порядок дня, месяца и дня недели («23 сентября»,
+// «23-sentabr», «September 23»).
 
 import 'package:intl/intl.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
@@ -17,15 +24,19 @@ String formatHm(Duration d) {
 String formatLimit(AppLocalizations l, Duration d) =>
     d.inMinutes % 60 == 0 ? l.hoursShort(d.inHours) : formatHm(d);
 
-/// Местное время «06:49».
+/// Местное время «06:49», 24 часа во всех языках.
 String formatClock(DateTime t) {
   final local = t.toLocal();
   return '${_two(local.hour)}:${_two(local.minute)}';
 }
 
-/// «Ср, 23 сентября» — в шапке главной.
-String formatWeekdayDate(DateTime t, String locale) =>
-    _capitalize(DateFormat('EEE, d MMMM', locale).format(t.toLocal()));
+/// «Ср, 23 сентября» — в шапке главной. Шаблон «день недели, число
+/// месяц» локали с коротким днём недели.
+String formatWeekdayDate(DateTime t, String locale) {
+  final full = DateFormat.MMMMEEEEd(locale).pattern!;
+  final short = full.replaceAll('EEEE', 'EEE').replaceAll('cccc', 'ccc');
+  return _capitalize(DateFormat(short, locale).format(t.toLocal()));
+}
 
 /// «вс 06:10» — срок в пределах недели.
 String formatWeekdayClock(DateTime t, String locale) =>
@@ -84,18 +95,24 @@ String formatDayMonthYear(DateTime t) =>
 String formatDeadline(DateTime t, String locale) =>
     '${_capitalize(formatWeekdayDay(t, locale))} · ${formatClock(t)}';
 
-/// «Сентябрь 2026» — месяц в шапке журнала.
-String formatMonthYear(DateTime t, String locale) =>
-    _capitalize(DateFormat('LLLL y', locale).format(t.toLocal()));
+/// «Сентябрь 2026» — месяц в шапке журнала: шаблон «месяц год» локали
+/// без сокращения «г.» — над списком недель и так видно, что это год.
+String formatMonthYear(DateTime t, String locale) {
+  final pattern = DateFormat.yMMMM(locale).pattern!
+      .replaceAll(RegExp(r"\s*'[^']*'\.?"), '')
+      .replaceAll('MMMM', 'LLLL');
+  return _capitalize(DateFormat(pattern, locale).format(t.toLocal()));
+}
 
 /// «21–27 сентября», «28 сентября – 4 октября» — неделя журнала. Неделя
 /// считается в UTC (ст. 4(i), как на тахографе), поэтому и даты — UTC:
-/// в любом поясе это понедельник–воскресенье.
+/// в любом поясе это понедельник–воскресенье. Сокращённо «21–27» — только
+/// там, где число стоит перед месяцем; иначе обе даты целиком.
 String formatWeekRange(DateTime weekStart, String locale) {
   final start = weekStart.toUtc();
   final end = start.add(const Duration(days: 6));
-  final dayMonth = DateFormat('d MMMM', locale);
-  return start.month == end.month
+  final dayMonth = DateFormat.MMMMd(locale);
+  return start.month == end.month && dayMonth.pattern!.startsWith('d')
       ? '${start.day}–${dayMonth.format(end)}'
       : '${dayMonth.format(start)} – ${dayMonth.format(end)}';
 }
@@ -106,7 +123,7 @@ String formatWeekdayShort(DateTime t, String locale) =>
 
 /// «Вторник, 22 сентября» — под заголовком смены.
 String formatWeekdayFull(DateTime t, String locale) =>
-    _capitalize(DateFormat('EEEE, d MMMM', locale).format(t.toLocal()));
+    _capitalize(DateFormat.MMMMEEEEd(locale).format(t.toLocal()));
 
 /// «18.09 11:20».
 String formatDayMonthClock(DateTime t) =>

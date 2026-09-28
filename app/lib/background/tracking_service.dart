@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:tachogo/background/auto_tracker.dart';
 import 'package:tachogo/background/tracking_platform.dart';
 import 'package:tachogo/background/tracking_task.dart';
+import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 
@@ -211,12 +212,12 @@ class TrackingService {
   }
 
   Future<void> _startAndroid() async {
+    final l = appStrings((await _settings.preferences()).language);
     _platform.initService(
       android: AndroidNotificationOptions(
         channelId: 'auto_detect',
-        channelName: 'Автоопределение вождения',
-        channelDescription:
-            'Текущий режим и таймеры, пока работает автоопределение',
+        channelName: l.serviceChannel,
+        channelDescription: l.serviceChannelHint,
         onlyAlertOnce: true,
       ),
       ios: const IOSNotificationOptions(showNotification: false),
@@ -232,8 +233,8 @@ class TrackingService {
     final result = await _platform.startService(
       serviceId: _serviceId,
       serviceTypes: [ForegroundServiceTypes.location],
-      notificationTitle: 'TachoGo',
-      notificationText: 'Автоопределение вождения включено',
+      notificationTitle: l.appTitle,
+      notificationText: l.serviceStarted,
       callback: startTrackingTask,
     );
     if (result case ServiceRequestFailure(:final error)) {

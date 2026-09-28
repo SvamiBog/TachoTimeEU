@@ -1013,6 +1013,24 @@
   "exportCustom": "Свой период",
   "exportFrom": "С",
   "exportTo": "По",
+  "exportFromDay": "С {date}",
+  "@exportFromDay": {
+    "description": "Кнопка начала своего периода: «С 01.09»",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exportToDay": "По {date}",
+  "@exportToDay": {
+    "description": "Кнопка конца своего периода: «По 10.09»",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "exportFormat": "Формат",
   "exportPdf": "PDF · для инспекции",
   "exportCsv": "CSV · таблица",
@@ -1273,6 +1291,117 @@
       }
     }
   },
+  "serviceChannel": "Автоопределение вождения",
+  "@serviceChannel": {
+    "description": "Канал уведомления фонового сервиса в настройках Android"
+  },
+  "serviceChannelHint": "Текущий режим и таймеры, пока работает автоопределение",
+  "serviceStarted": "Автоопределение вождения включено",
+  "@serviceStarted": {
+    "description": "Уведомление сервиса, пока таймеры не посчитаны"
+  },
+  "serviceModeTitle": "{mode} · {time}",
+  "@serviceModeTitle": {
+    "description": "Уведомление сервиса: «Вождение · 1:25» — режим и сколько он идёт",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceTeamTitle": "Машина едет",
+  "@serviceTeamTitle": {
+    "description": "Экипаж: машина поехала, вождение не включено само"
+  },
+  "serviceTeamText": "Вы за рулём? Вождение с {time}",
+  "@serviceTeamText": {
+    "description": "«Вы за рулём? Вождение с 06:05» — местное время",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceSuggestTitle": "Похоже, вы едете",
+  "@serviceSuggestTitle": {
+    "description": "Машина поехала во время отдыха"
+  },
+  "serviceSuggestText": "Начать вождение с {time}? Отдых будет прерван",
+  "@serviceSuggestText": {
+    "description": "«Начать вождение с 06:05?» — местное время",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceDriving": "До перерыва {untilBreak} · за день осталось {dayLeft}",
+  "@serviceDriving": {
+    "placeholders": {
+      "untilBreak": {
+        "type": "String"
+      },
+      "dayLeft": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceDrivingOver": "Нужен перерыв: превышение {time}",
+  "@serviceDrivingOver": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceBreakLeft": "До полного перерыва {time}",
+  "@serviceBreakLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceBreakDone": "Перерыв засчитан, можно ехать {time}",
+  "@serviceBreakDone": {
+    "description": "Сколько можно ехать до следующего перерыва",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceWorkday": "Рабочий день {time} из {limit}",
+  "@serviceWorkday": {
+    "description": "«Рабочий день 2:00 из 15:00»",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceRestLeft": "До полного отдыха {limit}: {time}",
+  "@serviceRestLeft": {
+    "description": "«До полного отдыха 11 ч: 2:00»",
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceDailyRestDone": "Полный суточный отдых набран",
+  "serviceWeeklyRestDone": "Полный недельный отдых набран",
+  "serviceNotStartedText": "Вождение включится само, когда машина поедет",
+  "serviceNoModeText": "Откройте TachoGo и выберите режим",
   "autoTitle": "Автоопределение вождения",
   "autoSwitch": "Определять вождение по GPS",
   "autoSwitchHint": "Поехали — вождение, остановились — другая работа. Нужна только скорость: координаты не сохраняются.",

@@ -3,14 +3,14 @@ import 'dart:isolate';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:drift/drift.dart' show TableUpdateQuery;
-import 'package:flutter/widgets.dart' show Locale, basicLocaleListResolution;
+import 'package:flutter/widgets.dart' show Locale;
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/journal/card_download_repository.dart';
 import 'package:tachogo/data/journal/journal_edit_repository.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
-import 'package:tachogo/l10n/app_localizations.dart';
 import 'package:tachogo/notifications/alert_notifications.dart';
 import 'package:tachogo/notifications/notification_platform.dart';
 
@@ -51,14 +51,6 @@ AlertForecast computeAlertForecast(AlertInputs i) => (
 
 Future<AlertForecast> _inIsolate(AlertInputs inputs) =>
     Isolate.run(() => computeAlertForecast(inputs));
-
-/// Язык уведомлений: из настроек, иначе — как в телефоне, если есть
-/// перевод.
-Locale alertLocale(String? language, List<Locale> device) =>
-    basicLocaleListResolution([
-      if (language != null) Locale(language),
-      ...device,
-    ], AppLocalizations.supportedLocales);
 
 /// Расписание уведомлений о лимитах (Android): приближение лимита за
 /// 15 / 30 / 60 мин, нарушение, обязательный и набранный отдых, карта.
@@ -162,9 +154,7 @@ class AlertScheduler {
       lastCardDownload: await _cards.last(),
       now: _clock().toUtc(),
     ));
-    final l = lookupAppLocalizations(
-      alertLocale(prefs.language, _deviceLocales()),
-    );
+    final l = appStrings(prefs.language, _deviceLocales());
     final names = alertChannelNames(l);
     await _platform.createChannels(names);
 

@@ -4,17 +4,23 @@
 import 'package:flutter/painting.dart';
 
 /// Шрифты: Onest — интерфейс, JetBrains Mono — время и цифры.
+/// Грузинских букв нет ни в одном — их рисует Noto Sans Georgian.
 abstract final class AppFonts {
   static const ui = 'Onest';
   static const numeric = 'JetBrains Mono';
+  static const fallback = 'Noto Sans Georgian';
 }
 
 abstract final class AppTextStyles {
   // Цифры одинаковой ширины, чтобы тикающий таймер не «прыгал».
   static const _tabular = [FontFeature.tabularFigures()];
 
+  // Буквы, которых нет в шрифте: единицы рядом с цифрами («45 სთ») тоже.
+  static const List<String> _fallback = [AppFonts.fallback];
+
   static const timer = TextStyle(
     fontFamily: AppFonts.numeric,
+    fontFamilyFallback: _fallback,
     fontSize: 60,
     fontWeight: FontWeight.w700,
     fontFeatures: _tabular,
@@ -22,24 +28,28 @@ abstract final class AppTextStyles {
 
   static const screenTitle = TextStyle(
     fontFamily: AppFonts.ui,
+    fontFamilyFallback: _fallback,
     fontSize: 28,
     fontWeight: FontWeight.w700,
   );
 
   static const header = TextStyle(
     fontFamily: AppFonts.ui,
+    fontFamilyFallback: _fallback,
     fontSize: 18,
     fontWeight: FontWeight.w700,
   );
 
   static const rowTitle = TextStyle(
     fontFamily: AppFonts.ui,
+    fontFamilyFallback: _fallback,
     fontSize: 15,
     fontWeight: FontWeight.w600,
   );
 
   static const value = TextStyle(
     fontFamily: AppFonts.numeric,
+    fontFamilyFallback: _fallback,
     fontSize: 17,
     fontWeight: FontWeight.w700,
     fontFeatures: _tabular,
@@ -47,12 +57,14 @@ abstract final class AppTextStyles {
 
   static const body = TextStyle(
     fontFamily: AppFonts.ui,
+    fontFamilyFallback: _fallback,
     fontSize: 14,
     fontWeight: FontWeight.w400,
   );
 
   static const caption = TextStyle(
     fontFamily: AppFonts.ui,
+    fontFamilyFallback: _fallback,
     fontSize: 13,
     fontWeight: FontWeight.w400,
   );
@@ -60,6 +72,7 @@ abstract final class AppTextStyles {
   /// Заголовок раздела. Текст передавать в верхнем регистре (`.toUpperCase()`).
   static const section = TextStyle(
     fontFamily: AppFonts.ui,
+    fontFamilyFallback: _fallback,
     fontSize: 13,
     fontWeight: FontWeight.w600,
     letterSpacing: 13 * 0.08,
@@ -68,6 +81,7 @@ abstract final class AppTextStyles {
   /// Время в текущем режиме под кольцом на главной.
   static const modeTimer = TextStyle(
     fontFamily: AppFonts.numeric,
+    fontFamilyFallback: _fallback,
     fontSize: 20,
     fontWeight: FontWeight.w700,
     fontFeatures: _tabular,
@@ -75,6 +89,7 @@ abstract final class AppTextStyles {
 
   static const button = TextStyle(
     fontFamily: AppFonts.ui,
+    fontFamilyFallback: _fallback,
     fontSize: 15,
     fontWeight: FontWeight.w700,
   );
@@ -82,6 +97,7 @@ abstract final class AppTextStyles {
   /// Чипы, подписи нижней навигации и кольца.
   static const label = TextStyle(
     fontFamily: AppFonts.ui,
+    fontFamilyFallback: _fallback,
     fontSize: 12,
     fontWeight: FontWeight.w600,
   );
@@ -89,6 +105,7 @@ abstract final class AppTextStyles {
   /// Дата под названием в шапке.
   static const small = TextStyle(
     fontFamily: AppFonts.ui,
+    fontFamilyFallback: _fallback,
     fontSize: 12,
     fontWeight: FontWeight.w400,
   );
@@ -96,6 +113,7 @@ abstract final class AppTextStyles {
   /// Крупное значение в карточке: «45 ч» на экране недельного отдыха.
   static const valueLarge = TextStyle(
     fontFamily: AppFonts.numeric,
+    fontFamilyFallback: _fallback,
     fontSize: 32,
     fontWeight: FontWeight.w700,
     fontFeatures: _tabular,
@@ -104,6 +122,7 @@ abstract final class AppTextStyles {
   /// Значение в ячейке: суммы смены в журнале, дата и время в форме смены.
   static const valueSmall = TextStyle(
     fontFamily: AppFonts.numeric,
+    fontFamilyFallback: _fallback,
     fontSize: 15,
     fontWeight: FontWeight.w700,
     fontFeatures: _tabular,
@@ -112,6 +131,7 @@ abstract final class AppTextStyles {
   /// Время в подписи: «06:30 → 19:10» в строке журнала.
   static const numericCaption = TextStyle(
     fontFamily: AppFonts.numeric,
+    fontFamilyFallback: _fallback,
     fontSize: 13,
     fontWeight: FontWeight.w500,
     fontFeatures: _tabular,

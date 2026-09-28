@@ -78,10 +78,16 @@ class LimitRow extends StatelessWidget {
                       spoken: spoken,
                       style: AppTextStyles.value.copyWith(color: color),
                     ),
-                  StatusValue(:final text) => Text(
-                    text,
-                    style: AppTextStyles.body.copyWith(
-                      color: colors.textSecondary,
+                  // Длинное состояние на другом языке («nierozpoczęty»)
+                  // переносится, а не выталкивает строку за край.
+                  StatusValue(:final text) => ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: box.maxWidth * 0.35),
+                    child: Text(
+                      text,
+                      textAlign: TextAlign.end,
+                      style: AppTextStyles.body.copyWith(
+                        color: colors.textSecondary,
+                      ),
                     ),
                   ),
                   null => const SizedBox.shrink(),

@@ -1,6 +1,7 @@
 // PDF «для инспекции». План тестов: EXP-04 в docs/testing.md.
 
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:pdf/pdf.dart' show TtfParser;
@@ -10,6 +11,7 @@ import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/report/report.dart';
 import 'package:tachogo/features/export/pdf_report.dart';
+import 'package:tachogo/l10n/app_localizations.dart';
 import 'package:tachogo/l10n/app_localizations_ru.dart';
 
 import '../support/journal_fixtures.dart';
@@ -65,6 +67,30 @@ void main() {
           reason: String.fromCharCode(rune),
         );
       }
+    });
+
+    test('грузинские буквы — в запасном шрифте, отчёт на грузинском', () async {
+      const text = 'ანგარიში მართვისა და დასვენების დროის შესახებ';
+      final ttf = TtfParser((fonts.fallback.single as pw.TtfFont).data);
+      final missing = [
+        for (final rune in text.runes)
+          if (rune != 0x20 && !ttf.charToGlyphIndexMap.containsKey(rune))
+            String.fromCharCode(rune),
+      ];
+      expect(missing, isEmpty, reason: ttf.fontName);
+
+      await initializeDateFormatting('ka');
+      final j = designJournal();
+      final bytes = await buildPdfReport(
+        journal: _journal(j.periods, j.now),
+        range: reportRange(ReportPeriod.week, j.now),
+        includeNotes: true,
+        crew: CrewMode.solo,
+        l: lookupAppLocalizations(const Locale('ka')),
+        locale: 'ka',
+        fonts: fonts,
+      );
+      expect(String.fromCharCodes(bytes), contains('NotoSansGeorgian'));
     });
 
     test('шрифты встроены в файл, отчёт — PDF', () async {

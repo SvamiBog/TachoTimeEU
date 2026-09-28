@@ -109,7 +109,7 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
                   children: [
                     Expanded(
                       child: _RangeButton(
-                        label: '${l.exportFrom} ${utcDay(range.start)}',
+                        label: l.exportFromDay(utcDay(range.start)),
                         onTap: () => unawaited(
                           _pickDay(
                             title: l.exportFrom,
@@ -123,7 +123,7 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: _RangeButton(
-                        label: '${l.exportTo} ${utcDay(lastDayOf(range))}',
+                        label: l.exportToDay(utcDay(lastDayOf(range))),
                         onTap: () => unawaited(
                           _pickDay(
                             title: l.exportTo,

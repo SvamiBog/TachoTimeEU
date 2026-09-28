@@ -10,6 +10,7 @@ ThemeData buildTheme(Brightness brightness) {
   return ThemeData(
     brightness: brightness,
     fontFamily: AppFonts.ui,
+    fontFamilyFallback: const [AppFonts.fallback],
     scaffoldBackgroundColor: c.background,
     colorScheme: ColorScheme.fromSeed(
       seedColor: c.drive,

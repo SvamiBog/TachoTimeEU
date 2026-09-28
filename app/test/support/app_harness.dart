@@ -184,6 +184,7 @@ Future<void> pumpScreen(
   Brightness brightness = Brightness.dark,
   Size viewport = phone,
   double textScale = 1,
+  Locale locale = const Locale('ru'),
 }) async {
   tester.view
     ..devicePixelRatio = 2.625
@@ -197,6 +198,7 @@ Future<void> pumpScreen(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: buildTheme(brightness),
+        locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: child,
@@ -228,7 +230,11 @@ Future<void> loadAppFonts() async {
   for (final w in ['Medium', 'Bold']) {
     mono.addFont(rootBundle.load('assets/fonts/JetBrainsMono-$w.ttf'));
   }
+  final georgian = FontLoader('Noto Sans Georgian');
+  for (final w in ['Regular', 'Bold']) {
+    georgian.addFont(rootBundle.load('assets/fonts/NotoSansGeorgian-$w.ttf'));
+  }
   final icons = FontLoader('MaterialIcons')
     ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
-  await Future.wait([onest.load(), mono.load(), icons.load()]);
+  await Future.wait([onest.load(), mono.load(), georgian.load(), icons.load()]);
 }

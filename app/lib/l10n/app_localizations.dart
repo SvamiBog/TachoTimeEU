@@ -5,7 +5,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_ka.dart';
+import 'app_localizations_pl.dart';
+import 'app_localizations_ro.dart';
 import 'app_localizations_ru.dart';
+import 'app_localizations_uk.dart';
+import 'app_localizations_uz.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,7 +97,14 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('ru')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('ru'),
+    Locale('ka'),
+    Locale('pl'),
+    Locale('ro'),
+    Locale('uk'),
+    Locale('uz'),
+  ];
 
   /// No description provided for @appTitle.
   ///
@@ -1835,6 +1847,18 @@ abstract class AppLocalizations {
   /// **'По'**
   String get exportTo;
 
+  /// Кнопка начала своего периода: «С 01.09»
+  ///
+  /// In ru, this message translates to:
+  /// **'С {date}'**
+  String exportFromDay(String date);
+
+  /// Кнопка конца своего периода: «По 10.09»
+  ///
+  /// In ru, this message translates to:
+  /// **'По {date}'**
+  String exportToDay(String date);
+
   /// No description provided for @exportFormat.
   ///
   /// In ru, this message translates to:
@@ -2392,6 +2416,114 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Полный отдых {limit} — можно начинать новую рабочую неделю.'**
   String notifyWeeklyRestTakenText(String limit);
+
+  /// Канал уведомления фонового сервиса в настройках Android
+  ///
+  /// In ru, this message translates to:
+  /// **'Автоопределение вождения'**
+  String get serviceChannel;
+
+  /// No description provided for @serviceChannelHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Текущий режим и таймеры, пока работает автоопределение'**
+  String get serviceChannelHint;
+
+  /// Уведомление сервиса, пока таймеры не посчитаны
+  ///
+  /// In ru, this message translates to:
+  /// **'Автоопределение вождения включено'**
+  String get serviceStarted;
+
+  /// Уведомление сервиса: «Вождение · 1:25» — режим и сколько он идёт
+  ///
+  /// In ru, this message translates to:
+  /// **'{mode} · {time}'**
+  String serviceModeTitle(String mode, String time);
+
+  /// Экипаж: машина поехала, вождение не включено само
+  ///
+  /// In ru, this message translates to:
+  /// **'Машина едет'**
+  String get serviceTeamTitle;
+
+  /// «Вы за рулём? Вождение с 06:05» — местное время
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы за рулём? Вождение с {time}'**
+  String serviceTeamText(String time);
+
+  /// Машина поехала во время отдыха
+  ///
+  /// In ru, this message translates to:
+  /// **'Похоже, вы едете'**
+  String get serviceSuggestTitle;
+
+  /// «Начать вождение с 06:05?» — местное время
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать вождение с {time}? Отдых будет прерван'**
+  String serviceSuggestText(String time);
+
+  /// No description provided for @serviceDriving.
+  ///
+  /// In ru, this message translates to:
+  /// **'До перерыва {untilBreak} · за день осталось {dayLeft}'**
+  String serviceDriving(String untilBreak, String dayLeft);
+
+  /// No description provided for @serviceDrivingOver.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нужен перерыв: превышение {time}'**
+  String serviceDrivingOver(String time);
+
+  /// No description provided for @serviceBreakLeft.
+  ///
+  /// In ru, this message translates to:
+  /// **'До полного перерыва {time}'**
+  String serviceBreakLeft(String time);
+
+  /// Сколько можно ехать до следующего перерыва
+  ///
+  /// In ru, this message translates to:
+  /// **'Перерыв засчитан, можно ехать {time}'**
+  String serviceBreakDone(String time);
+
+  /// «Рабочий день 2:00 из 15:00»
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочий день {time} из {limit}'**
+  String serviceWorkday(String time, String limit);
+
+  /// «До полного отдыха 11 ч: 2:00»
+  ///
+  /// In ru, this message translates to:
+  /// **'До полного отдыха {limit}: {time}'**
+  String serviceRestLeft(String limit, String time);
+
+  /// No description provided for @serviceDailyRestDone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Полный суточный отдых набран'**
+  String get serviceDailyRestDone;
+
+  /// No description provided for @serviceWeeklyRestDone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Полный недельный отдых набран'**
+  String get serviceWeeklyRestDone;
+
+  /// No description provided for @serviceNotStartedText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение включится само, когда машина поедет'**
+  String get serviceNotStartedText;
+
+  /// No description provided for @serviceNoModeText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Откройте TachoGo и выберите режим'**
+  String get serviceNoModeText;
 
   /// No description provided for @autoTitle.
   ///
@@ -3100,8 +3232,14 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'ka',
+    'pl',
+    'ro',
+    'ru',
+    'uk',
+    'uz',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -3110,8 +3248,18 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'ka':
+      return AppLocalizationsKa();
+    case 'pl':
+      return AppLocalizationsPl();
+    case 'ro':
+      return AppLocalizationsRo();
     case 'ru':
       return AppLocalizationsRu();
+    case 'uk':
+      return AppLocalizationsUk();
+    case 'uz':
+      return AppLocalizationsUz();
   }
 
   throw FlutterError(
