@@ -1,0 +1,25 @@
+name: Вычитка перевода
+description: Таблица правок носителя языка (docs/beta/translation-review.md)
+title: "[перевод] "
+labels: ["бета", "перевод"]
+body:
+  - type: dropdown
+    id: language
+    attributes:
+      label: Язык
+      options: [uk, pl, ro, ka, uz]
+    validations:
+      required: true
+  - type: textarea
+    id: file
+    attributes:
+      label: Таблица
+      description: Приложите tachogo-<язык>.csv с колонками correction и comment
+    validations:
+      required: true
+  - type: textarea
+    id: import
+    attributes:
+      label: Итог импорта
+      description: Вывод dart run tool/l10n_review.dart import — применено, не применено, комментарии
+      render: text

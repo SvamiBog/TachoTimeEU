@@ -2054,4 +2054,27 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get moreDisclaimer =>
       'TachoGo допомагає планувати час за кермом і відпочинок, але не замінює тахограф і не є юридичною консультацією.';
+
+  @override
+  String get problemTitle => 'Повідомити про проблему';
+
+  @override
+  String get problemHint => 'Бета-версія: звіт надійде розробникам';
+
+  @override
+  String get problemText =>
+      'У звіт увійдуть версія застосунку, модель телефону, налаштування, дозволи, розклад сповіщень і записи журналу за дві доби. Координат у ньому немає. Виберіть, куди надіслати, — пошта чи месенджер — і опишіть, що сталося.';
+
+  @override
+  String get problemSend => 'Надіслати';
+
+  @override
+  String get problemSubject => 'TachoGo — проблема в беті';
+
+  @override
+  String get problemPrompt => 'Що сталося і коли (опишіть своїми словами):';
+
+  @override
+  String get problemFailed =>
+      'Не вдалося відкрити надсилання. Спробуйте ще раз.';
 }

@@ -1,0 +1,28 @@
+{
+  "name": "synthetic-week",
+  "source": "собран вручную по кейсам регламента: проверка обвязки ENG-20, не тахограф",
+  "synthetic": true,
+  "settings": {
+    "crew": false,
+    "mobilityPackage": true
+  },
+  "periods": [
+    {"mode": "rest", "start": "2026-09-19T12:00Z", "end": "2026-09-21T06:00Z"},
+    {"mode": "otherWork", "start": "2026-09-21T06:00Z", "end": "2026-09-21T06:15Z"},
+    {"mode": "driving", "start": "2026-09-21T06:15Z", "end": "2026-09-21T11:05Z"},
+    {"mode": "rest", "start": "2026-09-21T11:05Z", "end": "2026-09-21T11:50Z"},
+    {"mode": "driving", "start": "2026-09-21T11:50Z", "end": "2026-09-21T16:20Z"},
+    {"mode": "rest", "start": "2026-09-21T16:20Z", "end": "2026-09-21T17:05Z"},
+    {"mode": "driving", "start": "2026-09-21T17:05Z", "end": "2026-09-21T18:35Z"},
+    {"mode": "rest", "start": "2026-09-21T18:35Z", "end": "2026-09-22T06:00Z"},
+    {"mode": "driving", "start": "2026-09-22T06:00Z", "end": "2026-09-22T10:30Z"},
+    {"mode": "rest", "start": "2026-09-22T10:30Z", "end": "2026-09-22T11:15Z"},
+    {"mode": "driving", "start": "2026-09-22T11:15Z", "end": "2026-09-22T15:45Z"},
+    {"mode": "rest", "start": "2026-09-22T15:45Z", "end": "2026-09-23T06:00Z"}
+  ],
+  "expected": [
+    {"type": "continuousExceeded", "date": "2026-09-21", "note": "4:50 без перерыва, ст. 7"},
+    {"type": "dailyDriveExceeded", "date": "2026-09-21", "note": "10:50 при лимите 10 ч, ст. 6(1)"}
+  ],
+  "knownDifferences": []
+}

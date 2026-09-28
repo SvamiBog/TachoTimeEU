@@ -2034,4 +2034,26 @@ class AppLocalizationsKa extends AppLocalizations {
   @override
   String get moreDisclaimer =>
       'TachoGo გეხმარებათ საჭესთან დროისა და დასვენების დაგეგმვაში, მაგრამ არ ცვლის ტაქოგრაფს და არ არის იურიდიული კონსულტაცია.';
+
+  @override
+  String get problemTitle => 'პრობლემის შესახებ შეტყობინება';
+
+  @override
+  String get problemHint => 'ბეტა-ვერსია: ანგარიში დეველოპერებს გაეგზავნება';
+
+  @override
+  String get problemText =>
+      'ანგარიშში შევა აპლიკაციის ვერსია, ტელეფონის მოდელი, პარამეტრები, ნებართვები, შეტყობინებების განრიგი და ჟურნალის ჩანაწერები ბოლო ორი დღე-ღამის განმავლობაში. კოორდინატები მასში არ არის. აირჩიეთ, სად გაგზავნოთ — ელფოსტა ან მესენჯერი — და აღწერეთ, რა მოხდა.';
+
+  @override
+  String get problemSend => 'გაგზავნა';
+
+  @override
+  String get problemSubject => 'TachoGo — პრობლემა ბეტა-ვერსიაში';
+
+  @override
+  String get problemPrompt => 'რა მოხდა და როდის (აღწერეთ საკუთარი სიტყვებით):';
+
+  @override
+  String get problemFailed => 'გაგზავნის გახსნა ვერ მოხერხდა. სცადეთ ხელახლა.';
 }

@@ -7,6 +7,11 @@ on:
   pull_request:
   # Ручной запуск: все проверки и сборка iOS (она не идёт в PR и на main).
   workflow_dispatch:
+    inputs:
+      ios:
+        description: Собрать iOS (macOS)
+        type: boolean
+        default: true
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -84,8 +89,14 @@ jobs:
             echo "Запустите dart run drift_dev make-migrations" >&2
             exit 1
           fi
-      - run: dart format --output=none --set-exit-if-changed lib test tool
+      - run: >-
+          dart format --output=none --set-exit-if-changed
+          lib test tool integration_test test_driver
       - run: flutter analyze --fatal-infos
+      # Сценарии эмулятора без плагинов: на flutter_tester, база — во
+      # временном файле. INT-03 и INT-04 здесь пропускаются.
+      - name: Интеграционные сценарии без устройства
+        run: flutter test -d flutter-tester integration_test/all_test.dart
       - run: flutter test --coverage
       - name: Покрытие lib/data не ниже 80 %
         run: >-
@@ -193,6 +204,13 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         run: flutter build apk --debug --dart-define-from-file=env/dev.json
 
+      # Нативная часть на JVM (Robolectric): экран автозапуска, BG-09.
+      # gradlew создаёт сборка выше.
+      - name: Тесты Kotlin (Robolectric)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        working-directory: app/android
+        run: ./gradlew :app:testDebugUnitTest
+
       - name: Ключ подписи из секретов
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
@@ -213,21 +231,59 @@ jobs:
           keyPassword=$KEY_PASSWORD
           EOF
 
+      # Тег v1.2.3 — релиз (prod), v1.2.3-beta.N — закрытая бета (staging:
+      # в Sentry и PostHog отдельно от релиза, в «Ещё» — «Сообщить о
+      # проблеме»). Номер сборки растёт с каждым запуском CI — Google Play
+      # не примет AAB с уже загруженным versionCode.
+      - name: Версия из тега
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        env:
+          PLAY_KEY: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          name="${GITHUB_REF_NAME#v}"
+          case "$name" in
+            *-beta*) env=staging ;;
+            *) env=prod ;;
+          esac
+          {
+            echo "BUILD_NAME=$name"
+            echo "BUILD_NUMBER=$((1000 + GITHUB_RUN_NUMBER))"
+            echo "BUILD_ENV=$env"
+            # Секрет в if недоступен — только признак, что он задан
+            echo "PLAY_UPLOAD=$([ -n "$PLAY_KEY" ] && [ "$env" = staging ] && echo yes || echo no)"
+          } >> "$GITHUB_ENV"
+
       # Пустой секрет — сервис в сборке выключен.
-      - name: Release AAB (prod)
+      - name: Release AAB
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
           CRASH_DSN: ${{ secrets.SENTRY_DSN }}
           ANALYTICS_KEY: ${{ secrets.POSTHOG_KEY }}
         run: >-
           flutter build appbundle --release
-          --dart-define-from-file=env/prod.json
+          --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
+          --dart-define-from-file="env/$BUILD_ENV.json"
           --dart-define=CRASH_DSN="$CRASH_DSN"
           --dart-define=ANALYTICS_KEY="$ANALYTICS_KEY"
 
       # Плагины могут добавить разрешения, которых нет в нашем манифесте.
       - name: Итоговый манифест с плагинами
         run: dart run tool/check_android_manifest.dart
+
+      # Бета — в закрытое тестирование Google Play (docs/beta/README.md).
+      # Без секрета сервисного аккаунта шаг пропускается: AAB — в артефактах,
+      # загрузка вручную. Первую сборку приложения Play Console принимает
+      # только вручную.
+      - name: Закрытое тестирование Google Play
+        if: ${{ env.PLAY_UPLOAD == 'yes' }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: eu.tachogo.tachogo
+          releaseFiles: app/build/app/outputs/bundle/release/*.aab
+          releaseName: ${{ github.ref_name }}
+          track: ${{ vars.PLAY_BETA_TRACK || 'alpha' }}
+          status: ${{ vars.PLAY_RELEASE_STATUS || 'completed' }}
 
       - uses: actions/upload-artifact@v6
         with:
@@ -237,13 +293,58 @@ jobs:
             app/build/app/outputs/bundle/release/*.aab
           if-no-files-found: error
 
+  # INT-01…05 и PERF-03 на эмуляторе Android: настоящие плагины, SQLite
+  # устройства, foreground service. Маршрут GPS и смену пояса выполняет
+  # помощник хоста (app/tool/integration/). docs/testing.md, раздел 14.
+  integration-android:
+    name: Эмулятор Android
+    if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+    needs: [engine, app]
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: KVM для эмулятора
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Интеграционные тесты
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          # Pixel 6 — 412 dp, основной таргет (по умолчанию экран 320 dp)
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: >-
+            -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+            -camera-back none
+          working-directory: app
+          script: tool/integration/run_on_emulator.sh
+
   # iOS приостановлен до релиза v1.0 (решение 2026-09-27, docs/roadmap.md,
   # Фаза 8): сборка не блокирует PR и не тратит время macOS. Запуск вручную
   # (Actions → CI → Run workflow) — проверить, что iOS-часть ещё собирается.
   # Без подписи, в TestFlight не уходит.
   build-ios:
     name: Сборка iOS (вручную)
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.ios }}
     needs: [engine, app]
     runs-on: macos-latest
     defaults:

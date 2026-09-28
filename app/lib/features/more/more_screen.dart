@@ -11,11 +11,13 @@ import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
+import 'package:tachogo/features/more/problem_report.dart';
 
 /// «Ещё» (экран 4): экспорт отчёта, инструкция и правила, о приложении.
-/// Баннер Premium появится с покупками (Фаза 5), аккаунт — с синхронизацией
-/// (Фаза 6), обратная связь, «Поделиться» и политика конфиденциальности —
-/// к публикации (Фаза 7).
+/// В бете — «Сообщить о проблеме» (Фаза 4). Баннер Premium появится
+/// с покупками (Фаза 5), аккаунт — с синхронизацией (Фаза 6), обратная
+/// связь, «Поделиться» и политика конфиденциальности — к публикации
+/// (Фаза 7).
 class MoreScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -23,6 +25,7 @@ class MoreScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final version = ref.watch(appVersionProvider).value;
+    final problemReport = ref.watch(problemReportEnabledProvider);
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -59,6 +62,19 @@ class MoreScreen extends ConsumerWidget {
                 ),
               ],
             ),
+            if (problemReport) ...[
+              const SizedBox(height: AppSpacing.betweenCardsMax),
+              CardGroup(
+                children: [
+                  NavRow(
+                    icon: Icons.bug_report_outlined,
+                    title: l.problemTitle,
+                    subtitle: l.problemHint,
+                    onTap: () => unawaited(sendProblemReport(context, ref)),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: AppSpacing.betweenCardsMax),
             CardGroup(
               children: [

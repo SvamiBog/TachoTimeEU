@@ -2060,4 +2060,27 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get moreDisclaimer =>
       'TachoGo pomaga planować czas jazdy i odpoczynek, ale nie zastępuje tachografu i nie jest poradą prawną.';
+
+  @override
+  String get problemTitle => 'Zgłoś problem';
+
+  @override
+  String get problemHint => 'Wersja beta: raport trafi do twórców aplikacji';
+
+  @override
+  String get problemText =>
+      'Raport zawiera wersję aplikacji, model telefonu, ustawienia, uprawnienia, harmonogram powiadomień i wpisy dziennika z ostatnich dwóch dób. Nie ma w nim współrzędnych. Wybierz, gdzie wysłać — e-mail lub komunikator — i opisz, co się stało.';
+
+  @override
+  String get problemSend => 'Wyślij';
+
+  @override
+  String get problemSubject => 'TachoGo — problem w wersji beta';
+
+  @override
+  String get problemPrompt => 'Co się stało i kiedy (opisz własnymi słowami):';
+
+  @override
+  String get problemFailed =>
+      'Nie udało się otworzyć wysyłania. Spróbuj ponownie.';
 }

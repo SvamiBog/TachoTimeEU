@@ -517,5 +517,12 @@
   "guideVanNotes": "Tirkama bilan birga 3,5 t dan ogʻir — qoidalar yuk mashinasidagidek, mamlakat ichida ham. Reys qisman YeI dan tashqarida — Ukraina, Moldova, Turkiya, Bolqonga — tashuvchidan aniqlang: yagona talqin yoʻq.",
   "guideDisclaimer": "TachoGo vaqtni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas. Qoidalarning rasmiy matni — YeI 561/2006 Reglamenti va AETR Kelishuvi.",
   "moreAbout": "Ilova haqida",
-  "moreDisclaimer": "TachoGo rul ortidagi vaqt va dam olishni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas."
+  "moreDisclaimer": "TachoGo rul ortidagi vaqt va dam olishni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas.",
+  "problemTitle": "Muammo haqida xabar berish",
+  "problemHint": "Beta versiya: hisobot ishlab chiquvchilarga yuboriladi",
+  "problemText": "Hisobotga ilova versiyasi, telefon modeli, sozlamalar, ruxsatlar, bildirishnomalar jadvali va oxirgi ikki sutkadagi jurnal yozuvlari kiradi. Unda koordinatalar yoʻq. Qayerga yuborishni tanlang — pochta yoki messenjer — va nima boʻlganini yozing.",
+  "problemSend": "Yuborish",
+  "problemSubject": "TachoGo — beta versiyadagi muammo",
+  "problemPrompt": "Nima boʻldi va qachon (oʻz soʻzlaringiz bilan yozing):",
+  "problemFailed": "Yuborishni ochib boʻlmadi. Qayta urinib koʻring."
 }
