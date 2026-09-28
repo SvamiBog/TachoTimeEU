@@ -1,23 +1,62 @@
 // «Ещё» (экран 4): экспорт, инструкция и правила, о приложении с
-// лицензиями шрифтов. План тестов: UI-21 в docs/testing.md.
+// лицензиями шрифтов, в бете — «Сообщить о проблеме». План тестов: UI-21,
+// BETA-02 в docs/testing.md.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/core/config/app_info.dart';
+import 'package:tachogo/core/diagnostics/diagnostics.dart';
+import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/more/more_screen.dart';
+import 'package:tachogo/features/more/problem_report.dart';
 
+import '../notifications/fake_notification_platform.dart';
 import '../support/app_harness.dart';
 import '../support/journal_fixtures.dart';
 
+/// «Поделиться» в памяти: что ушло водителю в меню отправки.
+class _FakeSharer implements TextSharer {
+  final sent = <({String text, String subject})>[];
+  Error? error;
+
+  @override
+  Future<void> share({required String text, required String subject}) async {
+    if (error case final e?) throw e;
+    sent.add((text: text, subject: subject));
+  }
+}
+
 void main() {
-  Future<void> pump(WidgetTester tester) {
+  Future<void> pump(
+    WidgetTester tester, {
+    bool beta = false,
+    _FakeSharer? sharer,
+  }) {
     final week = designWeek();
     return pumpScreen(
       tester,
       const MoreScreen(),
-      overrides: journalOverrides(periods: week.periods, now: week.now),
+      overrides: [
+        ...journalOverrides(periods: week.periods, now: week.now),
+        problemReportEnabledProvider.overrideWithValue(beta),
+        if (sharer != null) textSharerProvider.overrideWithValue(sharer),
+        diagnosticsCollectorProvider.overrideWith(
+          (ref) => DiagnosticsCollector(
+            settings: ref.watch(settingsRepositoryProvider),
+            journal: ref.watch(activityRepositoryProvider),
+            edits: ref.watch(journalEditRepositoryProvider),
+            cards: ref.watch(cardDownloadRepositoryProvider),
+            tracking: ref.watch(trackingServiceProvider),
+            notifications: FakeNotificationPlatform(),
+            appVersion: () async => '0.2.0-beta.1 (20001)',
+            clock: () => week.now,
+          ),
+        ),
+      ],
     );
   }
 
@@ -58,6 +97,66 @@ void main() {
     expect(find.byType(LicensePage), findsOneWidget);
     expect(find.text('TachoGo'), findsWidgets);
     expect(find.text('0.1.0'), findsWidgets);
+  });
+
+  group('BETA-02: «Сообщить о проблеме»', () {
+    testWidgets('в релизе строки нет', (tester) async {
+      await pump(tester);
+      expect(find.text('Сообщить о проблеме'), findsNothing);
+    });
+
+    testWidgets('в бете: шторка объясняет, что уйдёт, «Отправить» — '
+        'в «Поделиться» с диагностикой', (tester) async {
+      final sharer = _FakeSharer();
+      await pump(tester, beta: true, sharer: sharer);
+      expect(
+        find.text('Бета-версия: отчёт уйдёт разработчикам'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Сообщить о проблеме'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Координат в нём нет'), findsOneWidget);
+      await tester.tap(find.text('Отправить'));
+      await settle(tester);
+      await tester.pumpAndSettle();
+
+      expect(sharer.sent, hasLength(1));
+      final (:text, :subject) = sharer.sent.single;
+      expect(subject, 'TachoGo — проблема в бете');
+      expect(text, startsWith('Что случилось и когда'));
+      expect(text, contains('TachoGo 0.2.0-beta.1 (20001)'));
+      expect(text, contains('Status: '));
+      expect(text, isNot(contains('lat')), reason: 'координат нет');
+    });
+
+    testWidgets('«Отмена» ничего не отправляет', (tester) async {
+      final sharer = _FakeSharer();
+      await pump(tester, beta: true, sharer: sharer);
+      await tester.tap(find.text('Сообщить о проблеме'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Отмена'));
+      await tester.pumpAndSettle();
+      expect(sharer.sent, isEmpty);
+    });
+
+    testWidgets('отправка не открылась — сообщение водителю', (tester) async {
+      final sharer = _FakeSharer()..error = StateError('no share sheet');
+      final errors = <FlutterErrorDetails>[];
+      final previous = FlutterError.onError;
+      FlutterError.onError = errors.add;
+      addTearDown(() => FlutterError.onError = previous);
+      await pump(tester, beta: true, sharer: sharer);
+      await tester.tap(find.text('Сообщить о проблеме'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Отправить'));
+      await settle(tester);
+      expect(
+        find.text('Не удалось открыть отправку. Попробуйте ещё раз.'),
+        findsOneWidget,
+      );
+      expect(errors.single.exception, isA<StateError>());
+    });
   });
 
   test('лицензии OFL шрифтов регистрируются из assets', () async {

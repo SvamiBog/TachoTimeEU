@@ -72,6 +72,9 @@ class FakeNotificationPlatform implements NotificationPlatform {
   Future<List<int>> activeIds() async => [...active];
 
   @override
+  Future<List<int>> pendingIds() async => [...pending.keys];
+
+  @override
   Future<void> cancel(int id) async {
     calls.add('cancel $id');
     active.remove(id);

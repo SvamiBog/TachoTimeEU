@@ -3220,6 +3220,48 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'TachoGo помогает планировать время за рулём и отдых, но не заменяет тахограф и не является юридической консультацией.'**
   String get moreDisclaimer;
+
+  /// Строка «Ещё» и заголовок шторки: отчёт о проблеме, только в бете
+  ///
+  /// In ru, this message translates to:
+  /// **'Сообщить о проблеме'**
+  String get problemTitle;
+
+  /// Подпись строки «Сообщить о проблеме»
+  ///
+  /// In ru, this message translates to:
+  /// **'Бета-версия: отчёт уйдёт разработчикам'**
+  String get problemHint;
+
+  /// Шторка перед отправкой: что войдёт в отчёт
+  ///
+  /// In ru, this message translates to:
+  /// **'В отчёт войдут версия приложения, модель телефона, настройки, разрешения, расписание уведомлений и записи журнала за двое суток. Координат в нём нет. Выберите, куда отправить, — почта или мессенджер — и опишите, что случилось.'**
+  String get problemText;
+
+  /// No description provided for @problemSend.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить'**
+  String get problemSend;
+
+  /// Тема письма с отчётом
+  ///
+  /// In ru, this message translates to:
+  /// **'TachoGo — проблема в бете'**
+  String get problemSubject;
+
+  /// Первая строка сообщения с отчётом: водитель пишет ниже
+  ///
+  /// In ru, this message translates to:
+  /// **'Что случилось и когда (опишите своими словами):'**
+  String get problemPrompt;
+
+  /// No description provided for @problemFailed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось открыть отправку. Попробуйте ещё раз.'**
+  String get problemFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -3,6 +3,7 @@ package eu.tachogo.tachogo
 import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -15,10 +16,22 @@ class MainActivity : FlutterActivity() {
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "openAutostartSettings" -> result.success(openAutostartSettings())
+                    "deviceInfo" -> result.success(deviceInfo())
                     else -> result.notImplemented()
                 }
             }
     }
+
+    /**
+     * Телефон для отчёта о проблеме в бете: от производителя и версии
+     * Android зависит, доживёт ли сервис и придут ли уведомления.
+     */
+    private fun deviceInfo(): Map<String, Any> = mapOf(
+        "manufacturer" to Build.MANUFACTURER,
+        "model" to Build.MODEL,
+        "release" to Build.VERSION.RELEASE,
+        "sdk" to Build.VERSION.SDK_INT,
+    )
 
     /**
      * Экран автозапуска или фоновой работы оболочки производителя: без

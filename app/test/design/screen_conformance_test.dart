@@ -179,6 +179,10 @@ final _screens = <String, _Screen>{
     open: _onboardingStep(4),
   ),
   'Ещё': (build: MoreScreen.new, open: null),
+  'Шторка «Сообщить о проблеме»': (
+    build: MoreScreen.new,
+    open: _tapText((l) => l.problemTitle),
+  ),
   'Инструкция и правила': (build: GuideScreen.new, open: null),
   'Инструкция и правила · фургон': (build: GuideScreen.new, open: null),
   'Инструкция · своя перевозка': (

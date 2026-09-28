@@ -2037,4 +2037,29 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get moreDisclaimer =>
       'TachoGo rul ortidagi vaqt va dam olishni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas.';
+
+  @override
+  String get problemTitle => 'Muammo haqida xabar berish';
+
+  @override
+  String get problemHint =>
+      'Beta versiya: hisobot ishlab chiquvchilarga yuboriladi';
+
+  @override
+  String get problemText =>
+      'Hisobotga ilova versiyasi, telefon modeli, sozlamalar, ruxsatlar, bildirishnomalar jadvali va oxirgi ikki sutkadagi jurnal yozuvlari kiradi. Unda koordinatalar yoʻq. Qayerga yuborishni tanlang — pochta yoki messenjer — va nima boʻlganini yozing.';
+
+  @override
+  String get problemSend => 'Yuborish';
+
+  @override
+  String get problemSubject => 'TachoGo — beta versiyadagi muammo';
+
+  @override
+  String get problemPrompt =>
+      'Nima boʻldi va qachon (oʻz soʻzlaringiz bilan yozing):';
+
+  @override
+  String get problemFailed =>
+      'Yuborishni ochib boʻlmadi. Qayta urinib koʻring.';
 }

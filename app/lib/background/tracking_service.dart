@@ -94,6 +94,12 @@ class TrackingService {
     }
   }
 
+  /// Автоопределение работает: foreground service (Android) или трекер
+  /// в процессе приложения (iOS).
+  Future<bool> isRunning() async => _platform.isAndroid
+      ? await _platform.isRunningService
+      : _inProcess != null;
+
   /// Состояние разрешений сейчас. Ничего не запрашивает — вызывать можно
   /// при каждом возврате в приложение из настроек системы.
   Future<TrackingHealth> health() async => (

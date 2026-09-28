@@ -2047,4 +2047,28 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get moreDisclaimer =>
       'TachoGo ajută la planificarea timpului la volan și a repausului, dar nu înlocuiește tahograful și nu este consultanță juridică.';
+
+  @override
+  String get problemTitle => 'Raportați o problemă';
+
+  @override
+  String get problemHint => 'Versiune beta: raportul ajunge la dezvoltatori';
+
+  @override
+  String get problemText =>
+      'Raportul include versiunea aplicației, modelul telefonului, setările, permisiunile, programul notificărilor și înregistrările din jurnal din ultimele două zile. Nu conține coordonate. Alegeți unde îl trimiteți — e-mail sau mesagerie — și descrieți ce s-a întâmplat.';
+
+  @override
+  String get problemSend => 'Trimiteți';
+
+  @override
+  String get problemSubject => 'TachoGo — problemă în versiunea beta';
+
+  @override
+  String get problemPrompt =>
+      'Ce s-a întâmplat și când (descrieți cu cuvintele dvs.):';
+
+  @override
+  String get problemFailed =>
+      'Trimiterea nu s-a putut deschide. Încercați din nou.';
 }

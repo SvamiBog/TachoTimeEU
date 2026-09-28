@@ -517,5 +517,12 @@
   "guideVanNotes": "Cu remorcă, împreună peste 3,5 t — reguli ca la camion, și în interiorul țării. Cursă parțial în afara UE — în Ucraina, Moldova, Turcia, Balcani — verificați la transportator: nu există o interpretare unică.",
   "guideDisclaimer": "TachoGo ajută la planificarea timpului, dar nu înlocuiește tahograful și nu este consultanță juridică. Textul oficial al regulilor — Regulamentul (CE) nr. 561/2006 și Acordul AETR.",
   "moreAbout": "Despre aplicație",
-  "moreDisclaimer": "TachoGo ajută la planificarea timpului la volan și a repausului, dar nu înlocuiește tahograful și nu este consultanță juridică."
+  "moreDisclaimer": "TachoGo ajută la planificarea timpului la volan și a repausului, dar nu înlocuiește tahograful și nu este consultanță juridică.",
+  "problemTitle": "Raportați o problemă",
+  "problemHint": "Versiune beta: raportul ajunge la dezvoltatori",
+  "problemText": "Raportul include versiunea aplicației, modelul telefonului, setările, permisiunile, programul notificărilor și înregistrările din jurnal din ultimele două zile. Nu conține coordonate. Alegeți unde îl trimiteți — e-mail sau mesagerie — și descrieți ce s-a întâmplat.",
+  "problemSend": "Trimiteți",
+  "problemSubject": "TachoGo — problemă în versiunea beta",
+  "problemPrompt": "Ce s-a întâmplat și când (descrieți cu cuvintele dvs.):",
+  "problemFailed": "Trimiterea nu s-a putut deschide. Încercați din nou."
 }

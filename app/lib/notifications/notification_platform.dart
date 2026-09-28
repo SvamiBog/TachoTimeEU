@@ -141,6 +141,12 @@ class NotificationPlatform {
     for (final n in await _plugin.getActiveNotifications()) ?n.id,
   ];
 
+  /// id уведомлений в расписании системы — ещё не показанных. Для отчёта
+  /// о проблеме в бете.
+  Future<List<int>> pendingIds() async => [
+    for (final r in await _plugin.pendingNotificationRequests()) r.id,
+  ];
+
   /// Убирает уведомление из шторки и из расписания.
   Future<void> cancel(int id) => _plugin.cancel(id: id);
 
