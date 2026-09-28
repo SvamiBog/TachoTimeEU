@@ -169,7 +169,11 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(CurrentModeRow),
-          matching: find.text(ru.modeName(DriverMode.driving)),
+          // «Вождение с 10:52» — одна строка Text.rich
+          matching: find.textContaining(
+            ru.modeName(DriverMode.driving),
+            findRichText: true,
+          ),
         ),
         findsOneWidget,
         reason: 'приложение видит запись другого движка',
@@ -200,7 +204,11 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(CurrentModeRow),
-          matching: find.text(ru.modeName(DriverMode.otherWork)),
+          // «Вождение с 10:52» — одна строка Text.rich
+          matching: find.textContaining(
+            ru.modeName(DriverMode.otherWork),
+            findRichText: true,
+          ),
         ),
         findsOneWidget,
       );
