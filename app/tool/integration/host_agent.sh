@@ -9,6 +9,9 @@
 #   timezone <зона IANA>            часовой пояс эмулятора
 #
 # Ответа нет: результат тест проверяет сам. Запускает run_on_emulator.sh.
+#
+# У каждого adb в цикле stdin — /dev/null: иначе adb shell прочитал бы
+# поток logcat, из которого цикл берёт команды, и следующие потерялись бы.
 
 set -uo pipefail
 
@@ -16,7 +19,7 @@ PKG=${PKG:-eu.tachogo.tachogo}
 
 log() { echo "[host-agent] $*"; }
 
-current_zone() { adb shell getprop persist.sys.timezone | tr -d '\r'; }
+current_zone() { adb shell getprop persist.sys.timezone </dev/null | tr -d '\r'; }
 
 # Пояс меняем, как водитель в настройках, — через системную службу: она
 # рассылает ACTION_TIMEZONE_CHANGED. Способы зависят от версии Android,
@@ -24,21 +27,21 @@ current_zone() { adb shell getprop persist.sys.timezone | tr -d '\r'; }
 set_timezone() {
   local zone=$1
   adb shell cmd time_zone_detector set_auto_detection_enabled false \
-    >/dev/null 2>&1 || true
-  adb shell settings put global auto_time_zone 0 >/dev/null 2>&1 || true
+    </dev/null >/dev/null 2>&1 || true
+  adb shell settings put global auto_time_zone 0 </dev/null >/dev/null 2>&1 || true
   adb shell cmd time_zone_detector suggest_manual_time_zone \
-    --zone_id "$zone" >/dev/null 2>&1 || true
+    --zone_id "$zone" </dev/null >/dev/null 2>&1 || true
   if [ "$(current_zone)" = "$zone" ]; then
     log "timezone $zone: time_zone_detector"
     return
   fi
   # IAlarmManager.setTimeZone — транзакция 3
-  adb shell service call alarm 3 s16 "$zone" >/dev/null 2>&1 || true
+  adb shell service call alarm 3 s16 "$zone" </dev/null >/dev/null 2>&1 || true
   if [ "$(current_zone)" = "$zone" ]; then
     log "timezone $zone: service call alarm"
     return
   fi
-  adb shell setprop persist.sys.timezone "$zone" >/dev/null 2>&1 || true
+  adb shell setprop persist.sys.timezone "$zone" </dev/null >/dev/null 2>&1 || true
   log "timezone $zone: setprop, сейчас $(current_zone)"
 }
 
@@ -54,13 +57,13 @@ adb logcat -v raw -s flutter:I | while IFS= read -r line; do
   set -- $command
   case "${1:-}" in
     grant)
-      if adb shell pm grant "$PKG" "android.permission.$2"; then
+      if adb shell pm grant "$PKG" "android.permission.$2" </dev/null; then
         log "grant $2"
       else
         log "grant $2 не выдано (нет в этой версии Android?)"
       fi
       ;;
-    geo) adb emu geo fix "$2" "$3" 100 12 "$4" >/dev/null ;;
+    geo) adb emu geo fix "$2" "$3" 100 12 "$4" </dev/null >/dev/null ;;
     timezone) set_timezone "$2" ;;
     *) log "неизвестная команда: $command" ;;
   esac

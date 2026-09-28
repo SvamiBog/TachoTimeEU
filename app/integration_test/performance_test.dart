@@ -142,8 +142,10 @@ void main() {
       mode = mode == DriverMode.driving
           ? DriverMode.otherWork
           : DriverMode.driving;
+      // Прокрутка к кнопке — до замера
+      final button = await showModeButton(tester, mode);
       final watch = Stopwatch()..start();
-      await tapMode(tester, mode, settleAfter: false);
+      await tester.tap(button);
       while ((await tester.runAsync(repo.periods))!.last.mode != mode) {
         if (watch.elapsed > const Duration(minutes: 1)) {
           fail('Переключение на $mode не записалось за минуту');

@@ -303,18 +303,43 @@ Future<void> expectTimersMatch(
   await scrollToTop(tester);
 }
 
+/// Нажимает на элемент; если он за краем экрана или под нижней навигацией
+/// (маленький экран), сначала прокручивает к нему. Видимый не прокручивает:
+/// `ensureVisible` всегда ставит элемент к верху экрана.
+Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+  if (finder.hitTestable().evaluate().isEmpty) {
+    await tester.ensureVisible(finder);
+    await settleFrames(tester);
+  }
+  await tester.tap(finder);
+}
+
 /// Кнопка режима на главной.
+Finder modeButton(DriverMode mode) => find.descendant(
+  of: find.byType(ModeButtons),
+  matching: find.text(ru.modeButton(mode)),
+);
+
+/// Показывает кнопку режима: если главная прокручена и кнопок нет в
+/// ленивом списке — к кольцу, если кнопка за краем или под нижней
+/// навигацией (маленький экран) — к ней.
+Future<Finder> showModeButton(WidgetTester tester, DriverMode mode) async {
+  final button = modeButton(mode);
+  if (button.evaluate().isEmpty) await scrollToTop(tester);
+  if (button.hitTestable().evaluate().isEmpty) {
+    await tester.ensureVisible(button);
+    await settleFrames(tester);
+  }
+  return button;
+}
+
+/// Нажимает кнопку режима на главной.
 Future<void> tapMode(
   WidgetTester tester,
   DriverMode mode, {
   bool settleAfter = true,
 }) async {
-  await tester.tap(
-    find.descendant(
-      of: find.byType(ModeButtons),
-      matching: find.text(ru.modeButton(mode)),
-    ),
-  );
+  await tester.tap(await showModeButton(tester, mode));
   if (settleAfter) await settle(tester);
 }
 

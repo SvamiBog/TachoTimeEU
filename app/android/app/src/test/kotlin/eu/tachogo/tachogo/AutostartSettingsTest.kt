@@ -2,6 +2,7 @@ package eu.tachogo.tachogo
 
 import android.app.Application
 import android.content.ComponentName
+import android.content.Intent
 import android.content.IntentFilter
 import android.provider.Settings
 import androidx.test.core.app.ApplicationProvider
@@ -40,6 +41,8 @@ class AutostartSettingsTest {
         packages.addIntentFilterForActivity(
             settings,
             IntentFilter(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                // Неявный интент ищет экраны с категорией DEFAULT
+                addCategory(Intent.CATEGORY_DEFAULT)
                 addDataScheme("package")
             },
         )
@@ -91,6 +94,6 @@ class AutostartSettingsTest {
     fun `из приложения, а не из экрана, — в новой задаче`() {
         AutostartSettings(app).open()
         val flags = shadowOf(app).nextStartedActivity.flags
-        assertTrue(flags and android.content.Intent.FLAG_ACTIVITY_NEW_TASK != 0)
+        assertTrue(flags and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
     }
 }

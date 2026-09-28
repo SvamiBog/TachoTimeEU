@@ -54,12 +54,13 @@ void main() {
       expect(s.shiftDuration, h(9, 45));
 
       // «Завершить день» с экрана «Рабочий день»
-      await tester.tap(find.text(ru.rowWorkday));
+      await tapVisible(tester, find.text(ru.rowWorkday));
       await settleFrames(tester);
       expect(find.byType(WorkdayScreen), findsOneWidget);
-      await tester.tap(find.text(ru.workdayEndDay));
+      await tapVisible(tester, find.text(ru.workdayEndDay));
       await settle(tester);
       expect(find.byType(WorkdayScreen), findsNothing);
+      await scrollToTop(tester);
       expect(find.text(ru.heroDailyRest.toUpperCase()), findsOneWidget);
 
       final end = monday.add(h(9, 45));
