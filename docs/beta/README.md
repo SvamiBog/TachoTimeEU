@@ -35,7 +35,7 @@
 | Отчёты о проблемах | Все | «Ещё» → «Сообщить о проблеме» или отзыв в Play («Отправить отзыв» на странице теста) | Issue с шаблоном «Проблема в бете», приоритет — ниже |
 | Чек-лист телефона | По одному на модель, в первую очередь Xiaomi, Huawei, Honor, Samsung, Oppo / Realme | `device-checklist.md` | Таблица «Проверено на устройствах» в `docs/background.md`, DEV-01, DEV-02 |
 | Неделя журнала + распечатка или файл карты | 2–3 водителя | Экспорт CSV из приложения (экран 16) + файл карты `.DDD` или фото распечатки | DEV-03: `dart run tool/ddd.dart compare` (`packages/tacho_engine`) |
-| Файл карты + отчёт программы анализа | 2–3 водителя с фирмой, где карту читают | `.DDD` и PDF / скриншот нарушений из TachoScan и т. п. | ENG-20: `test/fixtures/real/`, README там же |
+| Файл карты + отчёт программы анализа | 2–3 водителя с фирмой, где карту читают | `.DDD` и PDF / скриншот нарушений из TachoScan и т. п. | ENG-20: `packages/tacho_engine/test/fixtures/real/`, README там же |
 | Вычитка перевода | Носитель каждого языка Tier 1 | `translation-review.md` | `dart run tool/l10n_review.dart import` (`app/`) |
 | Анкета KK, KY, BE | Водители из Казахстана, Кыргызстана, Беларуси | Вопросы в `translation-review.md` | Решение в `docs/PRD.md` |
 | Замер скорости на телефоне | 1–2 телефона разработчика, в том числе недорогой | `flutter drive --profile` (`app/integration_test/performance_test.dart`) | PERF-03 в `docs/testing.md` |
