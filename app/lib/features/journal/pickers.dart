@@ -6,13 +6,13 @@ import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
+import 'package:tachogo/core/widgets/hm_field.dart';
 import 'package:tachogo/core/widgets/segmented_tabs.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
-import 'package:tachogo/core/widgets/wheel_picker.dart';
 
 // Шторки выбора для правок журнала: дата и время смены (экран 12),
-// длительность колёсиками (экран 7). Водитель видит местное время, наружу
-// уходит UTC.
+// длительность (экран 7). Время и длительность водитель вводит с
+// клавиатуры. Водитель видит местное время, наружу уходит UTC.
 
 const _sheetPadding = EdgeInsets.fromLTRB(
   AppSpacing.screenPadding + 4,
@@ -61,7 +61,8 @@ Future<T?> _showSheet<T>(BuildContext context, Widget child) =>
 typedef ShiftTimes = ({DateTime start, DateTime? end});
 
 /// Шторка «Дата и время» (экран 12): начало и, если смена закончилась,
-/// конец. Не позже [max]. null — водитель передумал.
+/// конец. [max] — последний день в календаре; время позже него не
+/// запрещено — его проверяет сохранение. null — водитель передумал.
 Future<ShiftTimes?> showDateTimeSheet(
   BuildContext context, {
   required DateTime start,
@@ -95,6 +96,9 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
   late DateTime? _end = widget.end;
   late bool _editEnd = widget.editEnd && widget.end != null;
 
+  /// Во вкладке введено не время — «Готово» недоступна.
+  bool _invalid = false;
+
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
@@ -116,7 +120,10 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
                 (value: true, label: l.shiftEnd, detail: detail(end)),
               ],
               value: _editEnd,
-              onChanged: (v) => setState(() => _editEnd = v),
+              onChanged: (v) => setState(() {
+                _editEnd = v;
+                _invalid = false;
+              }),
             ),
             const SizedBox(height: 16),
           ],
@@ -126,6 +133,7 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
               value: end,
               max: widget.max,
               onChanged: (t) => setState(() => _end = t),
+              onValidChanged: (v) => setState(() => _invalid = !v),
             )
           else
             DateTimeField(
@@ -133,13 +141,16 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
               value: _start,
               max: widget.max,
               onChanged: (t) => setState(() => _start = t),
+              onValidChanged: (v) => setState(() => _invalid = !v),
             ),
           const SizedBox(height: 16),
           _SheetButtons(
             label: l.done,
-            onPressed: () =>
-                Navigator.of(context)
-                    .pop<ShiftTimes>((start: _start, end: _end)),
+            onPressed: _invalid
+                ? null
+                : () =>
+                      Navigator.of(context)
+                          .pop<ShiftTimes>((start: _start, end: _end)),
           ),
         ],
       ),
@@ -147,13 +158,15 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
   }
 }
 
-/// Календарь месяца и время колёсиками. [value] и [max] — UTC, на экране —
-/// местное время. [max] — обычно «сейчас»: его день отмечен как сегодня.
+/// Календарь месяца и время с клавиатуры. [value] и [max] — UTC, на
+/// экране — местное время. [max] — обычно «сейчас»: его день отмечен как
+/// сегодня, дни позже недоступны.
 class DateTimeField extends StatefulWidget {
   const new({
     required this.value,
     required this.max,
     required this.onChanged,
+    this.onValidChanged,
     this.withTime = true,
     super.key,
   });
@@ -162,7 +175,10 @@ class DateTimeField extends StatefulWidget {
   final DateTime max;
   final ValueChanged<DateTime> onChanged;
 
-  /// false — только день, без колёсиков времени.
+  /// Введено время (true) или что-то другое (false).
+  final ValueChanged<bool>? onValidChanged;
+
+  /// false — только день, без времени.
   final bool withTime;
 
   @override
@@ -186,7 +202,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
       hour ?? c.hour,
       minute ?? c.minute,
     ).toUtc();
-    widget.onChanged(t.isAfter(widget.max) ? widget.max : t);
+    widget.onChanged(t);
   }
 
   @override
@@ -324,41 +340,13 @@ class _DateTimeFieldState extends State<DateTimeField> {
           ),
         if (widget.withTime) ...[
           Divider(height: 24, color: colors.surface2),
-          Text(
-            l.pickerTime.toUpperCase(),
-            style: AppTextStyles.section.copyWith(color: colors.textSecondary),
-          ),
-          const SizedBox(height: 8),
-          WheelRow(
-            rows: 1,
-            children: [
-              Expanded(
-                child: WheelPicker(
-                  label: l.pickerHours,
-                  value: local.hour,
-                  min: 0,
-                  max: 23,
-                  loop: true,
-                  onChanged: (h) => _set(hour: h),
-                ),
-              ),
-              SizedBox(
-                height: WheelPicker.heightFor(1),
-                child: const Center(
-                  child: Text(':', style: AppTextStyles.valueLarge),
-                ),
-              ),
-              Expanded(
-                child: WheelPicker(
-                  label: l.pickerMinutes,
-                  value: local.minute,
-                  min: 0,
-                  max: 59,
-                  loop: true,
-                  onChanged: (m) => _set(minute: m),
-                ),
-              ),
-            ],
+          HmField(
+            label: l.pickerTime,
+            value: Duration(hours: local.hour, minutes: local.minute),
+            onChanged: (v) {
+              widget.onValidChanged?.call(v != null);
+              if (v != null) _set(hour: v.inHours, minute: v.inMinutes % 60);
+            },
           ),
         ],
       ],
@@ -427,15 +415,16 @@ class _DaySheetState extends State<_DaySheet> {
 
 // ───────────────────────── Длительность ─────────────────────────
 
-/// Шторка «длительность» (экран 7): часы и минуты колёсиками в пределах
-/// [min]–[max]. [computed] — сколько насчитало приложение; [hint] —
-/// пояснение под колёсиками для выбранного значения. null — водитель
-/// передумал.
+/// Шторка «длительность» (экран 7): «Ч:ММ» с клавиатуры. [min]–[max] —
+/// пределы, которые задают записи режимов (правка идущей смены); без
+/// [max] ограничений нет — значение проверит сохранение. [computed] —
+/// сколько насчитало приложение; [hint] — пояснение под полем для
+/// введённого значения. null — водитель передумал.
 Future<Duration?> showDurationSheet(
   BuildContext context, {
   required String title,
   required Duration initial,
-  required Duration max,
+  Duration? max,
   Duration min = Duration.zero,
   String? subtitle,
   Duration? computed,
@@ -468,7 +457,7 @@ class _DurationSheet extends StatefulWidget {
   final String? subtitle;
   final Duration initial;
   final Duration min;
-  final Duration max;
+  final Duration? max;
   final Duration? computed;
   final String Function(Duration value)? hint;
 
@@ -477,12 +466,21 @@ class _DurationSheet extends StatefulWidget {
 }
 
 class _DurationSheetState extends State<_DurationSheet> {
-  late Duration _value = Duration(
-    minutes: widget.initial.inMinutes.clamp(
-      widget.min.inMinutes,
-      widget.max.inMinutes,
-    ),
-  );
+  late Duration? _value = _clamped(widget.initial);
+
+  /// Часов в поле: не больше 99, если предел не выше.
+  static const _maxHours = 99;
+
+  Duration _clamped(Duration v) {
+    final max = widget.max;
+    if (v < widget.min) return widget.min;
+    return max != null && v > max ? max : v;
+  }
+
+  bool _inRange(Duration v) {
+    final max = widget.max;
+    return v >= widget.min && (max == null || v <= max);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -490,7 +488,10 @@ class _DurationSheetState extends State<_DurationSheet> {
     final colors = context.colors;
     final computed = widget.computed;
     final subtitle = widget.subtitle;
-    final hint = widget.hint?.call(_value);
+    final value = _value;
+    final max = widget.max;
+    final valid = value != null && _inRange(value);
+    final hint = value == null ? null : widget.hint?.call(value);
     return Semantics(
       scopesRoute: true,
       namesRoute: true,
@@ -538,17 +539,28 @@ class _DurationSheetState extends State<_DurationSheet> {
             ),
           ],
           const SizedBox(height: 16),
-          DurationWheels(
-            value: _value,
-            min: widget.min,
-            max: widget.max,
+          HmField(
+            label: widget.title,
+            value: _clamped(widget.initial),
+            clock: false,
+            maxHours: max == null || max.inHours < _maxHours
+                ? _maxHours
+                : max.inHours,
+            autofocus: true,
+            errorText: value != null && !valid
+                ? l.pickerRange(formatHm(widget.min), formatHm(max!))
+                : null,
             onChanged: (v) => setState(() => _value = v),
           ),
-          const SizedBox(height: 12),
-          Text(
-            l.pickerRange(formatHm(widget.min), formatHm(widget.max)),
-            style: AppTextStyles.caption.copyWith(color: colors.textSecondary),
-          ),
+          if (max != null && (value == null || valid)) ...[
+            const SizedBox(height: 12),
+            Text(
+              l.pickerRange(formatHm(widget.min), formatHm(max)),
+              style: AppTextStyles.caption.copyWith(
+                color: colors.textSecondary,
+              ),
+            ),
+          ],
           if (hint != null) ...[
             const SizedBox(height: 12),
             StatusBanner(hint, tone: Tone.warning),
@@ -556,9 +568,9 @@ class _DurationSheetState extends State<_DurationSheet> {
           const SizedBox(height: 16),
           _SheetButtons(
             label: l.save,
-            onPressed: _value == widget.initial
+            onPressed: !valid || value == widget.initial
                 ? null
-                : () => Navigator.of(context).pop(_value),
+                : () => Navigator.of(context).pop(value),
           ),
         ],
       ),

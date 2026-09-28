@@ -188,7 +188,6 @@ void main() {
           end: DateTime.utc(2026, 9, 22, 16),
           driving: h(8, 20),
           restKind: RestKind.daily,
-          rest: h(11),
         ),
         const ShiftMeta(
           startCountry: 'CZ',

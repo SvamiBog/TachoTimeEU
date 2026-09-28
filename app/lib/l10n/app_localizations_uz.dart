@@ -1027,6 +1027,18 @@ class AppLocalizationsUz extends AppLocalizations {
   String get shiftSplitHint => 'Avval 3 soat, keyin 9 soat';
 
   @override
+  String shiftRestUntilNext(String when) {
+    return 'Smena boshlanishigacha: $when';
+  }
+
+  @override
+  String get shiftRestAutoHint => 'Keyingi smena boshlanguncha davom etadi';
+
+  @override
+  String get shiftRestCountsWeekly =>
+      '24 soatdan boshlab dam olish haftalik hisoblanadi';
+
+  @override
   String get shiftNotesHint => 'Masalan: parom, yuklashni kutish';
 
   @override
@@ -1069,16 +1081,21 @@ class AppLocalizationsUz extends AppLocalizations {
   }
 
   @override
-  String shiftErrRestOverlap(String range) {
-    return 'Smenadan keyingi dam olish $range smenasiga tushadi';
-  }
-
-  @override
   String get shiftErrNotLast =>
       'Bu smenadan keyin boshqalari bor — hozir davom eta olmaydi';
 
   @override
   String get shiftSaveFailed => 'Saqlab boʻlmadi. Qayta urinib koʻring.';
+
+  @override
+  String get shiftSavedViolations => 'Smena saqlandi. Qoidabuzarliklar bor';
+
+  @override
+  String get shiftSavedViolationsText =>
+      'Vaqtni tekshiring. Agar hammasi shunday boʻlgan boʻlsa, qoidabuzarliklar jurnal va hisobotga tushadi.';
+
+  @override
+  String get gotIt => 'Tushunarli';
 
   @override
   String get shiftLiveHint =>
@@ -1208,6 +1225,9 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get exportCsvHint =>
       'Rejim yozuvlari qatorma-qator, vaqt UTC boʻyicha — Excel va hisob dasturlari uchun.';
+
+  @override
+  String get exportLanguage => 'Hisobot tili';
 
   @override
   String get exportNotes => 'Mamlakatlar va izohlar';

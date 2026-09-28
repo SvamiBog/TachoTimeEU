@@ -11,6 +11,7 @@ import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/report/report.dart';
 import 'package:tachogo/features/export/pdf_report.dart';
+import 'package:tachogo/features/export/report_violations.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 import 'package:tachogo/l10n/app_localizations_ru.dart';
 
@@ -69,9 +70,20 @@ void main() {
       }
     });
 
+    test('греческие буквы — в запасном шрифте', () {
+      const text = 'Αναφορά χρόνου οδήγησης και ανάπαυσης';
+      final ttf = TtfParser((fonts.fallback.last as pw.TtfFont).data);
+      final missing = [
+        for (final rune in text.runes)
+          if (rune != 0x20 && !ttf.charToGlyphIndexMap.containsKey(rune))
+            String.fromCharCode(rune),
+      ];
+      expect(missing, isEmpty, reason: ttf.fontName);
+    });
+
     test('грузинские буквы — в запасном шрифте, отчёт на грузинском', () async {
       const text = 'ანგარიში მართვისა და დასვენების დროის შესახებ';
-      final ttf = TtfParser((fonts.fallback.single as pw.TtfFont).data);
+      final ttf = TtfParser((fonts.fallback.first as pw.TtfFont).data);
       final missing = [
         for (final rune in text.runes)
           if (rune != 0x20 && !ttf.charToGlyphIndexMap.containsKey(rune))

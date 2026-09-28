@@ -162,7 +162,6 @@ void main() {
               end: t0.subtract(hours(22)),
               driving: hours(6),
               restKind: RestKind.daily,
-              rest: hours(11),
             ),
             ShiftMeta.empty,
           ),

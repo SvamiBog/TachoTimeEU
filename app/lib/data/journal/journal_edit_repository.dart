@@ -116,7 +116,6 @@ class JournalEditRepository {
         driving: shift.driving,
         continuousDrivingAtEnd: shift.continuousDrivingAtEnd,
         restKind: shift.restKind,
-        rest: shift.rest,
         splitRest: shift.splitRest,
       ),
       meta,
@@ -225,7 +224,6 @@ class JournalEditRepository {
       drivingMinutes: Value(s.driving.inMinutes),
       continuousDrivingMinutes: Value(s.continuousDrivingAtEnd.inMinutes),
       restKind: Value(s.restKind),
-      restMinutes: Value(s.rest.inMinutes),
       splitRest: Value(s.splitRest),
       startCountry: Value(meta.startCountry),
       endCountry: Value(meta.endCountry),
@@ -325,7 +323,6 @@ class JournalEditRepository {
           driving: Duration(minutes: r.drivingMinutes),
           continuousDrivingAtEnd: Duration(minutes: r.continuousDrivingMinutes),
           restKind: r.restKind,
-          rest: Duration(minutes: r.restMinutes),
           splitRest: r.splitRest,
         ),
         ShiftMeta(

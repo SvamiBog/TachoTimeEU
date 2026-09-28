@@ -70,6 +70,10 @@ class ManualShifts extends Table {
   IntColumn get continuousDrivingMinutes =>
       integer().withDefault(const Constant(0))();
   TextColumn get restKind => textEnum<RestKind>()();
+
+  /// Не используется: длительность отдыха движок считает до начала
+  /// следующей смены (решение по отзывам водителей, 28.09.2026). Колонка
+  /// осталась из схемы v1, новые строки пишут 0.
   IntColumn get restMinutes => integer().withDefault(const Constant(0))();
 
   /// Раздельный суточный отдых 3 + 9.

@@ -1,4 +1,4 @@
-// Локализация Tier 1: полнота переводов, плюрали, тексты предупреждений
+// Локализация Tier 1 и 2: полнота переводов, плюрали, тексты предупреждений
 // движка, строки только в ARB, неделя с понедельника, форматы дат по
 // локали. План тестов: L10N-01…07 в docs/testing.md. Переполнение экранов
 // на переводах (L10N-06) — в design/screen_conformance_test.dart.
@@ -70,6 +70,30 @@ const _pluralForms = {
   'ro': {'one', 'few', 'other'},
   'ka': {'one', 'other'},
   'uz': {'one', 'other'},
+  // Языки ЕС (Tier 2); many у романских — только для миллионов, у чешского
+  // и словацкого — для дробей
+  'bg': {'one', 'other'},
+  'cs': {'one', 'few', 'other'},
+  'da': {'one', 'other'},
+  'de': {'one', 'other'},
+  'el': {'one', 'other'},
+  'en': {'one', 'other'},
+  'es': {'one', 'other'},
+  'et': {'one', 'other'},
+  'fi': {'one', 'other'},
+  'fr': {'one', 'other'},
+  'ga': {'one', 'two', 'few', 'many', 'other'},
+  'hr': {'one', 'few', 'other'},
+  'hu': {'one', 'other'},
+  'it': {'one', 'other'},
+  'lt': {'one', 'few', 'other'},
+  'lv': {'zero', 'one', 'other'},
+  'mt': {'one', 'two', 'few', 'many', 'other'},
+  'nl': {'one', 'other'},
+  'pt': {'one', 'other'},
+  'sk': {'one', 'few', 'other'},
+  'sl': {'one', 'two', 'few', 'other'},
+  'sv': {'one', 'other'},
 };
 
 String _normalize(String path) => path.replaceAll(r'\', '/');
@@ -220,6 +244,20 @@ void main() {
       ],
       'ka': [for (final n in numbers) '$n საათი'],
       'uz': [for (final n in numbers) '$n soat'],
+      'de': [
+        for (final n in numbers)
+          if (n == 1) '1 Stunde' else '$n Stunden',
+      ],
+      'cs': [
+        '0 hodin', '1 hodina', '2 hodiny', '5 hodin', '11 hodin', //
+        '12 hodin', '14 hodin', '21 hodin', '22 hodin', '25 hodin',
+        '101 hodin', '111 hodin',
+      ],
+      // 0 — единственное число, как 1
+      'fr': [
+        for (final n in numbers)
+          if (n < 2) '$n heure' else '$n heures',
+      ],
     };
     for (final MapEntry(key: code, value: forms) in expected.entries) {
       test('$code: часы для диктора', () {
@@ -370,6 +408,10 @@ void main() {
         for (final f in Directory('lib').listSync(recursive: true))
           if (f is File &&
               f.path.endsWith('.dart') &&
+              // Данные дат мальтийского из intl — поле обязательно, код его
+              // не читает
+              !_normalize(f.path)
+                  .endsWith('l10n/fallback_localizations.dart') &&
               RegExp('firstDayOfWeekIndex|FIRSTDAYOFWEEK')
                   .hasMatch(f.readAsStringSync()))
             f.path,
@@ -432,11 +474,16 @@ void main() {
     });
     final t = DateTime(2026, 9, 2, 6, 5);
 
-    test('время — 24 часа, как у языка в intl', () {
+    test('время — 24 часа во всех языках, «06:05», как на распечатке '
+        'тахографа', () {
       for (final locale in locales) {
         final code = locale.languageCode;
-        expect(formatClock(t), DateFormat.Hm(code).format(t), reason: code);
+        // У языка в intl тоже 24 часа, хотя где-то «6:05» или «06.05»
+        final pattern = DateFormat.Hm(code).pattern!;
+        expect(pattern, contains('H'), reason: code);
+        expect(pattern, isNot(contains('a')), reason: code);
       }
+      expect(formatClock(t), '06:05');
       expect(formatClock(DateTime(2026, 9, 2, 18, 40)), '18:40');
     });
 
@@ -486,10 +533,11 @@ void main() {
   });
 
   group('языки: список и выбор', () {
-    test('в списке языков — порядок Tier 1, у каждого своё название', () {
+    test('в списке языков — сначала Tier 1, затем языки ЕС, у каждого своё '
+        'название', () {
       final ordered = languagesInOrder(locales);
       expect(ordered.first, const Locale('ru'));
-      expect(ordered.map((l) => l.languageCode), [
+      expect(ordered.take(6).map((l) => l.languageCode), [
         'ru',
         'uk',
         'pl',
@@ -497,6 +545,15 @@ void main() {
         'ka',
         'uz',
       ]);
+      // Остальные — языки ЕС (docs/PRD.md, решение 28.09.2026)
+      const eu = {
+        'bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'ga', //
+        'hr', 'hu', 'it', 'lt', 'lv', 'mt', 'nl', 'pt', 'sk', 'sl', 'sv',
+      };
+      expect(
+        ordered.skip(6).map((l) => l.languageCode),
+        everyElement(isIn(eu)),
+      );
       for (final locale in locales) {
         expect(languageName(locale), isNot(locale.languageCode));
       }
@@ -506,9 +563,10 @@ void main() {
       expect(appLocale('uk', const [Locale('pl')]), const Locale('uk'));
       expect(appLocale(null, const [Locale('pl', 'PL')]), const Locale('pl'));
       expect(
-        appLocale(null, const [Locale('de'), Locale('ro')]),
+        appLocale(null, const [Locale('hi'), Locale('ro')]),
         const Locale('ro'),
       );
+      expect(appLocale(null, const [Locale('de', 'AT')]), const Locale('de'));
       expect(appLocale(null, const [Locale('kk')]), const Locale('ru'));
       expect(appStrings('ka', const []).modeDriving, 'მართვა');
     });

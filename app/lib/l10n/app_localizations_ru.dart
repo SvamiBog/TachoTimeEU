@@ -1039,6 +1039,17 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftSplitHint => 'Сначала 3 ч, затем 9 ч';
 
   @override
+  String shiftRestUntilNext(String when) {
+    return 'До начала смены: $when';
+  }
+
+  @override
+  String get shiftRestAutoHint => 'Идёт до начала следующей смены';
+
+  @override
+  String get shiftRestCountsWeekly => 'От 24 ч отдых считается недельным';
+
+  @override
   String get shiftNotesHint => 'Например: паром, ожидание загрузки';
 
   @override
@@ -1081,16 +1092,21 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String shiftErrRestOverlap(String range) {
-    return 'Отдых после смены заходит на смену $range';
-  }
-
-  @override
   String get shiftErrNotLast =>
       'После этой смены есть другие — идти сейчас она не может';
 
   @override
   String get shiftSaveFailed => 'Не удалось сохранить. Попробуйте ещё раз.';
+
+  @override
+  String get shiftSavedViolations => 'Смена сохранена. Есть нарушения';
+
+  @override
+  String get shiftSavedViolationsText =>
+      'Проверьте время. Если всё так и было, нарушения попадут в журнал и отчёт.';
+
+  @override
+  String get gotIt => 'Понятно';
 
   @override
   String get shiftLiveHint =>
@@ -1220,6 +1236,9 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get exportCsvHint =>
       'Записи режимов по строкам, время в UTC — для Excel и программ учёта.';
+
+  @override
+  String get exportLanguage => 'Язык отчёта';
 
   @override
   String get exportNotes => 'Страны и заметки';

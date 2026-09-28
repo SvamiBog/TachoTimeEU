@@ -49,6 +49,9 @@ flutter:
     - assets/fonts/Onest-OFL.txt
     - assets/fonts/JetBrainsMono-OFL.txt
     - assets/fonts/NotoSansGeorgian-OFL.txt
+    - assets/fonts/NotoSansGreek-OFL.txt
+    # Только для PDF-отчёта (ReportFonts), в теме не нужен
+    - assets/fonts/NotoSansGreek-Regular.ttf
   # Onest и JetBrains Mono (OFL, лицензии рядом): статические начертания,
   # нарезанные из вариативных шрифтов Google Fonts, — assets/fonts/README.md.
   fonts:

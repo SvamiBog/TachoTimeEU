@@ -1041,6 +1041,18 @@ class AppLocalizationsPl extends AppLocalizations {
   String get shiftSplitHint => 'Najpierw 3 h, potem 9 h';
 
   @override
+  String shiftRestUntilNext(String when) {
+    return 'Do początku zmiany: $when';
+  }
+
+  @override
+  String get shiftRestAutoHint => 'Trwa do początku następnej zmiany';
+
+  @override
+  String get shiftRestCountsWeekly =>
+      'Od 24 h odpoczynek liczy się jako tygodniowy';
+
+  @override
   String get shiftNotesHint => 'Na przykład: prom, oczekiwanie na załadunek';
 
   @override
@@ -1083,15 +1095,20 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String shiftErrRestOverlap(String range) {
-    return 'Odpoczynek po zmianie zachodzi na zmianę $range';
-  }
-
-  @override
   String get shiftErrNotLast => 'Po tej zmianie są inne — nie może teraz trwać';
 
   @override
   String get shiftSaveFailed => 'Nie udało się zapisać. Spróbuj ponownie.';
+
+  @override
+  String get shiftSavedViolations => 'Zmiana zapisana. Są naruszenia';
+
+  @override
+  String get shiftSavedViolationsText =>
+      'Sprawdź czas. Jeśli wszystko się zgadza, naruszenia trafią do dziennika i raportu.';
+
+  @override
+  String get gotIt => 'Rozumiem';
 
   @override
   String get shiftLiveHint =>
@@ -1222,6 +1239,9 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get exportCsvHint =>
       'Zapisy trybów wierszami, czas w UTC — do Excela i programów rozliczeniowych.';
+
+  @override
+  String get exportLanguage => 'Język raportu';
 
   @override
   String get exportNotes => 'Kraje i notatki';

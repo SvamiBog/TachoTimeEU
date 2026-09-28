@@ -1026,6 +1026,17 @@ class AppLocalizationsKa extends AppLocalizations {
   String get shiftSplitHint => 'ჯერ 3 სთ, შემდეგ 9 სთ';
 
   @override
+  String shiftRestUntilNext(String when) {
+    return 'ცვლის დაწყებამდე: $when';
+  }
+
+  @override
+  String get shiftRestAutoHint => 'გრძელდება შემდეგი ცვლის დაწყებამდე';
+
+  @override
+  String get shiftRestCountsWeekly => '24 სთ-დან დასვენება კვირეულად ითვლება';
+
+  @override
   String get shiftNotesHint => 'მაგალითად: ბორანი, დატვირთვის მოლოდინი';
 
   @override
@@ -1068,16 +1079,21 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String shiftErrRestOverlap(String range) {
-    return 'ცვლის შემდგომი დასვენება ეხება ცვლას $range';
-  }
-
-  @override
   String get shiftErrNotLast =>
       'ამ ცვლის შემდეგ სხვა ცვლებიცაა — ახლა ვერ გაგრძელდება';
 
   @override
   String get shiftSaveFailed => 'შენახვა ვერ მოხერხდა. სცადეთ ხელახლა.';
+
+  @override
+  String get shiftSavedViolations => 'ცვლა შენახულია. არის დარღვევები';
+
+  @override
+  String get shiftSavedViolationsText =>
+      'შეამოწმეთ დრო. თუ ყველაფერი ასე იყო, დარღვევები ჟურნალსა და ანგარიშში აისახება.';
+
+  @override
+  String get gotIt => 'გასაგებია';
 
   @override
   String get shiftLiveHint =>
@@ -1207,6 +1223,9 @@ class AppLocalizationsKa extends AppLocalizations {
   @override
   String get exportCsvHint =>
       'რეჟიმების ჩანაწერები სტრიქონებად, დრო UTC-ით — Excel-ისა და აღრიცხვის პროგრამებისთვის.';
+
+  @override
+  String get exportLanguage => 'ანგარიშის ენა';
 
   @override
   String get exportNotes => 'ქვეყნები და შენიშვნები';

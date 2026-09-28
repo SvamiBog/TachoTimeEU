@@ -196,7 +196,6 @@ void main() {
         end: DateTime.utc(2026, 9, 1, 16),
         driving: const Duration(hours: 8),
         restKind: RestKind.daily,
-        rest: const Duration(hours: 11),
       );
       await _pumpJournal(
         tester,
@@ -268,7 +267,6 @@ void main() {
         end: DateTime.utc(2026, 9, 1, 16),
         driving: const Duration(hours: 8),
         restKind: RestKind.weekly,
-        rest: const Duration(hours: 45),
       );
       final j = designJournal();
       await pumpScreen(

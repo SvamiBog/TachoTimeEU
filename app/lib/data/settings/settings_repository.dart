@@ -38,6 +38,7 @@ class AppPreferences {
   const new({
     this.theme = ThemeChoice.dark,
     this.language,
+    this.reportLanguage,
     this.onboardingDone = false,
     this.vehicle = VehicleType.truckOrBus,
     this.tachograph = TachographType.digital,
@@ -47,6 +48,10 @@ class AppPreferences {
 
   /// Язык интерфейса: `ru`, `uk`, `pl`…; null — как в телефоне.
   final String? language;
+
+  /// Язык PDF-отчёта, выбранный в последний раз: отчёт показывают
+  /// инспектору в стране проверки. null — язык интерфейса.
+  final String? reportLanguage;
 
   /// Онбординг показывается один раз, до первого «Готово».
   final bool onboardingDone;
@@ -62,13 +67,20 @@ class AppPreferences {
       other is AppPreferences &&
       other.theme == theme &&
       other.language == language &&
+      other.reportLanguage == reportLanguage &&
       other.onboardingDone == onboardingDone &&
       other.vehicle == vehicle &&
       other.tachograph == tachograph;
 
   @override
-  int get hashCode =>
-      Object.hash(theme, language, onboardingDone, vehicle, tachograph);
+  int get hashCode => Object.hash(
+    theme,
+    language,
+    reportLanguage,
+    onboardingDone,
+    vehicle,
+    tachograph,
+  );
 }
 
 /// Какие уведомления о лимитах присылать (экран 3): расписание —
@@ -136,6 +148,7 @@ class SettingsRepository {
   static const _defaultCountry = 'default_country';
   static const _theme = 'theme';
   static const _language = 'language';
+  static const _reportLanguage = 'report_language';
   static const _onboardingDone = 'onboarding_done';
   static const _vehicle = 'vehicle';
   static const _tachograph = 'tachograph';
@@ -214,6 +227,9 @@ class SettingsRepository {
       ? (_db.delete(_db.settings)..where((s) => s.key.equals(_language))).go()
       : _put(_language, language);
 
+  Future<void> setReportLanguage(String language) =>
+      _put(_reportLanguage, language);
+
   Future<void> setOnboardingDone() => _put(_onboardingDone, 'true');
 
   /// Фургону тахограф ставится цифровой: в него ставят только умный
@@ -281,9 +297,11 @@ class SettingsRepository {
   static AppPreferences _preferencesFrom(Map<String, String> v) {
     const d = AppPreferences();
     final language = v[_language];
+    final report = v[_reportLanguage];
     return AppPreferences(
       theme: ThemeChoice.values.asNameMap()[v[_theme]] ?? d.theme,
       language: language == null || language.isEmpty ? null : language,
+      reportLanguage: report == null || report.isEmpty ? null : report,
       onboardingDone: _bool(v[_onboardingDone]) ?? d.onboardingDone,
       vehicle: VehicleType.values.asNameMap()[v[_vehicle]] ?? d.vehicle,
       tachograph:
