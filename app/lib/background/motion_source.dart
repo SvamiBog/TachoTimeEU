@@ -31,8 +31,19 @@ Stream<MotionSample> gpsSamples({required bool fast}) {
 /// Скорость в м/с → км/ч. Скорость неизвестна (−1), если система её не
 /// сообщила: тогда плагин подставляет 0, и отметка без скорости выглядела
 /// бы стоянкой — через 3 мин вождение сменилось бы другой работой.
-MotionSample sampleOf(Position p) => MotionSample(
-  time: p.timestamp.toUtc(),
-  speedKmh: !p.hasSpeed || p.speed < 0 ? -1 : p.speed * 3.6,
-  accuracyMeters: p.hasAccuracy ? p.accuracy : null,
-);
+///
+/// На Android флаги `hasSpeed` и `hasAccuracy` всегда false:
+/// `AndroidPosition.fromMap` (geolocator_android 5.0.3) не переносит их
+/// из отметки платформы — так INT-03 на эмуляторе не видел ни одной
+/// скорости. Поэтому значение считается сообщённым и по нему самому: без
+/// скорости плагин подставляет 0 и в скорость, и в её точность, а без
+/// точности — 0 в точность.
+MotionSample sampleOf(Position p) {
+  final hasSpeed = p.hasSpeed || p.speed > 0 || p.speedAccuracy > 0;
+  final hasAccuracy = p.hasAccuracy || p.accuracy > 0;
+  return MotionSample(
+    time: p.timestamp.toUtc(),
+    speedKmh: !hasSpeed || p.speed < 0 ? -1 : p.speed * 3.6,
+    accuracyMeters: hasAccuracy ? p.accuracy : null,
+  );
+}

@@ -7,6 +7,7 @@ Position position({
   required double speed,
   DateTime? timestamp,
   double accuracy = 8,
+  double speedAccuracy = 0,
   bool hasSpeed = true,
   bool hasAccuracy = true,
 }) => Position(
@@ -19,7 +20,7 @@ Position position({
   heading: 0,
   headingAccuracy: 0,
   speed: speed,
-  speedAccuracy: 0,
+  speedAccuracy: speedAccuracy,
   hasSpeed: hasSpeed,
   hasAccuracy: hasAccuracy,
 );
@@ -51,9 +52,31 @@ void main() {
   });
 
   test('точность не сообщена — неизвестна', () {
+    // Без точности плагин подставляет 0
     expect(
-      sampleOf(position(speed: 5, hasAccuracy: false)).accuracyMeters,
+      sampleOf(position(speed: 5, accuracy: 0, hasAccuracy: false))
+          .accuracyMeters,
       isNull,
     );
+  });
+
+  test('Android: флаги не переданы, но скорость и точность есть '
+      '(INT-03)', () {
+    // AndroidPosition.fromMap теряет hasSpeed и hasAccuracy
+    final sample = sampleOf(
+      position(
+        speed: 16.667,
+        accuracy: 5,
+        speedAccuracy: 0.5,
+        hasSpeed: false,
+        hasAccuracy: false,
+      ),
+    );
+    expect(sample.speedKmh, closeTo(60, 0.01));
+    expect(sample.accuracyMeters, 5);
+    final stopped = sampleOf(
+      position(speed: 0, speedAccuracy: 0.5, hasSpeed: false),
+    );
+    expect(stopped.speedKmh, 0, reason: 'стоянка с оценкой точности');
   });
 }
