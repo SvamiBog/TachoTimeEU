@@ -137,10 +137,12 @@ void main() {
       final gps = gpsSamples(fast: true).listen(seen.add);
       addTearDown(gps.cancel);
       String gpsSummary() {
-        final last = seen.isEmpty ? null : seen.last;
-        return 'отметок GPS в приложении: ${seen.length}, последняя: '
-            '${last == null ? '—' : '${last.speedKmh.toStringAsFixed(1)} км/ч, '
-                      'точность ${last.accuracyMeters}'}';
+        final recent = seen.length > 8 ? seen.sublist(seen.length - 8) : seen;
+        String show(MotionSample s) =>
+            '${s.speedKmh.toStringAsFixed(1)} км/ч '
+            '±${s.accuracyMeters?.toStringAsFixed(0)} м';
+        return 'отметок GPS в приложении: ${seen.length}, последние: '
+            '${recent.isEmpty ? '—' : recent.map(show).join('; ')}';
       }
 
       // Едем 90 с: первые точки — редкие (стоянка), дальше раз в 5 с
@@ -183,11 +185,13 @@ void main() {
       const stopLat = startLat + stepLat * 90;
       final stopStart = DateTime.now().toUtc();
       await feedGps(tester, seconds: 240, knots: 0, lat: (_) => stopLat);
+      hostCommand('dumpsys location');
       await waitFor(
         tester,
         () async => await lastMode() == DriverMode.otherWork,
         timeout: const Duration(seconds: 90),
         reason: 'сервис записал другую работу после стоянки',
+        details: gpsSummary,
       );
       final journal = await periods();
       expect(journal.map((p) => p.mode), [

@@ -10,8 +10,9 @@ Position position({
   double speedAccuracy = 0,
   bool hasSpeed = true,
   bool hasAccuracy = true,
+  double latitude = 52.23,
 }) => Position(
-  latitude: 52.23,
+  latitude: latitude,
   longitude: 21.01,
   timestamp: timestamp ?? DateTime.utc(2026, 9, 23, 6),
   accuracy: accuracy,
@@ -79,4 +80,48 @@ void main() {
     );
     expect(stopped.speedKmh, 0, reason: 'стоянка с оценкой точности');
   });
+
+  group(
+    'скорость не сообщена — по смещению от предыдущей отметки (INT-03)',
+    () {
+      final t = DateTime.utc(2026, 9, 23, 6);
+      Position at(Duration after, {double latitude = 52.23}) => position(
+        speed: 0,
+        hasSpeed: false,
+        timestamp: t.add(after),
+        latitude: latitude,
+      );
+
+      test('на месте — 0 км/ч: смещение в пределах точности', () {
+        final sample = sampleOf(
+          at(const Duration(seconds: 5), latitude: 52.23003),
+          previous: at(Duration.zero),
+        );
+        expect(sample.speedKmh, 0);
+      });
+
+      test('100 м за 5 с — около 72 км/ч', () {
+        // 0,0009° широты ≈ 100 м
+        final sample = sampleOf(
+          at(const Duration(seconds: 5), latitude: 52.2309),
+          previous: at(Duration.zero),
+        );
+        expect(sample.speedKmh, closeTo(72, 1));
+      });
+
+      test(
+        'без предыдущей отметки или после долгого перерыва — неизвестна',
+        () {
+          expect(sampleOf(at(Duration.zero)).speedKmh, isNegative);
+          expect(
+            sampleOf(
+              at(const Duration(minutes: 3)),
+              previous: at(Duration.zero),
+            ).speedKmh,
+            isNegative,
+          );
+        },
+      );
+    },
+  );
 }
