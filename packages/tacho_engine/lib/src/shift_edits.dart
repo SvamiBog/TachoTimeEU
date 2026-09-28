@@ -2,6 +2,8 @@ import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/activity_period.dart';
 import 'package:tacho_engine/src/journal.dart';
 import 'package:tacho_engine/src/journal_edits.dart';
+import 'package:tacho_engine/src/manual_shift.dart';
+import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
 import 'package:tacho_engine/src/timeline.dart';
 
@@ -98,6 +100,44 @@ class LiveShiftEdit {
     result = adjustDriving(result, shiftStart, edit.drivingDelta, now).periods;
   }
   return (periods: result, shiftStart: shiftStart);
+}
+
+/// «Завершить день» с вождением за день, которое ввёл водитель. Журнал
+/// режимов по времени ему не нужен — только итог (отзыв водителей,
+/// 28.09.2026).
+///
+/// Смена завершается, как [endDay]. Вождение совпало с записями — они
+/// остаются. Иначе записи смены заменяются ручной сменой с итогом
+/// [driving] (не длиннее смены), а отдых после неё остаётся записью с
+/// отметкой «конец дня»: главная показывает его, как после обычного
+/// завершения. Смены нет — только [endDay].
+({List<ActivityPeriod> periods, ManualShift? manual}) endDayWithDriving(
+  List<ActivityPeriod> periods,
+  Duration driving,
+  DateTime now,
+) {
+  final ended = endDay(periods, now);
+  final shift = analyzeTimeline(ended, now).shifts.lastOrNull;
+  final rest = shift?.restAfter;
+  if (shift == null || rest == null || !rest.open || !rest.dayEnd) {
+    return (periods: ended, manual: null);
+  }
+  final end = rest.start;
+  final span = floorToMinute(durationBetween(shift.start, end));
+  final entered = shorter(floorToMinute(clampToZero(driving)), span);
+  if (entered == floorToMinute(shift.driving)) {
+    return (periods: ended, manual: null);
+  }
+  return (
+    periods: deleteShiftPeriods(ended, shift.start, end),
+    manual: ManualShift(
+      start: shift.start,
+      end: end,
+      driving: entered,
+      continuousDrivingAtEnd: shorter(shift.continuousDrivingAtEnd, entered),
+      restKind: RestKind.daily,
+    ),
+  );
 }
 
 /// Переносит начало отдыха после завершённой смены (конец смены): не
