@@ -38,9 +38,9 @@ class ReportFonts {
   /// Время и цифры.
   final pw.Font mono;
 
-  /// Письменности, которых нет в Onest: грузинская и греческая. На экране
-  /// их берёт система, в PDF шрифт встраивается. Пакет `pdf` берёт первый
-  /// шрифт с нужной буквой, поэтому начертание одно — обычное.
+  /// Письменности, которых нет в Onest: грузинская. На экране их берёт
+  /// система, в PDF шрифт встраивается. Пакет `pdf` берёт первый шрифт
+  /// с нужной буквой, поэтому начертание одно — обычное.
   final List<pw.Font> fallback;
 
   static Future<ReportFonts> load(AssetBundle bundle) async {
@@ -50,10 +50,7 @@ class ReportFonts {
       regular: await font('Onest-Regular'),
       bold: await font('Onest-Bold'),
       mono: await font('JetBrainsMono-Medium'),
-      fallback: [
-        await font('NotoSansGeorgian-Regular'),
-        await font('NotoSansGreek-Regular'),
-      ],
+      fallback: [await font('NotoSansGeorgian-Regular')],
     );
   }
 }

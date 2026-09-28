@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tachogo/core/l10n/fallback_localizations.dart';
 import 'package:tachogo/core/theme/app_theme.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
@@ -24,7 +23,7 @@ class TachoGoApp extends ConsumerWidget {
       darkTheme: buildTheme(Brightness.dark),
       themeMode: themeModeOf(prefs.theme),
       locale: localeOf(prefs.language),
-      localizationsDelegates: appLocalizationsDelegates,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const AppRoot(),
     );

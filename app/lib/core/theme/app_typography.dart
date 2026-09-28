@@ -4,21 +4,19 @@
 import 'package:flutter/painting.dart';
 
 /// Шрифты: Onest — интерфейс, JetBrains Mono — время и цифры.
-/// Грузинских и греческих букв нет ни в одном — их рисуют Noto Sans
-/// Georgian и Noto Sans Greek.
+/// Грузинских букв нет ни в одном — их рисует Noto Sans Georgian.
 abstract final class AppFonts {
   static const ui = 'Onest';
   static const numeric = 'JetBrains Mono';
-  static const fallback = ['Noto Sans Georgian', 'Noto Sans Greek'];
+  static const fallback = 'Noto Sans Georgian';
 }
 
 abstract final class AppTextStyles {
   // Цифры одинаковой ширины, чтобы тикающий таймер не «прыгал».
   static const _tabular = [FontFeature.tabularFigures()];
 
-  // Буквы, которых нет в шрифте: единицы рядом с цифрами («45 სთ», «45 ώ»)
-  // тоже.
-  static const List<String> _fallback = AppFonts.fallback;
+  // Буквы, которых нет в шрифте: единицы рядом с цифрами («45 სთ») тоже.
+  static const List<String> _fallback = [AppFonts.fallback];
 
   static const timer = TextStyle(
     fontFamily: AppFonts.numeric,

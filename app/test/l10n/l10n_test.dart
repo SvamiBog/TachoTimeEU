@@ -72,28 +72,14 @@ const _pluralForms = {
   'uz': {'one', 'other'},
   // Языки ЕС (Tier 2); many у романских — только для миллионов, у чешского
   // и словацкого — для дробей
-  'bg': {'one', 'other'},
   'cs': {'one', 'few', 'other'},
-  'da': {'one', 'other'},
   'de': {'one', 'other'},
-  'el': {'one', 'other'},
   'en': {'one', 'other'},
   'es': {'one', 'other'},
-  'et': {'one', 'other'},
-  'fi': {'one', 'other'},
   'fr': {'one', 'other'},
-  'ga': {'one', 'two', 'few', 'many', 'other'},
-  'hr': {'one', 'few', 'other'},
-  'hu': {'one', 'other'},
   'it': {'one', 'other'},
-  'lt': {'one', 'few', 'other'},
-  'lv': {'zero', 'one', 'other'},
-  'mt': {'one', 'two', 'few', 'many', 'other'},
   'nl': {'one', 'other'},
-  'pt': {'one', 'other'},
   'sk': {'one', 'few', 'other'},
-  'sl': {'one', 'two', 'few', 'other'},
-  'sv': {'one', 'other'},
 };
 
 String _normalize(String path) => path.replaceAll(r'\', '/');
@@ -408,10 +394,6 @@ void main() {
         for (final f in Directory('lib').listSync(recursive: true))
           if (f is File &&
               f.path.endsWith('.dart') &&
-              // Данные дат мальтийского из intl — поле обязательно, код его
-              // не читает
-              !_normalize(f.path)
-                  .endsWith('l10n/fallback_localizations.dart') &&
               RegExp('firstDayOfWeekIndex|FIRSTDAYOFWEEK')
                   .hasMatch(f.readAsStringSync()))
             f.path,
@@ -546,10 +528,7 @@ void main() {
         'uz',
       ]);
       // Остальные — языки ЕС (docs/PRD.md, решение 28.09.2026)
-      const eu = {
-        'bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'ga', //
-        'hr', 'hu', 'it', 'lt', 'lv', 'mt', 'nl', 'pt', 'sk', 'sl', 'sv',
-      };
+      const eu = {'cs', 'de', 'en', 'es', 'fr', 'it', 'nl', 'sk'};
       expect(
         ordered.skip(6).map((l) => l.languageCode),
         everyElement(isIn(eu)),
