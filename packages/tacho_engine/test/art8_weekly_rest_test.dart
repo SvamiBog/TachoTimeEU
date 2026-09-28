@@ -416,13 +416,9 @@ void main() {
 
   group('ручные смены: недельный отдых', () {
     test('недельный отдых из ручной смены задаёт начало рабочей недели', () {
-      final manual = [
-        manualShift(
-          utc('2026-09-18 06:00'),
-          restKind: RestKind.weekly,
-          rest: '45:00',
-        ),
-      ];
+      final manual = manualChain(utc('2026-09-18 06:00'), [
+        '45:00',
+      ], restKind: RestKind.weekly);
       final m = calc(
         logUntil(now, [rest('11:00'), drive('1:00')]),
         now,
@@ -446,7 +442,6 @@ void main() {
           end: restStart,
           driving: const Duration(hours: 4),
           restKind: RestKind.weekly,
-          rest: const Duration(hours: 45),
         ),
       ];
       final m = calc(periods, now, manual: manual);

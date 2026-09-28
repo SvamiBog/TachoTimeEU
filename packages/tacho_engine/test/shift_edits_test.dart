@@ -367,26 +367,11 @@ void main() {
       );
     });
 
-    test('отдых после ручной смены не заходит на следующую', () {
-      final end = current.start.subtract(hour * 5);
-      final problem = checkManualShift(
-        start: end.subtract(hour * 5),
-        end: end,
-        driving: hour,
-        rest: hour * 11,
-        shifts: [current],
-        now: now,
-      );
-      expect(problem?.error, ShiftEditError.restOverlap);
-      expect(problem?.conflict, same(current));
-    });
-
     test('смена при правке не пересекается сама с собой', () {
       final problem = checkManualShift(
         start: first.start,
         end: first.end,
         driving: first.driving,
-        rest: first.rest.duration,
         shifts: shifts,
         now: now,
         except: first,
@@ -431,14 +416,12 @@ void main() {
       bool ongoing = false,
       Object drive = '8:00',
       Object continuous = '2:00',
-      Object restTime = '11:00',
       List<JournalShift> shifts = const [],
     }) => checkManualShift(
       start: from ?? start,
       end: ongoing ? null : end ?? start.add(hour * 10),
       driving: dur(drive),
       continuousDrivingAtEnd: dur(continuous),
-      rest: dur(restTime),
       shifts: shifts,
       now: now,
     )?.error;
@@ -496,14 +479,13 @@ void main() {
       );
     });
 
-    test('отдых без длительности не проверяется на пересечение', () {
+    test('отдых до следующей смены сохранению не мешает', () {
       final next = journalShifts(
         const [],
         now,
         manual: [manualShift(start.add(hour * 11), id: 3)],
       );
-      expect(check(restTime: 0, shifts: next), isNull);
-      expect(check(shifts: next), ShiftEditError.restOverlap);
+      expect(check(shifts: next), isNull);
     });
   });
 
@@ -585,7 +567,6 @@ void main() {
         restStart.add(hour * 12),
         span: '8:00',
         drive: '6:00',
-        rest: '12:00',
       );
       final carved = carveRest(periods, m.start, m.end!, now);
       final shifts = journalShifts(carved, now, manual: [m]);
@@ -690,7 +671,6 @@ void main() {
         checkManualShift(
           start: slot.start,
           end: slot.end,
-          rest: hour * 11,
           shifts: shifts,
           now: now,
         ),

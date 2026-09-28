@@ -57,45 +57,109 @@ void main() {
         throwsArgumentError,
       );
     });
+  });
 
-    test('отрицательный отдых', () {
+  group('ENG-05: отдых ручной смены — до начала следующей смены', () {
+    final shift = manualShift(utc('2026-09-21 06:00'));
+
+    test('до ближайшей следующей смены: ручной или из записей', () {
+      final r = manualRestAfter(shift, [
+        utc('2026-09-22 09:00'),
+        utc('2026-09-22 05:00'),
+        utc('2026-09-23 06:00'),
+      ], now);
+      expect(r?.start, utc('2026-09-21 16:00'));
+      expect(r?.end, utc('2026-09-22 05:00'));
+      expect(r?.duration, dur('13:00'));
+      expect(r?.kind, RestKind.daily);
+      expect(r?.ongoing, isFalse);
+
+      final fromRecords = manualRests(
+        [shift],
+        analyzeTimeline(recorded(), now),
+        now,
+      );
+      expect(fromRecords.single?.end, utc('2026-09-23 11:00'));
+      expect(fromRecords.single?.duration, dur('43:00'));
+    });
+
+    test('смены раньше конца и своё начало не в счёт', () {
+      final r = manualRestAfter(shift, [
+        shift.start,
+        utc('2026-09-21 10:00'),
+        utc('2026-09-21 16:00'),
+      ], now);
+      expect(r?.duration, Duration.zero, reason: 'следующая смена встык');
+      final empty = ManualShift(
+        start: shift.start,
+        end: shift.start,
+        driving: Duration.zero,
+        restKind: RestKind.daily,
+      );
+      expect(manualRestAfter(empty, [empty.start], now)?.ongoing, isTrue);
+    });
+
+    test('следующей смены нет — отдых идёт до сейчас', () {
+      final r = manualRestAfter(shift, const [], now);
+      expect(r?.ongoing, isTrue);
+      expect(r?.end, isNull);
+      expect(r?.duration, now.difference(utc('2026-09-21 16:00')));
+    });
+
+    test('от 24 ч — недельный, даже если отмечен суточный', () {
+      final r = manualRestAfter(shift, [utc('2026-09-22 16:00')], now);
+      expect(r?.kind, RestKind.weekly);
+      final short = manualRestAfter(
+        manualShift(shift.start, restKind: RestKind.weekly),
+        [utc('2026-09-22 03:00')],
+        now,
+      );
+      expect(short?.kind, RestKind.weekly, reason: 'отмечен недельный');
+      expect(short?.duration, dur('11:00'));
+    });
+
+    test('смена идёт или отдых не начат — отдыха нет', () {
       expect(
-        () => ManualShift(
-          start: start,
-          end: end,
-          driving: Duration.zero,
-          restKind: RestKind.daily,
-          rest: -minute,
+        manualRestAfter(
+          ManualShift(start: shift.start, end: null, driving: hour),
+          const [],
+          now,
         ),
-        throwsArgumentError,
+        isNull,
+      );
+      expect(
+        manualRestAfter(
+          manualShift(shift.start, restKind: RestKind.none),
+          const [],
+          now,
+        ),
+        isNull,
       );
     });
 
-    test('конец отдыха: есть только у завершённой смены с отдыхом', () {
-      expect(
-        ManualShift(
-          start: start,
-          end: end,
-          driving: hour,
-          restKind: RestKind.daily,
-          rest: const Duration(hours: 11),
-        ).restEnd,
-        utc('2026-09-22 03:00'),
+    test('журнал: длительность, конец и статус отдыха по следующей смене', () {
+      final shifts = journalShifts(
+        recorded(),
+        now,
+        manual: manualChain(utc('2026-09-21 06:00'), ['8:30']),
       );
-      expect(
-        ManualShift(start: start, end: end, driving: hour).restEnd,
-        isNull,
-      );
-      expect(
-        ManualShift(
-          start: start,
-          end: null,
-          driving: hour,
-          restKind: RestKind.daily,
-          rest: const Duration(hours: 11),
-        ).restEnd,
-        isNull,
-      );
+      final first = shifts.first;
+      expect(first.rest.duration, dur('8:30'));
+      expect(first.restEnd, utc('2026-09-22 00:30'));
+      expect(first.rest.status, RestStatus.insufficient);
+      expect(first.restLevel, JournalLevel.bad);
+    });
+
+    test('журнал: у последней смены отдых идёт, статуса ещё нет', () {
+      final shift = journalShifts(
+        const [],
+        now,
+        manual: [manualShift(utc('2026-09-22 06:00'))],
+      ).single;
+      expect(shift.rest.ongoing, isTrue);
+      expect(shift.rest.status, isNull);
+      expect(shift.restEnd, isNull);
+      expect(shift.rest.duration, dur('20:00'));
     });
   });
 
@@ -104,9 +168,7 @@ void main() {
       final m = calc(
         recorded(),
         now,
-        manual: [
-          manualShift(utc('2026-09-21 06:00'), drive: '9:30', rest: '12:00'),
-        ],
+        manual: [manualShift(utc('2026-09-21 06:00'), drive: '9:30')],
       );
       expect(m.extensionsUsed, 1);
       expect(m.extensionsLeft, 1);
@@ -126,7 +188,7 @@ void main() {
       final m = calc(
         recorded(),
         now,
-        manual: [manualShift(utc('2026-09-21 06:00'), rest: '9:30')],
+        manual: manualChain(utc('2026-09-21 06:00'), ['9:30']),
       );
       expect(m.reducedRestsUsed, 1);
       expect(m.reducedRestsLeft, 2);
@@ -137,9 +199,7 @@ void main() {
       final m = calc(
         recorded(),
         now,
-        manual: [
-          manualShift(utc('2026-09-21 06:00'), span: '14:00', rest: '12:00'),
-        ],
+        manual: manualChain(utc('2026-09-21 06:00'), ['12:00'], span: '14:00'),
       );
       expect(m.reducedRestsUsed, 1);
     });
@@ -148,9 +208,7 @@ void main() {
       final m = calc(
         recorded(),
         now,
-        manual: [
-          manualShift(utc('2026-09-21 06:00'), rest: '9:00', split: true),
-        ],
+        manual: manualChain(utc('2026-09-21 06:00'), ['9:00'], split: true),
       );
       expect(m.reducedRestsUsed, 0);
     });

@@ -208,7 +208,6 @@ void main() {
                     : start.add(minutes(r.nextInt(0, 1200))),
                 driving: minutes(r.nextInt(0, 900)),
                 restKind: r.pick(RestKind.values),
-                rest: minutes(r.nextInt(0, 4000)),
                 splitRest: r.next() < 0.2,
               );
             }(),

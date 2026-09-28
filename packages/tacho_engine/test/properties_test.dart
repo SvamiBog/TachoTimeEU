@@ -123,7 +123,6 @@ ExtendedLog extendedLog(int seed) {
         end: end,
         driving: minutes(r.nextInt(0, min(span.inMinutes, 11 * 60))),
         restKind: kind,
-        rest: restLength,
         splitRest: kind == RestKind.daily && r.next() < 0.2,
       ),
     );
@@ -343,15 +342,39 @@ Map<String, Object?> oracle(
       if (p.rest >= weeklyMin)
         (start: at(p.from), end: p.open ? null : at(p.to)),
   ];
+  // Отдых ручной смены — до начала ближайшей следующей смены, ручной или
+  // из записей; следующей нет — отдых идёт
+  ({DateTime start, DateTime? end, int rest, bool weekly})? manualRest(
+    ManualShift m,
+  ) {
+    final end = m.end;
+    if (end == null || m.restKind == RestKind.none) return null;
+    DateTime? next;
+    for (final t in [
+      for (final o in manual) o.start,
+      for (final s in shifts) at(s.from),
+    ]) {
+      if (t.isAfter(m.start) && !t.isBefore(end)) {
+        if (next == null || t.isBefore(next)) next = t;
+      }
+    }
+    final rest = max(0, (next ?? now).difference(end).inMinutes);
+    return (
+      start: end,
+      end: next,
+      rest: rest,
+      weekly: m.restKind == RestKind.weekly || rest >= weeklyMin,
+    );
+  }
+
   final weekly = [...recordedWeekly];
   for (final m in manual) {
-    final end = m.end;
-    if (m.restKind != RestKind.weekly || end == null) continue;
-    final restEnd = end.add(m.rest);
+    final r = manualRest(m);
+    if (r == null || !r.weekly) continue;
     final duplicate = recordedWeekly.any(
-      (r) => r.start.isBefore(restEnd) && (r.end ?? now).isAfter(end),
+      (w) => w.start.isBefore(r.end ?? now) && (w.end ?? now).isAfter(r.start),
     );
-    if (!duplicate) weekly.add((start: end, end: restEnd));
+    if (!duplicate) weekly.add((start: r.start, end: r.end));
   }
   // Последний по началу; при равном начале — добавленный позже
   final completed = weekly.where((r) => r.end != null);
@@ -382,12 +405,12 @@ Map<String, Object?> oracle(
     if (isReduced(inWindow, split: split)) reducedRests++;
   }
   for (final m in manual) {
-    final end = m.end;
-    if (end == null || beforeSince(end) || m.restKind != RestKind.daily) {
+    final r = manualRest(m);
+    if (r == null || r.end == null || r.weekly || beforeSince(r.start)) {
       continue;
     }
-    final left = window - end.difference(m.start).inMinutes;
-    final inWindow = max(0, min(m.rest.inMinutes, left));
+    final left = window - r.start.difference(m.start).inMinutes;
+    final inWindow = max(0, min(r.rest, left));
     if (isReduced(inWindow, split: m.splitRest)) reducedRests++;
   }
 

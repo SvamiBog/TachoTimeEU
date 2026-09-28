@@ -3,6 +3,7 @@ import 'package:tacho_engine/src/activity_period.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
 import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/infringement.dart';
+import 'package:tacho_engine/src/manual_rest.dart';
 import 'package:tacho_engine/src/manual_shift.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
@@ -332,6 +333,9 @@ ComplianceSnapshot calculateCompliance({
   if (!now.isUtc) throw ArgumentError.value(now, 'now', 'должно быть в UTC');
   final manual = manualShifts.toList();
   final timeline = analyzeTimeline(periods, now);
+  // Отдых ручных смен — до начала следующей смены
+  final restOfManual = manualRests(manual, timeline, now);
+  final manualRest = restOfManual.nonNulls.toList();
   final lead = settings.warningLead;
   final crew = settings.crew;
   final infringements = <Infringement>[];
@@ -431,21 +435,19 @@ ComplianceSnapshot calculateCompliance({
         ),
   ];
   final weeklyRests = [...recordedWeekly];
-  for (final m in manual) {
-    final end = m.end;
-    if (m.restKind != RestKind.weekly || end == null) continue;
-    final restEnd = end.add(m.rest);
+  for (final r in manualRest) {
+    if (r.kind != RestKind.weekly) continue;
     // Тот же отдых уже есть в записях режимов — не считаем его дважды
     final duplicate = recordedWeekly.any(
-      (r) => r.start.isBefore(restEnd) && (r.end ?? now).isAfter(end),
+      (w) => w.start.isBefore(r.end ?? now) && (w.end ?? now).isAfter(r.start),
     );
     if (duplicate) continue;
     weeklyRests.add(
       WeeklyRest(
-        start: end,
-        end: restEnd,
-        duration: m.rest,
-        status: weeklyRestStatus(m.rest),
+        start: r.start,
+        end: r.end,
+        duration: r.duration,
+        status: weeklyRestStatus(r.duration),
       ),
     );
   }
@@ -471,9 +473,7 @@ ComplianceSnapshot calculateCompliance({
   // погасить несколько.
   final compensationHosts = [
     for (final p in timeline.rests) (start: p.start, rest: p.rest),
-    for (final m in manual)
-      if (m.end case final end? when m.restKind != RestKind.none)
-        (start: end, rest: m.rest),
+    for (final r in manualRest) (start: r.start, rest: r.duration),
   ];
   final hostUsed = List.filled(compensationHosts.length, Duration.zero);
   final unpaid = <Compensation>[];
@@ -527,12 +527,21 @@ ComplianceSnapshot calculateCompliance({
       reducedRestsUsed++;
     }
   }
-  for (final m in manual) {
+  for (final (i, m) in manual.indexed) {
     final end = m.end;
-    if (end == null || !sinceWorkWeek(end) || m.restKind != RestKind.daily) {
+    final r = restOfManual[i];
+    if (end == null ||
+        r == null ||
+        r.ongoing ||
+        r.kind != RestKind.daily ||
+        !sinceWorkWeek(end)) {
       continue;
     }
-    final inWindow = restInWindow(durationBetween(m.start, end), m.rest, crew);
+    final inWindow = restInWindow(
+      durationBetween(m.start, end),
+      r.duration,
+      crew,
+    );
     if (dailyRestStatus(inWindow, split: m.splitRest) == RestStatus.reduced) {
       reducedRestsUsed++;
     }

@@ -63,12 +63,13 @@ void main() {
       expect(shift.restLevel, JournalLevel.ok);
     });
 
-    test('ручная смена не «живая», конец отдыха — из её итогов', () {
+    test('ручная смена не «живая», конец отдыха — начало следующей '
+        'смены', () {
       final now = utc('2026-09-23 12:00');
-      final m = manualShift(utc('2026-09-21 06:00'));
-      final shift = journalShifts(const [], now, manual: [m]).single;
+      final manual = manualChain(utc('2026-09-21 06:00'), ['11:00']);
+      final shift = journalShifts(const [], now, manual: manual).first;
       expect(shift.live, isFalse);
-      expect(shift.manual, m);
+      expect(shift.manual, manual.first);
       expect(shift.restEnd, utc('2026-09-22 03:00'));
     });
   });
@@ -105,11 +106,7 @@ void main() {
       // Ручная смена 18.09 и недельный отдых 45 ч после неё; приложение
       // установили во время этого отдыха.
       final manual = [
-        manualShift(
-          utc('2026-09-18 06:00'),
-          restKind: RestKind.weekly,
-          rest: '45:00',
-        ),
+        manualShift(utc('2026-09-18 06:00'), restKind: RestKind.weekly),
       ];
       final recorded = logFrom(utc('2026-09-19 00:00'), [
         rest('37:00'),
