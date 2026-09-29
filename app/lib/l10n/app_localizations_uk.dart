@@ -2078,4 +2078,61 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get problemFailed =>
       'Не вдалося відкрити надсилання. Спробуйте ще раз.';
+
+  @override
+  String get transferTitle => 'Перенесення на інший телефон';
+
+  @override
+  String get transferHint => 'Журнал — файлом через месенджер або пошту';
+
+  @override
+  String get transferText =>
+      'На старому телефоні збережіть журнал у файл і надішліть собі — у месенджер, на пошту чи в хмару. На новому телефоні відкрийте цей самий екран і завантажте файл: журнал, зчитування картки й налаштування розрахунку будуть як на старому.';
+
+  @override
+  String get transferSave => 'Зберегти журнал у файл';
+
+  @override
+  String get transferLoad => 'Завантажити журнал із файлу';
+
+  @override
+  String get transferConfirmTitle => 'Завантажити журнал?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'У файлі — журнал з $from по $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Журнал на цьому телефоні буде замінено журналом із файлу.';
+
+  @override
+  String get transferConfirm => 'Завантажити';
+
+  @override
+  String get transferDone => 'Журнал завантажено';
+
+  @override
+  String get transferEmpty => 'У файлі немає записів журналу';
+
+  @override
+  String get transferNotBackup =>
+      'Це не файл журналу TachoGo — виберіть файл tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'Файл збережено в новішій версії TachoGo — оновіть застосунок';
+
+  @override
+  String get transferDamaged =>
+      'Файл журналу пошкоджено — збережіть його на старому телефоні ще раз';
+
+  @override
+  String get transferFailed =>
+      'Не вдалося завантажити журнал. Журнал на телефоні не змінився';
+
+  @override
+  String get transferSaveFailed =>
+      'Не вдалося зберегти файл. Спробуйте ще раз.';
 }

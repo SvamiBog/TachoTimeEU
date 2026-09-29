@@ -178,6 +178,10 @@ final _screens = <String, _Screen>{
     build: MoreScreen.new,
     open: _tapText((l) => l.problemTitle),
   ),
+  'Шторка «Перенос на другой телефон»': (
+    build: MoreScreen.new,
+    open: _tapText((l) => l.transferTitle),
+  ),
   'Инструкция и правила': (build: GuideScreen.new, open: null),
   'Инструкция · своя перевозка': (
     build: GuideScreen.new,

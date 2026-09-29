@@ -2077,4 +2077,61 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get problemFailed =>
       'Odeslání se nepodařilo otevřít. Zkuste to znovu.';
+
+  @override
+  String get transferTitle => 'Přenos do jiného telefonu';
+
+  @override
+  String get transferHint => 'Deník jako soubor přes messenger nebo e-mail';
+
+  @override
+  String get transferText =>
+      'Na starém telefonu uložte deník do souboru a pošlete si ho — přes messenger, e-mailem nebo do cloudu. Na novém telefonu otevřete tuto obrazovku a načtěte soubor: deník, stažení karty a nastavení výpočtu budou stejné jako na starém.';
+
+  @override
+  String get transferSave => 'Uložit deník do souboru';
+
+  @override
+  String get transferLoad => 'Načíst deník ze souboru';
+
+  @override
+  String get transferConfirmTitle => 'Načíst deník?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'V souboru je deník od $from do $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Deník v tomto telefonu bude nahrazen deníkem ze souboru.';
+
+  @override
+  String get transferConfirm => 'Načíst';
+
+  @override
+  String get transferDone => 'Deník načten';
+
+  @override
+  String get transferEmpty => 'V souboru nejsou žádné záznamy deníku';
+
+  @override
+  String get transferNotBackup =>
+      'Toto není soubor deníku TachoGo — vyberte soubor tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'Soubor byl uložen v novější verzi TachoGo — aktualizujte aplikaci';
+
+  @override
+  String get transferDamaged =>
+      'Soubor deníku je poškozený — uložte ho znovu na starém telefonu';
+
+  @override
+  String get transferFailed =>
+      'Deník se nepodařilo načíst. Deník v telefonu se nezměnil';
+
+  @override
+  String get transferSaveFailed =>
+      'Soubor se nepodařilo uložit. Zkuste to znovu.';
 }

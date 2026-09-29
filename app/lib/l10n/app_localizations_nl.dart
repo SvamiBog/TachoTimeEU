@@ -2065,4 +2065,61 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get problemFailed =>
       'Versturen kon niet worden geopend. Probeer het opnieuw.';
+
+  @override
+  String get transferTitle => 'Overzetten naar een andere telefoon';
+
+  @override
+  String get transferHint => 'Logboek als bestand via messenger of e-mail';
+
+  @override
+  String get transferText =>
+      'Sla op de oude telefoon het logboek op in een bestand en stuur het naar jezelf — via messenger, e-mail of de cloud. Open op de nieuwe telefoon hetzelfde scherm en laad het bestand: logboek, kaartuitlezingen en berekeningsinstellingen zijn dan net als op de oude.';
+
+  @override
+  String get transferSave => 'Logboek opslaan in bestand';
+
+  @override
+  String get transferLoad => 'Logboek laden uit bestand';
+
+  @override
+  String get transferConfirmTitle => 'Logboek laden?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'Het bestand bevat het logboek van $from tot $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Het logboek op deze telefoon wordt vervangen door het logboek uit het bestand.';
+
+  @override
+  String get transferConfirm => 'Laden';
+
+  @override
+  String get transferDone => 'Logboek geladen';
+
+  @override
+  String get transferEmpty => 'Het bestand bevat geen logboekregels';
+
+  @override
+  String get transferNotBackup =>
+      'Dit is geen TachoGo-logboekbestand — kies het bestand tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'Het bestand is opgeslagen in een nieuwere versie van TachoGo — werk de app bij';
+
+  @override
+  String get transferDamaged =>
+      'Het logboekbestand is beschadigd — sla het opnieuw op op de oude telefoon';
+
+  @override
+  String get transferFailed =>
+      'Het logboek kon niet worden geladen. Het logboek op de telefoon is niet gewijzigd';
+
+  @override
+  String get transferSaveFailed =>
+      'Het bestand kon niet worden opgeslagen. Probeer het opnieuw.';
 }

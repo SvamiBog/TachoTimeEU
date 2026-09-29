@@ -3284,6 +3284,102 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Не удалось открыть отправку. Попробуйте ещё раз.'**
   String get problemFailed;
+
+  /// Строка «Ещё» и заголовок шторки переноса журнала файлом
+  ///
+  /// In ru, this message translates to:
+  /// **'Перенос на другой телефон'**
+  String get transferTitle;
+
+  /// Подпись под строкой «Перенос на другой телефон» в «Ещё»
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал — файлом через мессенджер или почту'**
+  String get transferHint;
+
+  /// Шторка переноса: как перенести журнал
+  ///
+  /// In ru, this message translates to:
+  /// **'На старом телефоне сохраните журнал в файл и отправьте себе — в мессенджер, на почту или в облако. На новом телефоне откройте этот же экран и загрузите файл: журнал, считывания карты и настройки расчёта будут как на старом.'**
+  String get transferText;
+
+  /// Кнопка: журнал в файл и в системное «Поделиться»
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить журнал в файл'**
+  String get transferSave;
+
+  /// Кнопка: выбрать файл переноса и загрузить журнал
+  ///
+  /// In ru, this message translates to:
+  /// **'Загрузить журнал из файла'**
+  String get transferLoad;
+
+  /// Заголовок подтверждения загрузки журнала из файла
+  ///
+  /// In ru, this message translates to:
+  /// **'Загрузить журнал?'**
+  String get transferConfirmTitle;
+
+  /// Подтверждение: за какие дни журнал в файле
+  ///
+  /// In ru, this message translates to:
+  /// **'В файле — журнал с {from} по {to}.'**
+  String transferConfirmRange(String from, String to);
+
+  /// Подтверждение, если на телефоне уже есть журнал
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал на этом телефоне будет заменён журналом из файла.'**
+  String get transferConfirmReplace;
+
+  /// Кнопка подтверждения загрузки
+  ///
+  /// In ru, this message translates to:
+  /// **'Загрузить'**
+  String get transferConfirm;
+
+  /// Сообщение: журнал из файла загружен
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал загружен'**
+  String get transferDone;
+
+  /// Сообщение: в файле переноса пустой журнал
+  ///
+  /// In ru, this message translates to:
+  /// **'В файле нет записей журнала'**
+  String get transferEmpty;
+
+  /// Ошибка: выбран не файл переноса
+  ///
+  /// In ru, this message translates to:
+  /// **'Это не файл журнала TachoGo — выберите файл tachogo-journal'**
+  String get transferNotBackup;
+
+  /// Ошибка: файл из более новой версии приложения
+  ///
+  /// In ru, this message translates to:
+  /// **'Файл сохранён в более новой версии TachoGo — обновите приложение'**
+  String get transferNewer;
+
+  /// Ошибка: файл переноса повреждён
+  ///
+  /// In ru, this message translates to:
+  /// **'Файл журнала повреждён — сохраните его на старом телефоне заново'**
+  String get transferDamaged;
+
+  /// Ошибка загрузки, журнал не изменён
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить журнал. Журнал на телефоне не изменился'**
+  String get transferFailed;
+
+  /// Ошибка сохранения файла переноса
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось сохранить файл. Попробуйте ещё раз.'**
+  String get transferSaveFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -525,5 +525,21 @@
   "problemSend": "Odoslať",
   "problemSubject": "TachoGo — problém v beta verzii",
   "problemPrompt": "Čo sa stalo a kedy (vlastnými slovami):",
-  "problemFailed": "Odoslanie sa nepodarilo otvoriť. Skúste to znova."
+  "problemFailed": "Odoslanie sa nepodarilo otvoriť. Skúste to znova.",
+  "transferTitle": "Presun do iného telefónu",
+  "transferHint": "Denník ako súbor cez messenger alebo e-mail",
+  "transferText": "V starom telefóne uložte denník do súboru a pošlite si ho — cez messenger, e-mailom alebo do cloudu. V novom telefóne otvorte túto obrazovku a načítajte súbor: denník, stiahnutia karty a nastavenia výpočtu budú rovnaké ako v starom.",
+  "transferSave": "Uložiť denník do súboru",
+  "transferLoad": "Načítať denník zo súboru",
+  "transferConfirmTitle": "Načítať denník?",
+  "transferConfirmRange": "V súbore je denník od {from} do {to}.",
+  "transferConfirmReplace": "Denník v tomto telefóne bude nahradený denníkom zo súboru.",
+  "transferConfirm": "Načítať",
+  "transferDone": "Denník načítaný",
+  "transferEmpty": "V súbore nie sú žiadne záznamy denníka",
+  "transferNotBackup": "Toto nie je súbor denníka TachoGo — vyberte súbor tachogo-journal",
+  "transferNewer": "Súbor bol uložený v novšej verzii TachoGo — aktualizujte aplikáciu",
+  "transferDamaged": "Súbor denníka je poškodený — uložte ho znova v starom telefóne",
+  "transferFailed": "Denník sa nepodarilo načítať. Denník v telefóne sa nezmenil",
+  "transferSaveFailed": "Súbor sa nepodarilo uložiť. Skúste to znova."
 }

@@ -267,7 +267,8 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   # Выпуск — только когда прошли все проверки приложения: движок, тесты в
-  # поясах, поиск секретов, debug-сборка с Robolectric и эмулятор.
+  # поясах, поиск секретов, debug-сборка с Robolectric, эмулятор и
+  # обновление поверх прошлой версии.
   # Веб-прототип выпуск не держит.
   release-android:
     name: Выпуск Android
@@ -279,6 +280,7 @@ jobs:
       - secrets
       - build-android
       - integration-android
+      - upgrade-android
     if: ${{ needs.release-plan.outputs.build == 'yes' }}
     runs-on: ubuntu-latest
     defaults:
@@ -453,6 +455,81 @@ jobs:
             -camera-back none
           working-directory: app
           script: tool/integration/run_on_emulator.sh
+
+  # UPG-01: обновление поверх прошлой версии, как из Google Play, — журнал
+  # на месте (tool/integration/upgrade_on_emulator.sh, docs/testing.md,
+  # раздел 14). Прошлая версия: у PR — его база, у main — main до push, у
+  # тега — прошлый тег.
+  upgrade-android:
+    name: Обновление поверх прошлой версии
+    needs: [engine, app]
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Прошлая версия
+        env:
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          case "$GITHUB_REF" in
+            refs/tags/*)
+              base=$(git describe --tags --abbrev=0 --match 'v[0-9]*' HEAD^ 2>/dev/null || true) ;;
+            *) base=${PR_BASE:-$BEFORE} ;;
+          esac
+          if [ -z "$base" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
+            base=$(git rev-parse HEAD^)
+          fi
+          echo "Прошлая версия: $(git log -1 --format='%h %s' "$base")"
+          dir="$RUNNER_TEMP/upgrade-base"
+          git worktree add --detach "$dir" "$base"
+          # Первый прогон: у прошлой версии ещё нет шага 1 — он берётся
+          # отсюда, если собирается с её кодом.
+          for f in integration_test/upgrade_seed_test.dart \
+            integration_test/support/upgrade_snapshot.dart; do
+            if [ ! -f "$dir/app/$f" ]; then
+              echo "::notice::У прошлой версии нет $f — взят из этой"
+              cp "$f" "$dir/app/$f"
+            fi
+          done
+          echo "BASE_APP=$dir/app" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Зависимости обеих версий
+        run: |
+          flutter pub get
+          cd "$BASE_APP" && flutter pub get
+      - name: KVM для эмулятора
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Обновление поверх прошлой версии
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: >-
+            -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+            -camera-back none
+          working-directory: app
+          script: tool/integration/upgrade_on_emulator.sh "$BASE_APP"
 
   # iOS приостановлен до релиза v1.0 (решение 2026-09-27, docs/roadmap.md,
   # Фаза 8): сборка не блокирует PR и не тратит время macOS. Запуск вручную

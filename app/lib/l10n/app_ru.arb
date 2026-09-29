@@ -1697,5 +1697,77 @@
   "@problemPrompt": {
     "description": "Первая строка сообщения с отчётом: водитель пишет ниже"
   },
-  "problemFailed": "Не удалось открыть отправку. Попробуйте ещё раз."
+  "problemFailed": "Не удалось открыть отправку. Попробуйте ещё раз.",
+  "transferTitle": "Перенос на другой телефон",
+  "@transferTitle": {
+    "description": "Строка «Ещё» и заголовок шторки переноса журнала файлом"
+  },
+  "transferHint": "Журнал — файлом через мессенджер или почту",
+  "@transferHint": {
+    "description": "Подпись под строкой «Перенос на другой телефон» в «Ещё»"
+  },
+  "transferText": "На старом телефоне сохраните журнал в файл и отправьте себе — в мессенджер, на почту или в облако. На новом телефоне откройте этот же экран и загрузите файл: журнал, считывания карты и настройки расчёта будут как на старом.",
+  "@transferText": {
+    "description": "Шторка переноса: как перенести журнал"
+  },
+  "transferSave": "Сохранить журнал в файл",
+  "@transferSave": {
+    "description": "Кнопка: журнал в файл и в системное «Поделиться»"
+  },
+  "transferLoad": "Загрузить журнал из файла",
+  "@transferLoad": {
+    "description": "Кнопка: выбрать файл переноса и загрузить журнал"
+  },
+  "transferConfirmTitle": "Загрузить журнал?",
+  "@transferConfirmTitle": {
+    "description": "Заголовок подтверждения загрузки журнала из файла"
+  },
+  "transferConfirmRange": "В файле — журнал с {from} по {to}.",
+  "@transferConfirmRange": {
+    "description": "Подтверждение: за какие дни журнал в файле",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "transferConfirmReplace": "Журнал на этом телефоне будет заменён журналом из файла.",
+  "@transferConfirmReplace": {
+    "description": "Подтверждение, если на телефоне уже есть журнал"
+  },
+  "transferConfirm": "Загрузить",
+  "@transferConfirm": {
+    "description": "Кнопка подтверждения загрузки"
+  },
+  "transferDone": "Журнал загружен",
+  "@transferDone": {
+    "description": "Сообщение: журнал из файла загружен"
+  },
+  "transferEmpty": "В файле нет записей журнала",
+  "@transferEmpty": {
+    "description": "Сообщение: в файле переноса пустой журнал"
+  },
+  "transferNotBackup": "Это не файл журнала TachoGo — выберите файл tachogo-journal",
+  "@transferNotBackup": {
+    "description": "Ошибка: выбран не файл переноса"
+  },
+  "transferNewer": "Файл сохранён в более новой версии TachoGo — обновите приложение",
+  "@transferNewer": {
+    "description": "Ошибка: файл из более новой версии приложения"
+  },
+  "transferDamaged": "Файл журнала повреждён — сохраните его на старом телефоне заново",
+  "@transferDamaged": {
+    "description": "Ошибка: файл переноса повреждён"
+  },
+  "transferFailed": "Не удалось загрузить журнал. Журнал на телефоне не изменился",
+  "@transferFailed": {
+    "description": "Ошибка загрузки, журнал не изменён"
+  },
+  "transferSaveFailed": "Не удалось сохранить файл. Попробуйте ещё раз.",
+  "@transferSaveFailed": {
+    "description": "Ошибка сохранения файла переноса"
+  }
 }

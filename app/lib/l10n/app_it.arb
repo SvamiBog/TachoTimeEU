@@ -525,5 +525,21 @@
   "problemSend": "Invia",
   "problemSubject": "TachoGo — problema nella beta",
   "problemPrompt": "Cosa è successo e quando (con parole tue):",
-  "problemFailed": "Impossibile aprire l’invio. Riprova."
+  "problemFailed": "Impossibile aprire l’invio. Riprova.",
+  "transferTitle": "Trasferisci su un altro telefono",
+  "transferHint": "Il registro come file via messaggistica o e-mail",
+  "transferText": "Sul vecchio telefono salva il registro in un file e invialo a te stesso: via messaggistica, e-mail o nel cloud. Sul nuovo telefono apri questa stessa schermata e carica il file: registro, scarichi della carta e impostazioni di calcolo saranno come sul vecchio.",
+  "transferSave": "Salva registro in un file",
+  "transferLoad": "Carica registro da file",
+  "transferConfirmTitle": "Caricare il registro?",
+  "transferConfirmRange": "Il file contiene il registro dal {from} al {to}.",
+  "transferConfirmReplace": "Il registro di questo telefono sarà sostituito da quello del file.",
+  "transferConfirm": "Carica",
+  "transferDone": "Registro caricato",
+  "transferEmpty": "Il file non contiene voci di registro",
+  "transferNotBackup": "Non è un file di registro TachoGo: scegli il file tachogo-journal",
+  "transferNewer": "Il file è stato salvato in una versione più recente di TachoGo: aggiorna l’app",
+  "transferDamaged": "Il file del registro è danneggiato: salvalo di nuovo sul vecchio telefono",
+  "transferFailed": "Impossibile caricare il registro. Il registro del telefono non è cambiato",
+  "transferSaveFailed": "Impossibile salvare il file. Riprova."
 }

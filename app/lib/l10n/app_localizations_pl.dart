@@ -2084,4 +2084,61 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get problemFailed =>
       'Nie udało się otworzyć wysyłania. Spróbuj ponownie.';
+
+  @override
+  String get transferTitle => 'Przeniesienie na inny telefon';
+
+  @override
+  String get transferHint => 'Dziennik jako plik przez komunikator lub e-mail';
+
+  @override
+  String get transferText =>
+      'Na starym telefonie zapisz dziennik do pliku i wyślij go sobie — komunikatorem, e-mailem lub do chmury. Na nowym telefonie otwórz ten sam ekran i wczytaj plik: dziennik, odczyty karty i ustawienia obliczeń będą takie jak na starym.';
+
+  @override
+  String get transferSave => 'Zapisz dziennik do pliku';
+
+  @override
+  String get transferLoad => 'Wczytaj dziennik z pliku';
+
+  @override
+  String get transferConfirmTitle => 'Wczytać dziennik?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'W pliku jest dziennik od $from do $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Dziennik na tym telefonie zostanie zastąpiony dziennikiem z pliku.';
+
+  @override
+  String get transferConfirm => 'Wczytaj';
+
+  @override
+  String get transferDone => 'Dziennik wczytany';
+
+  @override
+  String get transferEmpty => 'W pliku nie ma wpisów dziennika';
+
+  @override
+  String get transferNotBackup =>
+      'To nie jest plik dziennika TachoGo — wybierz plik tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'Plik zapisano w nowszej wersji TachoGo — zaktualizuj aplikację';
+
+  @override
+  String get transferDamaged =>
+      'Plik dziennika jest uszkodzony — zapisz go ponownie na starym telefonie';
+
+  @override
+  String get transferFailed =>
+      'Nie udało się wczytać dziennika. Dziennik na telefonie się nie zmienił';
+
+  @override
+  String get transferSaveFailed =>
+      'Nie udało się zapisać pliku. Spróbuj ponownie.';
 }

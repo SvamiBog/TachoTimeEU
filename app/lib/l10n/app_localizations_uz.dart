@@ -2063,4 +2063,62 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get problemFailed =>
       'Yuborishni ochib boʻlmadi. Qayta urinib koʻring.';
+
+  @override
+  String get transferTitle => 'Boshqa telefonga koʻchirish';
+
+  @override
+  String get transferHint =>
+      'Jurnal fayl koʻrinishida — messenjer yoki pochta orqali';
+
+  @override
+  String get transferText =>
+      'Eski telefonda jurnalni faylga saqlang va oʻzingizga yuboring — messenjerga, pochtaga yoki bulutga. Yangi telefonda xuddi shu ekranni oching va faylni yuklang: jurnal, karta oʻqishlari va hisob sozlamalari eski telefondagidek boʻladi.';
+
+  @override
+  String get transferSave => 'Jurnalni faylga saqlash';
+
+  @override
+  String get transferLoad => 'Jurnalni fayldan yuklash';
+
+  @override
+  String get transferConfirmTitle => 'Jurnal yuklansinmi?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'Faylda $from dan $to gacha boʻlgan jurnal bor.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Bu telefondagi jurnal fayldagi jurnal bilan almashtiriladi.';
+
+  @override
+  String get transferConfirm => 'Yuklash';
+
+  @override
+  String get transferDone => 'Jurnal yuklandi';
+
+  @override
+  String get transferEmpty => 'Faylda jurnal yozuvlari yoʻq';
+
+  @override
+  String get transferNotBackup =>
+      'Bu TachoGo jurnali fayli emas — tachogo-journal faylini tanlang';
+
+  @override
+  String get transferNewer =>
+      'Fayl TachoGo ning yangiroq versiyasida saqlangan — ilovani yangilang';
+
+  @override
+  String get transferDamaged =>
+      'Jurnal fayli buzilgan — uni eski telefonda qaytadan saqlang';
+
+  @override
+  String get transferFailed =>
+      'Jurnalni yuklab boʻlmadi. Telefondagi jurnal oʻzgarmadi';
+
+  @override
+  String get transferSaveFailed =>
+      'Faylni saqlab boʻlmadi. Qayta urinib koʻring.';
 }

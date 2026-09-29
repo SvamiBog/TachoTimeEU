@@ -525,5 +525,21 @@
   "problemSend": "Trimiteți",
   "problemSubject": "TachoGo — problemă în versiunea beta",
   "problemPrompt": "Ce s-a întâmplat și când (descrieți cu cuvintele dvs.):",
-  "problemFailed": "Trimiterea nu s-a putut deschide. Încercați din nou."
+  "problemFailed": "Trimiterea nu s-a putut deschide. Încercați din nou.",
+  "transferTitle": "Transfer pe alt telefon",
+  "transferHint": "Jurnalul ca fișier, prin mesagerie sau e-mail",
+  "transferText": "Pe telefonul vechi salvați jurnalul într-un fișier și trimiteți-l vouă — prin mesagerie, e-mail sau în cloud. Pe telefonul nou deschideți același ecran și încărcați fișierul: jurnalul, descărcările cardului și setările de calcul vor fi ca pe cel vechi.",
+  "transferSave": "Salvează jurnalul în fișier",
+  "transferLoad": "Încarcă jurnalul din fișier",
+  "transferConfirmTitle": "Încărcați jurnalul?",
+  "transferConfirmRange": "În fișier este jurnalul de la {from} până la {to}.",
+  "transferConfirmReplace": "Jurnalul de pe acest telefon va fi înlocuit cu jurnalul din fișier.",
+  "transferConfirm": "Încarcă",
+  "transferDone": "Jurnal încărcat",
+  "transferEmpty": "Fișierul nu conține înregistrări de jurnal",
+  "transferNotBackup": "Nu este un fișier de jurnal TachoGo — alegeți fișierul tachogo-journal",
+  "transferNewer": "Fișierul a fost salvat într-o versiune mai nouă TachoGo — actualizați aplicația",
+  "transferDamaged": "Fișierul jurnalului este deteriorat — salvați-l din nou pe telefonul vechi",
+  "transferFailed": "Jurnalul nu s-a putut încărca. Jurnalul de pe telefon nu s-a schimbat",
+  "transferSaveFailed": "Fișierul nu s-a putut salva. Încercați din nou."
 }

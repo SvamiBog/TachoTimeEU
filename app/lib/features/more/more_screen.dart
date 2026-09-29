@@ -12,8 +12,10 @@ import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/more/problem_report.dart';
+import 'package:tachogo/features/more/transfer_sheet.dart';
 
-/// «Ещё» (экран 4): экспорт отчёта, инструкция и правила, о приложении.
+/// «Ещё» (экран 4): экспорт отчёта, перенос журнала на другой телефон,
+/// инструкция и правила, о приложении.
 /// В бете — «Сообщить о проблеме» (Фаза 4). Баннер Premium появится
 /// с покупками (Фаза 5), аккаунт — с синхронизацией (Фаза 6), обратная
 /// связь, «Поделиться» и политика конфиденциальности — к публикации
@@ -54,6 +56,12 @@ class MoreScreen extends ConsumerWidget {
                   icon: Icons.file_download_outlined,
                   title: l.settingsExport,
                   onTap: () => unawaited(showExportSheet(context)),
+                ),
+                NavRow(
+                  icon: Icons.mobile_screen_share_outlined,
+                  title: l.transferTitle,
+                  subtitle: l.transferHint,
+                  onTap: () => unawaited(showTransferSheet(context)),
                 ),
                 NavRow(
                   icon: Icons.description_outlined,
