@@ -17,8 +17,9 @@ final shiftCountriesProvider = StreamProvider<Map<DateTime, ShiftCountries>>(
   (ref) => ref.watch(countryRepositoryProvider).watchShifts(),
 );
 
-final recentCountriesProvider = StreamProvider<List<String>>(
-  (ref) => ref.watch(countryRepositoryProvider).watchRecent(),
+/// Часто используемые страны — сверху шторки выбора страны (экран 10).
+final frequentCountriesProvider = StreamProvider<List<String>>(
+  (ref) => ref.watch(countryRepositoryProvider).watchFrequent(),
 );
 
 final defaultCountryProvider = StreamProvider<String?>(

@@ -308,7 +308,7 @@ void main() {
       await tester.tap(find.byType(CountryChip));
       await tester.pumpAndSettle();
       expect(find.text('Начало · —'), findsOneWidget);
-      expect(find.text('НЕДАВНИЕ'), findsNothing);
+      expect(find.text('ЧАСТО ИСПОЛЬЗУЕМЫЕ'), findsNothing);
       // Коды тахографа в списке, поиск по названию
       expect(find.text('A'), findsOneWidget);
       await tester.enterText(find.byType(TextField), 'польш');
@@ -339,10 +339,10 @@ void main() {
         findsOneWidget,
       );
 
-      // Недавние сверху; «Не указывать» убирает конечную
+      // Часто используемые сверху; «Не указывать» убирает конечную
       await tester.tap(find.byType(CountryChip));
       await tester.pumpAndSettle();
-      expect(find.text('НЕДАВНИЕ'), findsOneWidget);
+      expect(find.text('ЧАСТО ИСПОЛЬЗУЕМЫЕ'), findsOneWidget);
       await tester.tap(find.text('Конец · LT'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Не указывать'));

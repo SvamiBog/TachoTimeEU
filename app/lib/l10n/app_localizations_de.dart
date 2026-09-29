@@ -725,7 +725,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get countrySearch => 'Land oder Kennzeichen';
 
   @override
-  String get countryRecent => 'Zuletzt';
+  String get countryFrequent => 'Häufig verwendet';
 
   @override
   String get countryClearEnd => 'Nicht angeben';

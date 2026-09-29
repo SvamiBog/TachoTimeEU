@@ -725,7 +725,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get countrySearch => 'Land of code';
 
   @override
-  String get countryRecent => 'Recent';
+  String get countryFrequent => 'Vaak gebruikt';
 
   @override
   String get countryClearEnd => 'Niet opgeven';

@@ -736,7 +736,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get countrySearch => 'Країна або код';
 
   @override
-  String get countryRecent => 'Нещодавні';
+  String get countryFrequent => 'Часто вживані';
 
   @override
   String get countryClearEnd => 'Не вказувати';

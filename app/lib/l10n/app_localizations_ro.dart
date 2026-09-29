@@ -732,7 +732,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get countrySearch => 'Țară sau cod';
 
   @override
-  String get countryRecent => 'Recente';
+  String get countryFrequent => 'Folosite des';
 
   @override
   String get countryClearEnd => 'Nu indica';

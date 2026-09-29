@@ -1178,11 +1178,11 @@ abstract class AppLocalizations {
   /// **'Страна или код'**
   String get countrySearch;
 
-  /// No description provided for @countryRecent.
+  /// Шторка выбора страны: страны, чаще всего выбранные в сменах за 8 недель
   ///
   /// In ru, this message translates to:
-  /// **'Недавние'**
-  String get countryRecent;
+  /// **'Часто используемые'**
+  String get countryFrequent;
 
   /// No description provided for @countryClearEnd.
   ///

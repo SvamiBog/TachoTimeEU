@@ -238,7 +238,7 @@ Future<void> _pump(
       countries: {
         DateTime.utc(2026, 9, 23, 6, 49): const ShiftCountries(start: 'PL'),
       },
-      recentCountries: ['PL', 'D', 'CZ'],
+      frequentCountries: ['PL', 'D', 'CZ', 'NL'],
       defaultCountry: 'PL',
       // Настройки и онбординг со всеми строками: автоопределение включено,
       // уведомления запрещены, экономия батареи мешает (Android).

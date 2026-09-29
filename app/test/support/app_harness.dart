@@ -61,7 +61,7 @@ List<Override> journalOverrides({
   ComplianceSettings settings = const ComplianceSettings(),
   DateTime? lastCard,
   Map<DateTime, ShiftCountries> countries = const {},
-  List<String> recentCountries = const [],
+  List<String> frequentCountries = const [],
   String? defaultCountry,
   List<ManualShiftRecord> manualShifts = const [],
   Map<DateTime, ShiftMeta> shiftMeta = const {},
@@ -105,7 +105,9 @@ List<Override> journalOverrides({
   lastCardDownloadProvider.overrideWith((ref) => Stream.value(lastCard)),
   clockProvider.overrideWith(() => TestClock(now)),
   shiftCountriesProvider.overrideWith((ref) => Stream.value(countries)),
-  recentCountriesProvider.overrideWith((ref) => Stream.value(recentCountries)),
+  frequentCountriesProvider.overrideWith(
+    (ref) => Stream.value(frequentCountries),
+  ),
   defaultCountryProvider.overrideWith((ref) => Stream.value(defaultCountry)),
   shiftCountryAutofillProvider.overrideWith((ref) {}),
 ];

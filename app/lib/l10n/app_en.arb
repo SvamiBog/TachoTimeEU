@@ -176,7 +176,7 @@
   "countryEndTab": "End · {code}",
   "countryNextShift": "Country of the next shift",
   "countrySearch": "Country or code",
-  "countryRecent": "Recent",
+  "countryFrequent": "Frequently used",
   "countryClearEnd": "Do not specify",
   "countryNotFound": "Nothing found",
   "countryFooter": "The driver enters the country at the start and end of the shift in the tachograph (Regulation (EU) No 165/2014, Art. 34).",

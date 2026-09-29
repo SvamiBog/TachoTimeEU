@@ -176,7 +176,7 @@
   "countryEndTab": "Кінець · {code}",
   "countryNextShift": "Країна наступної зміни",
   "countrySearch": "Країна або код",
-  "countryRecent": "Нещодавні",
+  "countryFrequent": "Часто вживані",
   "countryClearEnd": "Не вказувати",
   "countryNotFound": "Нічого не знайдено",
   "countryFooter": "Країну початку та кінця зміни водій вводить у тахограф (Регламент (ЄС) 165/2014, ст. 34).",

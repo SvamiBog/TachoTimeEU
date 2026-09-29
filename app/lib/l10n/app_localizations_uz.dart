@@ -725,7 +725,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get countrySearch => 'Mamlakat yoki kod';
 
   @override
-  String get countryRecent => 'Soʻnggilar';
+  String get countryFrequent => 'Koʻp ishlatiladigan';
 
   @override
   String get countryClearEnd => 'Koʻrsatmaslik';

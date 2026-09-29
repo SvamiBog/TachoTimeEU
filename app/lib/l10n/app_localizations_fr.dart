@@ -727,7 +727,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get countrySearch => 'Pays ou code';
 
   @override
-  String get countryRecent => 'Récents';
+  String get countryFrequent => 'Fréquemment utilisés';
 
   @override
   String get countryClearEnd => 'Ne pas indiquer';

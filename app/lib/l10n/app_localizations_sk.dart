@@ -737,7 +737,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get countrySearch => 'Krajina alebo kód';
 
   @override
-  String get countryRecent => 'Nedávne';
+  String get countryFrequent => 'Často používané';
 
   @override
   String get countryClearEnd => 'Neuvádzať';

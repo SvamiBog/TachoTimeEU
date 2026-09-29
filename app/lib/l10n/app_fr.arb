@@ -176,7 +176,7 @@
   "countryEndTab": "Fin · {code}",
   "countryNextShift": "Pays du prochain poste",
   "countrySearch": "Pays ou code",
-  "countryRecent": "Récents",
+  "countryFrequent": "Fréquemment utilisés",
   "countryClearEnd": "Ne pas indiquer",
   "countryNotFound": "Aucun résultat",
   "countryFooter": "Le conducteur saisit le pays de début et de fin du poste dans le tachygraphe (règlement (UE) nº 165/2014, art. 34).",

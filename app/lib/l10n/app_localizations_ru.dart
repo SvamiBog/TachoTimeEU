@@ -737,7 +737,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get countrySearch => 'Страна или код';
 
   @override
-  String get countryRecent => 'Недавние';
+  String get countryFrequent => 'Часто используемые';
 
   @override
   String get countryClearEnd => 'Не указывать';

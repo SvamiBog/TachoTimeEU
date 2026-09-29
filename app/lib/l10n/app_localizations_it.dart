@@ -724,7 +724,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get countrySearch => 'Paese o codice';
 
   @override
-  String get countryRecent => 'Recenti';
+  String get countryFrequent => 'Usati spesso';
 
   @override
   String get countryClearEnd => 'Non indicare';

@@ -737,7 +737,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get countrySearch => 'Země nebo kód';
 
   @override
-  String get countryRecent => 'Nedávné';
+  String get countryFrequent => 'Často používané';
 
   @override
   String get countryClearEnd => 'Neuvádět';

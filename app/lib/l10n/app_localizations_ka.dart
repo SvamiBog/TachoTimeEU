@@ -724,7 +724,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get countrySearch => 'ქვეყანა ან კოდი';
 
   @override
-  String get countryRecent => 'ბოლოს გამოყენებული';
+  String get countryFrequent => 'ხშირად გამოყენებული';
 
   @override
   String get countryClearEnd => 'არ მიუთითოთ';

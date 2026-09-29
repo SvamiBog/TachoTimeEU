@@ -176,7 +176,7 @@
   "countryEndTab": "Ende · {code}",
   "countryNextShift": "Land der nächsten Schicht",
   "countrySearch": "Land oder Kennzeichen",
-  "countryRecent": "Zuletzt",
+  "countryFrequent": "Häufig verwendet",
   "countryClearEnd": "Nicht angeben",
   "countryNotFound": "Nichts gefunden",
   "countryFooter": "Das Land bei Beginn und Ende der Schicht gibt der Fahrer in den Fahrtenschreiber ein (Verordnung (EU) Nr. 165/2014, Art. 34).",

@@ -739,7 +739,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get countrySearch => 'Kraj lub kod';
 
   @override
-  String get countryRecent => 'Ostatnie';
+  String get countryFrequent => 'Często używane';
 
   @override
   String get countryClearEnd => 'Nie podawaj';
