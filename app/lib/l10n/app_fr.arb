@@ -543,5 +543,19 @@
   "transferNewer": "Le fichier provient d’une version plus récente de TachoGo — mettez l’application à jour",
   "transferDamaged": "Le fichier de journal est endommagé — enregistrez-le à nouveau sur l’ancien téléphone",
   "transferFailed": "Impossible de charger le journal. Le journal du téléphone n’a pas changé",
-  "transferSaveFailed": "Impossible d’enregistrer le fichier. Réessayez."
+  "transferSaveFailed": "Impossible d’enregistrer le fichier. Réessayez.",
+  "rowCompensation": "Compensation",
+  "compensationAttach": "à rattacher à un repos d’au moins 9 h",
+  "compensationRestUntil": "repos jusqu’à {time}",
+  "compensationTooLate": "délai impossible à tenir",
+  "compensationTakenHere": "rattachée à ce repos",
+  "chipCompensationDone": "soldée",
+  "chipCompensationSoon": "échéance proche",
+  "chipCompensationOverdue": "en retard",
+  "compensationDebt": "dette {time}",
+  "compensationRepaidOn": "soldée le {date}",
+  "compensationAttachBy": "à rattacher avant le {date}",
+  "compensationTakenValue": "compensation {time}",
+  "notifyCompensationTakenTitle": "Compensation prise",
+  "notifyCompensationTakenText": "Ce repos couvre les {time} dus pour un repos hebdomadaire réduit — la dette est soldée."
 }

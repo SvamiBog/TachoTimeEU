@@ -77,7 +77,8 @@ class OffDutyRest {
   final DateTime start;
   final Duration duration;
 
-  /// Отдых уже длится не меньше 24 ч — это недельный отдых.
+  /// Отдых уже длится не меньше 24 ч — это недельный отдых. Отдых после
+  /// ручной смены — ещё и если водитель отметил его недельным.
   final bool weekly;
 }
 
@@ -98,10 +99,16 @@ class CurrentBreak {
   final Duration required;
 }
 
-/// Долг за сокращённый недельный отдых (ст. 8(6)).
+/// Долг за сокращённый недельный отдых (ст. 8(6)) и отдых, к которому он
+/// присоединён (ст. 8(7)).
 @immutable
 class Compensation {
-  const new({required this.debt, required this.dueBy});
+  const new({
+    required this.debt,
+    required this.dueBy,
+    required this.restStart,
+    this.repaidIn,
+  });
 
   /// Сколько не хватило до 45 ч.
   final Duration debt;
@@ -109,15 +116,67 @@ class Compensation {
   /// До какого момента долг нужно присоединить к отдыху.
   final DateTime dueBy;
 
+  /// Начало сокращённого недельного отдыха, за который долг.
+  final DateTime restStart;
+
+  /// Начало отдыха, к которому долг присоединён; null — не погашен.
+  final DateTime? repaidIn;
+
+  bool get repaid => repaidIn != null;
+
   @override
   bool operator ==(Object other) =>
-      other is Compensation && other.debt == debt && other.dueBy == dueBy;
+      other is Compensation &&
+      other.debt == debt &&
+      other.dueBy == dueBy &&
+      other.restStart == restStart &&
+      other.repaidIn == repaidIn;
 
   @override
-  int get hashCode => Object.hash(debt, dueBy);
+  int get hashCode => Object.hash(debt, dueBy, restStart, repaidIn);
 
   @override
-  String toString() => 'Compensation(${debt.inMinutes} мин до $dueBy)';
+  String toString() =>
+      'Compensation(${debt.inMinutes} мин до $dueBy'
+      '${repaidIn == null ? '' : ', погашен $repaidIn'})';
+}
+
+/// Компенсация в отдыхе, который идёт: сколько долга он уже погасил и
+/// какой долг погасит следующим. Отдых гасит долг, когда длится 9 ч + долг,
+/// недельный (от 24 ч) — 45 ч + долг, и набрал это к сроку (ст. 8(7)).
+@immutable
+class RestCompensation {
+  const new({required this.taken, required this.next, required this.until});
+
+  /// Долг, уже присоединённый к этому отдыху; ноль — пока ни одного.
+  final Duration taken;
+
+  /// Долг, который отдых погасит следующим; null — гасить больше нечего.
+  final Compensation? next;
+
+  /// Когда отдых погасит [next], если продлится; null — [next] нет.
+  final DateTime? until;
+
+  /// Отдых успевает погасить [next] к сроку.
+  bool get inTime {
+    final (c, at) = (next, until);
+    return c != null && at != null && !at.isAfter(c.dueBy);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is RestCompensation &&
+      other.taken == taken &&
+      other.next == next &&
+      other.until == until;
+
+  @override
+  int get hashCode => Object.hash(taken, next, until);
+
+  @override
+  String toString() =>
+      'RestCompensation(погашено ${taken.inMinutes} мин'
+      '${next == null ? '' : ', дальше ${next!.debt.inMinutes} мин к $until'})';
 }
 
 /// Состояние водителя для главного экрана.
@@ -179,6 +238,8 @@ class ComplianceSnapshot {
     required this.weeklyRestDeadline,
     required this.reducedWeeklyRestAvailable,
     required this.compensation,
+    required this.compensations,
+    required this.restCompensation,
     required this.cardDaysLeft,
     required this.infringements,
   });
@@ -254,7 +315,18 @@ class ComplianceSnapshot {
   /// Недельный отдых должен начаться до этого момента (144 ч).
   final DateTime? weeklyRestDeadline;
   final bool reducedWeeklyRestAvailable;
+
+  /// Ближайший по сроку непогашенный долг компенсации.
   final Compensation? compensation;
+
+  /// Все долги за сокращённые недельные отдыхи — погашенные и нет — по
+  /// началу отдыха: журнал показывает, какой отдых какой долг погасил.
+  final List<Compensation> compensations;
+
+  /// Компенсация в идущем отдыхе: сколько ещё отдыхать, чтобы погасить
+  /// долг, или долг уже погашен им; null — долга нет или водитель не на
+  /// отдыхе.
+  final RestCompensation? restCompensation;
 
   /// Дней до обязательного считывания карты; null — считываний не было.
   final int? cardDaysLeft;
@@ -349,15 +421,30 @@ ComplianceSnapshot calculateCompliance({
   // Смена и отдых после неё
   final shift = timeline.current;
   final lastRest = timeline.rests.isEmpty ? null : timeline.rests.last;
-  final offDutyRest =
-      shift == null &&
-          lastRest != null &&
-          lastRest.open &&
-          (lastRest.rest >= EuLimits.dailyRestReduced || lastRest.dayEnd)
+  // Отдых после последней ручной смены, если следующей смены нет. Когда
+  // смена кончается «сейчас», записи отдыха после неё нет: его время ещё не
+  // наступило, — водитель на этом отдыхе, хотя режим не записан.
+  ManualRest? manualOffDuty;
+  for (final r in manualRest) {
+    if (r.ongoing && (manualOffDuty?.start.isBefore(r.start) ?? true)) {
+      manualOffDuty = r;
+    }
+  }
+  final offDutyRest = shift != null
+      ? null
+      : lastRest != null &&
+            lastRest.open &&
+            (lastRest.rest >= EuLimits.dailyRestReduced || lastRest.dayEnd)
       ? OffDutyRest(
           start: lastRest.start,
           duration: lastRest.rest,
           weekly: lastRest.isWeekly,
+        )
+      : manualOffDuty != null
+      ? OffDutyRest(
+          start: manualOffDuty.start,
+          duration: manualOffDuty.duration,
+          weekly: manualOffDuty.kind == RestKind.weekly,
         )
       : null;
 
@@ -484,6 +571,7 @@ ComplianceSnapshot calculateCompliance({
         (start: r.start, rest: r.duration),
   ];
   final hostUsed = List.filled(compensationHosts.length, Duration.zero);
+  final compensations = <Compensation>[];
   final unpaid = <Compensation>[];
   for (final r in completedWeekly) {
     final end = r.end;
@@ -491,26 +579,71 @@ ComplianceSnapshot calculateCompliance({
     final debt = EuLimits.weeklyRestRegular - r.duration;
     final dueBy = weekStartUtc(r.start)
         .add(week * (EuLimits.compensationWeeks + 1));
-    var repaid = false;
+    DateTime? repaidIn;
     for (final (i, host) in compensationHosts.indexed) {
       if (host.start.isBefore(end) || !host.start.isBefore(dueBy)) continue;
-      final base = host.rest >= EuLimits.weeklyRestReduced
-          ? EuLimits.weeklyRestRegular
-          : EuLimits.compensationAttachedRest;
+      final base = _compensationBase(host.rest, Duration.zero);
       // Засчитывается только отдых, набранный к сроку.
       final byDue = shorter(host.rest, dueBy.difference(host.start));
       if (byDue - base - hostUsed[i] >= debt) {
         hostUsed[i] += debt;
-        repaid = true;
+        repaidIn = host.start;
         break;
       }
     }
-    if (!repaid && !dueBy.isBefore(now.subtract(week * 4))) {
-      unpaid.add(Compensation(debt: debt, dueBy: dueBy));
+    final c = Compensation(
+      debt: debt,
+      dueBy: dueBy,
+      restStart: r.start,
+      repaidIn: repaidIn,
+    );
+    compensations.add(c);
+    if (repaidIn == null && !dueBy.isBefore(now.subtract(week * 4))) {
+      unpaid.add(c);
     }
   }
   unpaid.sort((a, b) => a.dueBy.compareTo(b.dueBy));
   final compensation = unpaid.isEmpty ? null : unpaid.first;
+
+  // Компенсация в идущем отдыхе. Долги гасятся по очереди, и отдых гасит
+  // первым тот, что влезет раньше, — обычно меньший. Суточный отдых несёт
+  // долг сверх 9 ч, недельный — сверх 45 ч; отдых, который с долгом выйдет
+  // за 24 ч, станет недельным. Чистый отдых растёт вместе со временем:
+  // момент — от сейчас, прерывания на пароме в прошлом не мешают.
+  RestCompensation? restCompensation;
+  if (offDutyRest case final rest?) {
+    final taken = [
+      for (final c in compensations)
+        if (c.repaidIn == rest.start) c.debt,
+    ].fold(Duration.zero, (sum, d) => sum + d);
+    ({Compensation c, DateTime until})? next;
+    for (final c in unpaid) {
+      if (!c.restStart.isBefore(rest.start) || !c.dueBy.isAfter(rest.start)) {
+        continue;
+      }
+      final load = taken + c.debt;
+      final need = _compensationBase(rest.duration, load) + load;
+      final until = now.add(need - rest.duration);
+      final inTime = !until.isAfter(c.dueBy);
+      final best = next;
+      final bestInTime = best != null && !best.until.isAfter(best.c.dueBy);
+      final better =
+          best == null ||
+          (inTime != bestInTime
+              ? inTime
+              : inTime
+              ? until.isBefore(best.until)
+              : c.dueBy.isBefore(best.c.dueBy));
+      if (better) next = (c: c, until: until);
+    }
+    if (taken > Duration.zero || next != null) {
+      restCompensation = RestCompensation(
+        taken: taken,
+        next: next?.c,
+        until: next?.until,
+      );
+    }
+  }
 
   // Рабочая неделя: 144 ч от конца предыдущего недельного отдыха
   final onWeeklyRest = offDutyRest?.weekly ?? false;
@@ -796,12 +929,24 @@ ComplianceSnapshot calculateCompliance({
     weeklyRestDeadline: weeklyRestDeadline,
     reducedWeeklyRestAvailable: reducedWeeklyRestAvailable,
     compensation: compensation,
+    compensations: compensations,
+    restCompensation: restCompensation,
     cardDaysLeft: cardDaysLeft,
     infringements: List.unmodifiable(infringements),
   );
 }
 
 int _nonNegative(int n) => n < 0 ? 0 : n;
+
+/// Сколько отдыха нужно без долга, чтобы сверх этого шла компенсация:
+/// недельный отдых (от 24 ч) — 45 ч, остальной — 9 ч (ст. 8(7)). [rest] —
+/// сколько отдых длится, [debt] — сколько к нему присоединить: отдых,
+/// который вместе с долгом дойдёт до 24 ч, будет недельным.
+Duration _compensationBase(Duration rest, Duration debt) =>
+    rest >= EuLimits.weeklyRestReduced ||
+        EuLimits.compensationAttachedRest + debt >= EuLimits.weeklyRestReduced
+    ? EuLimits.weeklyRestRegular
+    : EuLimits.compensationAttachedRest;
 
 List<WeeklyRest> _sortedByStart(List<WeeklyRest> rests) {
   final indexed = rests.indexed.toList()

@@ -44,7 +44,9 @@ bool alertEnabled(Enum kind, NotificationSettings s) => switch (kind) {
     InfringementCategory.card => s.card,
   },
   RestMilestone.breakTaken => s.breaks,
-  RestMilestone.dailyRestTaken || RestMilestone.weeklyRestTaken => s.shiftEnd,
+  RestMilestone.dailyRestTaken ||
+  RestMilestone.weeklyRestTaken ||
+  RestMilestone.compensationTaken => s.shiftEnd,
   _ => false,
 };
 
@@ -85,6 +87,10 @@ ScheduledAlert _notification(UpcomingAlert a, AppLocalizations l) {
         RestMilestone.weeklyRestTaken => (
           l.notifyWeeklyRestTakenTitle,
           l.notifyWeeklyRestTakenText(formatLimit(l, taken)),
+        ),
+        RestMilestone.compensationTaken => (
+          l.notifyCompensationTakenTitle,
+          l.notifyCompensationTakenText(formatHm(taken)),
         ),
       };
       return (

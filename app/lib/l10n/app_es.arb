@@ -543,5 +543,19 @@
   "transferNewer": "El archivo se guardó en una versión más nueva de TachoGo: actualice la aplicación",
   "transferDamaged": "El archivo de registro está dañado: guárdelo de nuevo en el teléfono antiguo",
   "transferFailed": "No se pudo cargar el registro. El registro del teléfono no ha cambiado",
-  "transferSaveFailed": "No se pudo guardar el archivo. Inténtelo de nuevo."
+  "transferSaveFailed": "No se pudo guardar el archivo. Inténtelo de nuevo.",
+  "rowCompensation": "Compensación",
+  "compensationAttach": "añadir a un descanso de al menos 9 h",
+  "compensationRestUntil": "descansar hasta {time}",
+  "compensationTooLate": "no llega al plazo",
+  "compensationTakenHere": "añadida a este descanso",
+  "chipCompensationDone": "saldada",
+  "chipCompensationSoon": "plazo próximo",
+  "chipCompensationOverdue": "vencida",
+  "compensationDebt": "deuda {time}",
+  "compensationRepaidOn": "saldada el {date}",
+  "compensationAttachBy": "añadir antes del {date}",
+  "compensationTakenValue": "compensación {time}",
+  "notifyCompensationTakenTitle": "Compensación tomada",
+  "notifyCompensationTakenText": "Este descanso cubre las {time} debidas por un descanso semanal reducido: la deuda está saldada."
 }

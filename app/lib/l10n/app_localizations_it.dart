@@ -2126,4 +2126,58 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get transferSaveFailed => 'Impossibile salvare il file. Riprova.';
+
+  @override
+  String get rowCompensation => 'Compensazione';
+
+  @override
+  String get compensationAttach => 'da aggiungere a un riposo di almeno 9 h';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'riposo fino a $time';
+  }
+
+  @override
+  String get compensationTooLate => 'scadenza non raggiungibile';
+
+  @override
+  String get compensationTakenHere => 'aggiunta a questo riposo';
+
+  @override
+  String get chipCompensationDone => 'saldata';
+
+  @override
+  String get chipCompensationSoon => 'scadenza vicina';
+
+  @override
+  String get chipCompensationOverdue => 'scaduta';
+
+  @override
+  String compensationDebt(String time) {
+    return 'debito $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'saldata il $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'da aggiungere entro il $date';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'compensazione $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Compensazione presa';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'Questo riposo copre le $time dovute per un riposo settimanale ridotto: il debito è saldato.';
+  }
 }

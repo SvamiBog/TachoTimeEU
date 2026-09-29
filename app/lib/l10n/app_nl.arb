@@ -543,5 +543,19 @@
   "transferNewer": "Het bestand is opgeslagen in een nieuwere versie van TachoGo — werk de app bij",
   "transferDamaged": "Het logboekbestand is beschadigd — sla het opnieuw op op de oude telefoon",
   "transferFailed": "Het logboek kon niet worden geladen. Het logboek op de telefoon is niet gewijzigd",
-  "transferSaveFailed": "Het bestand kon niet worden opgeslagen. Probeer het opnieuw."
+  "transferSaveFailed": "Het bestand kon niet worden opgeslagen. Probeer het opnieuw.",
+  "rowCompensation": "Compensatie",
+  "compensationAttach": "toevoegen aan een rust van minstens 9 u",
+  "compensationRestUntil": "rust tot {time}",
+  "compensationTooLate": "termijn niet meer haalbaar",
+  "compensationTakenHere": "toegevoegd aan deze rust",
+  "chipCompensationDone": "voldaan",
+  "chipCompensationSoon": "termijn nadert",
+  "chipCompensationOverdue": "te laat",
+  "compensationDebt": "schuld {time}",
+  "compensationRepaidOn": "voldaan op {date}",
+  "compensationAttachBy": "toevoegen vóór {date}",
+  "compensationTakenValue": "compensatie {time}",
+  "notifyCompensationTakenTitle": "Compensatie genomen",
+  "notifyCompensationTakenText": "Deze rust dekt de {time} voor een verkorte wekelijkse rust — de schuld is voldaan."
 }

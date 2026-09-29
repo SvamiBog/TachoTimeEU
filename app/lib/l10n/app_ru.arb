@@ -1774,5 +1774,67 @@
   "transferSaveFailed": "Не удалось сохранить файл. Попробуйте ещё раз.",
   "@transferSaveFailed": {
     "description": "Ошибка сохранения файла переноса"
+  },
+  "rowCompensation": "Компенсация",
+  "compensationAttach": "присоединить к отдыху от 9 ч",
+  "compensationRestUntil": "отдыхать до {time}",
+  "@compensationRestUntil": {
+    "description": "Главная, компенсация: «отдыхать до Сб 14:30»",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "compensationTooLate": "к сроку не успеть",
+  "compensationTakenHere": "присоединена к этому отдыху",
+  "chipCompensationDone": "погашена",
+  "chipCompensationSoon": "скоро срок",
+  "chipCompensationOverdue": "просрочена",
+  "compensationDebt": "долг {time}",
+  "@compensationDebt": {
+    "description": "Журнал: «долг 5:00»",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "compensationRepaidOn": "погашен {date}",
+  "@compensationRepaidOn": {
+    "description": "Журнал: «погашен 12.10»",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "compensationAttachBy": "присоединить до {date}",
+  "@compensationAttachBy": {
+    "description": "Журнал: «присоединить до 12.10»",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "compensationTakenValue": "компенсация {time}",
+  "@compensationTakenValue": {
+    "description": "Журнал, отдых с присоединённым долгом: «компенсация 5:00»",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyCompensationTakenTitle": "Компенсация взята",
+  "notifyCompensationTakenText": "Отдых вместил долг {time} за сокращённый недельный отдых — долг погашен.",
+  "@notifyCompensationTakenText": {
+    "description": "Уведомление: отдых погасил долг компенсации",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

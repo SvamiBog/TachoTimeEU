@@ -2122,4 +2122,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transferSaveFailed => 'Could not save the file. Please try again.';
+
+  @override
+  String get rowCompensation => 'Compensation';
+
+  @override
+  String get compensationAttach => 'attach to a rest of at least 9 h';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'rest until $time';
+  }
+
+  @override
+  String get compensationTooLate => 'won\'t make the deadline';
+
+  @override
+  String get compensationTakenHere => 'attached to this rest';
+
+  @override
+  String get chipCompensationDone => 'paid';
+
+  @override
+  String get chipCompensationSoon => 'due soon';
+
+  @override
+  String get chipCompensationOverdue => 'overdue';
+
+  @override
+  String compensationDebt(String time) {
+    return 'debt $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'paid $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'attach by $date';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'compensation $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Compensation taken';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'This rest covered the $time owed for a reduced weekly rest — the debt is paid.';
+  }
 }

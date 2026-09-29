@@ -17,6 +17,9 @@ enum RestMilestone {
 
   /// Полный недельный отдых 45 ч.
   weeklyRestTaken,
+
+  /// Идущий отдых набрал долг компенсации (ст. 8(7)): долг погашен.
+  compensationTaken,
 }
 
 /// Событие прогноза: предупреждение или нарушение движка либо набранный
@@ -55,7 +58,8 @@ final class LimitAlert extends UpcomingAlert {
 }
 
 /// Отдых набран: [taken] — сколько отдыха засчитано (45 или 30 мин, 11 ч,
-/// 45 ч), [drivingUntilBreak] — сколько можно ехать до следующего перерыва.
+/// 45 ч, погашенный долг компенсации), [drivingUntilBreak] — сколько можно
+/// ехать до следующего перерыва.
 final class RestAlert extends UpcomingAlert {
   const new(
     super.at,
@@ -152,6 +156,8 @@ const int _usPerSecond = Duration.microsecondsPerSecond;
 Set<Enum> alertKinds(ComplianceSnapshot s) => {
   for (final i in s.infringements) i.type,
   ?_restTaken(s),
+  if ((s.restCompensation?.taken ?? Duration.zero) > Duration.zero)
+    RestMilestone.compensationTaken,
 };
 
 RestMilestone? _restTaken(ComplianceSnapshot s) {
@@ -181,6 +187,7 @@ UpcomingAlert _alert(Enum kind, DateTime at, ComplianceSnapshot s) {
       RestMilestone.breakTaken => s.currentBreak!.required,
       RestMilestone.dailyRestTaken => EuLimits.dailyRestRegular,
       RestMilestone.weeklyRestTaken => EuLimits.weeklyRestRegular,
+      RestMilestone.compensationTaken => s.restCompensation!.taken,
     },
     drivingUntilBreak: s.drivingUntilBreak,
   );
@@ -263,8 +270,13 @@ DateTime? _nextCheckpoint(
     add(now.add(EuLimits.breakSplitFirst - b.duration));
   }
   final rests = s.timeline.rests;
-  if (mode == DriverMode.rest && rests.isNotEmpty && rests.last.open) {
-    final rest = rests.last.rest;
+  // Отдых после ручной смены растёт и без записи режима
+  final rest = mode == DriverMode.rest && rests.isNotEmpty
+      ? (rests.last.open ? rests.last.rest : null)
+      : mode == null
+      ? s.offDutyRest?.duration
+      : null;
+  if (rest != null) {
     for (final threshold in const [
       EuLimits.dailyRestSplitFirst,
       EuLimits.dailyRestReduced,
@@ -287,6 +299,7 @@ DateTime? _nextCheckpoint(
     add(c.dueBy.subtract(EuLimits.compensationWarning));
     add(c.dueBy.add(_minute));
   }
+  if (s.restCompensation case final c? when c.inTime) add(c.until!);
   if (lastCardDownload != null) {
     final days = EuLimits.cardDownloadInterval.inDays;
     add(lastCardDownload.add(Duration(days: days - settings.cardAlertDays)));

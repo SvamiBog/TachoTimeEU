@@ -2143,4 +2143,58 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get transferSaveFailed =>
       'Не вдалося зберегти файл. Спробуйте ще раз.';
+
+  @override
+  String get rowCompensation => 'Компенсація';
+
+  @override
+  String get compensationAttach => 'приєднати до відпочинку від 9 год';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'відпочивати до $time';
+  }
+
+  @override
+  String get compensationTooLate => 'до терміну не встигнути';
+
+  @override
+  String get compensationTakenHere => 'приєднано до цього відпочинку';
+
+  @override
+  String get chipCompensationDone => 'погашено';
+
+  @override
+  String get chipCompensationSoon => 'скоро термін';
+
+  @override
+  String get chipCompensationOverdue => 'прострочено';
+
+  @override
+  String compensationDebt(String time) {
+    return 'борг $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'погашено $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'приєднати до $date';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'компенсація $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Компенсацію взято';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'Відпочинок вмістив борг $time за скорочений щотижневий відпочинок — борг погашено.';
+  }
 }

@@ -543,5 +543,19 @@
   "transferNewer": "ფაილი შენახულია TachoGo-ს უფრო ახალ ვერსიაში — განაახლეთ აპლიკაცია",
   "transferDamaged": "ჟურნალის ფაილი დაზიანებულია — ხელახლა შეინახეთ ძველ ტელეფონზე",
   "transferFailed": "ჟურნალის ჩატვირთვა ვერ მოხერხდა. ტელეფონის ჟურნალი არ შეცვლილა",
-  "transferSaveFailed": "ფაილის შენახვა ვერ მოხერხდა. სცადეთ ხელახლა."
+  "transferSaveFailed": "ფაილის შენახვა ვერ მოხერხდა. სცადეთ ხელახლა.",
+  "rowCompensation": "კომპენსაცია",
+  "compensationAttach": "მიუერთეთ მინიმუმ 9-საათიან დასვენებას",
+  "compensationRestUntil": "დაისვენეთ {time}-მდე",
+  "compensationTooLate": "ვადაში ვერ მოასწრებთ",
+  "compensationTakenHere": "მიერთებულია ამ დასვენებას",
+  "chipCompensationDone": "დაფარულია",
+  "chipCompensationSoon": "ვადა ახლოა",
+  "chipCompensationOverdue": "ვადაგადაცილებულია",
+  "compensationDebt": "ვალი {time}",
+  "compensationRepaidOn": "დაფარულია {date}",
+  "compensationAttachBy": "მიუერთეთ {date}-მდე",
+  "compensationTakenValue": "კომპენსაცია {time}",
+  "notifyCompensationTakenTitle": "კომპენსაცია აღებულია",
+  "notifyCompensationTakenText": "დასვენებამ დაიტია {time} ვალი შემცირებული კვირის დასვენებისთვის — ვალი დაფარულია."
 }

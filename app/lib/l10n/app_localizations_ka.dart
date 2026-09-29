@@ -2121,4 +2121,58 @@ class AppLocalizationsKa extends AppLocalizations {
   @override
   String get transferSaveFailed =>
       'ფაილის შენახვა ვერ მოხერხდა. სცადეთ ხელახლა.';
+
+  @override
+  String get rowCompensation => 'კომპენსაცია';
+
+  @override
+  String get compensationAttach => 'მიუერთეთ მინიმუმ 9-საათიან დასვენებას';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'დაისვენეთ $time-მდე';
+  }
+
+  @override
+  String get compensationTooLate => 'ვადაში ვერ მოასწრებთ';
+
+  @override
+  String get compensationTakenHere => 'მიერთებულია ამ დასვენებას';
+
+  @override
+  String get chipCompensationDone => 'დაფარულია';
+
+  @override
+  String get chipCompensationSoon => 'ვადა ახლოა';
+
+  @override
+  String get chipCompensationOverdue => 'ვადაგადაცილებულია';
+
+  @override
+  String compensationDebt(String time) {
+    return 'ვალი $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'დაფარულია $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'მიუერთეთ $date-მდე';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'კომპენსაცია $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'კომპენსაცია აღებულია';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'დასვენებამ დაიტია $time ვალი შემცირებული კვირის დასვენებისთვის — ვალი დაფარულია.';
+  }
 }

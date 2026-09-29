@@ -543,5 +543,19 @@
   "transferNewer": "Súbor bol uložený v novšej verzii TachoGo — aktualizujte aplikáciu",
   "transferDamaged": "Súbor denníka je poškodený — uložte ho znova v starom telefóne",
   "transferFailed": "Denník sa nepodarilo načítať. Denník v telefóne sa nezmenil",
-  "transferSaveFailed": "Súbor sa nepodarilo uložiť. Skúste to znova."
+  "transferSaveFailed": "Súbor sa nepodarilo uložiť. Skúste to znova.",
+  "rowCompensation": "Náhrada",
+  "compensationAttach": "pripojiť k odpočinku aspoň 9 h",
+  "compensationRestUntil": "odpočívať do {time}",
+  "compensationTooLate": "lehotu nestihnete",
+  "compensationTakenHere": "pripojená k tomuto odpočinku",
+  "chipCompensationDone": "splatená",
+  "chipCompensationSoon": "blíži sa lehota",
+  "chipCompensationOverdue": "po lehote",
+  "compensationDebt": "dlh {time}",
+  "compensationRepaidOn": "splatený {date}",
+  "compensationAttachBy": "pripojiť do {date}",
+  "compensationTakenValue": "náhrada {time}",
+  "notifyCompensationTakenTitle": "Náhrada vybraná",
+  "notifyCompensationTakenText": "Odpočinok pokryl dlh {time} za skrátený týždenný odpočinok — dlh je splatený."
 }

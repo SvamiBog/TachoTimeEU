@@ -2141,4 +2141,58 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get transferSaveFailed =>
       'Die Datei konnte nicht gespeichert werden. Bitte erneut versuchen.';
+
+  @override
+  String get rowCompensation => 'Ausgleich';
+
+  @override
+  String get compensationAttach => 'an eine Ruhezeit von mind. 9 h anhängen';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'ruhen bis $time';
+  }
+
+  @override
+  String get compensationTooLate => 'Frist nicht mehr erreichbar';
+
+  @override
+  String get compensationTakenHere => 'an diese Ruhezeit angehängt';
+
+  @override
+  String get chipCompensationDone => 'ausgeglichen';
+
+  @override
+  String get chipCompensationSoon => 'Frist bald';
+
+  @override
+  String get chipCompensationOverdue => 'überfällig';
+
+  @override
+  String compensationDebt(String time) {
+    return 'offen $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'ausgeglichen $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'anhängen bis $date';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'Ausgleich $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Ausgleich genommen';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'Diese Ruhezeit deckt die $time aus der reduzierten wöchentlichen Ruhezeit — ausgeglichen.';
+  }
 }

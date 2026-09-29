@@ -2129,4 +2129,58 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get transferSaveFailed =>
       'Faylni saqlab boʻlmadi. Qayta urinib koʻring.';
+
+  @override
+  String get rowCompensation => 'Kompensatsiya';
+
+  @override
+  String get compensationAttach => 'kamida 9 soatlik dam olishga qoʻshing';
+
+  @override
+  String compensationRestUntil(String time) {
+    return '$time gacha dam oling';
+  }
+
+  @override
+  String get compensationTooLate => 'muddatga ulgurmaysiz';
+
+  @override
+  String get compensationTakenHere => 'shu dam olishga qoʻshilgan';
+
+  @override
+  String get chipCompensationDone => 'qoplandi';
+
+  @override
+  String get chipCompensationSoon => 'muddat yaqin';
+
+  @override
+  String get chipCompensationOverdue => 'muddati oʻtgan';
+
+  @override
+  String compensationDebt(String time) {
+    return 'qarz $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'qoplandi $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return '$date gacha qoʻshing';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'kompensatsiya $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Kompensatsiya olindi';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'Dam olish qisqartirilgan haftalik dam olish uchun $time qarzni qopladi — qarz yopildi.';
+  }
 }

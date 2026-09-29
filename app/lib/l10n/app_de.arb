@@ -543,5 +543,19 @@
   "transferNewer": "Die Datei stammt aus einer neueren TachoGo-Version — bitte App aktualisieren",
   "transferDamaged": "Die Protokolldatei ist beschädigt — speichern Sie sie auf dem alten Handy erneut",
   "transferFailed": "Das Protokoll konnte nicht geladen werden. Das Protokoll auf dem Handy ist unverändert",
-  "transferSaveFailed": "Die Datei konnte nicht gespeichert werden. Bitte erneut versuchen."
+  "transferSaveFailed": "Die Datei konnte nicht gespeichert werden. Bitte erneut versuchen.",
+  "rowCompensation": "Ausgleich",
+  "compensationAttach": "an eine Ruhezeit von mind. 9 h anhängen",
+  "compensationRestUntil": "ruhen bis {time}",
+  "compensationTooLate": "Frist nicht mehr erreichbar",
+  "compensationTakenHere": "an diese Ruhezeit angehängt",
+  "chipCompensationDone": "ausgeglichen",
+  "chipCompensationSoon": "Frist bald",
+  "chipCompensationOverdue": "überfällig",
+  "compensationDebt": "offen {time}",
+  "compensationRepaidOn": "ausgeglichen {date}",
+  "compensationAttachBy": "anhängen bis {date}",
+  "compensationTakenValue": "Ausgleich {time}",
+  "notifyCompensationTakenTitle": "Ausgleich genommen",
+  "notifyCompensationTakenText": "Diese Ruhezeit deckt die {time} aus der reduzierten wöchentlichen Ruhezeit — ausgeglichen."
 }

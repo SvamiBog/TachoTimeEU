@@ -543,5 +543,19 @@
   "transferNewer": "The file was saved in a newer version of TachoGo — update the app",
   "transferDamaged": "The log file is damaged — save it again on the old phone",
   "transferFailed": "Could not load the log. The log on this phone has not changed",
-  "transferSaveFailed": "Could not save the file. Please try again."
+  "transferSaveFailed": "Could not save the file. Please try again.",
+  "rowCompensation": "Compensation",
+  "compensationAttach": "attach to a rest of at least 9 h",
+  "compensationRestUntil": "rest until {time}",
+  "compensationTooLate": "won't make the deadline",
+  "compensationTakenHere": "attached to this rest",
+  "chipCompensationDone": "paid",
+  "chipCompensationSoon": "due soon",
+  "chipCompensationOverdue": "overdue",
+  "compensationDebt": "debt {time}",
+  "compensationRepaidOn": "paid {date}",
+  "compensationAttachBy": "attach by {date}",
+  "compensationTakenValue": "compensation {time}",
+  "notifyCompensationTakenTitle": "Compensation taken",
+  "notifyCompensationTakenText": "This rest covered the {time} owed for a reduced weekly rest — the debt is paid."
 }

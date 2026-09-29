@@ -10,6 +10,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/hm_field.dart';
+import 'package:tachogo/core/widgets/segmented_tabs.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/tables.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
@@ -188,6 +189,33 @@ void main() {
         find.textContaining('вручную', findRichText: true),
         findsOneWidget,
       );
+      await unmount(tester);
+    });
+
+    testWidgets('смена итогами до «сейчас» с «Суточный» — на главной '
+        'суточный отдых, а не рабочий день', (tester) async {
+      // Водитель ведёт журнал итогами: режимы не переключает
+      await defaultCountry(tester, 'PL');
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.byIcon(Icons.add));
+      await tap(
+        tester,
+        find.descendant(
+          of: find.byType(SegmentedTabs<RestKind>),
+          matching: find.text('Суточный'),
+        ),
+      );
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      final saved = (await manual(tester)).single.shift;
+      expect(saved.end, now, reason: 'смена по умолчанию — до сейчас');
+      expect(await periods(tester), isEmpty);
+      expect(snapshot(const [], [saved]).status, DriverStatus.dailyRest);
+
+      await unmount(tester);
+      await pump(tester, const HomeScreen());
+      expect(find.text('СУТОЧНЫЙ ОТДЫХ'), findsOneWidget);
+      expect(find.text('ДО ПЕРЕРЫВА'), findsNothing);
       await unmount(tester);
     });
 
