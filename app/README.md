@@ -168,7 +168,7 @@ flutter drive --profile --driver=test_driver/integration_test.dart \
 
 ## Бета
 
-Закрытое тестирование в Google Play — `docs/beta/README.md`. Тег `v1.2.3-beta.N` собирает AAB со `staging` и отправляет в трек закрытого тестирования, если задан секрет `PLAY_SERVICE_ACCOUNT_JSON`; `v1.2.3` — prod.
+Закрытое тестирование в Google Play — `docs/beta/README.md`. Выпуск — после всех проверок CI: merge в `main` — AAB со `staging` во внутреннее тестирование, тег `v1.2.3-beta.N` — в закрытое, если задан секрет `PLAY_SERVICE_ACCOUNT_JSON`; `v1.2.3` — prod, пока только в артефактах.
 
 - **«Сообщить о проблеме»** (`features/more/problem_report.dart`) — в «Ещё», во всех сборках, кроме prod. Отчёт собирает `DiagnosticsCollector` (`core/diagnostics/`): версия, телефон (канал устройства в `MainActivity`), настройки, разрешения, расписание уведомлений, прогноз движка, журнал за 48 ч — и отдаёт в системное «Поделиться». Служебные подписи отчёта — по-английски: его читают разработчики, а не водитель.
 - **Вычитка переводов** — `tool/l10n_review.dart`: `export` — таблица CSV на язык для носителя, `import` — его исправления обратно в ARB с проверкой подстановок. Порядок — `docs/beta/translation-review.md`.
@@ -184,4 +184,4 @@ keyAlias=…
 keyPassword=…
 ```
 
-В CI релиз собирается по тегу `v*` из секретов `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`.
+В CI release AAB собирается из `main` и по тегу `v*` (job «Выпуск Android», после всех проверок) из секретов `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Как создать ключ и куда что загружается — `docs/beta/play-console.md`, «С нуля до первой беты».
