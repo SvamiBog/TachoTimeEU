@@ -1008,6 +1008,10 @@ class AppLocalizationsKa extends AppLocalizations {
   String get shiftLiveContinuous => 'ითვლება შესვენებებით';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'შეიყვანება, როცა ცვლის შემდეგ დასვენება არჩეულია';
+
+  @override
   String get shiftRestNone => 'არ დაწყებულა';
 
   @override
@@ -1099,6 +1103,10 @@ class AppLocalizationsKa extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'დრო, მართვა ან დასვენება შეიცვალა — ცვლა შეინახება ხელით ჩანაწერად რეჟიმების ჩანაწერების ნაცვლად.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'დღის მართვა შეყვანილია ჯამად — ცვლა შეინახება ხელით ჩანაწერად რეჟიმების ჩანაწერების ნაცვლად, მის შემდეგ დასვენება გაგრძელდება.';
 
   @override
   String shiftEndNowHint(String time) {

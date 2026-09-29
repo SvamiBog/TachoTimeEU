@@ -1557,6 +1557,12 @@ abstract class AppLocalizations {
   /// **'считается по перерывам'**
   String get shiftLiveContinuous;
 
+  /// No description provided for @shiftDrivingAfterRest.
+  ///
+  /// In ru, this message translates to:
+  /// **'вводится, когда выбран отдых после смены'**
+  String get shiftDrivingAfterRest;
+
   /// No description provided for @shiftRestNone.
   ///
   /// In ru, this message translates to:
@@ -1724,6 +1730,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Время, вождение или отдых изменены — смена сохранится как ручная запись вместо записей режимов.'**
   String get shiftConvertHint;
+
+  /// No description provided for @shiftLiveConvertHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождение за день введено итогом — смена сохранится как ручная запись вместо записей режимов, отдых после неё пойдёт дальше.'**
+  String get shiftLiveConvertHint;
 
   /// No description provided for @shiftEndNowHint.
   ///

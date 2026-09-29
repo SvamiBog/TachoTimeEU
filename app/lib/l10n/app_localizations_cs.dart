@@ -1021,6 +1021,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get shiftLiveContinuous => 'počítá se podle přestávek';
 
   @override
+  String get shiftDrivingAfterRest => 'zadává se po výběru odpočinku po směně';
+
+  @override
   String get shiftRestNone => 'Nezačal';
 
   @override
@@ -1113,6 +1116,10 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Změněn čas, řízení nebo odpočinek — směna se uloží jako ruční záznam místo záznamů režimů.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Řízení za den zadáno jako součet — směna se uloží jako ruční záznam místo záznamů režimů, odpočinek po ní pokračuje.';
 
   @override
   String shiftEndNowHint(String time) {

@@ -1006,6 +1006,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shiftLiveContinuous => 'calculated from breaks';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'entered once the rest after the shift is chosen';
+
+  @override
   String get shiftRestNone => 'Not started';
 
   @override
@@ -1099,6 +1103,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Time, driving or rest changed — the shift will be saved as a manual entry instead of the mode records.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Daily driving entered as a total — the shift will be saved as a manual entry instead of the mode records, the rest after it continues.';
 
   @override
   String shiftEndNowHint(String time) {

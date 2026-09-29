@@ -29,6 +29,9 @@ class LiveShiftEdit {
     this.endAt,
     this.resume = false,
     this.drivingDelta = Duration.zero,
+    this.manualDriving,
+    this.restKind = RestKind.daily,
+    this.splitRest = false,
   });
 
   /// Начало смены до правки.
@@ -49,6 +52,17 @@ class LiveShiftEdit {
 
   /// Поправка суточного вождения ([adjustDriving]).
   final Duration drivingDelta;
+
+  /// Вождение за день итогом, которое ввёл водитель, когда сдвигом записей
+  /// его не получить (в смене одна «Работа»): смена, после которой идёт
+  /// отдых, становится ручной с этим итогом, как в [endDayWithDriving].
+  /// Идущую смену так не правят — у неё таймеры главной по записям.
+  final Duration? manualDriving;
+
+  /// Отдых после смены, если она станет ручной ([manualDriving]): суточный
+  /// или недельный, разделённый суточный.
+  final RestKind restKind;
+  final bool splitRest;
 }
 
 /// Применяет [edit] к записям режимов. Сдвиги ограничены соседними
@@ -56,12 +70,10 @@ class LiveShiftEdit {
 /// правкой начала), конец — не в будущее, смена не короче минуты.
 ///
 /// Возвращает записи и начало смены после правки: по нему приложение
-/// переносит страны и заметки.
-({List<ActivityPeriod> periods, DateTime shiftStart}) editLiveShift(
-  List<ActivityPeriod> periods,
-  LiveShiftEdit edit,
-  DateTime now,
-) {
+/// переносит страны и заметки. `manual` — смена стала ручной
+/// ([LiveShiftEdit.manualDriving]): записей смены больше нет.
+({List<ActivityPeriod> periods, DateTime shiftStart, ManualShift? manual})
+editLiveShift(List<ActivityPeriod> periods, LiveShiftEdit edit, DateTime now) {
   var result = periods;
   var shiftStart = edit.shiftStart;
 
@@ -99,7 +111,28 @@ class LiveShiftEdit {
   if (edit.drivingDelta != Duration.zero) {
     result = adjustDriving(result, shiftStart, edit.drivingDelta, now).periods;
   }
-  return (periods: result, shiftStart: shiftStart);
+
+  final manualDriving = edit.manualDriving;
+  final shift = manualDriving == null
+      ? null
+      : analyzeTimeline(result, now).shifts.lastOrNull;
+  if (manualDriving != null && shift != null && shift.start == shiftStart) {
+    final converted = _toManual(
+      result,
+      shift,
+      manualDriving,
+      restKind: edit.restKind,
+      splitRest: edit.splitRest,
+    );
+    if (converted != null) {
+      return (
+        periods: converted.periods,
+        shiftStart: shiftStart,
+        manual: converted.manual,
+      );
+    }
+  }
+  return (periods: result, shiftStart: shiftStart, manual: null);
 }
 
 /// «Завершить день» с вождением за день, которое ввёл водитель. Журнал
@@ -118,24 +151,39 @@ class LiveShiftEdit {
 ) {
   final ended = endDay(periods, now);
   final shift = analyzeTimeline(ended, now).shifts.lastOrNull;
-  final rest = shift?.restAfter;
-  if (shift == null || rest == null || !rest.open || !rest.dayEnd) {
-    return (periods: ended, manual: null);
-  }
+  final converted = shift != null && (shift.restAfter?.dayEnd ?? false)
+      ? _toManual(ended, shift, driving)
+      : null;
+  return converted ?? (periods: ended, manual: null);
+}
+
+/// Записи завершённой смены [shift], после которой идёт отдых, заменяет
+/// ручная смена с вождением [driving] (не длиннее смены); отдых остаётся
+/// записью. null — отдых после смены не идёт или вождение совпало с
+/// записями.
+({List<ActivityPeriod> periods, ManualShift manual})? _toManual(
+  List<ActivityPeriod> periods,
+  Shift shift,
+  Duration driving, {
+  RestKind restKind = RestKind.daily,
+  bool splitRest = false,
+}) {
+  final rest = shift.restAfter;
+  if (rest == null || !rest.open) return null;
   final end = rest.start;
   final span = floorToMinute(durationBetween(shift.start, end));
   final entered = shorter(floorToMinute(clampToZero(driving)), span);
-  if (entered == floorToMinute(shift.driving)) {
-    return (periods: ended, manual: null);
-  }
+  if (entered == floorToMinute(shift.driving)) return null;
+  final kind = restKind == RestKind.none ? RestKind.daily : restKind;
   return (
-    periods: deleteShiftPeriods(ended, shift.start, end),
+    periods: deleteShiftPeriods(periods, shift.start, end),
     manual: ManualShift(
       start: shift.start,
       end: end,
       driving: entered,
       continuousDrivingAtEnd: shorter(shift.continuousDrivingAtEnd, entered),
-      restKind: RestKind.daily,
+      restKind: kind,
+      splitRest: kind == RestKind.daily && splitRest,
     ),
   );
 }

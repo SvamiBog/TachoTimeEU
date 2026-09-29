@@ -312,6 +312,117 @@ void main() {
     });
   });
 
+  group('JRN-08: вождение за день итогом в форме смены', () {
+    // now 12:00: смена 06:00–11:00 — весь день «Работа», с 11:00 отдых
+    final periods = logUntil(now, [
+      rest('11:00'),
+      work('5:00'),
+      rest('1:00', dayEnd: true),
+    ]);
+    final shiftStart = utc('2026-09-23 06:00');
+    final restStart = utc('2026-09-23 11:00');
+
+    test('завершённая смена становится ручной с итогом, отдых — запись', () {
+      final r = editLiveShift(
+        periods,
+        LiveShiftEdit(
+          shiftStart: shiftStart,
+          restStart: restStart,
+          manualDriving: dur('3:30'),
+        ),
+        now,
+      );
+      final manual = r.manual!;
+      expect((manual.start, manual.end), (shiftStart, restStart));
+      expect(manual.driving, dur('3:30'));
+      expect(manual.continuousDrivingAtEnd, Duration.zero);
+      expect(manual.restKind, RestKind.daily);
+      expect(manual.splitRest, isFalse);
+      expect(r.periods.map((p) => (p.mode, p.start, p.isOpen, p.dayEnd)), [
+        (DriverMode.rest, utc('2026-09-22 19:00'), false, false),
+        (DriverMode.rest, restStart, true, true),
+      ]);
+
+      final m = calc(r.periods, now, manual: [manual]);
+      expect(m.status, DriverStatus.dailyRest);
+      expect(m.weeklyDriving, dur('3:30'));
+      final shifts = journalShifts(r.periods, now, manual: [manual]);
+      expect(shifts.last.manual, isNotNull);
+      expect(shifts.last.rest.ongoing, isTrue);
+    });
+
+    test('вместе с новыми началом и концом — ручная смена по ним', () {
+      final r = editLiveShift(
+        periods,
+        LiveShiftEdit(
+          shiftStart: shiftStart,
+          restStart: restStart,
+          newStart: utc('2026-09-23 05:30'),
+          endAt: utc('2026-09-23 11:30'),
+          manualDriving: dur('9:00'),
+          restKind: RestKind.weekly,
+          splitRest: true,
+        ),
+        now,
+      );
+      final manual = r.manual!;
+      expect(r.shiftStart, utc('2026-09-23 05:30'));
+      expect(manual.start, utc('2026-09-23 05:30'));
+      expect(manual.end, utc('2026-09-23 11:30'));
+      expect(manual.driving, dur('6:00'), reason: 'не длиннее смены');
+      expect(manual.restKind, RestKind.weekly);
+      expect(manual.splitRest, isFalse, reason: 'разделяется только суточный');
+      expect(r.periods.last.start, utc('2026-09-23 11:30'));
+      expect(r.periods.last.isOpen, isTrue);
+    });
+
+    test(
+      'идущая смена, которую завершают, — ручная до конца, отдых с него',
+      () {
+        final ongoing = logUntil(now, [rest('11:00'), work('6:00')]);
+        final r = editLiveShift(
+          ongoing,
+          LiveShiftEdit(
+            shiftStart: shiftStart,
+            endAt: now,
+            manualDriving: dur('4:45'),
+          ),
+          now,
+        );
+        expect((r.manual!.start, r.manual!.end), (shiftStart, now));
+        expect(r.manual!.driving, dur('4:45'));
+        expect(
+          (r.periods.last.mode, r.periods.last.start, r.periods.last.dayEnd),
+          (DriverMode.rest, now, true),
+        );
+      },
+    );
+
+    test('идущую смену итогом не правят, итог как в записях — записи на '
+        'месте', () {
+      final ongoing = logUntil(now, [rest('11:00'), work('6:00')]);
+      final r = editLiveShift(
+        ongoing,
+        LiveShiftEdit(shiftStart: shiftStart, manualDriving: dur('4:45')),
+        now,
+      );
+      expect(r.manual, isNull);
+      expect(r.periods, same(ongoing));
+
+      final same0 = editLiveShift(
+        periods,
+        LiveShiftEdit(
+          shiftStart: shiftStart,
+          restStart: restStart,
+          manualDriving: Duration.zero,
+        ),
+        now,
+      );
+      expect(same0.manual, isNull);
+      expect(same0.periods, same(periods));
+    });
+  });
+
   group('JRN-02: пересечение смен', () {
     final periods = logUntil(now, [
       rest('11:00'),

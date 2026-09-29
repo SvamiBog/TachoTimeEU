@@ -54,7 +54,8 @@ class JournalEditRepository {
 
   /// Правка «живой» смены (идёт или после неё идёт отдых): сдвигает записи
   /// режимов. Страны и заметка переезжают на смену, которая получилась
-  /// после правки; [meta] — новые, если водитель их менял.
+  /// после правки; [meta] — новые, если водитель их менял. Смена с
+  /// вождением итогом (`LiveShiftEdit.manualDriving`) становится ручной.
   Future<void> applyLiveEdit(LiveShiftEdit edit, {ShiftMeta? meta}) =>
       _write((periods, now) async {
         final result = editLiveShift(periods, edit, now);
@@ -65,6 +66,14 @@ class JournalEditRepository {
           now,
           EntrySource.manual,
         );
+        final manual = result.manual;
+        if (manual != null) {
+          final kept = meta ?? await _metaOf(edit.shiftStart);
+          await _deleteMeta(edit.shiftStart);
+          await _putManual(manual, kept, now);
+          if (meta != null) await _rememberCountry(meta);
+          return;
+        }
         final newStart = analyzeTimeline(
           result.periods,
           now,

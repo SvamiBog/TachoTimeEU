@@ -1009,6 +1009,10 @@ class AppLocalizationsUz extends AppLocalizations {
   String get shiftLiveContinuous => 'tanaffuslar boʻyicha hisoblanadi';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'smenadan keyingi dam olish tanlanganda kiritiladi';
+
+  @override
   String get shiftRestNone => 'Boshlanmagan';
 
   @override
@@ -1101,6 +1105,10 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Vaqt, haydash yoki dam olish oʻzgartirildi — smena rejim yozuvlari oʻrniga qoʻlda kiritilgan yozuv sifatida saqlanadi.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Kunlik haydash jami sifatida kiritildi — smena rejim yozuvlari oʻrniga qoʻlda kiritilgan yozuv sifatida saqlanadi, undan keyingi dam olish davom etadi.';
 
   @override
   String shiftEndNowHint(String time) {

@@ -1023,6 +1023,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get shiftLiveContinuous => 'liczona według przerw';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'wpisuje się po wybraniu odpoczynku po zmianie';
+
+  @override
   String get shiftRestNone => 'Nierozpoczęty';
 
   @override
@@ -1114,6 +1118,10 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Zmieniono czas, jazdę lub odpoczynek — zmiana zostanie zapisana jako wpis ręczny zamiast zapisów trybów.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Jazda za dzień wpisana jako suma — zmiana zostanie zapisana jako wpis ręczny zamiast zapisów trybów, odpoczynek po niej trwa dalej.';
 
   @override
   String shiftEndNowHint(String time) {

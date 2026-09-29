@@ -1009,6 +1009,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shiftLiveContinuous => 'calculada por las pausas';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'se introduce al elegir el descanso tras la jornada';
+
+  @override
   String get shiftRestNone => 'No iniciado';
 
   @override
@@ -1105,6 +1109,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Hora, conducción o descanso cambiados: la jornada se guardará como entrada manual en lugar de los registros de actividades.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Conducción del día introducida como total: la jornada se guardará como entrada manual en lugar de los registros de actividades y el descanso posterior continúa.';
 
   @override
   String shiftEndNowHint(String time) {

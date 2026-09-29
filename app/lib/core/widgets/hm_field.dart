@@ -31,6 +31,10 @@ String formatHmInput(Duration value, {required bool clock}) {
 }
 
 /// Только цифры, двоеточие — перед последними двумя: «0630» → «06:30».
+/// Лишняя цифра вытесняет самую старую, как на табло: четыре цифры,
+/// набранные подряд, и есть значение — «8:20», затем «0945» → «09:45».
+/// Иначе в полном поле новые цифры пропадали бы и поле казалось бы
+/// замершим.
 class _HmFormatter extends TextInputFormatter {
   const new(this.maxDigits);
 
@@ -42,7 +46,9 @@ class _HmFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     var digits = newValue.text.replaceAll(RegExp(r'\D'), '');
-    if (digits.length > maxDigits) digits = digits.substring(0, maxDigits);
+    if (digits.length > maxDigits) {
+      digits = digits.substring(digits.length - maxDigits);
+    }
     final text = digits.length > 2
         ? '${digits.substring(0, digits.length - 2)}:'
               '${digits.substring(digits.length - 2)}'
@@ -93,16 +99,18 @@ class _HmFieldState extends State<HmField> {
 
   Duration? _parsed() => parseHm(_controller.text, maxHours: widget.maxHours);
 
+  void _selectAll() => _controller.selection = TextSelection(
+    baseOffset: 0,
+    extentOffset: _controller.text.length,
+  );
+
   @override
   void initState() {
     super.initState();
-    // Касание выделяет значение целиком: новое вводится поверх
+    // Фокус выделяет значение целиком: новое вводится поверх
     _focus.addListener(() {
       if (_focus.hasFocus) {
-        _controller.selection = TextSelection(
-          baseOffset: 0,
-          extentOffset: _controller.text.length,
-        );
+        _selectAll();
       } else if (_parsed() case final v?) {
         _controller.text = _text(v);
       }
@@ -136,6 +144,11 @@ class _HmFieldState extends State<HmField> {
       keyboardType: TextInputType.number,
       textInputAction: TextInputAction.done,
       inputFormatters: [_HmFormatter(digits)],
+      // И касание уже активного поля (шторка открывается с фокусом в нём):
+      // иначе касание ставит курсор, и цифры дописываются к старому
+      // значению, а не заменяют его. onTap вызывается после того, как
+      // касание поставило курсор.
+      onTap: _selectAll,
       textAlign: TextAlign.center,
       style: AppTextStyles.valueLarge.copyWith(color: colors.text),
       onChanged: (_) => widget.onChanged(_parsed()),

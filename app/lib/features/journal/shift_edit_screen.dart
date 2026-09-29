@@ -228,7 +228,7 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
                 onPressed: _saving ? null : () => unawaited(_delete()),
               ),
         children: [
-          if (_hint(l, now) case final hint?) _Hint(hint),
+          if (_hint(l, now, journal) case final hint?) _Hint(hint),
           SectionTitle(l.shiftSection),
           _TimesCard(
             form: f,
@@ -289,9 +289,34 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
   bool get _willConvert =>
       _recorded && !_live && _timingChanged && !_becomesCurrent;
 
-  String? _hint(AppLocalizations l, DateTime now) {
+  /// Вождение «живой» смены, которое дают сдвиги записей
+  /// ([drivingAdjustmentBounds]); null — вождения в смене нет.
+  ({Duration min, Duration max})? _liveDrivingRange(
+    Journal? journal,
+    DateTime now,
+  ) {
+    final shift = _shift;
+    if (!_live || shift == null || journal == null) return null;
+    final bounds = drivingAdjustmentBounds(journal.periods, shift.start, now);
+    if (bounds == null) return null;
+    final driving = _initial!.driving;
+    return (min: driving + bounds.min, max: driving + bounds.max);
+  }
+
+  /// Вождение «живой» смены сдвигами записей не получить, а после смены
+  /// идёт отдых: смена сохранится ручной с этим итогом, как «Завершить
+  /// день» на главной.
+  bool _drivingToManual(Journal? journal, DateTime now) {
+    final driving = _form.driving;
+    if (!_restOngoing || driving == _initial!.driving) return false;
+    final range = _liveDrivingRange(journal, now);
+    return range == null || driving < range.min || driving > range.max;
+  }
+
+  String? _hint(AppLocalizations l, DateTime now, Journal? journal) {
     final f = _form;
     if (_live) {
+      if (_drivingToManual(journal, now)) return l.shiftLiveConvertHint;
       if (f.restKind == RestKind.none && _initial!.end != null) {
         return l.shiftResumeHint;
       }
@@ -336,6 +361,19 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
         ..restKind = RestKind.none
         ..end = null
         ..endCountry = null;
+      // и вождение — только то, что дают сдвиги записей
+      if (_live) {
+        final range = _liveDrivingRange(journal, ref.read(clockProvider));
+        final initial = _initial!.driving;
+        f.driving = range == null
+            ? initial
+            : f.driving < range.min
+            ? range.min
+            : f.driving > range.max
+            ? range.max
+            : f.driving;
+        if (f.continuous > f.driving) f.continuous = f.driving;
+      }
       return;
     }
     if (kind == f.restKind) return;
@@ -357,24 +395,27 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
   Widget _drivingCard(AppLocalizations l, DateTime now, Journal? journal) {
     final f = _form;
     final initial = _initial!;
-    final shift = _shift;
-    final bounds = _live && shift != null && journal != null
-        ? drivingAdjustmentBounds(journal.periods, shift.start, now)
-        : null;
-    // У «живой» смены вождение берётся у соседних записей — пределы от
-    // них. Ручную водитель вводит любую, проверка — при сохранении.
-    final (Duration min, Duration? max) = _live
-        ? bounds == null
-              ? (initial.driving, initial.driving)
-              : (initial.driving + bounds.min, initial.driving + bounds.max)
-        : (Duration.zero, null);
+    final range = _liveDrivingRange(journal, now);
+    // Ручную смену водитель вводит любую, проверка — при сохранении. У
+    // «живой» после неё идёт отдых — тоже любую, до длины смены: чего не
+    // дадут сдвиги записей, сохранится ручной сменой с итогом. У идущей —
+    // только сдвигами записей: главная считает её по ним.
+    final (Duration min, Duration? max) = !_live
+        ? (Duration.zero, null)
+        : _restOngoing
+        ? (Duration.zero, floorToMinute(durationBetween(f.start, f.end ?? now)))
+        : range == null
+        ? (initial.driving, initial.driving)
+        : (range.min, range.max);
+    final editable = max == null || max > min;
     final continuousAuto = _live || _becomesCurrent;
     return CardGroup(
       children: [
         _ValueRow(
           label: l.shiftPerDay,
+          caption: editable ? null : l.shiftDrivingAfterRest,
           value: f.driving,
-          onTap: max == null || max > min
+          onTap: editable
               ? () => unawaited(
                   _pickDuration(
                     title: l.shiftPerDay,
@@ -700,6 +741,12 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
             ? l.shiftErrOverlap(_range(l, hit))
             : null;
       }
+      final toManual = _drivingToManual(journal, now);
+      if (problem == null &&
+          toManual &&
+          f.driving > durationBetween(f.start, spanEnd)) {
+        problem = l.shiftErrDrivingTooLong;
+      }
       final edit = LiveShiftEdit(
         shiftStart: shift.start,
         restStart: initial.end,
@@ -708,7 +755,10 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
             ? (f.restKind != RestKind.none ? f.end ?? now : null)
             : (f.end != initial.end ? f.end : null),
         resume: initial.end != null && f.restKind == RestKind.none,
-        drivingDelta: f.driving - initial.driving,
+        drivingDelta: toManual ? Duration.zero : f.driving - initial.driving,
+        manualDriving: toManual ? f.driving : null,
+        restKind: f.restKind,
+        splitRest: f.split,
       );
       write = () => repo.applyLiveEdit(edit, meta: f.meta);
     } else if (_recorded && !_timingChanged && shift != null) {

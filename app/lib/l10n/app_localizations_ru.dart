@@ -1021,6 +1021,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftLiveContinuous => 'считается по перерывам';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'вводится, когда выбран отдых после смены';
+
+  @override
   String get shiftRestNone => 'Не начат';
 
   @override
@@ -1112,6 +1116,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Время, вождение или отдых изменены — смена сохранится как ручная запись вместо записей режимов.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Вождение за день введено итогом — смена сохранится как ручная запись вместо записей режимов, отдых после неё пойдёт дальше.';
 
   @override
   String shiftEndNowHint(String time) {

@@ -1016,6 +1016,10 @@ class AppLocalizationsRo extends AppLocalizations {
   String get shiftLiveContinuous => 'se calculează după pauze';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'se introduce după ce alegeți repausul de după tură';
+
+  @override
   String get shiftRestNone => 'Neînceput';
 
   @override
@@ -1109,6 +1113,10 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Ora, conducerea sau repausul au fost modificate — tura se va salva ca înregistrare manuală în locul înregistrărilor de moduri.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Conducerea pe zi a fost introdusă ca total — tura se va salva ca înregistrare manuală în locul înregistrărilor de moduri, repausul de după ea continuă.';
 
   @override
   String shiftEndNowHint(String time) {
