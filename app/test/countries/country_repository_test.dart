@@ -3,9 +3,11 @@
 
 import 'dart:io';
 
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
 import 'package:tachogo/data/countries/tacho_countries.dart';
 import 'package:tachogo/data/db/app_database.dart';
@@ -81,26 +83,82 @@ void main() {
     });
   });
 
-  group('недавние', () {
-    test('сначала последняя выбранная, без повторов, не больше трёх', () async {
-      await repo.setShiftCountries(
-        monday,
-        const ShiftCountries(start: 'PL', end: 'D'),
+  group('часто используемые', () {
+    ShiftCountryUse use(DateTime start, String? from, [String? to]) =>
+        (start: start, from: from, to: to);
+    DateTime day(int d) => DateTime.utc(2026, 9, d, 6);
+
+    test('по числу смен, при равенстве — та, что позже; начальная и '
+        'конечная сразу — один раз; не больше четырёх', () {
+      expect(
+        frequentCountries([
+          use(day(1), 'PL', 'D'),
+          use(day(2), 'D', 'D'),
+          use(day(3), 'D', 'CH'),
+          use(day(4), 'CH', 'NL'),
+          use(day(5), 'NL', 'B'),
+          use(day(6), 'B', 'F'),
+        ]),
+        ['D', 'B', 'NL', 'CH'],
       );
-      await repo.setShiftCountries(
-        tuesday,
-        const ShiftCountries(start: 'D', end: 'CZ'),
-      );
-      expect(await repo.watchRecent().first, ['CZ', 'D', 'PL']);
-      await repo.setShiftCountries(
-        tuesday.add(const Duration(days: 1)),
-        const ShiftCountries(start: 'A'),
-      );
-      expect(await repo.watchRecent().first, ['A', 'CZ', 'D']);
     });
 
-    test('без смен — пусто', () async {
-      expect(await repo.watchRecent().first, isEmpty);
+    test('только за 8 недель до последней смены: новый маршрут поднимается '
+        'наверх', () {
+      final old = [
+        for (var i = 0; i < 20; i++)
+          use(DateTime.utc(2026, 5).add(Duration(days: i)), 'PL', 'NL'),
+      ];
+      final recent = [
+        for (var i = 0; i < 3; i++)
+          use(DateTime.utc(2026, 9, 20).add(Duration(days: i)), 'PL', 'F'),
+      ];
+      expect(frequentCountries([...old, ...recent]), ['PL', 'F']);
+      // Давно не открытое приложение помнит маршрут: окно — от последней
+      // смены, а не от сегодня
+      expect(frequentCountries(old), ['PL', 'NL']);
+    });
+
+    test('без стран и без смен — пусто', () {
+      expect(frequentCountries([use(day(1), null)]), isEmpty);
+      expect(frequentCountries(const []), isEmpty);
+    });
+
+    test('из смен по записям режимов и смен, внесённых итогами; поток '
+        'обновляется при новой смене итогом', () async {
+      // Как у водителя, который внёс две недели итогами (журнал беты)
+      final frequent = repo.watchFrequent();
+      expect(await frequent.first, isEmpty);
+      for (final (d, from, to) in [
+        (15, 'PL', 'D'),
+        (16, 'D', 'D'),
+        (17, 'D', 'CH'),
+        (18, 'CH', 'D'),
+        (19, 'D', 'PL'),
+        (21, 'PL', 'D'),
+      ]) {
+        final start = DateTime.utc(2026, 9, d, 5);
+        await db
+            .into(db.manualShifts)
+            .insert(
+              ManualShiftsCompanion.insert(
+                startUtc: start,
+                endUtc: Value(start.add(const Duration(hours: 12))),
+                drivingMinutes: 480,
+                restKind: RestKind.daily,
+                startCountry: Value(from),
+                endCountry: Value(to),
+                utcOffsetMinutes: 120,
+                createdAt: start,
+                updatedAt: start,
+              ),
+            );
+      }
+      await repo.setShiftCountries(
+        DateTime.utc(2026, 9, 29, 4, 23),
+        const ShiftCountries(start: 'D'),
+      );
+      expect(await repo.watchFrequent().first, ['D', 'PL', 'CH']);
     });
   });
 

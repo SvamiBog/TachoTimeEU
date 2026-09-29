@@ -727,7 +727,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get countrySearch => 'Pays ou code';
 
   @override
-  String get countryRecent => 'Récents';
+  String get countryFrequent => 'Fréquemment utilisés';
 
   @override
   String get countryClearEnd => 'Ne pas indiquer';
@@ -2068,4 +2068,61 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get problemFailed => 'Impossible d’ouvrir l’envoi. Réessayez.';
+
+  @override
+  String get transferTitle => 'Transférer vers un autre téléphone';
+
+  @override
+  String get transferHint => 'Journal en fichier par messagerie ou e-mail';
+
+  @override
+  String get transferText =>
+      'Sur l’ancien téléphone, enregistrez le journal dans un fichier et envoyez-le-vous — par messagerie, e-mail ou dans le cloud. Sur le nouveau téléphone, ouvrez ce même écran et chargez le fichier : le journal, les téléchargements de carte et les réglages de calcul seront comme sur l’ancien.';
+
+  @override
+  String get transferSave => 'Enregistrer le journal dans un fichier';
+
+  @override
+  String get transferLoad => 'Charger le journal depuis un fichier';
+
+  @override
+  String get transferConfirmTitle => 'Charger le journal ?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'Le fichier contient le journal du $from au $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Le journal de ce téléphone sera remplacé par celui du fichier.';
+
+  @override
+  String get transferConfirm => 'Charger';
+
+  @override
+  String get transferDone => 'Journal chargé';
+
+  @override
+  String get transferEmpty => 'Le fichier ne contient aucune entrée de journal';
+
+  @override
+  String get transferNotBackup =>
+      'Ce n’est pas un fichier de journal TachoGo — choisissez le fichier tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'Le fichier provient d’une version plus récente de TachoGo — mettez l’application à jour';
+
+  @override
+  String get transferDamaged =>
+      'Le fichier de journal est endommagé — enregistrez-le à nouveau sur l’ancien téléphone';
+
+  @override
+  String get transferFailed =>
+      'Impossible de charger le journal. Le journal du téléphone n’a pas changé';
+
+  @override
+  String get transferSaveFailed =>
+      'Impossible d’enregistrer le fichier. Réessayez.';
 }

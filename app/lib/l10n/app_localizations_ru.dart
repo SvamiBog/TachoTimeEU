@@ -737,7 +737,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get countrySearch => 'Страна или код';
 
   @override
-  String get countryRecent => 'Недавние';
+  String get countryFrequent => 'Часто используемые';
 
   @override
   String get countryClearEnd => 'Не указывать';
@@ -2078,4 +2078,61 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get problemFailed =>
       'Не удалось открыть отправку. Попробуйте ещё раз.';
+
+  @override
+  String get transferTitle => 'Перенос на другой телефон';
+
+  @override
+  String get transferHint => 'Журнал — файлом через мессенджер или почту';
+
+  @override
+  String get transferText =>
+      'На старом телефоне сохраните журнал в файл и отправьте себе — в мессенджер, на почту или в облако. На новом телефоне откройте этот же экран и загрузите файл: журнал, считывания карты и настройки расчёта будут как на старом.';
+
+  @override
+  String get transferSave => 'Сохранить журнал в файл';
+
+  @override
+  String get transferLoad => 'Загрузить журнал из файла';
+
+  @override
+  String get transferConfirmTitle => 'Загрузить журнал?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'В файле — журнал с $from по $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Журнал на этом телефоне будет заменён журналом из файла.';
+
+  @override
+  String get transferConfirm => 'Загрузить';
+
+  @override
+  String get transferDone => 'Журнал загружен';
+
+  @override
+  String get transferEmpty => 'В файле нет записей журнала';
+
+  @override
+  String get transferNotBackup =>
+      'Это не файл журнала TachoGo — выберите файл tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'Файл сохранён в более новой версии TachoGo — обновите приложение';
+
+  @override
+  String get transferDamaged =>
+      'Файл журнала повреждён — сохраните его на старом телефоне заново';
+
+  @override
+  String get transferFailed =>
+      'Не удалось загрузить журнал. Журнал на телефоне не изменился';
+
+  @override
+  String get transferSaveFailed =>
+      'Не удалось сохранить файл. Попробуйте ещё раз.';
 }

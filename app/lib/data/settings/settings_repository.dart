@@ -223,6 +223,49 @@ class SettingsRepository {
   Future<void> setTachograph(TachographType type) =>
       _put(_tachograph, type.name);
 
+  /// Настройки, которые переезжают с журналом на другой телефон
+  /// (`JournalBackup`): расчёт, уведомления, правила автоопределения,
+  /// страна по умолчанию, тахограф, язык отчёта. Не переезжают: язык и тема
+  /// — выбраны на новом телефоне; согласие на аналитику — его спрашивает
+  /// каждый телефон; включение автоопределения — разрешения у нового
+  /// телефона свои; онбординг.
+  static const Set<String> _transferable = {
+    _crew,
+    _mobilityPackage,
+    _warningLead,
+    _cardAlertDays,
+    _autoAfterStop,
+    _autoStartFromRest,
+    _defaultCountry,
+    _reportLanguage,
+    _tachograph,
+    _notifyBreak,
+    _notifyShiftEnd,
+    _notifyDriving,
+    _notifyCard,
+  };
+
+  /// Заданные переносимые настройки как есть, для файла переноса.
+  Future<Map<String, String>> transferableSettings() async {
+    final all = await _all();
+    return {for (final key in _transferable) key: ?all[key]};
+  }
+
+  /// Переносимые настройки становятся как в файле: заданные —
+  /// записываются, незаданные сбрасываются к умолчаниям, чтобы расчёт на
+  /// новом телефоне был тем же. Чужие ключи пропускаются. Значения не
+  /// проверяются: неверное читается как умолчание, как любой мусор в БД.
+  Future<void> importTransferableSettings(Map<String, String> values) =>
+      _db.transaction(() async {
+        await (_db.delete(
+          _db.settings,
+        )..where((s) => s.key.isIn(_transferable))).go();
+        await _putAll({
+          for (final e in values.entries)
+            if (_transferable.contains(e.key)) e.key: e.value,
+        });
+      });
+
   Stream<NotificationSettings> watchNotifications() =>
       _watchAll().map(_notificationsFrom).distinct();
 

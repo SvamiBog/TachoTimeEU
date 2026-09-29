@@ -732,7 +732,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get countrySearch => 'Țară sau cod';
 
   @override
-  String get countryRecent => 'Recente';
+  String get countryFrequent => 'Folosite des';
 
   @override
   String get countryClearEnd => 'Nu indica';
@@ -2072,4 +2072,61 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get problemFailed =>
       'Trimiterea nu s-a putut deschide. Încercați din nou.';
+
+  @override
+  String get transferTitle => 'Transfer pe alt telefon';
+
+  @override
+  String get transferHint => 'Jurnalul ca fișier, prin mesagerie sau e-mail';
+
+  @override
+  String get transferText =>
+      'Pe telefonul vechi salvați jurnalul într-un fișier și trimiteți-l vouă — prin mesagerie, e-mail sau în cloud. Pe telefonul nou deschideți același ecran și încărcați fișierul: jurnalul, descărcările cardului și setările de calcul vor fi ca pe cel vechi.';
+
+  @override
+  String get transferSave => 'Salvează jurnalul în fișier';
+
+  @override
+  String get transferLoad => 'Încarcă jurnalul din fișier';
+
+  @override
+  String get transferConfirmTitle => 'Încărcați jurnalul?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'În fișier este jurnalul de la $from până la $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Jurnalul de pe acest telefon va fi înlocuit cu jurnalul din fișier.';
+
+  @override
+  String get transferConfirm => 'Încarcă';
+
+  @override
+  String get transferDone => 'Jurnal încărcat';
+
+  @override
+  String get transferEmpty => 'Fișierul nu conține înregistrări de jurnal';
+
+  @override
+  String get transferNotBackup =>
+      'Nu este un fișier de jurnal TachoGo — alegeți fișierul tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'Fișierul a fost salvat într-o versiune mai nouă TachoGo — actualizați aplicația';
+
+  @override
+  String get transferDamaged =>
+      'Fișierul jurnalului este deteriorat — salvați-l din nou pe telefonul vechi';
+
+  @override
+  String get transferFailed =>
+      'Jurnalul nu s-a putut încărca. Jurnalul de pe telefon nu s-a schimbat';
+
+  @override
+  String get transferSaveFailed =>
+      'Fișierul nu s-a putut salva. Încercați din nou.';
 }

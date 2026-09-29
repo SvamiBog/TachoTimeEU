@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/data/backup/journal_backup.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/journal/card_download_repository.dart';
@@ -40,6 +41,14 @@ final journalEditRepositoryProvider = Provider<JournalEditRepository>(
 /// «Очистить все данные» в настройках.
 final journalCleanerProvider = Provider<JournalCleaner>(
   (ref) => JournalCleaner(
+    ref.watch(databaseProvider),
+    onChanged: ref.watch(journalChangedCallbackProvider),
+  ),
+);
+
+/// Перенос журнала на другой телефон файлом (Premium, docs/premium.md).
+final journalBackupProvider = Provider<JournalBackup>(
+  (ref) => JournalBackup(
     ref.watch(databaseProvider),
     onChanged: ref.watch(journalChangedCallbackProvider),
   ),

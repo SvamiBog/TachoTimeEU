@@ -725,7 +725,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get countrySearch => 'Land oder Kennzeichen';
 
   @override
-  String get countryRecent => 'Zuletzt';
+  String get countryFrequent => 'Häufig verwendet';
 
   @override
   String get countryClearEnd => 'Nicht angeben';
@@ -2076,4 +2076,61 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get problemFailed =>
       'Senden konnte nicht geöffnet werden. Bitte erneut versuchen.';
+
+  @override
+  String get transferTitle => 'Auf ein anderes Handy übertragen';
+
+  @override
+  String get transferHint => 'Protokoll als Datei per Messenger oder E-Mail';
+
+  @override
+  String get transferText =>
+      'Speichern Sie auf dem alten Handy das Protokoll in eine Datei und schicken Sie sie sich selbst — per Messenger, E-Mail oder in die Cloud. Öffnen Sie auf dem neuen Handy denselben Bildschirm und laden Sie die Datei: Protokoll, Kartenauslesungen und Berechnungseinstellungen sind dann wie auf dem alten.';
+
+  @override
+  String get transferSave => 'Protokoll in Datei speichern';
+
+  @override
+  String get transferLoad => 'Protokoll aus Datei laden';
+
+  @override
+  String get transferConfirmTitle => 'Protokoll laden?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'Die Datei enthält das Protokoll vom $from bis $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Das Protokoll auf diesem Handy wird durch das Protokoll aus der Datei ersetzt.';
+
+  @override
+  String get transferConfirm => 'Laden';
+
+  @override
+  String get transferDone => 'Protokoll geladen';
+
+  @override
+  String get transferEmpty => 'Die Datei enthält keine Protokolleinträge';
+
+  @override
+  String get transferNotBackup =>
+      'Das ist keine TachoGo-Protokolldatei — wählen Sie die Datei tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'Die Datei stammt aus einer neueren TachoGo-Version — bitte App aktualisieren';
+
+  @override
+  String get transferDamaged =>
+      'Die Protokolldatei ist beschädigt — speichern Sie sie auf dem alten Handy erneut';
+
+  @override
+  String get transferFailed =>
+      'Das Protokoll konnte nicht geladen werden. Das Protokoll auf dem Handy ist unverändert';
+
+  @override
+  String get transferSaveFailed =>
+      'Die Datei konnte nicht gespeichert werden. Bitte erneut versuchen.';
 }

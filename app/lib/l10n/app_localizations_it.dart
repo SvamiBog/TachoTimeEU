@@ -724,7 +724,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get countrySearch => 'Paese o codice';
 
   @override
-  String get countryRecent => 'Recenti';
+  String get countryFrequent => 'Usati spesso';
 
   @override
   String get countryClearEnd => 'Non indicare';
@@ -2062,4 +2062,60 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get problemFailed => 'Impossibile aprire l’invio. Riprova.';
+
+  @override
+  String get transferTitle => 'Trasferisci su un altro telefono';
+
+  @override
+  String get transferHint => 'Il registro come file via messaggistica o e-mail';
+
+  @override
+  String get transferText =>
+      'Sul vecchio telefono salva il registro in un file e invialo a te stesso: via messaggistica, e-mail o nel cloud. Sul nuovo telefono apri questa stessa schermata e carica il file: registro, scarichi della carta e impostazioni di calcolo saranno come sul vecchio.';
+
+  @override
+  String get transferSave => 'Salva registro in un file';
+
+  @override
+  String get transferLoad => 'Carica registro da file';
+
+  @override
+  String get transferConfirmTitle => 'Caricare il registro?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'Il file contiene il registro dal $from al $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Il registro di questo telefono sarà sostituito da quello del file.';
+
+  @override
+  String get transferConfirm => 'Carica';
+
+  @override
+  String get transferDone => 'Registro caricato';
+
+  @override
+  String get transferEmpty => 'Il file non contiene voci di registro';
+
+  @override
+  String get transferNotBackup =>
+      'Non è un file di registro TachoGo: scegli il file tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'Il file è stato salvato in una versione più recente di TachoGo: aggiorna l’app';
+
+  @override
+  String get transferDamaged =>
+      'Il file del registro è danneggiato: salvalo di nuovo sul vecchio telefono';
+
+  @override
+  String get transferFailed =>
+      'Impossibile caricare il registro. Il registro del telefono non è cambiato';
+
+  @override
+  String get transferSaveFailed => 'Impossibile salvare il file. Riprova.';
 }

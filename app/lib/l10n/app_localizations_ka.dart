@@ -724,7 +724,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get countrySearch => 'ქვეყანა ან კოდი';
 
   @override
-  String get countryRecent => 'ბოლოს გამოყენებული';
+  String get countryFrequent => 'ხშირად გამოყენებული';
 
   @override
   String get countryClearEnd => 'არ მიუთითოთ';
@@ -2056,4 +2056,61 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get problemFailed => 'გაგზავნის გახსნა ვერ მოხერხდა. სცადეთ ხელახლა.';
+
+  @override
+  String get transferTitle => 'სხვა ტელეფონზე გადატანა';
+
+  @override
+  String get transferHint => 'ჟურნალი ფაილად — მესენჯერით ან ფოსტით';
+
+  @override
+  String get transferText =>
+      'ძველ ტელეფონზე შეინახეთ ჟურნალი ფაილად და გაუგზავნეთ საკუთარ თავს — მესენჯერში, ფოსტით ან ღრუბელში. ახალ ტელეფონზე გახსენით იგივე ეკრანი და ჩატვირთეთ ფაილი: ჟურნალი, ბარათის წაკითხვები და გაანგარიშების პარამეტრები იქნება ისეთივე, როგორც ძველზე.';
+
+  @override
+  String get transferSave => 'ჟურნალის ფაილად შენახვა';
+
+  @override
+  String get transferLoad => 'ჟურნალის ფაილიდან ჩატვირთვა';
+
+  @override
+  String get transferConfirmTitle => 'ჩავტვირთოთ ჟურნალი?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'ფაილში არის ჟურნალი $from-დან $to-მდე.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'ამ ტელეფონის ჟურნალი ჩანაცვლდება ფაილის ჟურნალით.';
+
+  @override
+  String get transferConfirm => 'ჩატვირთვა';
+
+  @override
+  String get transferDone => 'ჟურნალი ჩაიტვირთა';
+
+  @override
+  String get transferEmpty => 'ფაილში ჟურნალის ჩანაწერები არ არის';
+
+  @override
+  String get transferNotBackup =>
+      'ეს არ არის TachoGo-ს ჟურნალის ფაილი — აირჩიეთ ფაილი tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'ფაილი შენახულია TachoGo-ს უფრო ახალ ვერსიაში — განაახლეთ აპლიკაცია';
+
+  @override
+  String get transferDamaged =>
+      'ჟურნალის ფაილი დაზიანებულია — ხელახლა შეინახეთ ძველ ტელეფონზე';
+
+  @override
+  String get transferFailed =>
+      'ჟურნალის ჩატვირთვა ვერ მოხერხდა. ტელეფონის ჟურნალი არ შეცვლილა';
+
+  @override
+  String get transferSaveFailed =>
+      'ფაილის შენახვა ვერ მოხერხდა. სცადეთ ხელახლა.';
 }

@@ -22,6 +22,47 @@ class ShiftCountries {
   int get hashCode => Object.hash(start, end);
 }
 
+/// Страны одной смены для [frequentCountries]: начало смены, начальная и
+/// конечная страна (null — не выбрана).
+typedef ShiftCountryUse = ({DateTime start, String? from, String? to});
+
+/// Окно [frequentCountries]: после смены маршрута новые страны поднимаются
+/// наверх за пару недель, а не стоят за старыми месяцами.
+const frequentCountriesWindow = Duration(days: 56);
+
+/// Часто используемые страны: в скольких сменах страна была начальной или
+/// конечной (страна, начальная и конечная сразу, — один раз), за
+/// [window] до последней смены журнала — не до сегодня, чтобы и давно не
+/// открытое приложение помнило маршрут. При равенстве выше та, что была
+/// позже. Не больше [limit].
+List<String> frequentCountries(
+  Iterable<ShiftCountryUse> shifts, {
+  int limit = 4,
+  Duration window = frequentCountriesWindow,
+}) {
+  if (shifts.isEmpty) return const [];
+  final latest = shifts
+      .map((s) => s.start)
+      .reduce((a, b) => a.isAfter(b) ? a : b);
+  final since = latest.subtract(window);
+  final count = <String, int>{};
+  final last = <String, DateTime>{};
+  for (final s in shifts) {
+    if (s.start.isBefore(since)) continue;
+    for (final code in {s.from, s.to}.nonNulls) {
+      count[code] = (count[code] ?? 0) + 1;
+      final seen = last[code];
+      if (seen == null || s.start.isAfter(seen)) last[code] = s.start;
+    }
+  }
+  final codes = count.keys.toList()
+    ..sort((a, b) {
+      final byCount = count[b]!.compareTo(count[a]!);
+      return byCount != 0 ? byCount : last[b]!.compareTo(last[a]!);
+    });
+  return codes.take(limit).toList();
+}
+
 /// Страны смен в таблице `shifts`. Смену движок выводит из журнала, её
 /// ключ здесь — момент начала (UTC). Выбор страны — бесплатное действие,
 /// как переключение режима: он не меняет журнал (docs/premium.md).
@@ -39,17 +80,21 @@ class CountryRepository {
     },
   );
 
-  /// Недавние страны, сначала последняя выбранная: конечная, затем
-  /// начальная каждой смены, без повторов.
-  Stream<List<String>> watchRecent({int limit = 3}) =>
-      _ordered().watch().map((rows) {
-        final recent = <String>[];
-        for (final r in rows.reversed) {
-          for (final code in [r.endCountry, r.startCountry]) {
-            if (code != null && !recent.contains(code)) recent.add(code);
-          }
-        }
-        return recent.take(limit).toList();
+  /// Часто используемые страны (экран 10) — [frequentCountries] по сменам
+  /// из записей режимов и сменам, внесённым итогами. Пересчитываются при
+  /// изменении любой из двух таблиц.
+  Stream<List<String>> watchFrequent({int limit = 4}) => _db
+      .customSelect('SELECT 1', readsFrom: {_db.shifts, _db.manualShifts})
+      .watch()
+      .asyncMap((_) async {
+        final shifts = await _db.select(_db.shifts).get();
+        final manual = await _db.select(_db.manualShifts).get();
+        return frequentCountries([
+          for (final s in shifts)
+            (start: s.startUtc, from: s.startCountry, to: s.endCountry),
+          for (final m in manual)
+            (start: m.startUtc, from: m.startCountry, to: m.endCountry),
+        ], limit: limit);
       });
 
   /// Страны смены, начатой в [shiftStart]. Выбор становится страной по

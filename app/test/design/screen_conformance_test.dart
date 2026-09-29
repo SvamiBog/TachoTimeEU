@@ -178,6 +178,10 @@ final _screens = <String, _Screen>{
     build: MoreScreen.new,
     open: _tapText((l) => l.problemTitle),
   ),
+  'Шторка «Перенос на другой телефон»': (
+    build: MoreScreen.new,
+    open: _tapText((l) => l.transferTitle),
+  ),
   'Инструкция и правила': (build: GuideScreen.new, open: null),
   'Инструкция · своя перевозка': (
     build: GuideScreen.new,
@@ -234,7 +238,7 @@ Future<void> _pump(
       countries: {
         DateTime.utc(2026, 9, 23, 6, 49): const ShiftCountries(start: 'PL'),
       },
-      recentCountries: ['PL', 'D', 'CZ'],
+      frequentCountries: ['PL', 'D', 'CZ', 'NL'],
       defaultCountry: 'PL',
       // Настройки и онбординг со всеми строками: автоопределение включено,
       // уведомления запрещены, экономия батареи мешает (Android).

@@ -722,7 +722,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get countrySearch => 'Country or code';
 
   @override
-  String get countryRecent => 'Recent';
+  String get countryFrequent => 'Frequently used';
 
   @override
   String get countryClearEnd => 'Do not specify';
@@ -2058,4 +2058,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get problemFailed => 'Could not open sending. Please try again.';
+
+  @override
+  String get transferTitle => 'Move to another phone';
+
+  @override
+  String get transferHint => 'Log as a file via messenger or email';
+
+  @override
+  String get transferText =>
+      'On your old phone, save the log to a file and send it to yourself — via messenger, email or cloud storage. On the new phone, open this same screen and load the file: the log, card downloads and calculation settings will be the same as on the old one.';
+
+  @override
+  String get transferSave => 'Save log to file';
+
+  @override
+  String get transferLoad => 'Load log from file';
+
+  @override
+  String get transferConfirmTitle => 'Load the log?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'The file contains the log from $from to $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'The log on this phone will be replaced with the log from the file.';
+
+  @override
+  String get transferConfirm => 'Load';
+
+  @override
+  String get transferDone => 'Log loaded';
+
+  @override
+  String get transferEmpty => 'The file has no log entries';
+
+  @override
+  String get transferNotBackup =>
+      'This is not a TachoGo log file — choose the tachogo-journal file';
+
+  @override
+  String get transferNewer =>
+      'The file was saved in a newer version of TachoGo — update the app';
+
+  @override
+  String get transferDamaged =>
+      'The log file is damaged — save it again on the old phone';
+
+  @override
+  String get transferFailed =>
+      'Could not load the log. The log on this phone has not changed';
+
+  @override
+  String get transferSaveFailed => 'Could not save the file. Please try again.';
 }

@@ -725,7 +725,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get countrySearch => 'País o código';
 
   @override
-  String get countryRecent => 'Recientes';
+  String get countryFrequent => 'Usados con frecuencia';
 
   @override
   String get countryClearEnd => 'No indicar';
@@ -2066,4 +2066,62 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get problemFailed => 'No se pudo abrir el envío. Inténtelo de nuevo.';
+
+  @override
+  String get transferTitle => 'Pasar a otro teléfono';
+
+  @override
+  String get transferHint =>
+      'El registro en un archivo por mensajería o correo';
+
+  @override
+  String get transferText =>
+      'En el teléfono antiguo, guarde el registro en un archivo y envíeselo a usted mismo: por mensajería, correo o a la nube. En el teléfono nuevo, abra esta misma pantalla y cargue el archivo: el registro, las descargas de la tarjeta y los ajustes de cálculo quedarán como en el antiguo.';
+
+  @override
+  String get transferSave => 'Guardar registro en archivo';
+
+  @override
+  String get transferLoad => 'Cargar registro desde archivo';
+
+  @override
+  String get transferConfirmTitle => '¿Cargar el registro?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'El archivo contiene el registro del $from al $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'El registro de este teléfono se sustituirá por el del archivo.';
+
+  @override
+  String get transferConfirm => 'Cargar';
+
+  @override
+  String get transferDone => 'Registro cargado';
+
+  @override
+  String get transferEmpty => 'El archivo no tiene entradas de registro';
+
+  @override
+  String get transferNotBackup =>
+      'No es un archivo de registro de TachoGo: elija el archivo tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'El archivo se guardó en una versión más nueva de TachoGo: actualice la aplicación';
+
+  @override
+  String get transferDamaged =>
+      'El archivo de registro está dañado: guárdelo de nuevo en el teléfono antiguo';
+
+  @override
+  String get transferFailed =>
+      'No se pudo cargar el registro. El registro del teléfono no ha cambiado';
+
+  @override
+  String get transferSaveFailed =>
+      'No se pudo guardar el archivo. Inténtelo de nuevo.';
 }

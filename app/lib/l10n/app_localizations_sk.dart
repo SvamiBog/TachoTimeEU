@@ -737,7 +737,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get countrySearch => 'Krajina alebo kód';
 
   @override
-  String get countryRecent => 'Nedávne';
+  String get countryFrequent => 'Často používané';
 
   @override
   String get countryClearEnd => 'Neuvádzať';
@@ -2079,4 +2079,61 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get problemFailed =>
       'Odoslanie sa nepodarilo otvoriť. Skúste to znova.';
+
+  @override
+  String get transferTitle => 'Presun do iného telefónu';
+
+  @override
+  String get transferHint => 'Denník ako súbor cez messenger alebo e-mail';
+
+  @override
+  String get transferText =>
+      'V starom telefóne uložte denník do súboru a pošlite si ho — cez messenger, e-mailom alebo do cloudu. V novom telefóne otvorte túto obrazovku a načítajte súbor: denník, stiahnutia karty a nastavenia výpočtu budú rovnaké ako v starom.';
+
+  @override
+  String get transferSave => 'Uložiť denník do súboru';
+
+  @override
+  String get transferLoad => 'Načítať denník zo súboru';
+
+  @override
+  String get transferConfirmTitle => 'Načítať denník?';
+
+  @override
+  String transferConfirmRange(String from, String to) {
+    return 'V súbore je denník od $from do $to.';
+  }
+
+  @override
+  String get transferConfirmReplace =>
+      'Denník v tomto telefóne bude nahradený denníkom zo súboru.';
+
+  @override
+  String get transferConfirm => 'Načítať';
+
+  @override
+  String get transferDone => 'Denník načítaný';
+
+  @override
+  String get transferEmpty => 'V súbore nie sú žiadne záznamy denníka';
+
+  @override
+  String get transferNotBackup =>
+      'Toto nie je súbor denníka TachoGo — vyberte súbor tachogo-journal';
+
+  @override
+  String get transferNewer =>
+      'Súbor bol uložený v novšej verzii TachoGo — aktualizujte aplikáciu';
+
+  @override
+  String get transferDamaged =>
+      'Súbor denníka je poškodený — uložte ho znova v starom telefóne';
+
+  @override
+  String get transferFailed =>
+      'Denník sa nepodarilo načítať. Denník v telefóne sa nezmenil';
+
+  @override
+  String get transferSaveFailed =>
+      'Súbor sa nepodarilo uložiť. Skúste to znova.';
 }

@@ -271,7 +271,7 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
     final l = context.l10n;
     final colors = context.colors;
     final hasShift = !widget.single;
-    final recent = ref.watch(recentCountriesProvider).value ?? const [];
+    final frequent = ref.watch(frequentCountriesProvider).value ?? const [];
     final selected = switch (_target) {
       CountryTarget.start => widget.start,
       CountryTarget.end => widget.end,
@@ -332,12 +332,12 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
             ),
           ),
         ),
-        if (recent.isNotEmpty ||
+        if (frequent.isNotEmpty ||
             (hasShift && _target == CountryTarget.end)) ...[
           Padding(
             padding: const EdgeInsets.fromLTRB(pad, 16, pad, 8),
             child: Text(
-              l.countryRecent.toUpperCase(),
+              l.countryFrequent.toUpperCase(),
               style: AppTextStyles.section.copyWith(
                 color: colors.textSecondary,
               ),
@@ -349,7 +349,7 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
               spacing: 8,
               runSpacing: 8,
               children: [
-                for (final code in recent)
+                for (final code in frequent)
                   ChoicePill(
                     code,
                     selected: code == selected,
