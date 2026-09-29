@@ -1808,23 +1808,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'Fahrzeug';
-
-  @override
-  String get vehicleTruckOrBus => 'Lkw oder Bus';
-
-  @override
   String get vehicleVan => 'Transporter 2,5–3,5 t';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'Regeln — ab $date im grenzüberschreitenden Verkehr und in der gewerblichen Kabotage';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'Die EU-Regeln für Transporter gelten ab $date — im grenzüberschreitenden Verkehr und in der gewerblichen Kabotage. Im Transporter ist ein intelligenter Fahrtenschreiber der zweiten Generation, der Fahrer hat eine Fahrerkarte.';
-  }
 
   @override
   String get onbRulesTitle => 'Die wichtigsten Regeln';

@@ -2853,35 +2853,11 @@ abstract class AppLocalizations {
   /// **'Язык: {language}'**
   String languageButton(String language);
 
-  /// No description provided for @settingsVehicle.
-  ///
-  /// In ru, this message translates to:
-  /// **'Транспорт'**
-  String get settingsVehicle;
-
-  /// No description provided for @vehicleTruckOrBus.
-  ///
-  /// In ru, this message translates to:
-  /// **'Грузовик или автобус'**
-  String get vehicleTruckOrBus;
-
   /// No description provided for @vehicleVan.
   ///
   /// In ru, this message translates to:
   /// **'Фургон 2,5–3,5 т'**
   String get vehicleVan;
-
-  /// Пояснение под типом транспорта для фургона
-  ///
-  /// In ru, this message translates to:
-  /// **'Правила — с {date} в международных рейсах и каботаже по найму'**
-  String settingsVanHint(String date);
-
-  /// Онбординг, шаг «Настройка», выбран фургон
-  ///
-  /// In ru, this message translates to:
-  /// **'Правила ЕС для фургонов действуют с {date} — в международных рейсах и каботаже по найму. В фургоне — умный тахограф второго поколения, у водителя — карта.'**
-  String onbVanText(String date);
 
   /// No description provided for @onbRulesTitle.
   ///

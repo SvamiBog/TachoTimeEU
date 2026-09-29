@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/widgets/sections.dart';
-import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
 
 import '../support/app_harness.dart';
@@ -14,18 +13,10 @@ import '../support/app_harness.dart';
 final now = DateTime.utc(2026, 9, 23, 12);
 
 void main() {
-  Future<void> pump(
-    WidgetTester tester, {
-    VehicleType vehicle = VehicleType.truckOrBus,
-    DateTime? at,
-  }) => pumpScreen(
+  Future<void> pump(WidgetTester tester, {DateTime? at}) => pumpScreen(
     tester,
     const GuideScreen(),
-    overrides: journalOverrides(
-      periods: const [],
-      now: at ?? now,
-      preferences: AppPreferences(onboardingDone: true, vehicle: vehicle),
-    ),
+    overrides: journalOverrides(periods: const [], now: at ?? now),
   );
 
   Future<void> tapText(WidgetTester tester, String text) async {
@@ -46,6 +37,14 @@ void main() {
       200,
       scrollable: find.byType(Scrollable).first,
     );
+    await tester.pumpAndSettle();
+  }
+
+  /// Проверка рейса — после правил: прокрутить, чтобы она встала вверху
+  /// экрана, вопросы и ответ — под ней.
+  Future<void> showCheck(WidgetTester tester) async {
+    await show(tester, 'Касаются ли правила вашего рейса');
+    await tester.ensureVisible(find.text('Касаются ли правила вашего рейса'));
     await tester.pumpAndSettle();
   }
 
@@ -127,7 +126,8 @@ void main() {
     testWidgets('по найму за границу — действуют; внутри страны — нет', (
       tester,
     ) async {
-      await pump(tester, vehicle: VehicleType.van);
+      await pump(tester);
+      await showCheck(tester);
       expect(verdict(), 'Правила действуют');
       expect(find.text('Регламент 561/2006, ст. 2(1)(aa)'), findsOneWidget);
       expect(find.text('Вождение — ваша основная работа?'), findsNothing);
@@ -139,7 +139,8 @@ void main() {
 
     testWidgets('свой груз: исключение ст. 3(ha), только если вождение — не '
         'основная работа', (tester) async {
-      await pump(tester, vehicle: VehicleType.van);
+      await pump(tester);
+      await showCheck(tester);
       await tapText(tester, 'Свой груз');
       expect(find.text('Вождение — ваша основная работа?'), findsOneWidget);
       expect(verdict(), 'Правила действуют');
@@ -156,18 +157,16 @@ void main() {
     testWidgets('некоммерческая перевозка — исключение ст. 3(h)', (
       tester,
     ) async {
-      await pump(tester, vehicle: VehicleType.van);
+      await pump(tester);
+      await showCheck(tester);
       await tapText(tester, 'Некоммерческая');
       expect(verdict(), 'Правила не действуют');
       expect(find.text('Регламент 561/2006, ст. 3(h)'), findsOneWidget);
     });
 
     testWidgets('до 01.07.2026 — фургоны в правила не входили', (tester) async {
-      await pump(
-        tester,
-        vehicle: VehicleType.van,
-        at: vanRulesFrom.subtract(const Duration(minutes: 1)),
-      );
+      await pump(tester, at: vanRulesFrom.subtract(const Duration(minutes: 1)));
+      await showCheck(tester);
       expect(verdict(), 'Правила не действуют');
       expect(
         find.text('До 01.07.2026 фургоны в правила не входили.'),
@@ -175,14 +174,9 @@ void main() {
       );
     });
 
-    testWidgets('водителю фургона его раздел — первым, остальным — после '
-        'правил', (tester) async {
+    testWidgets('раздел фургона — один для всех, после правил', (tester) async {
       String firstSection() =>
           tester.widgetList<SectionTitle>(find.byType(SectionTitle)).first.text;
-      await pump(tester, vehicle: VehicleType.van);
-      expect(firstSection(), 'Фургон 2,5–3,5 т');
-      await unmount(tester);
-
       await pump(tester);
       expect(firstSection(), 'Как пользоваться');
       expect(find.text('ФУРГОН 2,5–3,5 Т'), findsNothing);

@@ -1796,23 +1796,7 @@ class AppLocalizationsUz extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'Transport';
-
-  @override
-  String get vehicleTruckOrBus => 'Yuk mashinasi yoki avtobus';
-
-  @override
   String get vehicleVan => 'Furgon 2,5–3,5 t';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'Qoidalar — $date dan xalqaro reyslar va yollanma kabotajda';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'Furgonlar uchun YeI qoidalari $date dan amal qiladi — xalqaro reyslar va yollanma kabotajda. Furgonda — ikkinchi avlod aqlli taxografi, haydovchida — karta.';
-  }
 
   @override
   String get onbRulesTitle => 'Asosiy qoidalar';

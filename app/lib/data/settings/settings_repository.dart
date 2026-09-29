@@ -28,11 +28,12 @@ class AutoDetectSettings {
 enum ThemeChoice { system, light, dark }
 
 /// Тахограф в машине (экран 14). Лимиты 561/2006 от него не зависят, на
-/// расчёт он пока не влияет — `docs/PRD.md`, открытый вопрос 5. У фургона
-/// тахограф только цифровой: умный второго поколения.
+/// расчёт он пока не влияет — `docs/PRD.md`, открытый вопрос 5.
 enum TachographType { digital, analog }
 
-/// Настройки интерфейса: тема, язык, онбординг, транспорт, тахограф.
+/// Настройки интерфейса: тема, язык, онбординг, тахограф. Типа транспорта
+/// нет: лимиты одинаковы для грузовика, автобуса и фургона 2,5–3,5 т, а
+/// касаются ли правила рейса фургона — проверка в «Инструкции и правилах».
 @immutable
 class AppPreferences {
   const new({
@@ -40,7 +41,6 @@ class AppPreferences {
     this.language,
     this.reportLanguage,
     this.onboardingDone = false,
-    this.vehicle = VehicleType.truckOrBus,
     this.tachograph = TachographType.digital,
   });
 
@@ -56,10 +56,6 @@ class AppPreferences {
   /// Онбординг показывается один раз, до первого «Готово».
   final bool onboardingDone;
 
-  /// Грузовик или автобус / фургон 2,5–3,5 т (экраны 3, 14). Лимиты от него
-  /// не зависят — только то, когда правила действуют (`vanRules`), и
-  /// объяснения в «Инструкции и правилах».
-  final VehicleType vehicle;
   final TachographType tachograph;
 
   @override
@@ -69,18 +65,11 @@ class AppPreferences {
       other.language == language &&
       other.reportLanguage == reportLanguage &&
       other.onboardingDone == onboardingDone &&
-      other.vehicle == vehicle &&
       other.tachograph == tachograph;
 
   @override
-  int get hashCode => Object.hash(
-    theme,
-    language,
-    reportLanguage,
-    onboardingDone,
-    vehicle,
-    tachograph,
-  );
+  int get hashCode =>
+      Object.hash(theme, language, reportLanguage, onboardingDone, tachograph);
 }
 
 /// Какие уведомления о лимитах присылать (экран 3): расписание —
@@ -150,7 +139,6 @@ class SettingsRepository {
   static const _language = 'language';
   static const _reportLanguage = 'report_language';
   static const _onboardingDone = 'onboarding_done';
-  static const _vehicle = 'vehicle';
   static const _tachograph = 'tachograph';
   static const _notifyBreak = 'notify_break';
   static const _notifyShiftEnd = 'notify_shift_end';
@@ -232,13 +220,6 @@ class SettingsRepository {
 
   Future<void> setOnboardingDone() => _put(_onboardingDone, 'true');
 
-  /// Фургону тахограф ставится цифровой: в него ставят только умный
-  /// тахограф второго поколения, выбора в онбординге и настройках нет.
-  Future<void> setVehicle(VehicleType vehicle) => _putAll({
-    _vehicle: vehicle.name,
-    if (vehicle == VehicleType.van) _tachograph: TachographType.digital.name,
-  });
-
   Future<void> setTachograph(TachographType type) =>
       _put(_tachograph, type.name);
 
@@ -303,7 +284,6 @@ class SettingsRepository {
       language: language == null || language.isEmpty ? null : language,
       reportLanguage: report == null || report.isEmpty ? null : report,
       onboardingDone: _bool(v[_onboardingDone]) ?? d.onboardingDone,
-      vehicle: VehicleType.values.asNameMap()[v[_vehicle]] ?? d.vehicle,
       tachograph:
           TachographType.values.asNameMap()[v[_tachograph]] ?? d.tachograph,
     );

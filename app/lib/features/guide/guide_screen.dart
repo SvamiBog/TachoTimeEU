@@ -13,7 +13,6 @@ import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
-import 'package:tachogo/data/settings/settings_providers.dart';
 
 void openGuide(BuildContext context) =>
     Navigator.of(context)
@@ -21,30 +20,24 @@ void openGuide(BuildContext context) =>
 
 /// Инструкция и правила (экран 17): как пользоваться, лимиты 561/2006 из
 /// `EuLimits`, объяснения для тех, кто впервые с тахографом, правила для
-/// фургонов 2,5–3,5 т, цвета режимов. Водителю фургона его раздел — первым.
-class GuideScreen extends ConsumerWidget {
+/// фургонов 2,5–3,5 т, цвета режимов.
+class GuideScreen extends StatelessWidget {
   const new({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l = context.l10n;
-    final van =
-        ref.watch(preferencesProvider).value?.vehicle == VehicleType.van;
-    final vanSection = [
-      SectionTitle(l.vehicleVan, top: van ? 12 : AppSpacing.beforeSectionMax),
-      const VanRulesCheck(),
-    ];
     return DetailScaffold(
       title: l.guideTitle,
       children: [
-        if (van) ...vanSection,
-        SectionTitle(l.guideHowTo, top: van ? AppSpacing.beforeSectionMax : 12),
+        SectionTitle(l.guideHowTo, top: 12),
         const _HowTo(),
         SectionTitle(l.guideRules),
         CardGroup(children: [for (final r in GuideRule.values) RuleRow(r)]),
         SectionTitle(l.guideNewbie),
         const _Newbie(),
-        if (!van) ...vanSection,
+        SectionTitle(l.vehicleVan),
+        const VanRulesCheck(),
         SectionTitle(l.guideModes),
         const _ModesLegend(),
         Padding(

@@ -1818,23 +1818,7 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'Pojazd';
-
-  @override
-  String get vehicleTruckOrBus => 'Ciężarówka lub autobus';
-
-  @override
   String get vehicleVan => 'Bus 2,5–3,5 t';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'Przepisy — od $date w przewozach międzynarodowych i kabotażu zarobkowym';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'Przepisy UE dla busów obowiązują od $date — w przewozach międzynarodowych i kabotażu zarobkowym. W busie — inteligentny tachograf drugiej generacji, kierowca ma kartę.';
-  }
 
   @override
   String get onbRulesTitle => 'Najważniejsze przepisy';

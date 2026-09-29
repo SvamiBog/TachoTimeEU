@@ -1805,23 +1805,7 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'Vehicul';
-
-  @override
-  String get vehicleTruckOrBus => 'Camion sau autobuz';
-
-  @override
   String get vehicleVan => 'Dubă 2,5–3,5 t';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'Reguli — de la $date în curse internaționale și cabotaj contra cost';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'Regulile UE pentru dube se aplică de la $date — în curse internaționale și cabotaj contra cost. În dubă — tahograf inteligent de a doua generație, șoferul are card.';
-  }
 
   @override
   String get onbRulesTitle => 'Regulile principale';

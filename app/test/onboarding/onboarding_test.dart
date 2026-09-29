@@ -60,8 +60,8 @@ void main() {
       .isSelected
       .toBoolOrNull()!;
 
-  testWidgets('UI-13: язык, режимы, главные правила, транспорт, тахограф, '
-      'пакет мобильности, уведомления, согласие на аналитику (UI-12), '
+  testWidgets('UI-13: язык, режимы, главные правила, тахограф, пакет '
+      'мобильности, уведомления, согласие на аналитику (UI-12), '
       'автоопределение, «Готово»', (tester) async {
     platform
       ..notificationPermission = NotificationPermission.denied
@@ -95,7 +95,6 @@ void main() {
 
     // 4. Настройка (экран 14)
     expect(find.text('Настроим под вас'), findsOneWidget);
-    expect(selected(tester, 'Грузовик или автобус'), isTrue);
     expect(selected(tester, 'Цифровой'), isTrue);
     await tap(tester, 'Аналоговый');
     expect(selected(tester, 'Аналоговый'), isTrue);
@@ -121,7 +120,6 @@ void main() {
     final prefs = (await tester.runAsync(settings.preferences))!;
     expect(prefs.onboardingDone, isTrue);
     expect(prefs.language, isNull);
-    expect(prefs.vehicle, VehicleType.truckOrBus);
     expect(prefs.tachograph, TachographType.analog);
     expect(
       (await tester.runAsync(settings.complianceSettings))!.mobilityPackage,
@@ -222,39 +220,17 @@ void main() {
     await unmount(tester);
   });
 
-  testWidgets('UI-18: фургон 2,5–3,5 т — тахограф цифровой без выбора, '
-      'пояснение о правилах и переход к проверке рейса', (tester) async {
+  testWidgets('UI-18: типа транспорта нет — «Настройка» начинается с '
+      'тахографа', (tester) async {
     await pump(tester);
     for (final step in ['Начать', 'Далее', 'Далее']) {
       await tap(tester, step);
     }
-    await tap(tester, 'Аналоговый');
-    // Касание прокрутило список — транспорт выше
-    await tester.drag(find.byType(Scrollable).first, const Offset(0, 800));
-    await tester.pumpAndSettle();
-    await tap(tester, 'Фургон 2,5–3,5 т');
-    expect(selected(tester, 'Фургон 2,5–3,5 т'), isTrue);
-    expect(selected(tester, 'Грузовик или автобус'), isFalse);
-    expect(find.text('Тахограф в машине'.toUpperCase()), findsNothing);
-    expect(find.text('Аналоговый'), findsNothing);
-    expect(find.textContaining('действуют с 01.07.2026'), findsOneWidget);
-
-    var prefs = (await tester.runAsync(settings.preferences))!;
-    expect(prefs.vehicle, VehicleType.van);
-    expect(prefs.tachograph, TachographType.digital);
-
-    await tap(tester, 'Касаются ли правила вашего рейса');
-    expect(find.text('Инструкция и правила'), findsOneWidget);
-    await tester.tap(find.byTooltip('Назад'));
-    await tester.pumpAndSettle();
-    expect(find.text('Инструкция и правила'), findsNothing);
-
-    await tester.drag(find.byType(Scrollable).first, const Offset(0, 800));
-    await tester.pumpAndSettle();
-    await tap(tester, 'Грузовик или автобус');
+    expect(find.text('Тахограф в машине'.toUpperCase()), findsOneWidget);
+    expect(find.text('Цифровой'), findsOneWidget);
     expect(find.text('Аналоговый'), findsOneWidget);
-    prefs = (await tester.runAsync(settings.preferences))!;
-    expect(prefs.vehicle, VehicleType.truckOrBus);
+    expect(find.text('Грузовик или автобус'), findsNothing);
+    expect(find.text('Фургон 2,5–3,5 т'), findsNothing);
     await unmount(tester);
   });
 }

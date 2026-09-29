@@ -1801,23 +1801,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'Vehículo';
-
-  @override
-  String get vehicleTruckOrBus => 'Camión o autobús';
-
-  @override
   String get vehicleVan => 'Furgoneta 2,5–3,5 t';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'Normas: desde el $date en transporte internacional y cabotaje por cuenta ajena';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'Las normas de la UE para furgonetas se aplican desde el $date, en transporte internacional y cabotaje por cuenta ajena. La furgoneta lleva un tacógrafo inteligente de segunda generación y el conductor tiene tarjeta.';
-  }
 
   @override
   String get onbRulesTitle => 'Normas principales';

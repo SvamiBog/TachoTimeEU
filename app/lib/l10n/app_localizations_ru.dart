@@ -1812,23 +1812,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'Транспорт';
-
-  @override
-  String get vehicleTruckOrBus => 'Грузовик или автобус';
-
-  @override
   String get vehicleVan => 'Фургон 2,5–3,5 т';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'Правила — с $date в международных рейсах и каботаже по найму';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'Правила ЕС для фургонов действуют с $date — в международных рейсах и каботаже по найму. В фургоне — умный тахограф второго поколения, у водителя — карта.';
-  }
 
   @override
   String get onbRulesTitle => 'Главные правила';

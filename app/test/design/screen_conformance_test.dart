@@ -9,7 +9,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/app.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
@@ -170,10 +169,6 @@ final _screens = <String, _Screen>{
     build: OnboardingScreen.new,
     open: _onboardingStep(3),
   ),
-  'Онбординг · настройка · фургон': (
-    build: OnboardingScreen.new,
-    open: _onboardingStep(3),
-  ),
   'Онбординг · автоопределение': (
     build: OnboardingScreen.new,
     open: _onboardingStep(4),
@@ -184,12 +179,10 @@ final _screens = <String, _Screen>{
     open: _tapText((l) => l.problemTitle),
   ),
   'Инструкция и правила': (build: GuideScreen.new, open: null),
-  'Инструкция и правила · фургон': (build: GuideScreen.new, open: null),
   'Инструкция · своя перевозка': (
     build: GuideScreen.new,
     open: _tapText((l) => l.guideVanOwn),
   ),
-  'Настройки · фургон': (build: SettingsScreen.new, open: null),
   'Шторка «Свой период»': (
     build: JournalScreen.new,
     open: (tester, l) async {
@@ -201,25 +194,14 @@ final _screens = <String, _Screen>{
 };
 
 /// Экраны без времени и цифр: проверка JetBrains Mono им не нужна.
-/// У инструкции для фургона на первом экране — проверка рейса, лимиты ниже.
 const _withoutNumbers = {
-  'Инструкция и правила · фургон',
   'Инструкция · своя перевозка',
   'Настройки',
-  'Настройки · фургон',
   'Шторка «Язык»',
   'Шторка «Очистить все данные?»',
   'Онбординг · режимы',
   'Онбординг · настройка',
-  'Онбординг · настройка · фургон',
   'Онбординг · автоопределение',
-};
-
-/// Экраны водителя фургона 2,5–3,5 т: другой набор строк и разделов.
-const _van = {
-  'Онбординг · настройка · фургон',
-  'Инструкция и правила · фургон',
-  'Настройки · фургон',
 };
 
 /// Экраны телефона, dp: основной таргет и небольшой Android.
@@ -236,7 +218,6 @@ const _minTapTarget = MinimumTapTargetGuideline(
 Future<void> _pump(
   WidgetTester tester,
   _Screen screen, {
-  bool van = false,
   Brightness brightness = Brightness.dark,
   Size viewport = const Size(412, 915),
   double textScale = 1,
@@ -255,10 +236,6 @@ Future<void> _pump(
       },
       recentCountries: ['PL', 'D', 'CZ'],
       defaultCountry: 'PL',
-      preferences: AppPreferences(
-        onboardingDone: true,
-        vehicle: van ? VehicleType.van : VehicleType.truckOrBus,
-      ),
       // Настройки и онбординг со всеми строками: автоопределение включено,
       // уведомления запрещены, экономия батареи мешает (Android).
       autoDetect: const AutoDetectSettings(enabled: true),
@@ -353,7 +330,6 @@ void main() {
               await _pump(
                 tester,
                 screen,
-                van: _van.contains(name),
                 brightness: brightness,
                 viewport: viewport,
                 textScale: scale,
@@ -366,12 +342,7 @@ void main() {
         testWidgets(
           '$theme: контраст отрисованного текста',
           (tester) async {
-            await _pump(
-              tester,
-              screen,
-              van: _van.contains(name),
-              brightness: brightness,
-            );
+            await _pump(tester, screen, brightness: brightness);
             await expectLater(tester, meetsGuideline(textContrastGuideline));
           },
           // Таймер цвета вождения на фоне светлой темы — 2.5:1,
@@ -382,12 +353,7 @@ void main() {
         testWidgets('$theme: зоны касания ≥ 44 dp и с подписью', (
           tester,
         ) async {
-          await _pump(
-            tester,
-            screen,
-            van: _van.contains(name),
-            brightness: brightness,
-          );
+          await _pump(tester, screen, brightness: brightness);
           await expectLater(tester, meetsGuideline(_minTapTarget));
           await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
         });
@@ -396,12 +362,12 @@ void main() {
       testWidgets('время и цифры — JetBrains Mono, цифры одной ширины', (
         tester,
       ) async {
-        await _pump(tester, screen, van: _van.contains(name));
+        await _pump(tester, screen);
         _expectNumericFont(tester, name);
       });
 
       testWidgets('поля экрана — 16 dp', (tester) async {
-        await _pump(tester, screen, van: _van.contains(name));
+        await _pump(tester, screen);
         final screenRect = tester.getRect(find.byType(Scaffold).first);
         for (final text in find.byType(Text).evaluate()) {
           final rect = tester.getRect(
@@ -434,7 +400,6 @@ void main() {
           await _pump(
             tester,
             screen,
-            van: _van.contains(name),
             viewport: _viewports['360 dp']!,
             textScale: _textScales.last,
             locale: locale,
