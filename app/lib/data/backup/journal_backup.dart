@@ -263,7 +263,8 @@ class JournalBackup {
     }
     for (final p in periods) {
       final end = p.endUtc.value;
-      if (end != null && !end.isAfter(p.startUtc.value)) {
+      // Конец раньше начала; запись нулевой длины безвредна
+      if (end != null && end.isBefore(p.startUtc.value)) {
         throw BackupException(
           BackupError.damaged,
           'period ${p.startUtc.value}',
@@ -305,7 +306,7 @@ class JournalBackup {
     ];
     for (final m in manual) {
       final end = m.endUtc.value;
-      if (end != null && !end.isAfter(m.startUtc.value)) {
+      if (end != null && end.isBefore(m.startUtc.value)) {
         throw BackupException(
           BackupError.damaged,
           'manual shift ${m.startUtc.value}',

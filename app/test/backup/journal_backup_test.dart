@@ -293,6 +293,17 @@ void main() {
       }
     });
 
+    test('запись нулевой длины — не повреждение: такие бывают в журнале', () {
+      final copy = withField(
+        'periods',
+        'end',
+        (good['periods']! as List<Object?>)
+            .cast<Map<String, Object?>>()
+            .first['start'],
+      );
+      expect(JournalBackup.parse(encode(copy)).periods, isNotEmpty);
+    });
+
     test('две идущие записи — файл повреждён', () {
       final copy = withField('periods', 'end', null);
       expect(
