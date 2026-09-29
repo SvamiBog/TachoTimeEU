@@ -206,6 +206,39 @@ void main() {
       final m = calculateCompliance(periods: await live.periods(), now: now);
       expect(m.dailyDriving, h(0, 45));
     });
+
+    test('вождение итогом: смена становится ручной, страны — с ней', () async {
+      now = DateTime.utc(2026, 9, 22, 19);
+      await live.switchMode(DriverMode.rest);
+      now = DateTime.utc(2026, 9, 23, 6);
+      await live.switchMode(DriverMode.otherWork);
+      now = DateTime.utc(2026, 9, 23, 16);
+      await live.endDay();
+      final start = DateTime.utc(2026, 9, 23, 6);
+      await edits.setShiftMeta(
+        start,
+        const ShiftMeta(startCountry: 'PL', endCountry: 'D'),
+      );
+      now = now.add(h(0, 45));
+      changes = 0;
+
+      await edits.applyLiveEdit(
+        LiveShiftEdit(
+          shiftStart: start,
+          restStart: DateTime.utc(2026, 9, 23, 16),
+          manualDriving: h(8, 30),
+        ),
+      );
+      final shift = (await shifts()).last;
+      expect(shift.manual?.driving, h(8, 30));
+      expect(shift.manual?.end, DateTime.utc(2026, 9, 23, 16));
+      expect(shift.rest.ongoing, isTrue);
+      final saved = (await edits.watchManualShifts().first).single;
+      expect(saved.meta, const ShiftMeta(startCountry: 'PL', endCountry: 'D'));
+      expect(await edits.watchShiftMeta().first, isEmpty);
+      expect((await rows()).last.dayEnd, isTrue);
+      expect(changes, 1);
+    });
   });
 
   group('JRN-04: ручные смены в БД', () {

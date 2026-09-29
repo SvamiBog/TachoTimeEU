@@ -1020,6 +1020,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get shiftLiveContinuous => 'рахується за перервами';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'вводиться, коли вибрано відпочинок після зміни';
+
+  @override
   String get shiftRestNone => 'Не розпочато';
 
   @override
@@ -1112,6 +1116,10 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Час, керування або відпочинок змінено — зміну буде збережено як ручний запис замість записів режимів.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Керування за день введено підсумком — зміну буде збережено як ручний запис замість записів режимів, відпочинок після неї триватиме.';
 
   @override
   String shiftEndNowHint(String time) {

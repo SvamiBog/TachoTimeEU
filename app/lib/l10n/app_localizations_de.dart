@@ -1009,6 +1009,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shiftLiveContinuous => 'nach Pausen berechnet';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'wird eingegeben, sobald die Ruhe nach der Schicht gewählt ist';
+
+  @override
   String get shiftRestNone => 'Nicht begonnen';
 
   @override
@@ -1106,6 +1110,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Zeit, Lenkzeit oder Ruhe geändert — die Schicht wird als manueller Eintrag statt der Modus-Einträge gespeichert.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Tageslenkzeit als Summe eingegeben — die Schicht wird als manueller Eintrag statt der Modus-Einträge gespeichert, die Ruhe danach läuft weiter.';
 
   @override
   String shiftEndNowHint(String time) {

@@ -1009,6 +1009,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get shiftLiveContinuous => 'berekend uit de pauzes';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'in te voeren zodra de rust na de dienst is gekozen';
+
+  @override
   String get shiftRestNone => 'Niet begonnen';
 
   @override
@@ -1102,6 +1106,10 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Tijd, rijtijd of rust gewijzigd — de dienst wordt opgeslagen als handmatige invoer in plaats van de registraties van activiteiten.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Rijtijd per dag als totaal ingevoerd — de dienst wordt opgeslagen als handmatige invoer in plaats van de registraties van activiteiten, de rust daarna loopt door.';
 
   @override
   String shiftEndNowHint(String time) {

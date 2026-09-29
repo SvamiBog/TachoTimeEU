@@ -1011,6 +1011,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shiftLiveContinuous => 'calculée d’après les pauses';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'se saisit une fois le repos après le poste choisi';
+
+  @override
   String get shiftRestNone => 'Non commencé';
 
   @override
@@ -1105,6 +1109,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Heure, conduite ou repos modifiés — le poste sera enregistré comme saisie manuelle à la place des enregistrements d’activités.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Conduite du jour saisie en total — le poste sera enregistré comme saisie manuelle à la place des enregistrements d’activités, le repos qui suit continue.';
 
   @override
   String shiftEndNowHint(String time) {

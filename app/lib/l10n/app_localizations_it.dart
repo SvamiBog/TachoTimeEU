@@ -1008,6 +1008,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get shiftLiveContinuous => 'calcolata dalle pause';
 
   @override
+  String get shiftDrivingAfterRest =>
+      'si inserisce dopo aver scelto il riposo dopo il turno';
+
+  @override
   String get shiftRestNone => 'Non iniziato';
 
   @override
@@ -1101,6 +1105,10 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get shiftConvertHint =>
       'Orario, guida o riposo modificati — il turno sarà salvato come voce manuale al posto delle registrazioni delle attività.';
+
+  @override
+  String get shiftLiveConvertHint =>
+      'Guida del giorno inserita come totale — il turno sarà salvato come voce manuale al posto delle registrazioni delle attività, il riposo successivo continua.';
 
   @override
   String shiftEndNowHint(String time) {

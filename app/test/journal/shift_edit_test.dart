@@ -515,6 +515,76 @@ void main() {
       await unmount(tester);
     });
 
+    testWidgets('JRN-08: весь день «Работа», день завершён — вождение за '
+        'день вводится, смена становится ручной, отдых идёт', (tester) async {
+      await defaultCountry(tester, 'PL');
+      final log = consecutive(DateTime.utc(2026, 9, 22, 19), [
+        (DriverMode.rest, h(11)),
+        (DriverMode.otherWork, h(5)),
+        (DriverMode.rest, h(1)),
+      ], open: true);
+      await seed(tester, [...log.take(2), log.last.withDayEnd(dayEnd: true)]);
+      await openFromJournal(tester, span(u(23, 6), u(23, 11)));
+      await tap(tester, find.text('За день'));
+      await enterHm(tester, '330');
+      await tap(tester, find.text('Сохранить'));
+      expect(find.textContaining('сохранится как ручная'), findsOneWidget);
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      final saved = (await manual(tester)).single;
+      expect(saved.shift.start, u(23, 6));
+      expect(saved.shift.end, u(23, 11));
+      expect(saved.shift.driving, h(3, 30));
+      expect(saved.shift.restKind, RestKind.daily);
+      expect(saved.meta.startCountry, 'PL');
+      final after = await periods(tester);
+      expect(after.map((p) => (p.mode, p.start, p.dayEnd)), [
+        (DriverMode.rest, DateTime.utc(2026, 9, 22, 19), false),
+        (DriverMode.rest, u(23, 11), true),
+      ]);
+      expect(after.last.isOpen, isTrue);
+      final s = snapshot(after, [saved.shift]);
+      expect(s.status, DriverStatus.dailyRest);
+      expect(s.weeklyDriving, h(3, 30));
+      await unmount(tester);
+    });
+
+    testWidgets('идущая смена без вождения: вождение за день — после выбора '
+        'отдыха, смена завершается ручной', (tester) async {
+      await defaultCountry(tester, 'PL');
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 22, 19), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.otherWork, h(6)),
+        ], open: true),
+      );
+      await openFromJournal(tester, span(u(23, 6)));
+      expect(
+        find.text('вводится, когда выбран отдых после смены'),
+        findsOneWidget,
+      );
+      await tap(tester, find.text('Суточный'));
+      expect(
+        find.text('вводится, когда выбран отдых после смены'),
+        findsNothing,
+      );
+      await tap(tester, find.text('За день'));
+      await enterHm(tester, '445');
+      await tap(tester, find.text('Сохранить'));
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      final saved = (await manual(tester)).single;
+      expect((saved.shift.start, saved.shift.end), (u(23, 6), now));
+      expect(saved.shift.driving, h(4, 45));
+      final after = await periods(tester);
+      expect(after.last.mode, DriverMode.rest);
+      expect(after.last.start, now);
+      expect(after.last.dayEnd, isTrue);
+      expect(snapshot(after, [saved.shift]).status, DriverStatus.dailyRest);
+      await unmount(tester);
+    });
+
     testWidgets('идущая смена: правка начала не стирает конечную страну', (
       tester,
     ) async {
