@@ -1802,23 +1802,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'Véhicule';
-
-  @override
-  String get vehicleTruckOrBus => 'Camion ou autocar';
-
-  @override
   String get vehicleVan => 'Utilitaire 2,5–3,5 t';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'Règles — depuis le $date en transport international et en cabotage pour compte d’autrui';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'Les règles de l’UE pour les utilitaires s’appliquent depuis le $date — en transport international et en cabotage pour compte d’autrui. L’utilitaire a un tachygraphe intelligent de deuxième génération, le conducteur a une carte.';
-  }
 
   @override
   String get onbRulesTitle => 'Les règles essentielles';

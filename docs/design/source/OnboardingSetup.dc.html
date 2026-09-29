@@ -26,28 +26,6 @@ button{font-family:inherit}
 <p style="margin: 0; font-size: 15px; line-height: 1.45; color: #A3A8AE;">Всё это можно поменять позже в настройках.</p>
 </div>
 
-<h2 style="margin: 24px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Транспорт</h2>
-<div role="radiogroup" aria-label="Транспорт" style="margin: 0 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
-<button type="button" role="radio" aria-checked="{{truck.checked}}" onClick="{{truck.pick}}" style="min-height: 112px; padding: 16px; border-radius: 20px; border: 2px solid {{truck.border}}; background: #1A1D20; color: #EDEBE6; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; text-align: left; cursor: pointer;">
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path><path d="M15 18H9"></path><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path><circle cx="17" cy="18" r="2"></circle><circle cx="7" cy="18" r="2"></circle></svg>
-<span style="font-size: 16px; font-weight: 700;">Грузовик или автобус</span>
-</button>
-<button type="button" role="radio" aria-checked="{{van.checked}}" onClick="{{van.pick}}" style="min-height: 112px; padding: 16px; border-radius: 20px; border: 2px solid {{van.border}}; background: #1A1D20; color: #EDEBE6; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; text-align: left; cursor: pointer;">
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 18H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h11l5 5h1a2 2 0 0 1 2 2v4a1 1 0 0 1-1 1h-1.5"></path><path d="M14 6v5h5"></path><path d="M9 18h6"></path><circle cx="6.5" cy="18" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg>
-<span style="font-size: 16px; font-weight: 700;">Фургон 2,5–3,5 т</span>
-</button>
-</div>
-
-<div style="display: {{vanNote}}; margin: 8px 16px 0; background: #1A1D20; border-radius: 24px; flex-direction: column;">
-<p style="margin: 0; padding: 16px; font-size: 14px; line-height: 1.45; color: #C9CDD2;">Правила ЕС для фургонов действуют с 01.07.2026 — в международных рейсах и каботаже по найму. В фургоне — умный тахограф второго поколения, у водителя — карта.</p>
-<a href="Guide.dc.html" style="min-height: 56px; padding: 10px 12px 10px 16px; box-sizing: border-box; border-top: 1px solid #262A2F; display: flex; align-items: center; gap: 12px; color: #EDEBE6; text-decoration: none;">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
-<span style="flex-grow: 1; font-size: 15px; font-weight: 600;">Касаются ли правила вашего рейса</span>
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A3A8AE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
-</a>
-</div>
-
-<div style="display: {{tachoBlock}}; flex-direction: column;">
 <h2 style="margin: 24px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Тахограф в машине</h2>
 <div role="radiogroup" aria-label="Тахограф" style="margin: 0 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
 <button type="button" role="radio" aria-checked="{{digital.checked}}" onClick="{{digital.pick}}" style="min-height: 112px; padding: 16px; border-radius: 20px; border: 2px solid {{digital.border}}; background: #1A1D20; color: #EDEBE6; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; text-align: left; cursor: pointer;">
@@ -58,7 +36,6 @@ button{font-family:inherit}
 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 3v3M21 12h-3"></path></svg>
 <span style="font-size: 16px; font-weight: 700;">Аналоговый</span>
 </button>
-</div>
 </div>
 
 <h2 style="margin: 24px 20px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A3A8AE;">Правила</h2>
@@ -104,14 +81,9 @@ class Component extends DCLogic {
   renderVals() {
     const s = this.state || {};
     const t = s.t || 'digital';
-    const v = s.v || 'truck';
     const mp = s.mp !== false;
     const opt = (id) => ({ checked: t === id ? 'true' : 'false', border: t === id ? '#F3B33D' : '#2A2E33', pick: () => this.setState({ t: id }) });
-    // Фургону тахограф ставится цифровой: выбора нет, вместо него — пояснение
-    const veh = (id) => ({ checked: v === id ? 'true' : 'false', border: v === id ? '#F3B33D' : '#2A2E33', pick: () => this.setState(id === 'van' ? { v: id, t: 'digital' } : { v: id }) });
     return {
-      truck: veh('truck'), van: veh('van'),
-      vanNote: v === 'van' ? 'flex' : 'none', tachoBlock: v === 'van' ? 'none' : 'flex',
       digital: opt('digital'), analog: opt('analog'),
       mp: { checked: mp ? 'true' : 'false', bg: mp ? '#F3B33D' : '#3A3F45', knob: mp ? '#111315' : '#A3A8AE', jc: mp ? 'flex-end' : 'flex-start', toggle: () => this.setState({ mp: !mp }) }
     };

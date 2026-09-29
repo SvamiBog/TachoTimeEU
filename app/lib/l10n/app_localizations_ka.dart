@@ -1792,23 +1792,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'ტრანსპორტი';
-
-  @override
-  String get vehicleTruckOrBus => 'სატვირთო ან ავტობუსი';
-
-  @override
   String get vehicleVan => 'ფურგონი 2,5–3,5 ტ';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'წესები — $date-დან საერთაშორისო რეისებსა და დაქირავებით კაბოტაჟში';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'EU-ს წესები ფურგონებისთვის მოქმედებს $date-დან — საერთაშორისო რეისებსა და დაქირავებით კაბოტაჟში. ფურგონში — მეორე თაობის ჭკვიანი ტაქოგრაფი, მძღოლს — ბარათი.';
-  }
 
   @override
   String get onbRulesTitle => 'მთავარი წესები';

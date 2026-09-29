@@ -28,10 +28,10 @@ import 'package:tachogo/notifications/alert_providers.dart';
 enum OnboardingStep { welcome, modes, rules, setup, autoDetect }
 
 /// Онбординг при первом запуске (UI-13): язык, режимы, главные правила для
-/// тех, кто впервые с тахографом, тип транспорта и тахографа, пакет
-/// мобильности, уведомления, согласие на аналитику, автоопределение
-/// вождения. Выбор сразу пишется в настройки; «Готово» отмечает онбординг
-/// пройденным — больше он не показывается.
+/// тех, кто впервые с тахографом, тип тахографа, пакет мобильности,
+/// уведомления, согласие на аналитику, автоопределение вождения. Выбор сразу
+/// пишется в настройки; «Готово» отмечает онбординг пройденным — больше он
+/// не показывается.
 class OnboardingScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -484,66 +484,24 @@ class _Setup extends ConsumerWidget {
       padding: const EdgeInsets.only(bottom: 8),
       children: [
         _Intro(title: l.onbSetupTitle, text: l.onbSetupText),
-        SectionTitle(l.settingsVehicle, top: AppSpacing.beforeSectionMin),
+        SectionTitle(l.settingsTachograph, top: AppSpacing.beforeSectionMin),
         _Options(
           options: [
             (
-              icon: Icons.local_shipping_outlined,
-              label: l.vehicleTruckOrBus,
-              selected: prefs.vehicle == VehicleType.truckOrBus,
-              onTap: () => unawaited(repo.setVehicle(VehicleType.truckOrBus)),
+              icon: Icons.credit_card,
+              label: l.tachographDigital,
+              selected: prefs.tachograph == TachographType.digital,
+              onTap: () =>
+                  unawaited(repo.setTachograph(TachographType.digital)),
             ),
             (
-              icon: Icons.airport_shuttle_outlined,
-              label: l.vehicleVan,
-              selected: prefs.vehicle == VehicleType.van,
-              onTap: () => unawaited(repo.setVehicle(VehicleType.van)),
+              icon: Icons.album_outlined,
+              label: l.tachographAnalog,
+              selected: prefs.tachograph == TachographType.analog,
+              onTap: () => unawaited(repo.setTachograph(TachographType.analog)),
             ),
           ],
         ),
-        // У фургона тахограф только цифровой — вместо выбора пояснение
-        if (prefs.vehicle == VehicleType.van) ...[
-          const SizedBox(height: AppSpacing.betweenCardsMin),
-          CardGroup(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.cardPadding),
-                child: Text(
-                  l.onbVanText(formatUtcDate(vanRulesFrom)),
-                  style: AppTextStyles.body.copyWith(
-                    color: context.colors.chipText,
-                    height: 1.45,
-                  ),
-                ),
-              ),
-              NavRow(
-                icon: Icons.help_outline,
-                title: l.guideVanCheck,
-                onTap: () => openGuide(context),
-              ),
-            ],
-          ),
-        ] else ...[
-          SectionTitle(l.settingsTachograph, top: AppSpacing.beforeSectionMin),
-          _Options(
-            options: [
-              (
-                icon: Icons.credit_card,
-                label: l.tachographDigital,
-                selected: prefs.tachograph == TachographType.digital,
-                onTap: () =>
-                    unawaited(repo.setTachograph(TachographType.digital)),
-              ),
-              (
-                icon: Icons.album_outlined,
-                label: l.tachographAnalog,
-                selected: prefs.tachograph == TachographType.analog,
-                onTap: () =>
-                    unawaited(repo.setTachograph(TachographType.analog)),
-              ),
-            ],
-          ),
-        ],
         SectionTitle(l.settingsRules, top: AppSpacing.beforeSectionMin),
         CardGroup(
           children: [

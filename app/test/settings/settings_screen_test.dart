@@ -157,32 +157,19 @@ void main() {
     });
   });
 
-  testWidgets('UI-18: тип транспорта — у фургона тахограф цифровой без '
-      'выбора и срок правил; расчёт не меняется', (tester) async {
+  testWidgets('UI-18: типа транспорта нет — тахограф выбирает любой '
+      'водитель, расчёт не меняется', (tester) async {
     await seedJournal(tester);
     await pump(tester);
     await watchCompliance(tester);
     final before = warnings(tester);
+    expect(find.text('Грузовик или автобус'), findsNothing);
+    expect(find.text('Фургон 2,5–3,5 т'), findsNothing);
+
     await tapText(tester, 'Аналоговый');
-    expect(find.textContaining('01.07.2026'), findsNothing);
-
-    await tapText(tester, 'Фургон 2,5–3,5 т');
-    expect(find.text('Аналоговый'), findsNothing);
-    expect(
-      find.text(
-        'Правила — с 01.07.2026 в международных рейсах и каботаже по найму',
-      ),
-      findsOneWidget,
-    );
-    var prefs = (await tester.runAsync(settings.preferences))!;
-    expect(prefs.vehicle, VehicleType.van);
-    expect(prefs.tachograph, TachographType.digital);
+    final prefs = (await tester.runAsync(settings.preferences))!;
+    expect(prefs.tachograph, TachographType.analog);
     expect(warnings(tester), before);
-
-    await tapText(tester, 'Грузовик или автобус');
-    expect(find.text('Аналоговый'), findsOneWidget);
-    prefs = (await tester.runAsync(settings.preferences))!;
-    expect(prefs.vehicle, VehicleType.truckOrBus);
     await unmount(tester);
   });
 

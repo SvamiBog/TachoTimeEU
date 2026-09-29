@@ -1792,23 +1792,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'Vehicle';
-
-  @override
-  String get vehicleTruckOrBus => 'Truck or bus';
-
-  @override
   String get vehicleVan => 'Van 2.5–3.5 t';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'Rules — from $date in international transport and cabotage for hire or reward';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'The EU rules for vans apply from $date — in international transport and cabotage for hire or reward. The van has a second-generation smart tachograph, the driver has a card.';
-  }
 
   @override
   String get onbRulesTitle => 'Key rules';

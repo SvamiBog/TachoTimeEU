@@ -1811,23 +1811,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'Vozidlo';
-
-  @override
-  String get vehicleTruckOrBus => 'Nákladní vůz nebo autobus';
-
-  @override
   String get vehicleVan => 'Dodávka 2,5–3,5 t';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'Pravidla — od $date v mezinárodní dopravě a kabotáži pro cizí potřebu';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'Pravidla EU pro dodávky platí od $date — v mezinárodní dopravě a kabotáži pro cizí potřebu. V dodávce je inteligentní tachograf druhé generace, řidič má kartu.';
-  }
 
   @override
   String get onbRulesTitle => 'Hlavní pravidla';

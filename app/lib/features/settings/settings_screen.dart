@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/tracking_providers.dart';
-import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
@@ -121,8 +120,8 @@ class _GeneralCard extends ConsumerWidget {
   }
 }
 
-/// Транспорт, тахограф, пакет мобильности, экипаж — от последних двух
-/// зависит расчёт. У фургона тахограф только цифровой, выбора нет.
+/// Тахограф, пакет мобильности, экипаж — от последних двух зависит расчёт.
+/// Типа транспорта нет: лимиты одинаковы для всех (`AppPreferences`).
 class _RulesCard extends ConsumerWidget {
   const new();
 
@@ -132,36 +131,18 @@ class _RulesCard extends ConsumerWidget {
     final repo = ref.read(settingsRepositoryProvider);
     final prefs =
         ref.watch(preferencesProvider).value ?? const AppPreferences();
-    final van = prefs.vehicle == VehicleType.van;
     final rules =
         ref.watch(complianceSettingsProvider).value ??
         const ComplianceSettings();
     return CardGroup(
       children: [
         ChoiceBlock(
-          title: l.settingsVehicle,
-          subtitle: van ? l.settingsVanHint(formatUtcDate(vanRulesFrom)) : null,
-          child: SegmentedTabs<VehicleType>(
-            options: [
-              (
-                value: VehicleType.truckOrBus,
-                label: l.vehicleTruckOrBus,
-                detail: null,
-              ),
-              (value: VehicleType.van, label: l.vehicleVan, detail: null),
-            ],
-            value: prefs.vehicle,
-            onChanged: (v) => unawaited(repo.setVehicle(v)),
+          title: l.settingsTachograph,
+          child: TachographTabs(
+            value: prefs.tachograph,
+            onChanged: (t) => unawaited(repo.setTachograph(t)),
           ),
         ),
-        if (!van)
-          ChoiceBlock(
-            title: l.settingsTachograph,
-            child: TachographTabs(
-              value: prefs.tachograph,
-              onChanged: (t) => unawaited(repo.setTachograph(t)),
-            ),
-          ),
         SwitchRow(
           title: l.settingsMobility,
           subtitle: l.settingsMobilityHint,

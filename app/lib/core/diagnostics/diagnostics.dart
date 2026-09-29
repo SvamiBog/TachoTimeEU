@@ -147,7 +147,6 @@ String formatDiagnostics(Diagnostics d) {
     'card ${s.cardDaysLeft == null ? 'never read' : '${s.cardDaysLeft} d'}',
   ];
   final settings = [
-    'vehicle ${p.vehicle.name}',
     'tachograph ${p.tachograph.name}',
     'crew ${c.crew.name}',
     'mobility package ${_onOff(c.mobilityPackage)}',

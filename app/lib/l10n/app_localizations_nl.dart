@@ -1799,23 +1799,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get settingsVehicle => 'Voertuig';
-
-  @override
-  String get vehicleTruckOrBus => 'Vrachtwagen of bus';
-
-  @override
   String get vehicleVan => 'Bestelwagen 2,5–3,5 t';
-
-  @override
-  String settingsVanHint(String date) {
-    return 'Regels — vanaf $date in internationaal vervoer en cabotage voor rekening van derden';
-  }
-
-  @override
-  String onbVanText(String date) {
-    return 'De EU-regels voor bestelwagens gelden vanaf $date — in internationaal vervoer en cabotage voor rekening van derden. In de bestelwagen zit een slimme tachograaf van de tweede generatie, de bestuurder heeft een kaart.';
-  }
 
   @override
   String get onbRulesTitle => 'De belangrijkste regels';
