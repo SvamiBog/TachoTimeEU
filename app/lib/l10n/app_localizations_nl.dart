@@ -2130,4 +2130,58 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get transferSaveFailed =>
       'Het bestand kon niet worden opgeslagen. Probeer het opnieuw.';
+
+  @override
+  String get rowCompensation => 'Compensatie';
+
+  @override
+  String get compensationAttach => 'toevoegen aan een rust van minstens 9 u';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'rust tot $time';
+  }
+
+  @override
+  String get compensationTooLate => 'termijn niet meer haalbaar';
+
+  @override
+  String get compensationTakenHere => 'toegevoegd aan deze rust';
+
+  @override
+  String get chipCompensationDone => 'voldaan';
+
+  @override
+  String get chipCompensationSoon => 'termijn nadert';
+
+  @override
+  String get chipCompensationOverdue => 'te laat';
+
+  @override
+  String compensationDebt(String time) {
+    return 'schuld $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'voldaan op $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'toevoegen vóór $date';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'compensatie $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Compensatie genomen';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'Deze rust dekt de $time voor een verkorte wekelijkse rust — de schuld is voldaan.';
+  }
 }

@@ -543,5 +543,19 @@
   "transferNewer": "Plik zapisano w nowszej wersji TachoGo — zaktualizuj aplikację",
   "transferDamaged": "Plik dziennika jest uszkodzony — zapisz go ponownie na starym telefonie",
   "transferFailed": "Nie udało się wczytać dziennika. Dziennik na telefonie się nie zmienił",
-  "transferSaveFailed": "Nie udało się zapisać pliku. Spróbuj ponownie."
+  "transferSaveFailed": "Nie udało się zapisać pliku. Spróbuj ponownie.",
+  "rowCompensation": "Rekompensata",
+  "compensationAttach": "dołączyć do odpoczynku od 9 h",
+  "compensationRestUntil": "odpoczywać do {time}",
+  "compensationTooLate": "nie zdążysz przed terminem",
+  "compensationTakenHere": "dołączona do tego odpoczynku",
+  "chipCompensationDone": "spłacona",
+  "chipCompensationSoon": "wkrótce termin",
+  "chipCompensationOverdue": "po terminie",
+  "compensationDebt": "dług {time}",
+  "compensationRepaidOn": "spłacony {date}",
+  "compensationAttachBy": "dołączyć do {date}",
+  "compensationTakenValue": "rekompensata {time}",
+  "notifyCompensationTakenTitle": "Rekompensata odebrana",
+  "notifyCompensationTakenText": "Odpoczynek zmieścił dług {time} za skrócony odpoczynek tygodniowy — dług spłacony."
 }

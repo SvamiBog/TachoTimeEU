@@ -543,5 +543,19 @@
   "transferNewer": "Файл збережено в новішій версії TachoGo — оновіть застосунок",
   "transferDamaged": "Файл журналу пошкоджено — збережіть його на старому телефоні ще раз",
   "transferFailed": "Не вдалося завантажити журнал. Журнал на телефоні не змінився",
-  "transferSaveFailed": "Не вдалося зберегти файл. Спробуйте ще раз."
+  "transferSaveFailed": "Не вдалося зберегти файл. Спробуйте ще раз.",
+  "rowCompensation": "Компенсація",
+  "compensationAttach": "приєднати до відпочинку від 9 год",
+  "compensationRestUntil": "відпочивати до {time}",
+  "compensationTooLate": "до терміну не встигнути",
+  "compensationTakenHere": "приєднано до цього відпочинку",
+  "chipCompensationDone": "погашено",
+  "chipCompensationSoon": "скоро термін",
+  "chipCompensationOverdue": "прострочено",
+  "compensationDebt": "борг {time}",
+  "compensationRepaidOn": "погашено {date}",
+  "compensationAttachBy": "приєднати до {date}",
+  "compensationTakenValue": "компенсація {time}",
+  "notifyCompensationTakenTitle": "Компенсацію взято",
+  "notifyCompensationTakenText": "Відпочинок вмістив борг {time} за скорочений щотижневий відпочинок — борг погашено."
 }

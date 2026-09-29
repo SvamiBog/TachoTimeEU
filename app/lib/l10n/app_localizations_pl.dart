@@ -2149,4 +2149,58 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get transferSaveFailed =>
       'Nie udało się zapisać pliku. Spróbuj ponownie.';
+
+  @override
+  String get rowCompensation => 'Rekompensata';
+
+  @override
+  String get compensationAttach => 'dołączyć do odpoczynku od 9 h';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'odpoczywać do $time';
+  }
+
+  @override
+  String get compensationTooLate => 'nie zdążysz przed terminem';
+
+  @override
+  String get compensationTakenHere => 'dołączona do tego odpoczynku';
+
+  @override
+  String get chipCompensationDone => 'spłacona';
+
+  @override
+  String get chipCompensationSoon => 'wkrótce termin';
+
+  @override
+  String get chipCompensationOverdue => 'po terminie';
+
+  @override
+  String compensationDebt(String time) {
+    return 'dług $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'spłacony $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'dołączyć do $date';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'rekompensata $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Rekompensata odebrana';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'Odpoczynek zmieścił dług $time za skrócony odpoczynek tygodniowy — dług spłacony.';
+  }
 }

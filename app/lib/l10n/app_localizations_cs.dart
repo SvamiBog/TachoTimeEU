@@ -2141,4 +2141,58 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get transferSaveFailed =>
       'Soubor se nepodařilo uložit. Zkuste to znovu.';
+
+  @override
+  String get rowCompensation => 'Náhrada';
+
+  @override
+  String get compensationAttach => 'připojit k odpočinku alespoň 9 h';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'odpočívat do $time';
+  }
+
+  @override
+  String get compensationTooLate => 'lhůtu nestihnete';
+
+  @override
+  String get compensationTakenHere => 'připojena k tomuto odpočinku';
+
+  @override
+  String get chipCompensationDone => 'splacena';
+
+  @override
+  String get chipCompensationSoon => 'blíží se lhůta';
+
+  @override
+  String get chipCompensationOverdue => 'po lhůtě';
+
+  @override
+  String compensationDebt(String time) {
+    return 'dluh $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'splacen $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'připojit do $date';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'náhrada $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Náhrada vybrána';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'Odpočinek pokryl dluh $time za zkrácený týdenní odpočinek — dluh je splacen.';
+  }
 }

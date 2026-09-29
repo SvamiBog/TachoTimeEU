@@ -213,6 +213,56 @@ void main() {
       expect(m.reducedRestsUsed, 0);
     });
 
+    test('отдых после последней ручной смены идёт — водитель на суточном '
+        'отдыхе, хотя режим не записан', () {
+      // Смена внесена итогами и кончилась «сейчас»: записи отдыха нет
+      final shift = manualShift(utc('2026-09-23 02:00'));
+      final m = calc(const [], now, manual: [shift]);
+      expect(m.status, DriverStatus.dailyRest);
+      expect(m.offDutyRest?.start, now);
+      expect(m.dailyRestRemaining, dur('11:00'));
+
+      final later = calc(const [], now.add(dur('9:30')), manual: [shift]);
+      expect(later.offDutyRest?.duration, dur('9:30'));
+      expect(later.dailyRestRemaining, dur('1:30'));
+    });
+
+    test('отмечен недельный — недельный отдых с начала, записи до смены '
+        'не мешают', () {
+      final periods = closedLog(utc('2026-09-22 06:00'), [
+        work('10:00'),
+        rest('16:00'),
+      ]);
+      final shift = manualShift(
+        utc('2026-09-23 08:00'),
+        span: '4:00',
+        restKind: RestKind.weekly,
+      );
+      final m = calc(periods, now, manual: [shift]);
+      expect(m.status, DriverStatus.weeklyRest);
+      expect(m.weeklyRestRemaining, dur('45:00'));
+    });
+
+    test('после ручной смены начата смена по записям — отдых кончился', () {
+      final shift = manualShift(utc('2026-09-22 06:00'));
+      final periods = logUntil(now, [drive('1:00')]);
+      final m = calc(periods, now, manual: [shift]);
+      expect(m.status, DriverStatus.driving);
+      expect(m.offDutyRest, isNull);
+    });
+
+    test('ручная смена с отдыхом «не начат» — не отдых', () {
+      final shift = ManualShift(
+        start: utc('2026-09-23 02:00'),
+        end: now,
+        driving: dur('4:00'),
+      );
+      expect(
+        calc(const [], now, manual: [shift]).status,
+        DriverStatus.notStarted,
+      );
+    });
+
     test('вождение ручной смены — в неделе её начала, даже если смена '
         'закончилась на следующей', () {
       final m = calc(

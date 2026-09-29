@@ -2133,4 +2133,58 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get transferSaveFailed =>
       'Impossible d’enregistrer le fichier. Réessayez.';
+
+  @override
+  String get rowCompensation => 'Compensation';
+
+  @override
+  String get compensationAttach => 'à rattacher à un repos d’au moins 9 h';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'repos jusqu’à $time';
+  }
+
+  @override
+  String get compensationTooLate => 'délai impossible à tenir';
+
+  @override
+  String get compensationTakenHere => 'rattachée à ce repos';
+
+  @override
+  String get chipCompensationDone => 'soldée';
+
+  @override
+  String get chipCompensationSoon => 'échéance proche';
+
+  @override
+  String get chipCompensationOverdue => 'en retard';
+
+  @override
+  String compensationDebt(String time) {
+    return 'dette $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'soldée le $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'à rattacher avant le $date';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'compensation $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Compensation prise';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'Ce repos couvre les $time dus pour un repos hebdomadaire réduit — la dette est soldée.';
+  }
 }

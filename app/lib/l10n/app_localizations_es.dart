@@ -2132,4 +2132,58 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get transferSaveFailed =>
       'No se pudo guardar el archivo. Inténtelo de nuevo.';
+
+  @override
+  String get rowCompensation => 'Compensación';
+
+  @override
+  String get compensationAttach => 'añadir a un descanso de al menos 9 h';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'descansar hasta $time';
+  }
+
+  @override
+  String get compensationTooLate => 'no llega al plazo';
+
+  @override
+  String get compensationTakenHere => 'añadida a este descanso';
+
+  @override
+  String get chipCompensationDone => 'saldada';
+
+  @override
+  String get chipCompensationSoon => 'plazo próximo';
+
+  @override
+  String get chipCompensationOverdue => 'vencida';
+
+  @override
+  String compensationDebt(String time) {
+    return 'deuda $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'saldada el $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'añadir antes del $date';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'compensación $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Compensación tomada';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'Este descanso cubre las $time debidas por un descanso semanal reducido: la deuda está saldada.';
+  }
 }

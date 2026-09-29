@@ -2137,4 +2137,58 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get transferSaveFailed =>
       'Fișierul nu s-a putut salva. Încercați din nou.';
+
+  @override
+  String get rowCompensation => 'Compensare';
+
+  @override
+  String get compensationAttach => 'de atașat la un repaus de minimum 9 h';
+
+  @override
+  String compensationRestUntil(String time) {
+    return 'repaus până la $time';
+  }
+
+  @override
+  String get compensationTooLate => 'nu se încadrează în termen';
+
+  @override
+  String get compensationTakenHere => 'atașată acestui repaus';
+
+  @override
+  String get chipCompensationDone => 'achitată';
+
+  @override
+  String get chipCompensationSoon => 'termen apropiat';
+
+  @override
+  String get chipCompensationOverdue => 'depășită';
+
+  @override
+  String compensationDebt(String time) {
+    return 'datorie $time';
+  }
+
+  @override
+  String compensationRepaidOn(String date) {
+    return 'achitată $date';
+  }
+
+  @override
+  String compensationAttachBy(String date) {
+    return 'de atașat până la $date';
+  }
+
+  @override
+  String compensationTakenValue(String time) {
+    return 'compensare $time';
+  }
+
+  @override
+  String get notifyCompensationTakenTitle => 'Compensare luată';
+
+  @override
+  String notifyCompensationTakenText(String time) {
+    return 'Repausul a cuprins datoria de $time pentru repausul săptămânal redus — datoria este achitată.';
+  }
 }

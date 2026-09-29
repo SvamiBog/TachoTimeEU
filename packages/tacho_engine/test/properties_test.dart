@@ -415,6 +415,16 @@ Map<String, Object?> oracle(
   }
 
   final lastPeriod = restPeriods.isEmpty ? null : restPeriods.last;
+  // Смены по записям нет: водитель на записанном отдыхе после смены или,
+  // если такого нет, на идущем отдыхе после последней ручной смены
+  ({DateTime start, DateTime? end, int rest, bool weekly})? manualOffDuty;
+  for (final m in manual) {
+    final r = manualRest(m);
+    if (r == null || r.end != null) continue;
+    if (manualOffDuty == null || r.start.isAfter(manualOffDuty.start)) {
+      manualOffDuty = r;
+    }
+  }
   return {
     'shifts': shifts.length,
     'shiftStart': current == null ? null : at(current.from),
@@ -423,13 +433,13 @@ Map<String, Object?> oracle(
     'daily': daily,
     'weekly': drivingIn(weekStart, weekStart.add(week)),
     'fortnight': drivingIn(weekStart.subtract(week), weekStart.add(week)),
-    'offDutyRest':
-        current == null &&
-            lastPeriod != null &&
-            lastPeriod.open &&
-            (lastPeriod.rest >= reduced || lastPeriod.dayEnd)
+    'offDutyRest': current != null
+        ? null
+        : lastPeriod != null &&
+              lastPeriod.open &&
+              (lastPeriod.rest >= reduced || lastPeriod.dayEnd)
         ? lastPeriod.rest
-        : null,
+        : manualOffDuty?.rest,
     'reducedRests': reducedRests,
     'extensions': extensions,
   };

@@ -543,5 +543,19 @@
   "transferNewer": "Fișierul a fost salvat într-o versiune mai nouă TachoGo — actualizați aplicația",
   "transferDamaged": "Fișierul jurnalului este deteriorat — salvați-l din nou pe telefonul vechi",
   "transferFailed": "Jurnalul nu s-a putut încărca. Jurnalul de pe telefon nu s-a schimbat",
-  "transferSaveFailed": "Fișierul nu s-a putut salva. Încercați din nou."
+  "transferSaveFailed": "Fișierul nu s-a putut salva. Încercați din nou.",
+  "rowCompensation": "Compensare",
+  "compensationAttach": "de atașat la un repaus de minimum 9 h",
+  "compensationRestUntil": "repaus până la {time}",
+  "compensationTooLate": "nu se încadrează în termen",
+  "compensationTakenHere": "atașată acestui repaus",
+  "chipCompensationDone": "achitată",
+  "chipCompensationSoon": "termen apropiat",
+  "chipCompensationOverdue": "depășită",
+  "compensationDebt": "datorie {time}",
+  "compensationRepaidOn": "achitată {date}",
+  "compensationAttachBy": "de atașat până la {date}",
+  "compensationTakenValue": "compensare {time}",
+  "notifyCompensationTakenTitle": "Compensare luată",
+  "notifyCompensationTakenText": "Repausul a cuprins datoria de {time} pentru repausul săptămânal redus — datoria este achitată."
 }

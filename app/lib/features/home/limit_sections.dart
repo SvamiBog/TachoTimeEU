@@ -13,6 +13,7 @@ import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/break_screen.dart';
+import 'package:tachogo/features/home/compensation_row.dart';
 import 'package:tachogo/features/home/corrections.dart';
 import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/limit_row.dart';
@@ -326,6 +327,7 @@ typedef _Rest = ({
   int reducedLeft,
   bool reducedWeekly,
   DateTime? deadline,
+  bool compensation,
 });
 
 _Rest _rest(ComplianceSnapshot s) {
@@ -336,6 +338,7 @@ _Rest _rest(ComplianceSnapshot s) {
     reducedLeft: s.reducedRestsLeft,
     reducedWeekly: s.reducedWeeklyRestAvailable,
     deadline: s.weeklyRestDeadline,
+    compensation: s.compensation != null || s.restCompensation != null,
   );
 }
 
@@ -401,6 +404,8 @@ class RestSection extends ConsumerWidget {
                   : l.statusBy(formatWeekdayClock(deadline, context.localeTag)),
               onTap: () => _openWeeklyRest(context),
             ),
+            // Долг за сокращённый недельный отдых — только когда он есть
+            if (s.compensation) const CompensationRow(),
             const FerryRow(),
           ],
         ),

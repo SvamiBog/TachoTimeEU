@@ -3392,6 +3392,90 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Не удалось сохранить файл. Попробуйте ещё раз.'**
   String get transferSaveFailed;
+
+  /// No description provided for @rowCompensation.
+  ///
+  /// In ru, this message translates to:
+  /// **'Компенсация'**
+  String get rowCompensation;
+
+  /// No description provided for @compensationAttach.
+  ///
+  /// In ru, this message translates to:
+  /// **'присоединить к отдыху от 9 ч'**
+  String get compensationAttach;
+
+  /// Главная, компенсация: «отдыхать до Сб 14:30»
+  ///
+  /// In ru, this message translates to:
+  /// **'отдыхать до {time}'**
+  String compensationRestUntil(String time);
+
+  /// No description provided for @compensationTooLate.
+  ///
+  /// In ru, this message translates to:
+  /// **'к сроку не успеть'**
+  String get compensationTooLate;
+
+  /// No description provided for @compensationTakenHere.
+  ///
+  /// In ru, this message translates to:
+  /// **'присоединена к этому отдыху'**
+  String get compensationTakenHere;
+
+  /// No description provided for @chipCompensationDone.
+  ///
+  /// In ru, this message translates to:
+  /// **'погашена'**
+  String get chipCompensationDone;
+
+  /// No description provided for @chipCompensationSoon.
+  ///
+  /// In ru, this message translates to:
+  /// **'скоро срок'**
+  String get chipCompensationSoon;
+
+  /// No description provided for @chipCompensationOverdue.
+  ///
+  /// In ru, this message translates to:
+  /// **'просрочена'**
+  String get chipCompensationOverdue;
+
+  /// Журнал: «долг 5:00»
+  ///
+  /// In ru, this message translates to:
+  /// **'долг {time}'**
+  String compensationDebt(String time);
+
+  /// Журнал: «погашен 12.10»
+  ///
+  /// In ru, this message translates to:
+  /// **'погашен {date}'**
+  String compensationRepaidOn(String date);
+
+  /// Журнал: «присоединить до 12.10»
+  ///
+  /// In ru, this message translates to:
+  /// **'присоединить до {date}'**
+  String compensationAttachBy(String date);
+
+  /// Журнал, отдых с присоединённым долгом: «компенсация 5:00»
+  ///
+  /// In ru, this message translates to:
+  /// **'компенсация {time}'**
+  String compensationTakenValue(String time);
+
+  /// No description provided for @notifyCompensationTakenTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Компенсация взята'**
+  String get notifyCompensationTakenTitle;
+
+  /// Уведомление: отдых погасил долг компенсации
+  ///
+  /// In ru, this message translates to:
+  /// **'Отдых вместил долг {time} за сокращённый недельный отдых — долг погашен.'**
+  String notifyCompensationTakenText(String time);
 }
 
 class _AppLocalizationsDelegate

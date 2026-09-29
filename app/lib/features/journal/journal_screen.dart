@@ -11,6 +11,8 @@ import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
+import 'package:tachogo/features/home/compensation_row.dart';
+import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/journal/journal_parts.dart';
 import 'package:tachogo/features/journal/shift_day_screen.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
@@ -521,13 +523,13 @@ class _ShiftRow extends StatelessWidget {
   }
 }
 
-class _WeeklyRestRow extends StatelessWidget {
+class _WeeklyRestRow extends ConsumerWidget {
   const new(this.rest);
 
   final WeeklyRest rest;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final colors = context.colors;
     final end = rest.end;
@@ -535,9 +537,28 @@ class _WeeklyRestRow extends StatelessWidget {
     final when =
         '${formatDayMonthClock(rest.start)} → '
         '${end == null ? l.weeklyNow : formatDayMonthClock(end)}';
+    // Долг за сокращённый отдых и чем он погашен; долг, погашенный им
+    final all = watchSnapshot(ref, (s) => ValueList(s.compensations));
+    final (:taken, :debt) = compensationOfRest(
+      all?.items ?? const [],
+      rest.start,
+    );
+    final repaidIn = debt?.repaidIn;
+    final debtState = debt == null
+        ? null
+        : repaidIn != null
+        ? l.compensationRepaidOn(formatDayMonth(repaidIn))
+        : l.compensationAttachBy(formatDayMonth(debt.dueBy));
+    final compensation = [
+      if (debt != null && debtState != null)
+        '${l.compensationDebt(formatHm(debt.debt))} — $debtState',
+      if (taken > Duration.zero) l.compensationTakenValue(formatHm(taken)),
+    ].join(' · ');
     return Semantics(
       container: true,
-      label: '$title. $when. ${spokenDuration(l, rest.duration)}',
+      label:
+          '$title. $when. ${spokenDuration(l, rest.duration)}'
+          '${compensation.isEmpty ? '' : '. $compensation'}',
       excludeSemantics: true,
       child: ColoredBox(
         color: colors.restBg,
@@ -571,6 +592,15 @@ class _WeeklyRestRow extends StatelessWidget {
                         color: colors.textSecondary,
                       ),
                     ),
+                    if (compensation.isNotEmpty)
+                      Text(
+                        compensation,
+                        style: AppTextStyles.caption.copyWith(
+                          color: debt != null && repaidIn == null
+                              ? colors.warningText
+                              : colors.restText,
+                        ),
+                      ),
                   ],
                 ),
               ),

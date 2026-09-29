@@ -50,6 +50,7 @@ void main() {
         InfringementType.compensationSoon: 'shiftEnd',
         RestMilestone.dailyRestTaken: 'shiftEnd',
         RestMilestone.weeklyRestTaken: 'shiftEnd',
+        RestMilestone.compensationTaken: 'shiftEnd',
         InfringementType.cardSoon: 'card',
         InfringementType.cardOverdue: 'card',
       };
@@ -131,6 +132,12 @@ void main() {
             taken: EuLimits.weeklyRestRegular,
             drivingUntilBreak: EuLimits.continuousDriving,
           ),
+          RestAlert(
+            at,
+            RestMilestone.compensationTaken,
+            taken: const Duration(hours: 2, minutes: 19),
+            drivingUntilBreak: EuLimits.continuousDriving,
+          ),
         ],
         all,
         l,
@@ -149,6 +156,11 @@ void main() {
           (
             'Недельный отдых набран',
             'Полный отдых 45 ч — можно начинать новую рабочую неделю.',
+          ),
+          (
+            'Компенсация взята',
+            'Отдых вместил долг 2:19 за сокращённый недельный отдых — долг '
+                'погашен.',
           ),
         ],
       );

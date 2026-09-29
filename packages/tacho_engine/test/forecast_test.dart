@@ -282,6 +282,37 @@ void main() {
       // Смена закрыта отдыхом — о рабочем дне не предупреждаем.
       expect(limitAlert(alerts, InfringementType.shiftSoon), isNull);
     });
+
+    test('отдых после ручной смены — без записи режима, тоже набирается', () {
+      final now = utc('2026-09-22 18:00');
+      final shift = ManualShift(
+        start: utc('2026-09-22 08:00'),
+        end: now,
+        driving: dur('8:00'),
+        restKind: RestKind.daily,
+      );
+      final alerts = forecast(const [], now, manual: [shift]);
+      expect(
+        restAlert(alerts, RestMilestone.dailyRestTaken)!.at,
+        now.add(hour * 11),
+      );
+    });
+
+    test('компенсация: отдых набрал 9 ч + долг — долг погашен', () {
+      // Сокращённый недельный 40 ч (долг 5 ч), смена, отдых идёт 2 ч
+      final log = logFrom(utc('2026-09-18 16:15'), [
+        ...drivingDay('9:00'),
+        rest('40:00'),
+        ...drivingDay('9:00'),
+        work('3:15'),
+        rest('2:00'),
+      ]);
+      final restStart = log.now.subtract(hour * 2);
+      final alerts = forecast(log.periods, log.now);
+      final taken = restAlert(alerts, RestMilestone.compensationTaken)!;
+      expect(taken.at, restStart.add(hour * 14));
+      expect(taken.taken, hour * 5);
+    });
   });
 
   group('NTF-04: о том, что уже есть, повторно не сообщаем', () {

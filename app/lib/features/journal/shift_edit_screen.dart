@@ -19,6 +19,7 @@ import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/features/export/report_violations.dart';
+import 'package:tachogo/features/home/compensation_row.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/journal/pickers.dart';
@@ -93,6 +94,27 @@ class _Form {
 
   ShiftMeta get meta =>
       ShiftMeta(startCountry: startCountry, endCountry: endCountry, note: note);
+}
+
+/// Долги компенсации из снимка — для строк отдыха в форме.
+typedef _CompensationView = ({
+  ValueList<Compensation> all,
+  DateTime? restStart,
+  Compensation? next,
+  DateTime? until,
+  bool inTime,
+});
+
+_CompensationView _compensationView(ComplianceSnapshot s) {
+  final plan = s.restCompensation;
+  final until = plan?.until;
+  return (
+    all: ValueList(s.compensations),
+    restStart: s.offDutyRest?.start,
+    next: plan?.next,
+    until: until == null ? null : minuteOf(until),
+    inTime: plan?.inTime ?? false,
+  );
 }
 
 class ShiftEditScreen extends ConsumerStatefulWidget {
@@ -590,8 +612,55 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
                     },
                   ),
           ),
+        if (rest != null) ..._compensationRows(l, now),
       ],
     );
+  }
+
+  /// Компенсация в отдыхе после смены, как её посчитал журнал: долг,
+  /// присоединённый к этому отдыху, долг за сам отдых, если он сокращённый
+  /// недельный, и сколько ещё отдыхать, если отдых идёт. Пока время смены
+  /// меняется, журнал ещё не пересчитан — строк нет.
+  List<Widget> _compensationRows(AppLocalizations l, DateTime now) {
+    final view = watchSnapshot(ref, _compensationView);
+    final restStart = _shift?.end;
+    if (view == null || restStart == null || _timingChanged) return const [];
+    final (:taken, :debt) = compensationOfRest(view.all.items, restStart);
+    final next = restStart == view.restStart ? view.next : null;
+    final until = view.until;
+    final repaidIn = debt?.repaidIn;
+    return [
+      if (debt != null)
+        _ValueRow(
+          label: l.weeklyCompensation,
+          caption: repaidIn != null
+              ? l.compensationRepaidOn(formatDayMonth(repaidIn))
+              : l.compensationAttachBy(formatDayMonth(debt.dueBy)),
+          value: debt.debt,
+          chip: repaidIn != null
+              ? StatusChip(l.chipCompensationDone, tone: Tone.rest)
+              : debt.dueBy.isBefore(now)
+              ? StatusChip(l.chipCompensationOverdue, tone: Tone.violation)
+              : null,
+        ),
+      if (taken > Duration.zero)
+        _ValueRow(
+          label: l.rowCompensation,
+          caption: l.compensationTakenHere,
+          value: taken,
+          chip: StatusChip(l.chipCompensationDone, tone: Tone.rest),
+        ),
+      if (next != null && until != null)
+        _ValueRow(
+          label: l.rowCompensation,
+          caption: view.inTime
+              ? l.compensationRestUntil(
+                  formatWeekdayClock(until, context.localeTag),
+                )
+              : l.compensationTooLate,
+          value: next.debt,
+        ),
+    ];
   }
 
   // ───────────────────────── выбор значений ─────────────────────────

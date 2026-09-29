@@ -543,5 +543,19 @@
   "transferNewer": "Fayl TachoGo ning yangiroq versiyasida saqlangan — ilovani yangilang",
   "transferDamaged": "Jurnal fayli buzilgan — uni eski telefonda qaytadan saqlang",
   "transferFailed": "Jurnalni yuklab boʻlmadi. Telefondagi jurnal oʻzgarmadi",
-  "transferSaveFailed": "Faylni saqlab boʻlmadi. Qayta urinib koʻring."
+  "transferSaveFailed": "Faylni saqlab boʻlmadi. Qayta urinib koʻring.",
+  "rowCompensation": "Kompensatsiya",
+  "compensationAttach": "kamida 9 soatlik dam olishga qoʻshing",
+  "compensationRestUntil": "{time} gacha dam oling",
+  "compensationTooLate": "muddatga ulgurmaysiz",
+  "compensationTakenHere": "shu dam olishga qoʻshilgan",
+  "chipCompensationDone": "qoplandi",
+  "chipCompensationSoon": "muddat yaqin",
+  "chipCompensationOverdue": "muddati oʻtgan",
+  "compensationDebt": "qarz {time}",
+  "compensationRepaidOn": "qoplandi {date}",
+  "compensationAttachBy": "{date} gacha qoʻshing",
+  "compensationTakenValue": "kompensatsiya {time}",
+  "notifyCompensationTakenTitle": "Kompensatsiya olindi",
+  "notifyCompensationTakenText": "Dam olish qisqartirilgan haftalik dam olish uchun {time} qarzni qopladi — qarz yopildi."
 }
