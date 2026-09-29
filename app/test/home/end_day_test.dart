@@ -65,6 +65,34 @@ Future<void> enterHm(WidgetTester tester, String digits) async {
   await tester.pumpAndSettle();
 }
 
+String fieldText(WidgetTester tester) => tester
+    .widget<EditableText>(
+      find.descendant(
+        of: find.byType(HmField),
+        matching: find.byType(EditableText),
+      ),
+    )
+    .controller
+    .text;
+
+/// Цифры по одной, как с клавиатуры телефона: каждая встаёт на место
+/// выделения или курсора, а не заменяет поле целиком, как `enterText`.
+Future<void> typeDigits(WidgetTester tester, String digits) async {
+  for (final digit in digits.split('')) {
+    final value = tester
+        .state<EditableTextState>(find.byType(EditableText))
+        .textEditingValue;
+    final selection = value.selection;
+    tester.testTextInput.updateEditingValue(
+      TextEditingValue(
+        text: value.text.replaceRange(selection.start, selection.end, digit),
+        selection: TextSelection.collapsed(offset: selection.start + 1),
+      ),
+    );
+    await tester.pump();
+  }
+}
+
 void main() {
   group('JRN-08: «Завершить день» — вождение за день', () {
     testWidgets('без смены кнопки на главной нет', (tester) async {
@@ -113,6 +141,29 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('СУТОЧНЫЙ ОТДЫХ'), findsOneWidget);
       expect(endDayButton, findsNothing);
+      await unmount(tester);
+    });
+
+    testWidgets('с клавиатуры: касание поля и цифры по одной — вводится '
+        'любое вождение', (tester) async {
+      final db = memoryDatabase();
+      addTearDown(db.close);
+      await seedWork(tester, db);
+      await pumpHome(tester, db);
+
+      await openSheet(tester);
+      // Поле уже в фокусе; водитель всё равно касается его, как любого поля
+      await tester.tap(find.byType(HmField));
+      await tester.pumpAndSettle();
+      await typeDigits(tester, '830');
+      expect(fieldText(tester), '8:30');
+      await tester.tap(confirm);
+      await settle(tester);
+      await tester.pumpAndSettle();
+      expect(
+        (await manual(tester, db)).single.driving,
+        const Duration(hours: 8, minutes: 30),
+      );
       await unmount(tester);
     });
 
