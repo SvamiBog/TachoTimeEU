@@ -154,25 +154,23 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
   void _init(Journal journal, String? defaultCountry) {
     final s = _shift;
     final now = floorTimeToMinute(journal.now);
-    final slot = s == null ? freeShiftSlot(journal.shifts, now) : null;
+    // Новая смена начинается сейчас и идёт: конец и отдых водитель отметит,
+    // когда закончит её (отзыв водителей, 30.09.2026). Недельный отдых
+    // «Указать вручную» (экран 9) — прошлая смена: свободное окно до сейчас.
+    final slot = s == null && widget.presetRest != null
+        ? freeShiftSlot(journal.shifts, now)
+        : null;
     final meta = s == null ? ShiftMeta.empty : journal.metaOf(s);
     final manual = s?.manual;
-    // Новая смена по умолчанию идёт: отдых водитель отметит, когда закончит
-    // её. Если после неё в журнале уже есть смены, идти она не может.
     final restKind =
-        manual?.restKind ??
-        s?.rest.kind ??
-        widget.presetRest ??
-        (journal.shifts.any((x) => x.start.isAfter(slot!.start))
-            ? RestKind.daily
-            : RestKind.none);
+        manual?.restKind ?? s?.rest.kind ?? widget.presetRest ?? RestKind.none;
     final startCountry = meta.startCountry ?? defaultCountry;
-    if (slot != null && restKind == RestKind.none) {
-      _beforeNone = (end: slot.end, country: startCountry);
+    if (s == null && restKind == RestKind.none) {
+      _beforeNone = (end: now, country: startCountry);
     }
     final initial = _Form(
-      start: s?.start ?? slot!.start,
-      end: s == null ? (restKind == RestKind.none ? null : slot!.end) : s.end,
+      start: s?.start ?? slot?.start ?? now,
+      end: s == null ? slot?.end : s.end,
       restKind: restKind,
       split: manual?.splitRest ?? s?.rest.split ?? false,
       driving: floorToMinute(s?.driving ?? Duration.zero),
@@ -257,7 +255,13 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
             now: now,
             onCountry: _pickCountry,
             onDate: ({required editEnd}) => _pickDates(now, editEnd: editEnd),
-            onEndNow: () => _selectRest(RestKind.daily, journal),
+            // Пустое завершение: смена кончается — отдых и выбор конца
+            onEndNow: () {
+              _selectRest(RestKind.daily, journal);
+              if (_form.end != null) {
+                unawaited(_pickDates(now, editEnd: true));
+              }
+            },
           ),
           SectionTitle(l.shiftDriving),
           _drivingCard(l, now, journal),
@@ -1201,15 +1205,22 @@ class _Side extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          if (at == null)
-            _FieldButton(
-              icon: Icons.schedule,
-              text: l.shiftNowOngoing,
-              spoken: l.shiftNowOngoing,
-              color: colors.drive,
-              onTap: onEndNow ?? onDate,
-            )
-          else ...[
+          if (at == null) ...[
+            // Конца нет — поля пустые, как у бланка: касание задаёт конец
+            for (final (i, icon) in const [
+              Icons.calendar_today_outlined,
+              Icons.schedule,
+            ].indexed) ...[
+              if (i > 0) const SizedBox(height: 6),
+              _FieldButton(
+                icon: icon,
+                text: '—',
+                spoken: l.shiftNotSetSpoken(title),
+                color: colors.textSecondary,
+                onTap: onEndNow ?? onDate,
+              ),
+            ],
+          ] else ...[
             _FieldButton(
               icon: Icons.calendar_today_outlined,
               text: '${formatWeekdayShort(at, locale)}, ${formatDayMonth(at)}',

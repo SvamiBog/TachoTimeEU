@@ -576,6 +576,20 @@ void main() {
       );
     });
 
+    test(
+      'идущая смена с начала этой минуты сохраняется, из будущего — нет',
+      () {
+        expect(
+          check(from: now, ongoing: true, drive: 0, continuous: 0),
+          isNull,
+        );
+        expect(
+          check(from: now.add(minute), ongoing: true, drive: 0, continuous: 0),
+          ShiftEditError.future,
+        );
+      },
+    );
+
     test('идущая смена — только последняя', () {
       final from = now.subtract(hour * 3);
       final later = journalShifts(

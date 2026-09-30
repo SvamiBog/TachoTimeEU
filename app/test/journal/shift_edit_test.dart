@@ -140,24 +140,51 @@ void main() {
     matching: find.text('$d'),
   );
 
+  /// Начало новой смены — момент [t]: день в календаре и время, как их
+  /// выбирает водитель (местное время).
+  Future<void> setStart(WidgetTester tester, DateTime t) async {
+    await tap(tester, find.text(dateButton(now)).first);
+    await tap(tester, day(t.toLocal().day));
+    await enterHm(tester, typed(t));
+    await tap(tester, find.text('Готово'));
+  }
+
   group('новая смена из журнала', () {
-    testWidgets('«+ Смена» — по умолчанию «Не начат»: смена станет '
-        'текущей', (tester) async {
+    testWidgets('«+ Смена» — начало сейчас, завершение пустое: смена '
+        'станет текущей', (tester) async {
       await defaultCountry(tester, 'PL');
       await pump(tester, const JournalScreen());
       await tap(tester, find.text('Смена'));
       expect(find.text('Новая смена'), findsOneWidget);
-      // 10 ч до сейчас, смена идёт — конца и отдыха ещё нет
-      expect(find.text(formatClock(u(23, 2))), findsOneWidget);
-      expect(find.text('Сейчас (идёт)'), findsOneWidget);
+      // Начало — текущие дата и время; конца и отдыха ещё нет: страна,
+      // дата и время завершения пустые
+      expect(find.text(formatClock(now)), findsOneWidget);
+      expect(find.text(dateButton(now)), findsOneWidget);
+      expect(find.text('—'), findsNWidgets(3));
+      expect(find.text('Сейчас (идёт)'), findsNothing);
       expect(find.textContaining('Смена станет текущей'), findsOneWidget);
       await tap(tester, find.byTooltip('Сохранить'));
 
       expect(find.byType(ShiftEditScreen), findsNothing);
       expect(await manual(tester), isEmpty);
       final m = snapshot(await periods(tester));
-      expect(m.shift?.start, u(23, 2));
+      expect(m.shift?.start, now);
       expect(m.currentMode, DriverMode.otherWork);
+      await unmount(tester);
+    });
+
+    testWidgets('пустое завершение: касание — «Суточный» и выбор конца', (
+      tester,
+    ) async {
+      await defaultCountry(tester, 'PL');
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.text('Смена'));
+      await tap(tester, find.text('—').last);
+      // Отдых отмечен, конец — сейчас; открыт выбор даты и времени конца
+      expect(find.byType(DateTimeField), findsOneWidget);
+      await tap(tester, find.text('Готово'));
+      expect(find.text(formatClock(now)), findsNWidgets(2));
+      expect(find.text('—'), findsNothing);
       await unmount(tester);
     });
 
@@ -166,6 +193,8 @@ void main() {
       await defaultCountry(tester, 'PL');
       await pump(tester, const JournalScreen());
       await tap(tester, find.text('Смена'));
+      // Начало — сейчас; смена была с 02:00 UTC (в поясе UTC−4 — вчера)
+      await setStart(tester, u(23, 2));
       await tap(tester, find.text('Суточный'));
       expect(find.text(formatClock(u(23, 12))), findsOneWidget);
       expect(find.text('PL'), findsNWidgets(2));
@@ -198,6 +227,7 @@ void main() {
       await defaultCountry(tester, 'PL');
       await pump(tester, const JournalScreen());
       await tap(tester, find.byIcon(Icons.add));
+      await setStart(tester, u(23, 2));
       await tap(
         tester,
         find.descendant(
@@ -208,7 +238,7 @@ void main() {
       await tap(tester, find.byTooltip('Сохранить'));
 
       final saved = (await manual(tester)).single.shift;
-      expect(saved.end, now, reason: 'смена по умолчанию — до сейчас');
+      expect(saved.end, now, reason: 'конец отдыха по умолчанию — сейчас');
       expect(await periods(tester), isEmpty);
       expect(snapshot(const [], [saved]).status, DriverStatus.dailyRest);
 
@@ -265,7 +295,7 @@ void main() {
       await tap(tester, find.byIcon(Icons.add));
       // «Суточный» есть и в журнале под формой
       await tap(tester, find.text('Суточный').last);
-      await tap(tester, find.text(dateButton(u(23, 2))).first);
+      await tap(tester, find.text(dateButton(now)).first);
       await tap(tester, day(u(22, 0).toLocal().day));
       await enterHm(tester, typed(u(22, 0)));
       await tap(tester, find.text('Конец').last);

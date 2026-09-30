@@ -981,7 +981,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get shiftChoose => 'Tanlash';
 
   @override
-  String get shiftNowOngoing => 'Hozir (davom etmoqda)';
+  String shiftNotSetSpoken(String field) {
+    return '$field: belgilanmagan — tanlash';
+  }
 
   @override
   String get shiftDuration => 'Davomiylik';

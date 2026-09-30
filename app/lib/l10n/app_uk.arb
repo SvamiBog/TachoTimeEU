@@ -230,7 +230,7 @@
   "shiftEnd": "Кінець",
   "shiftOnRoad": "у дорозі",
   "shiftChoose": "Вибрати",
-  "shiftNowOngoing": "Зараз (триває)",
+  "shiftNotSetSpoken": "{field}: не задано — вибрати",
   "shiftDuration": "Тривалість",
   "shiftNowSuffix": "зараз",
   "shiftCountrySpoken": "{side}: країна {code}. Змінити",

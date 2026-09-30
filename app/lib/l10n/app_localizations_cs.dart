@@ -993,7 +993,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get shiftChoose => 'Zvolit';
 
   @override
-  String get shiftNowOngoing => 'Teď (probíhá)';
+  String shiftNotSetSpoken(String field) {
+    return '$field: nenastaveno — vybrat';
+  }
 
   @override
   String get shiftDuration => 'Délka';

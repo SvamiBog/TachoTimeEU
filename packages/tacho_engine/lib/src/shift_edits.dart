@@ -345,8 +345,12 @@ ShiftEditProblem? checkManualShift({
   JournalShift? except,
 }) {
   final spanEnd = end ?? now;
-  if (!spanEnd.isAfter(start)) {
-    return const ShiftEditProblem(ShiftEditError.endBeforeStart);
+  // Идущая смена может начаться прямо сейчас — новая смена в форме
+  // по умолчанию так и начинается; завершённая короче минуты не бывает.
+  if (end == null ? start.isAfter(now) : !end.isAfter(start)) {
+    return ShiftEditProblem(
+      end == null ? ShiftEditError.future : ShiftEditError.endBeforeStart,
+    );
   }
   if (spanEnd.isAfter(now)) {
     return const ShiftEditProblem(ShiftEditError.future);

@@ -230,7 +230,7 @@
   "shiftEnd": "დასასრული",
   "shiftOnRoad": "გზაში",
   "shiftChoose": "არჩევა",
-  "shiftNowOngoing": "ახლა (მიმდინარეობს)",
+  "shiftNotSetSpoken": "{field}: არ არის მითითებული — არჩევა",
   "shiftDuration": "ხანგრძლივობა",
   "shiftNowSuffix": "ახლა",
   "shiftCountrySpoken": "{side}: ქვეყანა {code}. შეცვლა",

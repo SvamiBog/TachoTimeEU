@@ -980,7 +980,9 @@ class AppLocalizationsKa extends AppLocalizations {
   String get shiftChoose => 'არჩევა';
 
   @override
-  String get shiftNowOngoing => 'ახლა (მიმდინარეობს)';
+  String shiftNotSetSpoken(String field) {
+    return '$field: არ არის მითითებული — არჩევა';
+  }
 
   @override
   String get shiftDuration => 'ხანგრძლივობა';

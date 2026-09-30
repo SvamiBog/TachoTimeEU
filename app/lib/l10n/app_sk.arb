@@ -230,7 +230,7 @@
   "shiftEnd": "Koniec",
   "shiftOnRoad": "na ceste",
   "shiftChoose": "Zvoliť",
-  "shiftNowOngoing": "Teraz (prebieha)",
+  "shiftNotSetSpoken": "{field}: nenastavené — vybrať",
   "shiftDuration": "Trvanie",
   "shiftNowSuffix": "teraz",
   "shiftCountrySpoken": "{side}: krajina {code}. Zmeniť",

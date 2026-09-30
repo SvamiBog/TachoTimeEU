@@ -1509,11 +1509,11 @@ abstract class AppLocalizations {
   /// **'Выбрать'**
   String get shiftChoose;
 
-  /// No description provided for @shiftNowOngoing.
+  /// Диктор: «Завершение: не задано — выбрать»
   ///
   /// In ru, this message translates to:
-  /// **'Сейчас (идёт)'**
-  String get shiftNowOngoing;
+  /// **'{field}: не задано — выбрать'**
+  String shiftNotSetSpoken(String field);
 
   /// No description provided for @shiftDuration.
   ///

@@ -893,7 +893,15 @@
   "shiftEnd": "Конец",
   "shiftOnRoad": "в пути",
   "shiftChoose": "Выбрать",
-  "shiftNowOngoing": "Сейчас (идёт)",
+  "shiftNotSetSpoken": "{field}: не задано — выбрать",
+  "@shiftNotSetSpoken": {
+    "description": "Диктор: «Завершение: не задано — выбрать»",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
   "shiftDuration": "Длительность",
   "shiftNowSuffix": "сейчас",
   "shiftCountrySpoken": "{side}: страна {code}. Изменить",

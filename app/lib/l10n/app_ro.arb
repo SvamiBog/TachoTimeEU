@@ -230,7 +230,7 @@
   "shiftEnd": "Sfârșit",
   "shiftOnRoad": "pe drum",
   "shiftChoose": "Alege",
-  "shiftNowOngoing": "Acum (în curs)",
+  "shiftNotSetSpoken": "{field}: nesetat — alegeți",
   "shiftDuration": "Durată",
   "shiftNowSuffix": "acum",
   "shiftCountrySpoken": "{side}: țara {code}. Modifică",

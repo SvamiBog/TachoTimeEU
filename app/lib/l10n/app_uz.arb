@@ -230,7 +230,7 @@
   "shiftEnd": "Yakun",
   "shiftOnRoad": "yoʻlda",
   "shiftChoose": "Tanlash",
-  "shiftNowOngoing": "Hozir (davom etmoqda)",
+  "shiftNotSetSpoken": "{field}: belgilanmagan — tanlash",
   "shiftDuration": "Davomiylik",
   "shiftNowSuffix": "hozir",
   "shiftCountrySpoken": "{side}: mamlakat {code}. Oʻzgartirish",

@@ -992,7 +992,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get shiftChoose => 'Вибрати';
 
   @override
-  String get shiftNowOngoing => 'Зараз (триває)';
+  String shiftNotSetSpoken(String field) {
+    return '$field: не задано — вибрати';
+  }
 
   @override
   String get shiftDuration => 'Тривалість';

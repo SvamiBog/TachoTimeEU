@@ -993,7 +993,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftChoose => 'Выбрать';
 
   @override
-  String get shiftNowOngoing => 'Сейчас (идёт)';
+  String shiftNotSetSpoken(String field) {
+    return '$field: не задано — выбрать';
+  }
 
   @override
   String get shiftDuration => 'Длительность';

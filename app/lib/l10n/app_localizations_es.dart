@@ -981,7 +981,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shiftChoose => 'Elegir';
 
   @override
-  String get shiftNowOngoing => 'Ahora (en curso)';
+  String shiftNotSetSpoken(String field) {
+    return '$field: sin definir — elegir';
+  }
 
   @override
   String get shiftDuration => 'Duración';

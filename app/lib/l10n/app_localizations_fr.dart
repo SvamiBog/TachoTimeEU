@@ -983,7 +983,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shiftChoose => 'Choisir';
 
   @override
-  String get shiftNowOngoing => 'Maintenant (en cours)';
+  String shiftNotSetSpoken(String field) {
+    return '$field : non défini — choisir';
+  }
 
   @override
   String get shiftDuration => 'Durée';

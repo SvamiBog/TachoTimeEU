@@ -230,7 +230,7 @@
   "shiftEnd": "Fin",
   "shiftOnRoad": "en route",
   "shiftChoose": "Choisir",
-  "shiftNowOngoing": "Maintenant (en cours)",
+  "shiftNotSetSpoken": "{field} : non défini — choisir",
   "shiftDuration": "Durée",
   "shiftNowSuffix": "maintenant",
   "shiftCountrySpoken": "{side} : pays {code}. Modifier",
