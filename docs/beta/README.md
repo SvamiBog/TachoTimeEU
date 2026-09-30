@@ -40,6 +40,7 @@
 | `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` | Ключ загрузки (`upload.jks` в base64) и пароли | Из `main` выпуск пропускается с предупреждением, тег — падает |
 | `PLAY_SERVICE_ACCOUNT_JSON` | JSON сервисного аккаунта Google Cloud с доступом к приложению в Play Console | AAB только в артефактах CI (`android-release-<sha>`), загрузка вручную |
 | `SENTRY_DSN`, `POSTHOG_KEY` | Отчёты о падениях и аналитика (`app/README.md`) | Сервис в сборке выключен |
+| `ANDROID_DEBUG_KEYSTORE_BASE64` | Постоянный ключ тестовых APK из «Сборки Android» — раздел ниже | APK подписана случайным ключом: поверх прошлой не ставится |
 
 Переменные (там же → Variables), если нужны не значения по умолчанию:
 
@@ -48,6 +49,27 @@
 | `PLAY_MAIN_TRACK` | `internal` | Трек для сборок из `main`. `alpha` — каждый merge сразу водителям; `none` — только AAB в артефактах |
 | `PLAY_BETA_TRACK` | `alpha` | Трек для тегов беты — закрытое тестирование |
 | `PLAY_RELEASE_STATUS` | `completed` | `draft` — если загрузка падает с «Only releases with status draft may be created on draft app»: у приложения ещё нет выпуска, прошедшего Play Console. Выпуск тогда нажимать в Play Console, после первого — вернуть по умолчанию |
+
+## APK из CI на свой телефон
+
+Каждый запуск CI (PR и `main`) собирает debug-APK с окружением `dev` — артефакт `android-<sha>` у job «Сборка Android» (Actions → запуск → Artifacts). Её ставят на свой телефон без Google Play; новая ставится поверх прошлой, журнал остаётся, если:
+- все APK подписаны одним ключом — секретом `ANDROID_DEBUG_KEYSTORE_BASE64`. Без него у каждой сборки случайный ключ раннера, и Android пишет «Приложение не установлено» — только удалить и поставить заново;
+- номер новой не меньше установленной: versionCode = 1000 + номер запуска CI, версия на экране «Ещё» — `0.1.0-dev.<номер запуска>`. Ставить более свежий запуск.
+
+Ключ — один раз (`keytool` есть в JDK и в Android Studio, `jbr/bin`). Пароли стандартные для debug-ключа — это не ключ выпуска, в Google Play им подписанное не принимается:
+
+```bash
+keytool -genkeypair -v -keystore debug.keystore -storepass android \
+  -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 \
+  -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+base64 -w0 debug.keystore > debug.keystore.b64   # macOS: base64 -i debug.keystore -o debug.keystore.b64
+```
+
+Windows (PowerShell): `[Convert]::ToBase64String([IO.File]::ReadAllBytes("debug.keystore")) > debug.keystore.b64`.
+
+Содержимое `debug.keystore.b64` — секрет `ANDROID_DEBUG_KEYSTORE_BASE64` (Settings → Secrets and variables → Actions); `debug.keystore` — в менеджер паролей, в git не класть (CI это проверяет). Первая APK с этим ключом встаёт только после удаления прошлой — журнал перед этим сохранить: «Ещё» → «Перенос на другой телефон», и загрузить в новой. Дальше — поверх. Сборки с пакетом `eu.tachogo.app` (с 30.09.2026) — для телефона другое приложение, чем прежний `eu.tachogo.tachogo`: встают рядом, журнал переносится так же, старое — удалить.
+
+Установленную из Google Play (внутренний или закрытый тест) APK из CI не обновит и наоборот: у Play свой ключ подписи. На одном телефоне — что-то одно.
 
 ## Требование Google Play к новым аккаунтам
 
