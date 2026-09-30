@@ -2050,6 +2050,14 @@ class AppLocalizationsNl extends AppLocalizations {
       'TachoGo helpt rij- en rusttijden te plannen, maar vervangt de tachograaf niet en is geen juridisch advies.';
 
   @override
+  String get morePrivacy => 'Privacybeleid';
+
+  @override
+  String linkFailed(String url) {
+    return 'De browser kon niet worden geopend. Adres van de pagina: $url';
+  }
+
+  @override
   String get problemTitle => 'Probleem melden';
 
   @override

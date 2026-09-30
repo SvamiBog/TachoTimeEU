@@ -2061,6 +2061,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'TachoGo hilft bei der Planung von Lenk- und Ruhezeiten, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung.';
 
   @override
+  String get morePrivacy => 'Datenschutzerklärung';
+
+  @override
+  String linkFailed(String url) {
+    return 'Der Browser konnte nicht geöffnet werden. Adresse der Seite: $url';
+  }
+
+  @override
   String get problemTitle => 'Problem melden';
 
   @override

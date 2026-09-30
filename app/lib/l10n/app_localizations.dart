@@ -3255,6 +3255,18 @@ abstract class AppLocalizations {
   /// **'TachoGo помогает планировать время за рулём и отдых, но не заменяет тахограф и не является юридической консультацией.'**
   String get moreDisclaimer;
 
+  /// Строка «Ещё»: политика конфиденциальности, открывается в браузере
+  ///
+  /// In ru, this message translates to:
+  /// **'Политика конфиденциальности'**
+  String get morePrivacy;
+
+  /// Плашка, если ссылку нечем открыть: на телефоне нет браузера
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось открыть браузер. Адрес страницы: {url}'**
+  String linkFailed(String url);
+
   /// Строка «Ещё» и заголовок шторки: отчёт о проблеме, только в бете
   ///
   /// In ru, this message translates to:

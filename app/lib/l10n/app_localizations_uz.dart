@@ -2048,6 +2048,14 @@ class AppLocalizationsUz extends AppLocalizations {
       'TachoGo rul ortidagi vaqt va dam olishni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas.';
 
   @override
+  String get morePrivacy => 'Maxfiylik siyosati';
+
+  @override
+  String linkFailed(String url) {
+    return 'Brauzerni ochib boʻlmadi. Sahifa manzili: $url';
+  }
+
+  @override
   String get problemTitle => 'Muammo haqida xabar berish';
 
   @override

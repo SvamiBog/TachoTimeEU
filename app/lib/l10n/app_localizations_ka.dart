@@ -2044,6 +2044,14 @@ class AppLocalizationsKa extends AppLocalizations {
       'TachoGo გეხმარებათ საჭესთან დროისა და დასვენების დაგეგმვაში, მაგრამ არ ცვლის ტაქოგრაფს და არ არის იურიდიული კონსულტაცია.';
 
   @override
+  String get morePrivacy => 'კონფიდენციალურობის პოლიტიკა';
+
+  @override
+  String linkFailed(String url) {
+    return 'ბრაუზერის გახსნა ვერ მოხერხდა. გვერდის მისამართი: $url';
+  }
+
+  @override
   String get problemTitle => 'პრობლემის შესახებ შეტყობინება';
 
   @override

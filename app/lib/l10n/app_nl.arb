@@ -521,6 +521,8 @@
   "guideDisclaimer": "TachoGo helpt de tijd te plannen, maar vervangt de tachograaf niet en is geen juridisch advies. Officiële tekst van de regels — Verordening (EG) nr. 561/2006 en AETR-overeenkomst.",
   "moreAbout": "Over de app",
   "moreDisclaimer": "TachoGo helpt rij- en rusttijden te plannen, maar vervangt de tachograaf niet en is geen juridisch advies.",
+  "morePrivacy": "Privacybeleid",
+  "linkFailed": "De browser kon niet worden geopend. Adres van de pagina: {url}",
   "problemTitle": "Probleem melden",
   "problemHint": "Bètaversie: het rapport gaat naar de makers van de app",
   "problemText": "Het rapport bevat de appversie, het telefoonmodel, instellingen, machtigingen, het meldingsschema en de logboekregels van de laatste twee dagen. Coördinaten staan er niet in. Kies waarheen u het stuurt — e-mail of messenger — en beschrijf wat er is gebeurd.",

@@ -2071,6 +2071,14 @@ class AppLocalizationsPl extends AppLocalizations {
       'TachoGo pomaga planować czas jazdy i odpoczynek, ale nie zastępuje tachografu i nie jest poradą prawną.';
 
   @override
+  String get morePrivacy => 'Polityka prywatności';
+
+  @override
+  String linkFailed(String url) {
+    return 'Nie udało się otworzyć przeglądarki. Adres strony: $url';
+  }
+
+  @override
   String get problemTitle => 'Zgłoś problem';
 
   @override

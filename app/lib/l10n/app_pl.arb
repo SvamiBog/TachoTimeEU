@@ -521,6 +521,8 @@
   "guideDisclaimer": "TachoGo pomaga planować czas, ale nie zastępuje tachografu i nie jest poradą prawną. Oficjalny tekst przepisów — rozporządzenie (WE) nr 561/2006 i umowa AETR.",
   "moreAbout": "O aplikacji",
   "moreDisclaimer": "TachoGo pomaga planować czas jazdy i odpoczynek, ale nie zastępuje tachografu i nie jest poradą prawną.",
+  "morePrivacy": "Polityka prywatności",
+  "linkFailed": "Nie udało się otworzyć przeglądarki. Adres strony: {url}",
   "problemTitle": "Zgłoś problem",
   "problemHint": "Wersja beta: raport trafi do twórców aplikacji",
   "problemText": "Raport zawiera wersję aplikacji, model telefonu, ustawienia, uprawnienia, harmonogram powiadomień i wpisy dziennika z ostatnich dwóch dób. Nie ma w nim współrzędnych. Wybierz, gdzie wysłać — e-mail lub komunikator — i opisz, co się stało.",

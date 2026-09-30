@@ -521,6 +521,8 @@
   "guideDisclaimer": "TachoGo hilft bei der Zeitplanung, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung. Amtlicher Text der Regeln — Verordnung (EG) Nr. 561/2006 und AETR-Übereinkommen.",
   "moreAbout": "Über die App",
   "moreDisclaimer": "TachoGo hilft bei der Planung von Lenk- und Ruhezeiten, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung.",
+  "morePrivacy": "Datenschutzerklärung",
+  "linkFailed": "Der Browser konnte nicht geöffnet werden. Adresse der Seite: {url}",
   "problemTitle": "Problem melden",
   "problemHint": "Beta-Version: Der Bericht geht an die Entwickler der App",
   "problemText": "Der Bericht enthält die App-Version, das Telefonmodell, Einstellungen, Berechtigungen, den Benachrichtigungsplan und die Protokolleinträge der letzten zwei Tage. Koordinaten sind nicht enthalten. Wählen Sie, wohin er gesendet wird — E-Mail oder Messenger — und beschreiben Sie, was passiert ist.",

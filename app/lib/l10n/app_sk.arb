@@ -521,6 +521,8 @@
   "guideDisclaimer": "TachoGo pomáha plánovať čas, ale nenahrádza tachograf a nie je právnou radou. Úradný text pravidiel — nariadenie (ES) č. 561/2006 a dohoda AETR.",
   "moreAbout": "O aplikácii",
   "moreDisclaimer": "TachoGo pomáha plánovať čas jazdy a odpočinku, ale nenahrádza tachograf a nie je právnou radou.",
+  "morePrivacy": "Zásady ochrany osobných údajov",
+  "linkFailed": "Prehliadač sa nepodarilo otvoriť. Adresa stránky: {url}",
   "problemTitle": "Nahlásiť problém",
   "problemHint": "Beta verzia: správa pôjde vývojárom aplikácie",
   "problemText": "Správa obsahuje verziu aplikácie, model telefónu, nastavenia, povolenia, plán upozornení a záznamy denníka za posledné dva dni. Súradnice v nej nie sú. Zvoľte, kam ju poslať — e-mail alebo messenger — a opíšte, čo sa stalo.",

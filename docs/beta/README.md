@@ -5,7 +5,7 @@
 - [Инструкция тестировщику](tester-guide.md) — установка, что проверить, как сообщить о проблеме.
 - [Чек-лист телефона](device-checklist.md) — фон и уведомления на конкретном телефоне (DEV-01, DEV-02).
 - [Вычитка перевода](translation-review.md) — для носителей UA, PL, RO, KA, UZ и анкета про KK, KY, BE.
-- [Google Play: что заполнить](play-console.md) — App content, Data safety, декларация foreground service, черновик политики конфиденциальности.
+- [Google Play: что заполнить](play-console.md) — App content, Data safety, декларация foreground service, политика конфиденциальности (`site/privacy/`): что вписать до отправки.
 
 ## Что в бете
 
