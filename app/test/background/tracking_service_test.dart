@@ -1,5 +1,5 @@
 // Включение автоопределения и связь приложения с сервисом.
-// План тестов: BG-05, BG-07 в docs/testing.md.
+// План тестов: BG-05, BG-07, BG-10 в docs/testing.md.
 import 'package:drift/native.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -68,6 +68,15 @@ void main() {
         platform.calls,
         containsAllInOrder(['initService', 'startService']),
       );
+    });
+
+    test('BG-10: сервис не держит wake lock, поднимается после перезагрузки '
+        'и обновления', () async {
+      expect(await service().enable(), isNull);
+      final options = platform.taskOptions!;
+      expect(options.allowWakeLock, isFalse);
+      expect(options.autoRunOnBoot, isTrue);
+      expect(options.autoRunOnMyPackageReplaced, isTrue);
     });
 
     test('доступ уже есть — повторно не спрашиваем', () async {

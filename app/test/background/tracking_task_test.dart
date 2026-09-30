@@ -1,5 +1,5 @@
 // Задача фонового сервиса (Android): запуск, сообщения от приложения,
-// кнопки в уведомлении. План тестов: BG-06 в docs/testing.md.
+// кнопки в уведомлении. План тестов: BG-06, BG-10 в docs/testing.md.
 import 'package:drift/drift.dart' show TableUpdate;
 import 'package:drift/native.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -137,6 +137,24 @@ void main() {
     await pumpEventQueue();
     expect(tableUpdates, isNotEmpty);
     expect(platform.updates.last.title, 'Другая работа · 0:00');
+  });
+
+  test('BG-10: экран включился — уведомление сразу с остатками на сейчас, '
+      'база не перечитывается', () async {
+    now = t0;
+    await journal.switchMode(DriverMode.otherWork);
+    await start();
+    expect(platform.updates.last.title, 'Другая работа · 0:00');
+    final tableUpdates = <Set<TableUpdate>>[];
+    final sub = db.tableUpdates().listen(tableUpdates.add);
+    addTearDown(sub.cancel);
+
+    // Телефон спал два часа: обновление раз в минуту стояло
+    now = t0.add(const Duration(hours: 2));
+    handler.onReceiveData(screenOnMessage);
+    await pumpEventQueue();
+    expect(platform.updates.last.title, 'Другая работа · 2:00');
+    expect(tableUpdates, isEmpty);
   });
 
   test('изменение журнала в сервисе — сигнал приложению', () async {

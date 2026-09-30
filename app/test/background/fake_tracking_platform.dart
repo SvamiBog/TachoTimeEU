@@ -97,12 +97,18 @@ class FakeTrackingPlatform implements TrackingPlatform {
     return true;
   }
 
+  /// Настройки задачи из последнего `initService`.
+  ForegroundTaskOptions? taskOptions;
+
   @override
   void initService({
     required AndroidNotificationOptions android,
     required IOSNotificationOptions ios,
     required ForegroundTaskOptions task,
-  }) => calls.add('initService');
+  }) {
+    calls.add('initService');
+    taskOptions = task;
+  }
 
   @override
   Future<bool> get isRunningService async => running;

@@ -1,8 +1,9 @@
 // Итоговый манифест Android вместе с манифестами плагинов (CI-06 в
 // docs/testing.md): без фонового доступа к геолокации, прямого запроса на
-// исключение из экономии батареи и USE_EXACT_ALARM, сервис автоопределения
-// с типом location, уведомления о лимитах по расписанию переживают
-// перезагрузку, PostHog не стартует до согласия.
+// исключение из экономии батареи, USE_EXACT_ALARM и рекламного ID, сервис
+// автоопределения с типом location, при включении экрана его уведомление
+// обновляется (`TachoGoApplication`), уведомления о лимитах по расписанию
+// переживают перезагрузку, PostHog не стартует до согласия.
 //
 //   dart tool/check_android_manifest.dart [AndroidManifest.xml …]
 //
@@ -24,10 +25,19 @@ List<String> manifestProblems(String xml) {
     'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
     // Google Play даёт его только будильникам и календарям.
     'android.permission.USE_EXACT_ALARM',
+    // Рекламного ID нет — так в Play Console («Рекламный идентификатор»).
+    'com.google.android.gms.permission.AD_ID',
   ]) {
     if (tags('uses-permission').any((t) => named(t, permission))) {
       problems.add('Запрещённое разрешение $permission');
     }
+  }
+
+  if (!tags('application').any((t) => t.contains('TachoGoApplication"'))) {
+    problems.add(
+      'Приложение без TachoGoApplication: уведомление сервиса не обновится '
+      'при включении экрана',
+    );
   }
 
   const foregroundService =

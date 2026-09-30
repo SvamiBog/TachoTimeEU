@@ -161,6 +161,7 @@
 - [x] BG-07. `TrackingMessages`: реагирует только на `journal_changed`, отписка снимает колбэк, на iOS `notifyJournalChanged` ничего не шлёт. Обёртка — `TrackingPlatform`.
 - [x] BG-08. Уведомление и главный экран показывают одинаковые остатки: расчёт уведомления получает ручные смены и считывание карты.
 - [x] BG-09. Экран автозапуска оболочки (`AutostartSettings`, вынесен из `MainActivity`): без экранов оболочек — настройки приложения и `false`; экран MIUI — он и `true`; экраны перебираются по порядку, открывается первый, который есть; каждый экран открывается, если он один; из контекста приложения — с `FLAG_ACTIVITY_NEW_TASK`. Robolectric, SDK 34: `android/app/src/test/`, `./gradlew :app:testDebugUnitTest` в job «Сборка Android».
+- [x] BG-10. Сервис автоопределения без wake lock (метрика Android vitals «избыточные частичные wake lock», `docs/store/play-audit.md`): `allowWakeLock: false`, автозапуск после перезагрузки и обновления остаётся; включение экрана (`ScreenOnReceiver`, регистрирует `TachoGoApplication`) → задача получает `screen_on` и сразу обновляет уведомление остатками на сейчас, базу не перечитывает; другие события — ничего. Dart — `app/test/background/`, Kotlin — Robolectric, `android/app/src/test/`. Что телефон без wake lock не пропускает начало и конец движения при выключенном экране — DEV-01 (чек-лист беты, пункт 15).
 
 ## 4. Наблюдаемость и приватность — unit, static
 
@@ -386,7 +387,7 @@
 - [x] CI-03. Веб-прототип: `npm ci`, `npm run lint`, `npm test`.
 - [x] CI-04. Снимки схемы Drift актуальны: после `make-migrations` нет изменений в `drift_schemas/` и `test/drift/`.
 - [x] CI-05. Поиск секретов в PR (gitleaks или аналог): ключи, PEM, keystore, `key.properties`.
-- [x] CI-06. Итоговый манифест собранного APK, с манифестами плагинов: нет `ACCESS_BACKGROUND_LOCATION`, `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` и `USE_EXACT_ALARM`, сервис с типом location, для уведомлений по расписанию — `RECEIVE_BOOT_COMPLETED`, `SCHEDULE_EXACT_ALARM` и ресиверы плагина, PostHog `AUTO_INIT = false` (`tool/check_android_manifest.dart`).
+- [x] CI-06. Итоговый манифест собранного APK, с манифестами плагинов: нет `ACCESS_BACKGROUND_LOCATION`, `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`, `USE_EXACT_ALARM` и рекламного ID (`AD_ID`), приложение — `TachoGoApplication` (BG-10), сервис с типом location, для уведомлений по расписанию — `RECEIVE_BOOT_COMPLETED`, `SCHEDULE_EXACT_ALARM` и ресиверы плагина, PostHog `AUTO_INIT = false` (`tool/check_android_manifest.dart`).
 - [x] CI-07. `Info.plist`: `NSLocationWhenInUseUsageDescription`, `UIBackgroundModes: location`, PostHog `AUTO_INIT = false`, нет запроса геолокации «всегда»; iOS не ниже 14 (App Attest). Проверяется тестом `test/config/platform_config_test.dart`.
 - [x] CI-08. Сборка iOS без подписи (`flutter build ios --no-codesign` на macOS). До релиза — только ручной запуск (`workflow_dispatch`), в PR не идёт; вернуть в PR — вместе с iOS-версией.
 - [x] CI-10. Выпуск в Google Play (job «Выпуск Android») ждёт все проверки приложения — движок, приложение, три пояса, поиск секретов, debug-сборку с Robolectric и манифестом, эмулятор, обновление поверх прошлой версии — в том числе на тегах; упала одна — ничего не уходит. Из `main` — во внутреннее тестирование (`PLAY_MAIN_TRACK`), тег беты — в закрытое, «Что нового» — из сообщения тега или заголовка PR. Без ключа загрузки выпуск из `main` пропускается, CI зелёный.
@@ -439,7 +440,7 @@
 | 3 ✓ | Фаза 1 | Обёртки над плагинами и подготовка из `main()`, затем BG-05…07, OBS-01…04; CI-05…08 |
 | 4 ✓ | Фаза 2 | UI (кроме UI-15), DES-01, DES-03…05, JRN, EXP, REP-01, BG-08, DOC-04, DOC-06, ENG-21, PERF-01…02 |
 | 5 ✓ | Фаза 3 | NTF-01…05, L10N-01…07 |
-| 6 | Фаза 4 | INT-01…05 (эмулятор в CI), BG-09, BETA-01…02, L10N-09, CI-10, TRF-04…07, UPG-01 — введены; DEV-01…03, ENG-20, PERF-03 на телефоне — ждут беты |
+| 6 | Фаза 4 | INT-01…05 (эмулятор в CI), BG-09…10, BETA-01…02, L10N-09, CI-10, TRF-04…07, UPG-01 — введены; DEV-01…03, ENG-20, PERF-03 на телефоне — ждут беты |
 | 7 | Фаза 5 | PRM, LIC (кроме LIC-04), TRF-01…03 — если перенос через сервер, CI-09, DOC-05, DEV-04 |
 | 8 | Фазы 6 и 8 | SYNC, L10N-08 |
 | ✓ | Фаза 1 | ENG-16…19 — решения по регламенту |
