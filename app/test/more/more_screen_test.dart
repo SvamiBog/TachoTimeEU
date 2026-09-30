@@ -1,12 +1,13 @@
 // «Ещё» (экран 4): экспорт, инструкция и правила, о приложении с
-// лицензиями шрифтов, в бете — «Сообщить о проблеме». План тестов: UI-21,
-// BETA-02 в docs/testing.md.
+// лицензиями шрифтов, политика конфиденциальности, в бете — «Сообщить
+// о проблеме». План тестов: UI-21, BETA-02 в docs/testing.md.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/core/config/app_info.dart';
+import 'package:tachogo/core/config/app_links.dart';
 import 'package:tachogo/core/diagnostics/diagnostics.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
@@ -30,20 +31,38 @@ class _FakeSharer implements TextSharer {
   }
 }
 
+/// Браузер в памяти: какие ссылки открывались.
+class _FakeLinks implements LinkOpener {
+  final opened = <Uri>[];
+
+  /// false — на телефоне нет браузера.
+  bool canOpen = true;
+
+  @override
+  Future<bool> open(Uri uri) async {
+    opened.add(uri);
+    return canOpen;
+  }
+}
+
 void main() {
   Future<void> pump(
     WidgetTester tester, {
     bool beta = false,
     _FakeSharer? sharer,
+    _FakeLinks? links,
+    Locale locale = const Locale('ru'),
   }) {
     final week = designWeek();
     return pumpScreen(
       tester,
       const MoreScreen(),
+      locale: locale,
       overrides: [
         ...journalOverrides(periods: week.periods, now: week.now),
         problemReportEnabledProvider.overrideWithValue(beta),
         if (sharer != null) textSharerProvider.overrideWithValue(sharer),
+        if (links != null) linkOpenerProvider.overrideWithValue(links),
         diagnosticsCollectorProvider.overrideWith(
           (ref) => DiagnosticsCollector(
             settings: ref.watch(settingsRepositoryProvider),
@@ -97,6 +116,47 @@ void main() {
     expect(find.byType(LicensePage), findsOneWidget);
     expect(find.text('TachoGo'), findsWidgets);
     expect(find.text('0.1.0'), findsWidgets);
+  });
+
+  group('UI-21: политика конфиденциальности', () {
+    Future<void> openPolicy(WidgetTester tester, String title) async {
+      await tester.scrollUntilVisible(
+        find.text(title),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text(title));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('открывается в браузере на русском', (tester) async {
+      final links = _FakeLinks();
+      await pump(tester, links: links);
+      await openPolicy(tester, 'Политика конфиденциальности');
+      expect(links.opened, [
+        Uri.parse('https://svamibog.github.io/TachoTimeEU/privacy/#ru'),
+      ]);
+    });
+
+    testWidgets('у остальных языков — английский текст', (tester) async {
+      final links = _FakeLinks();
+      await pump(tester, links: links, locale: const Locale('pl'));
+      await openPolicy(tester, 'Polityka prywatności');
+      expect(links.opened.single.fragment, 'en');
+    });
+
+    testWidgets('браузера нет — адрес страницы в плашке', (tester) async {
+      final links = _FakeLinks()..canOpen = false;
+      await pump(tester, links: links);
+      await openPolicy(tester, 'Политика конфиденциальности');
+      expect(
+        find.text(
+          'Не удалось открыть браузер. Адрес страницы: '
+          'https://svamibog.github.io/TachoTimeEU/privacy/',
+        ),
+        findsOneWidget,
+      );
+    });
   });
 
   group('BETA-02: «Сообщить о проблеме»', () {

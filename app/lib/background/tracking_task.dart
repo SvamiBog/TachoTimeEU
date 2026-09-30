@@ -21,6 +21,12 @@ import 'package:tachogo/notifications/notification_platform.dart';
 /// Сообщение между движками: журнал изменился в другом движке.
 const journalChangedMessage = 'journal_changed';
 
+/// Сообщение задаче от Android: экран включился
+/// (`android/app/src/main/kotlin/eu/tachogo/app/ScreenOnReceiver.kt`).
+/// Сервис не держит wake lock, и обновление раз в минуту на стоянке спит
+/// вместе с телефоном — уведомление обновляется сразу, а не через минуту.
+const screenOnMessage = 'screen_on';
+
 /// Точка входа задачи foreground service (Android): свой Flutter-движок
 /// и изолят, живёт, пока приложение закрыто.
 @pragma('vm:entry-point')
@@ -108,10 +114,14 @@ class TrackingTaskHandler extends TaskHandler {
 
   @override
   void onReceiveData(Object data) {
-    if (data != journalChangedMessage) return;
-    final db = _container?.read(databaseProvider);
-    db?.markTablesUpdated({db.activityPeriods, db.manualShifts});
-    _refreshLater();
+    switch (data) {
+      case journalChangedMessage:
+        final db = _container?.read(databaseProvider);
+        db?.markTablesUpdated({db.activityPeriods, db.manualShifts});
+        _refreshLater();
+      case screenOnMessage:
+        _refreshLater();
+    }
   }
 
   @override

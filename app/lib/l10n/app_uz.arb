@@ -521,6 +521,8 @@
   "guideDisclaimer": "TachoGo vaqtni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas. Qoidalarning rasmiy matni — YeI 561/2006 Reglamenti va AETR Kelishuvi.",
   "moreAbout": "Ilova haqida",
   "moreDisclaimer": "TachoGo rul ortidagi vaqt va dam olishni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas.",
+  "morePrivacy": "Maxfiylik siyosati",
+  "linkFailed": "Brauzerni ochib boʻlmadi. Sahifa manzili: {url}",
   "problemTitle": "Muammo haqida xabar berish",
   "problemHint": "Beta versiya: hisobot ishlab chiquvchilarga yuboriladi",
   "problemText": "Hisobotga ilova versiyasi, telefon modeli, sozlamalar, ruxsatlar, bildirishnomalar jadvali va oxirgi ikki sutkadagi jurnal yozuvlari kiradi. Unda koordinatalar yoʻq. Qayerga yuborishni tanlang — pochta yoki messenjer — va nima boʻlganini yozing.",

@@ -1,4 +1,4 @@
-package eu.tachogo.tachogo
+package eu.tachogo.app
 
 import android.os.Build
 import io.flutter.embedding.android.FlutterActivity

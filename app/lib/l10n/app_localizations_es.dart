@@ -2053,6 +2053,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'TachoGo ayuda a planificar los tiempos de conducción y descanso, pero no sustituye al tacógrafo ni es asesoramiento jurídico.';
 
   @override
+  String get morePrivacy => 'Política de privacidad';
+
+  @override
+  String linkFailed(String url) {
+    return 'No se pudo abrir el navegador. Dirección de la página: $url';
+  }
+
+  @override
   String get problemTitle => 'Informar de un problema';
 
   @override

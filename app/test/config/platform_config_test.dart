@@ -17,20 +17,28 @@ void main() {
       expect(manifestProblems(source), isEmpty);
     });
 
-    test('проверка ловит фоновую геолокацию, запрос про батарею и '
-        'USE_EXACT_ALARM', () {
+    test('проверка ловит фоновую геолокацию, запрос про батарею, '
+        'USE_EXACT_ALARM и рекламный ID', () {
       for (final permission in [
-        'ACCESS_BACKGROUND_LOCATION',
-        'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
-        'USE_EXACT_ALARM',
+        'android.permission.ACCESS_BACKGROUND_LOCATION',
+        'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
+        'android.permission.USE_EXACT_ALARM',
+        'com.google.android.gms.permission.AD_ID',
       ]) {
         final bad = source.replaceFirst(
           '<application',
-          '<uses-permission android:name="android.permission.$permission" />'
-              '\n<application',
+          '<uses-permission android:name="$permission" />\n<application',
         );
         expect(manifestProblems(bad), [contains(permission)]);
       }
+    });
+
+    test('BG-10: проверка ловит приложение без TachoGoApplication', () {
+      final bad = source.replaceFirst(
+        'android:name=".TachoGoApplication"',
+        r'android:name="${applicationName}"',
+      );
+      expect(manifestProblems(bad), [contains('TachoGoApplication')]);
     });
 
     test('проверка ловит сервис без типа location', () {

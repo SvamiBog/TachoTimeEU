@@ -521,6 +521,8 @@
   "guideDisclaimer": "TachoGo aide à planifier le temps, mais ne remplace pas le tachygraphe et n’est pas un conseil juridique. Texte officiel des règles — règlement (CE) nº 561/2006 et accord AETR.",
   "moreAbout": "À propos",
   "moreDisclaimer": "TachoGo aide à planifier les temps de conduite et de repos, mais ne remplace pas le tachygraphe et n’est pas un conseil juridique.",
+  "morePrivacy": "Politique de confidentialité",
+  "linkFailed": "Impossible d’ouvrir le navigateur. Adresse de la page : {url}",
   "problemTitle": "Signaler un problème",
   "problemHint": "Version bêta : le rapport est envoyé aux développeurs",
   "problemText": "Le rapport contient la version de l’application, le modèle du téléphone, les réglages, les autorisations, le planning des notifications et les entrées du journal des deux derniers jours. Il ne contient pas de coordonnées. Choisissez où l’envoyer — e-mail ou messagerie — et décrivez ce qui s’est passé.",

@@ -18,7 +18,24 @@ set -euo pipefail
 
 base_app=$(cd "$1" && pwd)
 cd "$(dirname "$0")/../.."
-package=eu.tachogo.tachogo
+
+# Пакет — из сборки каждой версии: поверх другого пакета Google Play не
+# обновляет, это новое приложение.
+application_id() {
+  sed -n 's/^ *applicationId = "\(.*\)"/\1/p' "$1/android/app/build.gradle.kts"
+}
+package=$(application_id .)
+base_package=$(application_id "$base_app")
+if [ "$base_package" != "$package" ]; then
+  # eu.tachogo.tachogo в Google Play не загружался: пакет сменён на
+  # eu.tachogo.app до первой загрузки (вопрос 14 PRD), обновлять нечего.
+  if [ "$base_package" = eu.tachogo.tachogo ]; then
+    echo "::notice::Прошлая версия — с пакетом $base_package, не выпускавшимся в Google Play: обновления поверх нет"
+    exit 0
+  fi
+  echo "Пакет сменился: $base_package → $package — Google Play так не обновит" >&2
+  exit 1
+fi
 
 first_install() {
   adb shell dumpsys package "$package" |

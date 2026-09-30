@@ -14,8 +14,9 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
-    // Идентификатор временный: финальное название приложения ещё не выбрано.
-    namespace = "eu.tachogo.tachogo"
+    // Идентификатор закреплён за приложением в Google Play с первой загрузкой —
+    // не менять (вопрос 14 PRD, решение 2026-09-30).
+    namespace = "eu.tachogo.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -27,7 +28,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "eu.tachogo.tachogo"
+        applicationId = "eu.tachogo.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

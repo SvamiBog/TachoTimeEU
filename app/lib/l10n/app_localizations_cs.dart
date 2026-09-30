@@ -2063,6 +2063,14 @@ class AppLocalizationsCs extends AppLocalizations {
       'TachoGo pomáhá plánovat dobu řízení a odpočinku, ale nenahrazuje tachograf a není právní poradou.';
 
   @override
+  String get morePrivacy => 'Zásady ochrany osobních údajů';
+
+  @override
+  String linkFailed(String url) {
+    return 'Prohlížeč se nepodařilo otevřít. Adresa stránky: $url';
+  }
+
+  @override
   String get problemTitle => 'Nahlásit problém';
 
   @override

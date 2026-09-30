@@ -2058,6 +2058,14 @@ class AppLocalizationsRo extends AppLocalizations {
       'TachoGo ajută la planificarea timpului la volan și a repausului, dar nu înlocuiește tahograful și nu este consultanță juridică.';
 
   @override
+  String get morePrivacy => 'Politica de confidențialitate';
+
+  @override
+  String linkFailed(String url) {
+    return 'Browserul nu a putut fi deschis. Adresa paginii: $url';
+  }
+
+  @override
   String get problemTitle => 'Raportați o problemă';
 
   @override

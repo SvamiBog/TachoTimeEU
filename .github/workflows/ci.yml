@@ -200,8 +200,28 @@ jobs:
           cache: true
       - run: flutter pub get
 
+      # APK из артефакта ставят на свой телефон поверх прошлой (docs/beta/
+      # README.md, «APK из CI на свой телефон»): нужен один ключ у всех
+      # сборок — иначе у каждой свой случайный debug-ключ раннера, и Android
+      # не обновляет установленную, только удалить и поставить заново.
+      - name: Постоянный ключ тестовой APK
+        env:
+          DEBUG_KEYSTORE_BASE64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$DEBUG_KEYSTORE_BASE64" ]; then
+            echo "::warning::Секрет ANDROID_DEBUG_KEYSTORE_BASE64 не задан: APK подписана случайным ключом и не обновит прошлую установку"
+            exit 0
+          fi
+          mkdir -p ~/.android
+          echo "$DEBUG_KEYSTORE_BASE64" | base64 -d > ~/.android/debug.keystore
+
+      # versionCode растёт с каждым запуском CI, как у выпусков в Google
+      # Play: Android не ставит сборку с номером меньше установленной.
       - name: Debug APK (dev)
-        run: flutter build apk --debug --dart-define-from-file=env/dev.json
+        run: >-
+          flutter build apk --debug --dart-define-from-file=env/dev.json
+          --build-number=$((1000 + GITHUB_RUN_NUMBER))
+          --build-name="$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)-dev.$GITHUB_RUN_NUMBER"
 
       # Нативная часть на JVM (Robolectric): экран автозапуска, BG-09.
       # gradlew создаёт сборка выше.
@@ -405,7 +425,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: eu.tachogo.tachogo
+          packageName: eu.tachogo.app
           releaseFiles: app/build/app/outputs/bundle/release/*.aab
           releaseName: ${{ env.BUILD_NAME }} (${{ env.BUILD_NUMBER }})
           track: ${{ needs.release-plan.outputs.track }}

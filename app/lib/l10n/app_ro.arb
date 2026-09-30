@@ -521,6 +521,8 @@
   "guideDisclaimer": "TachoGo ajută la planificarea timpului, dar nu înlocuiește tahograful și nu este consultanță juridică. Textul oficial al regulilor — Regulamentul (CE) nr. 561/2006 și Acordul AETR.",
   "moreAbout": "Despre aplicație",
   "moreDisclaimer": "TachoGo ajută la planificarea timpului la volan și a repausului, dar nu înlocuiește tahograful și nu este consultanță juridică.",
+  "morePrivacy": "Politica de confidențialitate",
+  "linkFailed": "Browserul nu a putut fi deschis. Adresa paginii: {url}",
   "problemTitle": "Raportați o problemă",
   "problemHint": "Versiune beta: raportul ajunge la dezvoltatori",
   "problemText": "Raportul include versiunea aplicației, modelul telefonului, setările, permisiunile, programul notificărilor și înregistrările din jurnal din ultimele două zile. Nu conține coordonate. Alegeți unde îl trimiteți — e-mail sau mesagerie — și descrieți ce s-a întâmplat.",

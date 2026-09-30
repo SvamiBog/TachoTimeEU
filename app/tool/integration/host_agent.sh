@@ -16,7 +16,7 @@
 
 set -uo pipefail
 
-PKG=${PKG:-eu.tachogo.tachogo}
+PKG=${PKG:-eu.tachogo.app}
 
 log() { echo "[host-agent] $*"; }
 

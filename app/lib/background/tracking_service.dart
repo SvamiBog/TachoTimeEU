@@ -231,6 +231,13 @@ class TrackingService {
         eventAction: ForegroundTaskEventAction.repeat(
           TrackingTaskHandler.refreshInterval.inMilliseconds,
         ),
+        // Без wake lock: плагин держал бы его всё время работы сервиса, а
+        // Google Play снижает видимость приложений с «избыточными частичными
+        // wake lock» (Android vitals). Отметки GPS будят телефон сами,
+        // предупреждения о лимитах — системные будильники; уведомление
+        // сервиса после сна обновляется по включению экрана
+        // (`ScreenOnReceiver`, `screenOnMessage`).
+        allowWakeLock: false,
         autoRunOnBoot: true,
         autoRunOnMyPackageReplaced: true,
       ),
