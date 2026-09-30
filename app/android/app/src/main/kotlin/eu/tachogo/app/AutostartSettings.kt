@@ -1,4 +1,4 @@
-package eu.tachogo.tachogo
+package eu.tachogo.app
 
 import android.app.Activity
 import android.content.ComponentName

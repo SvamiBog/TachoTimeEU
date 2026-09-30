@@ -405,7 +405,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: eu.tachogo.tachogo
+          packageName: eu.tachogo.app
           releaseFiles: app/build/app/outputs/bundle/release/*.aab
           releaseName: ${{ env.BUILD_NAME }} (${{ env.BUILD_NUMBER }})
           track: ${{ needs.release-plan.outputs.track }}
