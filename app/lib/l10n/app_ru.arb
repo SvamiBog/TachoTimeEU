@@ -439,6 +439,95 @@
   "@dailyRestRule": {
     "description": "Правило суточного отдыха внизу экрана"
   },
+  "drivingCorrect": "Исправить вождение за день",
+  "@drivingCorrect": {
+    "description": "Экран «Суточное вождение»: кнопка правки вождения за день (экран 7)"
+  },
+  "drivingLimits": "Лимиты",
+  "@drivingLimits": {
+    "description": "Заголовок раздела с лимитами на экранах вождения"
+  },
+  "drivingUsedUp": "выбрано полностью",
+  "@drivingUsedUp": {
+    "description": "Лимит вождения выбран полностью"
+  },
+  "drivingExtensionsLeft": "дважды в неделю · осталось ×{count}",
+  "@drivingExtensionsLeft": {
+    "description": "Удлинение до 10 ч: сколько осталось на неделе",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "drivingNoExtensions": "удлинения на этой неделе использованы",
+  "@drivingNoExtensions": {
+    "description": "Удлинений до 10 ч на неделе не осталось"
+  },
+  "drivingDailyRule": "Суточное вождение — время за рулём между двумя суточными отдыхами: не больше 9 ч, дважды в неделю — до 10 ч. Неделя начинается в понедельник в 00:00.",
+  "@drivingDailyRule": {
+    "description": "Правило суточного вождения внизу экрана"
+  },
+  "drivingWeekSince": "неделя с {date}",
+  "@drivingWeekSince": {
+    "description": "Экран «Недельное вождение»: начало недели",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "drivingWeekLimit": "{hours} ч — за неделю",
+  "@drivingWeekLimit": {
+    "description": "Веха: лимит 56 ч за неделю",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "drivingFortnightLimit": "{hours} ч — за две недели",
+  "@drivingFortnightLimit": {
+    "description": "Веха: лимит 90 ч за две недели",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "drivingFortnightHint": "прошлая неделя {previous} · ещё {left}",
+  "@drivingFortnightHint": {
+    "description": "Под вехой 90 ч: вождение прошлой недели и остаток",
+    "placeholders": {
+      "previous": {
+        "type": "String"
+      },
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "drivingFortnightLimits": "Раньше закончится лимит двух недель: на этой неделе можно ещё {left}.",
+  "@drivingFortnightLimits": {
+    "description": "Лимит двух недель кончается раньше недельного",
+    "placeholders": {
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "drivingWeekShifts": "Смены недели",
+  "@drivingWeekShifts": {
+    "description": "Заголовок списка смен текущей недели"
+  },
+  "drivingNoShifts": "На этой неделе смен ещё нет",
+  "@drivingNoShifts": {
+    "description": "На текущей неделе смен нет"
+  },
+  "drivingWeekRule": "Неделя — с понедельника 00:00 до воскресенья 24:00, как на тахографе. За неделю — не больше 56 ч вождения, за две недели подряд — не больше 90 ч.",
+  "@drivingWeekRule": {
+    "description": "Правило недельного вождения внизу экрана"
+  },
   "workdayEndDay": "Завершить день",
   "workdayEndDayHint": "Отдых начнётся сейчас и завершит смену, даже если он короче 9 ч.",
   "endDayDriving": "Вождение за день",

@@ -50,6 +50,10 @@ _Workday _workday(ComplianceSnapshot s) {
   );
 }
 
+void openWorkdayScreen(BuildContext context) =>
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (_) => const WorkdayScreen()));
+
 /// Экран 6 «Рабочий день»: 13 / 15 ч (экипаж — 19 / 21 ч) от начала смены
 /// и «Завершить день».
 class WorkdayScreen extends ConsumerWidget {

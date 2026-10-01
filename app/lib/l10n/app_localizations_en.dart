@@ -418,6 +418,62 @@ class AppLocalizationsEn extends AppLocalizations {
       'Daily rest is 11 h in a row. Reduced: 9 h, at most three times between weekly rests. Split: first at least 3 h, then at least 9 h. The rest must end within 24 hours of the start of the shift.';
 
   @override
+  String get drivingCorrect => 'Correct today’s driving';
+
+  @override
+  String get drivingLimits => 'Limits';
+
+  @override
+  String get drivingUsedUp => 'fully used';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'twice a week · ×$count left';
+  }
+
+  @override
+  String get drivingNoExtensions => 'extensions used up this week';
+
+  @override
+  String get drivingDailyRule =>
+      'Daily driving is the time at the wheel between two daily rests: at most 9 h, twice a week up to 10 h. The week starts on Monday at 00:00.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'week from $date';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours h — per week';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours h — in two weeks';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'last week $previous · $left left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'The two-week limit runs out first: $left more this week.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'Shifts this week';
+
+  @override
+  String get drivingNoShifts => 'No shifts this week yet';
+
+  @override
+  String get drivingWeekRule =>
+      'The week runs from Monday 00:00 to Sunday 24:00, as on the tachograph. At most 56 h of driving per week and 90 h in any two consecutive weeks.';
+
+  @override
   String get workdayEndDay => 'End day';
 
   @override

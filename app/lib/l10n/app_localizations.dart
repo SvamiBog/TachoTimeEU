@@ -746,6 +746,90 @@ abstract class AppLocalizations {
   /// **'Суточный отдых — 11 ч подряд. Сокращённый — 9 ч, не больше трёх раз между недельными отдыхами. Раздельный — сначала от 3 ч, потом от 9 ч. Отдых должен закончиться в пределах 24 часов от начала смены.'**
   String get dailyRestRule;
 
+  /// Экран «Суточное вождение»: кнопка правки вождения за день (экран 7)
+  ///
+  /// In ru, this message translates to:
+  /// **'Исправить вождение за день'**
+  String get drivingCorrect;
+
+  /// Заголовок раздела с лимитами на экранах вождения
+  ///
+  /// In ru, this message translates to:
+  /// **'Лимиты'**
+  String get drivingLimits;
+
+  /// Лимит вождения выбран полностью
+  ///
+  /// In ru, this message translates to:
+  /// **'выбрано полностью'**
+  String get drivingUsedUp;
+
+  /// Удлинение до 10 ч: сколько осталось на неделе
+  ///
+  /// In ru, this message translates to:
+  /// **'дважды в неделю · осталось ×{count}'**
+  String drivingExtensionsLeft(int count);
+
+  /// Удлинений до 10 ч на неделе не осталось
+  ///
+  /// In ru, this message translates to:
+  /// **'удлинения на этой неделе использованы'**
+  String get drivingNoExtensions;
+
+  /// Правило суточного вождения внизу экрана
+  ///
+  /// In ru, this message translates to:
+  /// **'Суточное вождение — время за рулём между двумя суточными отдыхами: не больше 9 ч, дважды в неделю — до 10 ч. Неделя начинается в понедельник в 00:00.'**
+  String get drivingDailyRule;
+
+  /// Экран «Недельное вождение»: начало недели
+  ///
+  /// In ru, this message translates to:
+  /// **'неделя с {date}'**
+  String drivingWeekSince(String date);
+
+  /// Веха: лимит 56 ч за неделю
+  ///
+  /// In ru, this message translates to:
+  /// **'{hours} ч — за неделю'**
+  String drivingWeekLimit(int hours);
+
+  /// Веха: лимит 90 ч за две недели
+  ///
+  /// In ru, this message translates to:
+  /// **'{hours} ч — за две недели'**
+  String drivingFortnightLimit(int hours);
+
+  /// Под вехой 90 ч: вождение прошлой недели и остаток
+  ///
+  /// In ru, this message translates to:
+  /// **'прошлая неделя {previous} · ещё {left}'**
+  String drivingFortnightHint(String previous, String left);
+
+  /// Лимит двух недель кончается раньше недельного
+  ///
+  /// In ru, this message translates to:
+  /// **'Раньше закончится лимит двух недель: на этой неделе можно ещё {left}.'**
+  String drivingFortnightLimits(String left);
+
+  /// Заголовок списка смен текущей недели
+  ///
+  /// In ru, this message translates to:
+  /// **'Смены недели'**
+  String get drivingWeekShifts;
+
+  /// На текущей неделе смен нет
+  ///
+  /// In ru, this message translates to:
+  /// **'На этой неделе смен ещё нет'**
+  String get drivingNoShifts;
+
+  /// Правило недельного вождения внизу экрана
+  ///
+  /// In ru, this message translates to:
+  /// **'Неделя — с понедельника 00:00 до воскресенья 24:00, как на тахографе. За неделю — не больше 56 ч вождения, за две недели подряд — не больше 90 ч.'**
+  String get drivingWeekRule;
+
   /// No description provided for @workdayEndDay.
   ///
   /// In ru, this message translates to:

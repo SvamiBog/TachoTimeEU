@@ -420,6 +420,62 @@ class AppLocalizationsUz extends AppLocalizations {
       'Kunlik dam olish — ketma-ket 11 soat. Qisqartirilgan — 9 soat, haftalik dam olishlar orasida koʻpi bilan uch marta. Boʻlingan — avval kamida 3 soat, keyin kamida 9 soat. Dam olish smena boshlanganidan 24 soat ichida tugashi kerak.';
 
   @override
+  String get drivingCorrect => 'Kunlik haydashni tuzatish';
+
+  @override
+  String get drivingLimits => 'Limitlar';
+
+  @override
+  String get drivingUsedUp => 'toʻliq sarflandi';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'haftada ikki marta · qoldi ×$count';
+  }
+
+  @override
+  String get drivingNoExtensions => 'bu haftadagi uzaytirishlar sarflandi';
+
+  @override
+  String get drivingDailyRule =>
+      'Kunlik haydash — ikki kunlik dam olish orasidagi rul ortidagi vaqt: koʻpi bilan 9 soat, haftada ikki marta — 10 soatgacha. Hafta dushanba kuni 00:00 da boshlanadi.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'hafta $date dan';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours soat — haftada';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours soat — ikki haftada';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'oʻtgan hafta $previous · yana $left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'Ikki haftalik limit ertaroq tugaydi: bu hafta yana $left mumkin.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'Hafta smenalari';
+
+  @override
+  String get drivingNoShifts => 'Bu hafta hali smenalar yoʻq';
+
+  @override
+  String get drivingWeekRule =>
+      'Hafta — dushanba 00:00 dan yakshanba 24:00 gacha, taxografdagidek. Haftada — koʻpi bilan 56 soat haydash, ketma-ket ikki haftada — koʻpi bilan 90 soat.';
+
+  @override
   String get workdayEndDay => 'Kunni yakunlash';
 
   @override

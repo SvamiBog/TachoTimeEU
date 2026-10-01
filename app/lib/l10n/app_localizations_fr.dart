@@ -420,6 +420,62 @@ class AppLocalizationsFr extends AppLocalizations {
       'Repos journalier : 11 h d’affilée. Réduit : 9 h, au plus trois fois entre deux repos hebdomadaires. Fractionné : d’abord au moins 3 h, puis au moins 9 h. Le repos doit se terminer dans les 24 heures suivant le début du poste.';
 
   @override
+  String get drivingCorrect => 'Corriger la conduite du jour';
+
+  @override
+  String get drivingLimits => 'Limites';
+
+  @override
+  String get drivingUsedUp => 'entièrement utilisé';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'deux fois par semaine · reste ×$count';
+  }
+
+  @override
+  String get drivingNoExtensions => 'prolongations de la semaine utilisées';
+
+  @override
+  String get drivingDailyRule =>
+      'La conduite journalière est le temps au volant entre deux repos journaliers : au plus 9 h, deux fois par semaine jusqu’à 10 h. La semaine commence le lundi à 00:00.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'semaine du $date';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours h — par semaine';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours h — sur deux semaines';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'semaine dernière $previous · encore $left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'La limite sur deux semaines arrive en premier : encore $left cette semaine.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'Postes de la semaine';
+
+  @override
+  String get drivingNoShifts => 'Aucun poste cette semaine pour l’instant';
+
+  @override
+  String get drivingWeekRule =>
+      'La semaine va du lundi 00:00 au dimanche 24:00, comme sur le tachygraphe. Au plus 56 h de conduite par semaine et 90 h sur deux semaines consécutives.';
+
+  @override
   String get workdayEndDay => 'Terminer la journée';
 
   @override

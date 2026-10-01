@@ -14,11 +14,12 @@ import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/compensation_row.dart';
-import 'package:tachogo/features/home/corrections.dart';
+import 'package:tachogo/features/home/daily_driving_screen.dart';
 import 'package:tachogo/features/home/daily_rest_screen.dart';
 import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/limit_row.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
+import 'package:tachogo/features/home/weekly_driving_screen.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
 
@@ -50,9 +51,7 @@ StatusChip? _chip(
 Color _barColor(BuildContext context, Tone tone, Color normal) =>
     tone == Tone.violation ? context.colors.errorText : normal;
 
-void _openWorkday(BuildContext context) =>
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (_) => const WorkdayScreen()));
+void _openWorkday(BuildContext context) => openWorkdayScreen(context);
 
 void _openBreak(BuildContext context) => openBreakScreen(context);
 
@@ -171,10 +170,9 @@ class WorkdayRow extends ConsumerWidget {
   }
 }
 
-typedef _Daily = ({int value, int extensionsLeft, Tone tone, bool shift});
+typedef _Daily = ({int value, int extensionsLeft, Tone tone});
 
 _Daily _daily(ComplianceSnapshot s) => (
-  shift: s.shift != null,
   value: minutes(s.dailyDriving),
   extensionsLeft: s.extensionsLeft,
   tone: toneOf(
@@ -197,10 +195,8 @@ class DailyDrivingRow extends ConsumerWidget {
     const extended = EuLimits.dailyDrivingExtended;
     return LimitRow(
       title: l.rowDailyDriving,
-      // Корректировка — правка журнала (экран 7)
-      onTap: s.shift
-          ? () => unawaited(openDrivingCorrection(context, ref))
-          : null,
+      // Детали и оттуда — правка вождения за день (экран 7)
+      onTap: () => openDailyDrivingScreen(context),
       chip: _chip(
         context,
         s.tone,
@@ -589,6 +585,7 @@ class WeeklyDrivingRow extends ConsumerWidget {
     const limit = EuLimits.weeklyDriving;
     return LimitRow(
       title: l.rowWeeklyDriving,
+      onTap: () => openWeeklyDrivingScreen(context),
       chip: _chip(context, s.weeklyTone, soon: l.chipLimitSoon),
       value: _duration(context, value, tone: s.weeklyTone),
       bar: LimitBar(
@@ -615,6 +612,7 @@ class FortnightRow extends ConsumerWidget {
     final tone = s.fortnightTone;
     return LimitRow(
       title: l.rowFortnightDriving,
+      onTap: () => openWeeklyDrivingScreen(context),
       chip: tone == Tone.neutral && s.fortnightLimiting
           ? StatusChip(l.chipLimiting, tone: Tone.warning)
           : _chip(context, tone, soon: l.chipLimitSoon),

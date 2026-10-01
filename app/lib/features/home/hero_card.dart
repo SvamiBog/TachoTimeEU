@@ -15,6 +15,7 @@ import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/daily_rest_screen.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
+import 'package:tachogo/features/home/workday_screen.dart';
 
 /// Главная карточка: кольцо, плашка о перерыве, текущий режим.
 class HeroCard extends StatelessWidget {
@@ -297,7 +298,9 @@ _Mode _mode(ComplianceSnapshot s) {
   );
 }
 
-/// Текущий режим: «● Отдых с 11:37      0:00».
+/// Текущий режим: «● Отдых с 11:37      0:00». Касание — подробности
+/// того, что сейчас важно в этом режиме: за рулём — перерыв, на отдыхе —
+/// суточный отдых, на работе и в готовности — рабочий день.
 class CurrentModeRow extends ConsumerWidget {
   const new({super.key});
 
@@ -321,7 +324,7 @@ class CurrentModeRow extends ConsumerWidget {
     }
     final duration = Duration(minutes: state.duration);
     final name = l.modeName(mode);
-    return Padding(
+    final row = Padding(
       padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
       child: Row(
         children: [
@@ -362,7 +365,26 @@ class CurrentModeRow extends ConsumerWidget {
             spoken: '$name, ${spokenDuration(l, duration)}',
             style: AppTextStyles.modeTimer,
           ),
+          const SizedBox(width: 4),
+          Icon(Icons.chevron_right, size: 20, color: colors.textSecondary),
         ],
+      ),
+    );
+    // Карточка — не Material: рябь рисует свой прозрачный слой
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadius.badge),
+        onTap: () => switch (mode) {
+          DriverMode.driving => openBreakScreen(context),
+          DriverMode.rest => openDailyRestScreen(context),
+          DriverMode.otherWork ||
+          DriverMode.availability => openWorkdayScreen(context),
+        },
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: AppSize.minTouch),
+          child: Align(alignment: Alignment.centerLeft, child: row),
+        ),
       ),
     );
   }

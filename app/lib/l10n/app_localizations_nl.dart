@@ -420,6 +420,62 @@ class AppLocalizationsNl extends AppLocalizations {
       'Dagelijkse rust: 11 u aaneengesloten. Verkort: 9 u, maximaal drie keer tussen twee wekelijkse rusttijden. Gesplitst: eerst minstens 3 u, daarna minstens 9 u. De rust moet binnen 24 uur na het begin van de dienst eindigen.';
 
   @override
+  String get drivingCorrect => 'Rijtijd van vandaag corrigeren';
+
+  @override
+  String get drivingLimits => 'Limieten';
+
+  @override
+  String get drivingUsedUp => 'volledig gebruikt';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'twee keer per week · nog ×$count';
+  }
+
+  @override
+  String get drivingNoExtensions => 'verlengingen van deze week opgebruikt';
+
+  @override
+  String get drivingDailyRule =>
+      'Dagelijkse rijtijd is de tijd achter het stuur tussen twee dagelijkse rusttijden: maximaal 9 u, twee keer per week tot 10 u. De week begint op maandag om 00:00.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'week vanaf $date';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours u — per week';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours u — in twee weken';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'vorige week $previous · nog $left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'De limiet van twee weken loopt eerder af: deze week nog $left.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'Diensten van de week';
+
+  @override
+  String get drivingNoShifts => 'Deze week nog geen diensten';
+
+  @override
+  String get drivingWeekRule =>
+      'De week loopt van maandag 00:00 tot zondag 24:00, zoals op de tachograaf. Maximaal 56 u rijtijd per week en 90 u in twee opeenvolgende weken.';
+
+  @override
   String get workdayEndDay => 'Dag beëindigen';
 
   @override

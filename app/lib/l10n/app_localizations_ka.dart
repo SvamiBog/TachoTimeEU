@@ -417,6 +417,62 @@ class AppLocalizationsKa extends AppLocalizations {
       'დღიური დასვენება — 11 სთ უწყვეტად. შემცირებული — 9 სთ, კვირეულ დასვენებებს შორის მაქსიმუმ სამჯერ. გაყოფილი — ჯერ 3 სთ-დან, შემდეგ 9 სთ-დან. დასვენება უნდა დასრულდეს ცვლის დაწყებიდან 24 საათში.';
 
   @override
+  String get drivingCorrect => 'დღის მართვის შესწორება';
+
+  @override
+  String get drivingLimits => 'ლიმიტები';
+
+  @override
+  String get drivingUsedUp => 'სრულად ამოწურულია';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'კვირაში ორჯერ · დარჩა ×$count';
+  }
+
+  @override
+  String get drivingNoExtensions => 'ამ კვირის გახანგრძლივებები გამოყენებულია';
+
+  @override
+  String get drivingDailyRule =>
+      'დღიური მართვა — საჭესთან დრო ორ დღიურ დასვენებას შორის: არაუმეტეს 9 სთ, კვირაში ორჯერ — 10 სთ-მდე. კვირა ორშაბათს 00:00-ზე იწყება.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'კვირა $date-დან';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours სთ — კვირაში';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours სთ — ორ კვირაში';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'წინა კვირა $previous · კიდევ $left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'ორკვირიანი ლიმიტი უფრო ადრე ამოიწურება: ამ კვირაში კიდევ შეიძლება $left.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'კვირის ცვლები';
+
+  @override
+  String get drivingNoShifts => 'ამ კვირაში ცვლები ჯერ არ არის';
+
+  @override
+  String get drivingWeekRule =>
+      'კვირა — ორშაბათის 00:00-დან კვირის 24:00-მდე, როგორც ტაქოგრაფზე. კვირაში — არაუმეტეს 56 სთ მართვა, ზედიზედ ორ კვირაში — არაუმეტეს 90 სთ.';
+
+  @override
   String get workdayEndDay => 'დღის დასრულება';
 
   @override
