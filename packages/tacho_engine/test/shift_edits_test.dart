@@ -590,6 +590,14 @@ void main() {
       );
     });
 
+    test('идущая смена может начаться в эту же минуту', () {
+      expect(check(from: now, ongoing: true, drive: 0), isNull);
+      expect(
+        check(from: now.add(minute), ongoing: true, drive: 0),
+        ShiftEditError.endBeforeStart,
+      );
+    });
+
     test('отдых до следующей смены сохранению не мешает', () {
       final next = journalShifts(
         const [],
@@ -813,6 +821,86 @@ void main() {
       final slot = freeShiftSlot(shifts, now);
       expect(slot.end.difference(slot.start), hour * 10);
       expect(slot.end.isBefore(now), isTrue);
+    });
+  });
+
+  group('JRN-09: новая смена — от текущего момента', () {
+    test('идущая — с текущей минуты, сохранить можно сразу', () {
+      final at = now.add(const Duration(seconds: 42));
+      final t = newShiftTimes(const [], at, ongoing: true);
+      expect(t, (start: now, end: now));
+      expect(
+        checkManualShift(start: t.start, end: null, shifts: const [], now: at),
+        isNull,
+      );
+    });
+
+    test('завершённая — 10 ч до текущей минуты', () {
+      expect(newShiftTimes(const [], now, ongoing: false), (
+        start: now.subtract(hour * 10),
+        end: now,
+      ));
+    });
+
+    test('после ручной смены, пока идёт её отдых, — тоже сейчас', () {
+      // Смена закончилась 3 ч назад: завершённая новая начинается не
+      // раньше её конца
+      final m = manualShift(now.subtract(hour * 13), id: 1);
+      final shifts = journalShifts(const [], now, manual: [m]);
+      expect(newShiftTimes(shifts, now, ongoing: true).start, now);
+      final done = newShiftTimes(shifts, now, ongoing: false);
+      expect(done, (start: m.end!, end: now));
+      expect(
+        checkManualShift(
+          start: done.start,
+          end: done.end,
+          shifts: shifts,
+          now: now,
+        ),
+        isNull,
+      );
+    });
+
+    test('записанная смена, суточный отдых после неё идёт, — тоже сейчас', () {
+      final periods = logUntil(now, [
+        rest('11:00'),
+        drive('3:00'),
+        rest('9:00'),
+      ]);
+      final shifts = journalShifts(periods, now);
+      expect(newShiftTimes(shifts, now, ongoing: true).start, now);
+      expect(newShiftTimes(shifts, now, ongoing: false), (
+        start: now.subtract(hour * 9),
+        end: now,
+      ));
+    });
+
+    test('перерыв 2 ч — смена ещё идёт, новая — в окне раньше', () {
+      final periods = logUntil(now, [rest('11:00'), drive('3:00'), rest(120)]);
+      final shifts = journalShifts(periods, now);
+      expect(
+        newShiftTimes(shifts, now, ongoing: true),
+        freeShiftSlot(shifts, now),
+      );
+    });
+
+    test('сейчас идёт другая смена — ближайшее свободное окно раньше', () {
+      final periods = logUntil(now, [rest('11:00'), drive('3:00')]);
+      final shifts = journalShifts(periods, now);
+      final slot = freeShiftSlot(shifts, now);
+      expect(slot.end.isBefore(shifts.single.start), isTrue);
+      expect(newShiftTimes(shifts, now, ongoing: true), slot);
+      expect(newShiftTimes(shifts, now, ongoing: false), slot);
+    });
+
+    test('прошлая смена закончилась в эту минуту — завершённой места нет', () {
+      final m = manualShift(now.subtract(hour * 10), id: 1);
+      final shifts = journalShifts(const [], now, manual: [m]);
+      expect(newShiftTimes(shifts, now, ongoing: true).start, now);
+      expect(
+        newShiftTimes(shifts, now, ongoing: false),
+        freeShiftSlot(shifts, now),
+      );
     });
   });
 }
