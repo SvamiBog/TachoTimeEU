@@ -668,6 +668,84 @@ abstract class AppLocalizations {
   /// **'Суточный отдых должен закончиться в пределах 24 часов от начала смены. Сокращённый отдых 9 ч можно брать не больше трёх раз между недельными отдыхами.'**
   String get workdayRule;
 
+  /// Экран «Суточный отдых»: подпись над таймером идущего отдыха
+  ///
+  /// In ru, this message translates to:
+  /// **'Отдых идёт'**
+  String get dailyRestOngoing;
+
+  /// Экран «Суточный отдых»: подпись над временем, до которого начать полный отдых
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать отдых не позже'**
+  String get dailyRestStartBy;
+
+  /// Под временем начала полного отдыха: до какого времени можно начать сокращённый
+  ///
+  /// In ru, this message translates to:
+  /// **'сокращённый {hours} ч — до {time}'**
+  String dailyRestReducedBy(int hours, String time);
+
+  /// Заголовок раздела с вехами отдыха: 3, 9 и 11 ч
+  ///
+  /// In ru, this message translates to:
+  /// **'Сколько отдыхать'**
+  String get dailyRestOptions;
+
+  /// Веха отдыха: «9 ч — сокращённый»
+  ///
+  /// In ru, this message translates to:
+  /// **'{hours} ч — {kind, select, split{первая часть раздельного} reduced{сокращённый} other{полный}}'**
+  String dailyRestMilestone(int hours, String kind);
+
+  /// Веха отдыха уже набрана
+  ///
+  /// In ru, this message translates to:
+  /// **'набран'**
+  String get dailyRestReached;
+
+  /// Сокращённый отдых: сколько ещё отдыхать и сколько сокращений осталось
+  ///
+  /// In ru, this message translates to:
+  /// **'ещё {left} · осталось ×{count}'**
+  String dailyRestLeftCount(String left, int count);
+
+  /// Сокращённый отдых недоступен: три сокращения использованы
+  ///
+  /// In ru, this message translates to:
+  /// **'сокращений до недельного отдыха не осталось'**
+  String get dailyRestNoReduced;
+
+  /// Первая часть раздельного отдыха набрана — что дальше
+  ///
+  /// In ru, this message translates to:
+  /// **'затем отдых от 9 ч — всего от 12 ч'**
+  String get dailyRestSplitHint;
+
+  /// Веха, пока отдых не начат: время — крайний срок начала
+  ///
+  /// In ru, this message translates to:
+  /// **'начать не позже'**
+  String get dailyRestStartLatest;
+
+  /// То же для сокращённого отдыха, с числом оставшихся сокращений
+  ///
+  /// In ru, this message translates to:
+  /// **'начать не позже · осталось ×{count}'**
+  String dailyRestStartLatestCount(int count);
+
+  /// Пояснение, пока водитель отдыхает внутри смены (меньше 9 ч)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока отдых короче 9 ч, это перерыв в смене. С 9 ч он станет суточным и завершит смену. Закончили работу — «Завершить день».'**
+  String get dailyRestInShift;
+
+  /// Правило суточного отдыха внизу экрана
+  ///
+  /// In ru, this message translates to:
+  /// **'Суточный отдых — 11 ч подряд. Сокращённый — 9 ч, не больше трёх раз между недельными отдыхами. Раздельный — сначала от 3 ч, потом от 9 ч. Отдых должен закончиться в пределах 24 часов от начала смены.'**
+  String get dailyRestRule;
+
   /// No description provided for @workdayEndDay.
   ///
   /// In ru, this message translates to:

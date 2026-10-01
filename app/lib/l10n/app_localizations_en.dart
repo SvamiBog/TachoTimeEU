@@ -363,6 +363,61 @@ class AppLocalizationsEn extends AppLocalizations {
       'Daily rest must end within 24 hours of the start of the shift. The reduced 9 h rest may be taken at most three times between weekly rests.';
 
   @override
+  String get dailyRestOngoing => 'Rest in progress';
+
+  @override
+  String get dailyRestStartBy => 'Start your rest no later than';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'reduced $hours h — by $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'How long to rest';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'first part of a split rest',
+      'reduced': 'reduced',
+      'other': 'regular',
+    });
+    return '$hours h — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'reached';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return '$left more · ×$count left';
+  }
+
+  @override
+  String get dailyRestNoReduced => 'no reductions left before the weekly rest';
+
+  @override
+  String get dailyRestSplitHint =>
+      'then a rest of at least 9 h — 12 h or more in total';
+
+  @override
+  String get dailyRestStartLatest => 'start no later than';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'start no later than · ×$count left';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'While the rest is shorter than 9 h, it is a break within the shift. At 9 h it becomes daily rest and ends the shift. Finished work? Tap “End day”.';
+
+  @override
+  String get dailyRestRule =>
+      'Daily rest is 11 h in a row. Reduced: 9 h, at most three times between weekly rests. Split: first at least 3 h, then at least 9 h. The rest must end within 24 hours of the start of the shift.';
+
+  @override
   String get workdayEndDay => 'End day';
 
   @override

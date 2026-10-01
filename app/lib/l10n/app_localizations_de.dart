@@ -364,6 +364,62 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die tägliche Ruhezeit muss innerhalb von 24 Stunden nach Schichtbeginn enden. Die reduzierte Ruhezeit von 9 Std. ist höchstens dreimal zwischen zwei wöchentlichen Ruhezeiten erlaubt.';
 
   @override
+  String get dailyRestOngoing => 'Ruhezeit läuft';
+
+  @override
+  String get dailyRestStartBy => 'Ruhezeit spätestens beginnen';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'reduziert $hours Std. — bis $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Wie lange ruhen';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'erster Teil der aufgeteilten Ruhezeit',
+      'reduced': 'reduziert',
+      'other': 'regelmäßig',
+    });
+    return '$hours Std. — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'erreicht';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'noch $left · noch ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'bis zur wöchentlichen Ruhezeit keine Reduzierungen mehr';
+
+  @override
+  String get dailyRestSplitHint =>
+      'danach Ruhezeit ab 9 Std. — insgesamt ab 12 Std.';
+
+  @override
+  String get dailyRestStartLatest => 'spätestens beginnen';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'spätestens beginnen · noch ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Solange die Ruhezeit kürzer als 9 Std. ist, ist sie eine Pause in der Schicht. Ab 9 Std. wird sie zur täglichen Ruhezeit und beendet die Schicht. Arbeit beendet? „Tag beenden“.';
+
+  @override
+  String get dailyRestRule =>
+      'Tägliche Ruhezeit: 11 Std. am Stück. Reduziert: 9 Std., höchstens dreimal zwischen zwei wöchentlichen Ruhezeiten. Aufgeteilt: zuerst mindestens 3 Std., dann mindestens 9 Std. Die Ruhezeit muss innerhalb von 24 Stunden nach Schichtbeginn enden.';
+
+  @override
   String get workdayEndDay => 'Tag beenden';
 
   @override

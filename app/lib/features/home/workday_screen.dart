@@ -15,6 +15,7 @@ import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/features/home/corrections.dart';
+import 'package:tachogo/features/home/detail_rows.dart';
 import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
@@ -112,7 +113,7 @@ class WorkdayScreen extends ConsumerWidget {
                   country: ref.watch(currentCountriesProvider)?.start,
                 ),
               ],
-              const _Rule(),
+              InfoNote(l.workdayRule),
             ],
     );
   }
@@ -219,136 +220,27 @@ class _Milestones extends StatelessWidget {
     final left = atLeastZero(regular - Duration(minutes: s.value));
     return CardGroup(
       children: [
-        _Milestone(
-          dot: _Dot.solid,
+        MilestoneRow(
+          dot: MilestoneDot.solid,
           title: l.workdayStart,
           subtitle: country,
           value: formatClock(start),
         ),
-        _Milestone(
-          dot: _Dot.ring,
+        MilestoneRow(
+          dot: MilestoneDot.ring,
           title: l.workdayRegular(regular.inHours),
           subtitle: l.workdayRegularHint(formatHm(left)),
           value: formatClock(start.add(regular)),
         ),
         if (regular < extended)
-          _Milestone(
-            dot: _Dot.muted,
+          MilestoneRow(
+            dot: MilestoneDot.muted,
             title: l.workdayExtended(extended.inHours),
             subtitle: l.workdayExtendedHint(s.reducedLeft),
             value: formatClock(start.add(extended)),
             muted: s.reducedLeft == 0 && !s.splitFirstPart,
           ),
       ],
-    );
-  }
-}
-
-enum _Dot { solid, ring, muted }
-
-class _Milestone extends StatelessWidget {
-  const new({
-    required this.dot,
-    required this.title,
-    required this.value,
-    this.subtitle,
-    this.muted = false,
-  });
-
-  final _Dot dot;
-  final String title;
-  final String? subtitle;
-  final String value;
-  final bool muted;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final dotColor = dot == _Dot.muted ? colors.textSecondary : colors.text;
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 64),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.cardPadding,
-          vertical: 12,
-        ),
-        child: Row(
-          children: [
-            DecoratedBox(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: dot == _Dot.solid ? dotColor : null,
-                border: dot == _Dot.solid
-                    ? null
-                    : Border.all(color: dotColor, width: 2),
-              ),
-              child: const SizedBox.square(dimension: 10),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: AppTextStyles.rowTitle),
-                  if (subtitle case final subtitle?)
-                    Text(
-                      subtitle,
-                      style: AppTextStyles.caption.copyWith(
-                        color: colors.textSecondary,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              value,
-              style: AppTextStyles.value.copyWith(
-                color: muted ? colors.textSecondary : null,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Rule extends StatelessWidget {
-  const new();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        AppSpacing.betweenCardsMax,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.badge),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.info_outline, size: 20, color: colors.textSecondary),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  context.l10n.workdayRule,
-                  style: AppTextStyles.body.copyWith(color: colors.chipText),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

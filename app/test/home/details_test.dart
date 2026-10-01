@@ -1,5 +1,5 @@
 // Детали лимитов, выбор страны и паром на главной. План тестов: UI-03,
-// UI-05, UI-06 в docs/testing.md.
+// UI-05, UI-06, UI-22 в docs/testing.md.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +12,7 @@ import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
+import 'package:tachogo/features/home/daily_rest_screen.dart';
 import 'package:tachogo/features/home/home_screen.dart';
 import 'package:tachogo/features/home/limit_sections.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
@@ -276,6 +277,138 @@ void main() {
       final last = (await periods(tester, db)).last;
       expect((last.mode, last.dayEnd), (DriverMode.rest, true));
       await unmount(tester);
+    });
+  });
+
+  group('UI-22: «Суточный отдых»', () {
+    // Смена с 08:00: 4 ч вождения, с 12:00 — отдых
+    final restAt = t0.add(const Duration(hours: 4));
+    final resting = consecutive(t0, [
+      (DriverMode.driving, const Duration(hours: 4)),
+      (DriverMode.rest, Duration.zero),
+    ], open: true);
+    String at(Duration d) => formatClock(restAt.add(d));
+    const h3 = Duration(hours: 3);
+    const h9 = Duration(hours: 9);
+    const h11 = Duration(hours: 11);
+
+    Future<void> pumpRest(
+      WidgetTester tester,
+      DateTime now, [
+      List<ActivityPeriod>? p,
+    ]) => pumpScreen(
+      tester,
+      const DailyRestScreen(),
+      viewport: const Size(412, 1600),
+      overrides: journalOverrides(periods: p ?? resting, now: now),
+    );
+
+    testWidgets('нажали «Отдых» в смене — строка главной показывает отдых и '
+        'открывает его экран, а не «Рабочий день»', (tester) async {
+      await pumpScreen(
+        tester,
+        const HomeScreen(),
+        overrides: journalOverrides(
+          periods: resting,
+          now: restAt.add(const Duration(hours: 2)),
+        ),
+      );
+      // Перерыв засчитан — кольцо копит отдых к 11 ч
+      expect(find.text('ОТДЫХ'), findsOneWidget);
+      expect(find.text('из 11 ч'), findsOneWidget);
+
+      await scrollTo(tester, find.text('Суточный отдых'));
+      expect(find.text('идёт 2:00'), findsOneWidget);
+      expect(find.text('9 ч: ещё 7:00 → ${at(h9)}'), findsOneWidget);
+      expect(find.text('11 ч → ${at(h11)}'), findsOneWidget);
+
+      await openRow(tester, 'Суточный отдых');
+      expect(find.byType(DailyRestScreen), findsOneWidget);
+      expect(find.byType(WorkdayScreen), findsNothing);
+    });
+
+    testWidgets('отдых в смене: сколько до 3, 9 и 11 ч и когда наберутся', (
+      tester,
+    ) async {
+      await pumpRest(tester, restAt.add(const Duration(hours: 2)));
+      expect(find.text('ОТДЫХ ИДЁТ'), findsOneWidget);
+      expect(find.text('2:00'), findsOneWidget);
+      expect(find.text('из 11 ч'), findsOneWidget);
+      expect(find.text('с ${formatClock(restAt)}'), findsOneWidget);
+
+      expect(find.text('3 ч — первая часть раздельного'), findsOneWidget);
+      expect(find.text('ещё 1:00'), findsOneWidget);
+      expect(find.text(at(h3)), findsOneWidget);
+      expect(find.text('9 ч — сокращённый'), findsOneWidget);
+      expect(find.text('ещё 7:00 · осталось ×3'), findsOneWidget);
+      expect(find.text(at(h9)), findsOneWidget);
+      expect(find.text('11 ч — полный'), findsOneWidget);
+      expect(find.text('ещё 9:00'), findsOneWidget);
+      expect(find.text(at(h11)), findsOneWidget);
+
+      expect(find.textContaining('Пока отдых короче 9 ч'), findsOneWidget);
+      expect(
+        find.widgetWithText(PrimaryButton, 'Завершить день'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('суточный отдых после смены — с кольца главной: 9 ч набран, '
+        'до 11 ч ещё 1:30', (tester) async {
+      final now = restAt.add(const Duration(hours: 9, minutes: 30));
+      await pumpScreen(
+        tester,
+        const HomeScreen(),
+        overrides: journalOverrides(periods: resting, now: now),
+      );
+      await tester.tap(find.text('СУТОЧНЫЙ ОТДЫХ'));
+      await tester.pumpAndSettle();
+      expect(find.byType(DailyRestScreen), findsOneWidget);
+      expect(find.text('9:30'), findsOneWidget);
+      expect(find.text('3 ч — первая часть раздельного'), findsNothing);
+      expect(find.text('набран'), findsOneWidget);
+      expect(find.text('ещё 1:30'), findsOneWidget);
+      expect(find.textContaining('Смена завершена'), findsOneWidget);
+    });
+
+    testWidgets('смена идёт, отдыха нет — до какого времени начать', (
+      tester,
+    ) async {
+      final week = designWeek(driving: true);
+      final start = DateTime.utc(2026, 9, 23, 6, 49);
+      String plus(int hours) => formatClock(start.add(Duration(hours: hours)));
+      await pumpRest(tester, week.now, week.periods);
+      expect(find.text('НАЧАТЬ ОТДЫХ НЕ ПОЗЖЕ'), findsOneWidget);
+      expect(find.text(plus(13)), findsNWidgets(2));
+      expect(find.text('сокращённый 9 ч — до ${plus(15)}'), findsOneWidget);
+      expect(find.text('начать не позже'), findsOneWidget);
+      expect(find.text('начать не позже · осталось ×3'), findsOneWidget);
+    });
+
+    testWidgets('недельный отдых — ссылка на его экран', (tester) async {
+      await pumpRest(tester, restAt.add(const Duration(hours: 25)));
+      expect(find.text('НЕДЕЛЬНЫЙ ОТДЫХ ИДЁТ'), findsOneWidget);
+      expect(find.text('из 45 ч'), findsOneWidget);
+      expect(find.text('Сколько отдыхать'), findsNothing);
+      await tester.tap(find.widgetWithText(SecondaryButton, 'Недельный отдых'));
+      await tester.pumpAndSettle();
+      expect(find.byType(WeeklyRestScreen), findsOneWidget);
+    });
+
+    testWidgets('перерыв ещё не засчитан — кольцо ведёт на экран перерыва', (
+      tester,
+    ) async {
+      await pumpScreen(
+        tester,
+        const HomeScreen(),
+        overrides: journalOverrides(
+          periods: resting,
+          now: restAt.add(const Duration(minutes: 20)),
+        ),
+      );
+      await tester.tap(find.text('ПЕРЕРЫВ'));
+      await tester.pumpAndSettle();
+      expect(find.byType(BreakScreen), findsOneWidget);
     });
   });
 

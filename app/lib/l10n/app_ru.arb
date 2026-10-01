@@ -358,6 +358,87 @@
     }
   },
   "workdayRule": "Суточный отдых должен закончиться в пределах 24 часов от начала смены. Сокращённый отдых 9 ч можно брать не больше трёх раз между недельными отдыхами.",
+  "dailyRestOngoing": "Отдых идёт",
+  "@dailyRestOngoing": {
+    "description": "Экран «Суточный отдых»: подпись над таймером идущего отдыха"
+  },
+  "dailyRestStartBy": "Начать отдых не позже",
+  "@dailyRestStartBy": {
+    "description": "Экран «Суточный отдых»: подпись над временем, до которого начать полный отдых"
+  },
+  "dailyRestReducedBy": "сокращённый {hours} ч — до {time}",
+  "@dailyRestReducedBy": {
+    "description": "Под временем начала полного отдыха: до какого времени можно начать сокращённый",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyRestOptions": "Сколько отдыхать",
+  "@dailyRestOptions": {
+    "description": "Заголовок раздела с вехами отдыха: 3, 9 и 11 ч"
+  },
+  "dailyRestMilestone": "{hours} ч — {kind, select, split{первая часть раздельного} reduced{сокращённый} other{полный}}",
+  "@dailyRestMilestone": {
+    "description": "Веха отдыха: «9 ч — сокращённый»",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyRestReached": "набран",
+  "@dailyRestReached": {
+    "description": "Веха отдыха уже набрана"
+  },
+  "dailyRestLeftCount": "ещё {left} · осталось ×{count}",
+  "@dailyRestLeftCount": {
+    "description": "Сокращённый отдых: сколько ещё отдыхать и сколько сокращений осталось",
+    "placeholders": {
+      "left": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyRestNoReduced": "сокращений до недельного отдыха не осталось",
+  "@dailyRestNoReduced": {
+    "description": "Сокращённый отдых недоступен: три сокращения использованы"
+  },
+  "dailyRestSplitHint": "затем отдых от 9 ч — всего от 12 ч",
+  "@dailyRestSplitHint": {
+    "description": "Первая часть раздельного отдыха набрана — что дальше"
+  },
+  "dailyRestStartLatest": "начать не позже",
+  "@dailyRestStartLatest": {
+    "description": "Веха, пока отдых не начат: время — крайний срок начала"
+  },
+  "dailyRestStartLatestCount": "начать не позже · осталось ×{count}",
+  "@dailyRestStartLatestCount": {
+    "description": "То же для сокращённого отдыха, с числом оставшихся сокращений",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyRestInShift": "Пока отдых короче 9 ч, это перерыв в смене. С 9 ч он станет суточным и завершит смену. Закончили работу — «Завершить день».",
+  "@dailyRestInShift": {
+    "description": "Пояснение, пока водитель отдыхает внутри смены (меньше 9 ч)"
+  },
+  "dailyRestRule": "Суточный отдых — 11 ч подряд. Сокращённый — 9 ч, не больше трёх раз между недельными отдыхами. Раздельный — сначала от 3 ч, потом от 9 ч. Отдых должен закончиться в пределах 24 часов от начала смены.",
+  "@dailyRestRule": {
+    "description": "Правило суточного отдыха внизу экрана"
+  },
   "workdayEndDay": "Завершить день",
   "workdayEndDayHint": "Отдых начнётся сейчас и завершит смену, даже если он короче 9 ч.",
   "endDayDriving": "Вождение за день",

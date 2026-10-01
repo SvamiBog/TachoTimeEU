@@ -63,6 +63,9 @@ _Weekly _weekly(ComplianceSnapshot s) {
   );
 }
 
+void openWeeklyRestScreen(BuildContext context) => Navigator.of(context)
+    .push(MaterialPageRoute<void>(builder: (_) => const WeeklyRestScreen()));
+
 /// Экран 9 «Недельный отдых»: срок по 144 ч, полный 45 ч и сокращённый
 /// 24 ч, прошлый отдых, долг по компенсации, пакет мобильности.
 class WeeklyRestScreen extends ConsumerWidget {

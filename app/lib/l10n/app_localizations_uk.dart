@@ -367,6 +367,62 @@ class AppLocalizationsUk extends AppLocalizations {
       'Щоденний відпочинок має закінчитися протягом 24 годин від початку зміни. Скорочений відпочинок 9 год можна брати не більше трьох разів між щотижневими відпочинками.';
 
   @override
+  String get dailyRestOngoing => 'Відпочинок триває';
+
+  @override
+  String get dailyRestStartBy => 'Почати відпочинок не пізніше';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'скорочений $hours год — до $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Скільки відпочивати';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'перша частина розділеного',
+      'reduced': 'скорочений',
+      'other': 'повний',
+    });
+    return '$hours год — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'набрано';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'ще $left · залишилося ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'скорочень до щотижневого відпочинку не залишилося';
+
+  @override
+  String get dailyRestSplitHint =>
+      'потім відпочинок від 9 год — разом від 12 год';
+
+  @override
+  String get dailyRestStartLatest => 'почати не пізніше';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'почати не пізніше · залишилося ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Поки відпочинок коротший за 9 год, це перерва в зміні. З 9 год він стане щоденним і завершить зміну. Закінчили роботу — «Завершити день».';
+
+  @override
+  String get dailyRestRule =>
+      'Щоденний відпочинок — 11 год поспіль. Скорочений — 9 год, не більше трьох разів між щотижневими відпочинками. Розділений — спочатку від 3 год, потім від 9 год. Відпочинок має закінчитися протягом 24 годин від початку зміни.';
+
+  @override
   String get workdayEndDay => 'Завершити день';
 
   @override

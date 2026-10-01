@@ -366,6 +366,62 @@ class AppLocalizationsRo extends AppLocalizations {
       'Repausul zilnic trebuie să se încheie în 24 de ore de la începutul turei. Repausul redus de 9 h se poate lua de cel mult trei ori între două repausuri săptămânale.';
 
   @override
+  String get dailyRestOngoing => 'Repaus în curs';
+
+  @override
+  String get dailyRestStartBy => 'Începeți repausul cel târziu';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'redus $hours h — până la $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Cât să vă odihniți';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'prima parte a repausului fracționat',
+      'reduced': 'redus',
+      'other': 'complet',
+    });
+    return '$hours h — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'realizat';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'încă $left · rămân ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'nu mai rămân reduceri până la repausul săptămânal';
+
+  @override
+  String get dailyRestSplitHint =>
+      'apoi repaus de cel puțin 9 h — în total cel puțin 12 h';
+
+  @override
+  String get dailyRestStartLatest => 'începeți cel târziu';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'începeți cel târziu · rămân ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Cât timp repausul e mai scurt de 9 h, este o pauză în tură. De la 9 h devine repaus zilnic și încheie tura. Ați terminat lucrul — „Încheie ziua”.';
+
+  @override
+  String get dailyRestRule =>
+      'Repausul zilnic — 11 h fără întrerupere. Redus — 9 h, de cel mult trei ori între două repausuri săptămânale. Fracționat — întâi cel puțin 3 h, apoi cel puțin 9 h. Repausul trebuie să se încheie în 24 de ore de la începutul turei.';
+
+  @override
   String get workdayEndDay => 'Încheie ziua';
 
   @override

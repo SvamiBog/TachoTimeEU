@@ -364,6 +364,62 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le repos journalier doit se terminer dans les 24 heures suivant le début du poste. Le repos réduit de 9 h est permis au plus trois fois entre deux repos hebdomadaires.';
 
   @override
+  String get dailyRestOngoing => 'Repos en cours';
+
+  @override
+  String get dailyRestStartBy => 'Commencer le repos au plus tard';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'réduit $hours h — avant $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Combien de repos';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'première partie du repos fractionné',
+      'reduced': 'réduit',
+      'other': 'normal',
+    });
+    return '$hours h — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'atteint';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'encore $left · reste ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'plus de réductions avant le repos hebdomadaire';
+
+  @override
+  String get dailyRestSplitHint =>
+      'puis un repos d’au moins 9 h — au moins 12 h au total';
+
+  @override
+  String get dailyRestStartLatest => 'commencer au plus tard';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'commencer au plus tard · reste ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Tant que le repos dure moins de 9 h, c’est une pause dans le poste. À partir de 9 h, il devient repos journalier et termine le poste. Travail terminé ? « Terminer la journée ».';
+
+  @override
+  String get dailyRestRule =>
+      'Repos journalier : 11 h d’affilée. Réduit : 9 h, au plus trois fois entre deux repos hebdomadaires. Fractionné : d’abord au moins 3 h, puis au moins 9 h. Le repos doit se terminer dans les 24 heures suivant le début du poste.';
+
+  @override
   String get workdayEndDay => 'Terminer la journée';
 
   @override

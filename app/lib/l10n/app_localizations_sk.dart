@@ -368,6 +368,62 @@ class AppLocalizationsSk extends AppLocalizations {
       'Denný odpočinok musí skončiť do 24 hodín od začiatku zmeny. Skrátený odpočinok 9 h je povolený najviac trikrát medzi dvoma týždennými odpočinkami.';
 
   @override
+  String get dailyRestOngoing => 'Odpočinok prebieha';
+
+  @override
+  String get dailyRestStartBy => 'Začnite odpočinok najneskôr';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'skrátený $hours h — do $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Ako dlho odpočívať';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'prvá časť rozdeleného',
+      'reduced': 'skrátený',
+      'other': 'bežný',
+    });
+    return '$hours h — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'splnené';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'zostáva $left · zostáva ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'do týždenného odpočinku už nezostáva žiadne skrátenie';
+
+  @override
+  String get dailyRestSplitHint =>
+      'potom odpočinok aspoň 9 h — spolu aspoň 12 h';
+
+  @override
+  String get dailyRestStartLatest => 'začať najneskôr';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'začať najneskôr · zostáva ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Kým je odpočinok kratší ako 9 h, ide o prestávku v zmene. Od 9 h sa stane denným odpočinkom a ukončí zmenu. Skončili ste prácu? „Ukončiť deň“.';
+
+  @override
+  String get dailyRestRule =>
+      'Denný odpočinok: 11 h v kuse. Skrátený: 9 h, najviac trikrát medzi dvoma týždennými odpočinkami. Rozdelený: najprv aspoň 3 h, potom aspoň 9 h. Odpočinok musí skončiť do 24 hodín od začiatku zmeny.';
+
+  @override
   String get workdayEndDay => 'Ukončiť deň';
 
   @override

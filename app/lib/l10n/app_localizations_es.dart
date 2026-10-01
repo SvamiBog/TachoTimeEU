@@ -363,6 +363,62 @@ class AppLocalizationsEs extends AppLocalizations {
       'El descanso diario debe terminar dentro de las 24 horas siguientes al inicio de la jornada. El descanso reducido de 9 h se permite como máximo tres veces entre dos descansos semanales.';
 
   @override
+  String get dailyRestOngoing => 'Descanso en curso';
+
+  @override
+  String get dailyRestStartBy => 'Empezar el descanso como muy tarde';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'reducido $hours h — hasta las $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Cuánto descansar';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'primera parte del descanso fraccionado',
+      'reduced': 'reducido',
+      'other': 'normal',
+    });
+    return '$hours h — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'cumplido';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'quedan $left · quedan ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'no quedan reducciones hasta el descanso semanal';
+
+  @override
+  String get dailyRestSplitHint =>
+      'después un descanso de al menos 9 h — en total al menos 12 h';
+
+  @override
+  String get dailyRestStartLatest => 'empezar como muy tarde';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'empezar como muy tarde · quedan ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Mientras el descanso dure menos de 9 h, es una pausa dentro de la jornada. A partir de 9 h pasa a ser descanso diario y termina la jornada. ¿Ha terminado de trabajar? «Terminar el día».';
+
+  @override
+  String get dailyRestRule =>
+      'Descanso diario: 11 h seguidas. Reducido: 9 h, como máximo tres veces entre dos descansos semanales. Fraccionado: primero al menos 3 h, luego al menos 9 h. El descanso debe terminar dentro de las 24 horas siguientes al inicio de la jornada.';
+
+  @override
   String get workdayEndDay => 'Terminar el día';
 
   @override

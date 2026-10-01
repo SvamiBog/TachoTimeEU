@@ -21,6 +21,7 @@ import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
+import 'package:tachogo/features/home/daily_rest_screen.dart';
 import 'package:tachogo/features/home/home_screen.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
@@ -182,6 +183,7 @@ final _screens = <String, _Screen>{
     build: MoreScreen.new,
     open: _tapText((l) => l.transferTitle),
   ),
+  'Суточный отдых': (build: DailyRestScreen.new, open: null),
   'Инструкция и правила': (build: GuideScreen.new, open: null),
   'Инструкция · своя перевозка': (
     build: GuideScreen.new,

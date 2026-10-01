@@ -364,6 +364,62 @@ class AppLocalizationsNl extends AppLocalizations {
       'De dagelijkse rust moet binnen 24 uur na het begin van de dienst eindigen. De verkorte rust van 9 u mag maximaal drie keer tussen twee wekelijkse rusttijden.';
 
   @override
+  String get dailyRestOngoing => 'Rust loopt';
+
+  @override
+  String get dailyRestStartBy => 'Rust uiterlijk beginnen';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'verkort $hours u — vóór $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Hoe lang rusten';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'eerste deel van de gesplitste rust',
+      'reduced': 'verkort',
+      'other': 'normaal',
+    });
+    return '$hours u — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'bereikt';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'nog $left · nog ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'geen verkortingen meer tot de wekelijkse rust';
+
+  @override
+  String get dailyRestSplitHint =>
+      'daarna rust van minstens 9 u — in totaal minstens 12 u';
+
+  @override
+  String get dailyRestStartLatest => 'uiterlijk beginnen';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'uiterlijk beginnen · nog ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Zolang de rust korter is dan 9 u, is het een pauze in de dienst. Vanaf 9 u wordt het dagelijkse rust en eindigt de dienst. Klaar met werken? „Dag beëindigen”.';
+
+  @override
+  String get dailyRestRule =>
+      'Dagelijkse rust: 11 u aaneengesloten. Verkort: 9 u, maximaal drie keer tussen twee wekelijkse rusttijden. Gesplitst: eerst minstens 3 u, daarna minstens 9 u. De rust moet binnen 24 uur na het begin van de dienst eindigen.';
+
+  @override
   String get workdayEndDay => 'Dag beëindigen';
 
   @override

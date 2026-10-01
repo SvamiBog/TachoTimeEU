@@ -15,6 +15,7 @@ import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/compensation_row.dart';
 import 'package:tachogo/features/home/corrections.dart';
+import 'package:tachogo/features/home/daily_rest_screen.dart';
 import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/limit_row.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
@@ -55,8 +56,7 @@ void _openWorkday(BuildContext context) =>
 
 void _openBreak(BuildContext context) => openBreakScreen(context);
 
-void _openWeeklyRest(BuildContext context) => Navigator.of(context)
-    .push(MaterialPageRoute<void>(builder: (_) => const WeeklyRestScreen()));
+void _openWeeklyRest(BuildContext context) => openWeeklyRestScreen(context);
 
 // ───────────────────────── Сегодня ─────────────────────────
 
@@ -323,6 +323,7 @@ class TodaySection extends StatelessWidget {
 
 typedef _Rest = ({
   int? daily,
+  DateTime? dailyStart,
   int? weekly,
   int reducedLeft,
   bool reducedWeekly,
@@ -331,15 +332,47 @@ typedef _Rest = ({
 });
 
 _Rest _rest(ComplianceSnapshot s) {
-  final rest = s.offDutyRest;
+  // Суточный — и отдых после смены, и отдых внутри неё: пока он короче
+  // 9 ч, это перерыв, но водитель видит, сколько ещё до 9 и 11 ч
+  final daily = dailyRestOf(s);
+  final dailyResting = daily.restStart != null && !daily.weekly;
   return (
-    daily: rest != null && !rest.weekly ? minutes(rest.duration) : null,
-    weekly: rest != null && rest.weekly ? minutes(rest.duration) : null,
+    daily: dailyResting ? daily.rest : null,
+    dailyStart: dailyResting ? daily.restStart : null,
+    weekly: daily.weekly ? daily.rest : null,
     reducedLeft: s.reducedRestsLeft,
     reducedWeekly: s.reducedWeeklyRestAvailable,
     deadline: s.weeklyRestDeadline,
     compensation: s.compensation != null || s.restCompensation != null,
   );
+}
+
+/// Подписи строки идущего суточного отдыха: ближайшая веха — 9 ч, затем
+/// 11 ч.
+(String, String?) _dailyRestCaptions(
+  AppLocalizations l,
+  int minutes,
+  DateTime start,
+) {
+  final rest = _m(minutes);
+  String until(Duration hours) => l.limitLeftUntil(
+    hours.inHours,
+    formatHm(atLeastZero(hours - rest)),
+    formatClock(start.add(hours)),
+  );
+  if (rest < EuLimits.dailyRestReduced) {
+    return (
+      until(EuLimits.dailyRestReduced),
+      l.limitUntil(
+        EuLimits.dailyRestRegular.inHours,
+        formatClock(start.add(EuLimits.dailyRestRegular)),
+      ),
+    );
+  }
+  if (rest < EuLimits.dailyRestRegular) {
+    return (until(EuLimits.dailyRestRegular), null);
+  }
+  return (l.dailyRestCaption, null);
 }
 
 class RestSection extends ConsumerWidget {
@@ -357,6 +390,11 @@ class RestSection extends ConsumerWidget {
           ? l.statusNotStarted
           : l.statusInProgress(formatHm(_m(minutes))),
     );
+    final daily = s.daily;
+    final dailyStart = s.dailyStart;
+    final (dailyLeft, dailyRight) = daily != null && dailyStart != null
+        ? _dailyRestCaptions(l, daily, dailyStart)
+        : (l.dailyRestCaption, l.dailyRestSplit);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -365,7 +403,7 @@ class RestSection extends ConsumerWidget {
           children: [
             LimitRow(
               title: l.rowDailyRest,
-              onTap: () => _openWorkday(context),
+              onTap: () => openDailyRestScreen(context),
               chip: StatusChip(
                 l.chipTimes(EuLimits.dailyRestReduced.inHours, s.reducedLeft),
               ),
@@ -379,8 +417,8 @@ class RestSection extends ConsumerWidget {
                 ],
                 color: colors.rest,
               ),
-              left: l.dailyRestCaption,
-              right: l.dailyRestSplit,
+              left: dailyLeft,
+              right: dailyRight,
             ),
             LimitRow(
               title: l.rowWeeklyRest,

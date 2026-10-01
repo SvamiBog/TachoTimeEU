@@ -367,6 +367,61 @@ class AppLocalizationsRu extends AppLocalizations {
       'Суточный отдых должен закончиться в пределах 24 часов от начала смены. Сокращённый отдых 9 ч можно брать не больше трёх раз между недельными отдыхами.';
 
   @override
+  String get dailyRestOngoing => 'Отдых идёт';
+
+  @override
+  String get dailyRestStartBy => 'Начать отдых не позже';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'сокращённый $hours ч — до $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Сколько отдыхать';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'первая часть раздельного',
+      'reduced': 'сокращённый',
+      'other': 'полный',
+    });
+    return '$hours ч — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'набран';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'ещё $left · осталось ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'сокращений до недельного отдыха не осталось';
+
+  @override
+  String get dailyRestSplitHint => 'затем отдых от 9 ч — всего от 12 ч';
+
+  @override
+  String get dailyRestStartLatest => 'начать не позже';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'начать не позже · осталось ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Пока отдых короче 9 ч, это перерыв в смене. С 9 ч он станет суточным и завершит смену. Закончили работу — «Завершить день».';
+
+  @override
+  String get dailyRestRule =>
+      'Суточный отдых — 11 ч подряд. Сокращённый — 9 ч, не больше трёх раз между недельными отдыхами. Раздельный — сначала от 3 ч, потом от 9 ч. Отдых должен закончиться в пределах 24 часов от начала смены.';
+
+  @override
   String get workdayEndDay => 'Завершить день';
 
   @override
