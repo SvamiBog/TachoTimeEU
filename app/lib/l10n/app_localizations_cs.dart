@@ -367,6 +367,118 @@ class AppLocalizationsCs extends AppLocalizations {
       'Denní odpočinek musí skončit do 24 hodin od začátku směny. Zkrácený odpočinek 9 h je povolen nejvýše třikrát mezi dvěma týdenními odpočinky.';
 
   @override
+  String get dailyRestOngoing => 'Odpočinek probíhá';
+
+  @override
+  String get dailyRestStartBy => 'Začněte odpočinek nejpozději';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'zkrácený $hours h — do $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Jak dlouho odpočívat';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'první část rozděleného',
+      'reduced': 'zkrácený',
+      'other': 'běžný',
+    });
+    return '$hours h — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'splněno';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'zbývá $left · zbývá ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'do týdenního odpočinku už nezbývá žádné zkrácení';
+
+  @override
+  String get dailyRestSplitHint =>
+      'pak odpočinek alespoň 9 h — celkem alespoň 12 h';
+
+  @override
+  String get dailyRestStartLatest => 'začít nejpozději';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'začít nejpozději · zbývá ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Dokud je odpočinek kratší než 9 h, jde o přestávku ve směně. Od 9 h se stane denním odpočinkem a ukončí směnu. Skončili jste práci? „Ukončit den“.';
+
+  @override
+  String get dailyRestRule =>
+      'Denní odpočinek: 11 h v kuse. Zkrácený: 9 h, nejvýše třikrát mezi dvěma týdenními odpočinky. Rozdělený: nejprve alespoň 3 h, potom alespoň 9 h. Odpočinek musí skončit do 24 hodin od začátku směny.';
+
+  @override
+  String get drivingCorrect => 'Opravit řízení za den';
+
+  @override
+  String get drivingLimits => 'Limity';
+
+  @override
+  String get drivingUsedUp => 'vyčerpáno';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'dvakrát týdně · zbývá ×$count';
+  }
+
+  @override
+  String get drivingNoExtensions => 'prodloužení v tomto týdnu jsou vyčerpána';
+
+  @override
+  String get drivingDailyRule =>
+      'Denní řízení je doba za volantem mezi dvěma denními odpočinky: nejvýše 9 h, dvakrát týdně až 10 h. Týden začíná v pondělí v 00:00.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'týden od $date';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours h — za týden';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours h — za dva týdny';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'minulý týden $previous · zbývá $left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'Dříve skončí limit za dva týdny: tento týden zbývá $left.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'Směny týdne';
+
+  @override
+  String get drivingNoShifts => 'Tento týden zatím žádné směny';
+
+  @override
+  String get drivingWeekRule =>
+      'Týden trvá od pondělí 00:00 do neděle 24:00, jako na tachografu. Za týden nejvýše 56 h řízení, za dva po sobě jdoucí týdny nejvýše 90 h.';
+
+  @override
   String get workdayEndDay => 'Ukončit den';
 
   @override

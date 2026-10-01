@@ -21,7 +21,10 @@ import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
+import 'package:tachogo/features/home/daily_driving_screen.dart';
+import 'package:tachogo/features/home/daily_rest_screen.dart';
 import 'package:tachogo/features/home/home_screen.dart';
+import 'package:tachogo/features/home/weekly_driving_screen.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
 import 'package:tachogo/features/journal/journal_parts.dart';
@@ -99,7 +102,10 @@ Future<void> _openDrivingCorrection(
     300,
     scrollable: find.byType(Scrollable).first,
   );
+  // Строка главной — экран «Суточное вождение», правка — его кнопкой
   await _tapText((l) => l.rowDailyDriving)(tester, l);
+  await tester.tap(find.text(l.drivingCorrect));
+  await tester.pumpAndSettle();
   expect(find.text(l.driveEditComputed), findsOneWidget);
 }
 
@@ -182,6 +188,9 @@ final _screens = <String, _Screen>{
     build: MoreScreen.new,
     open: _tapText((l) => l.transferTitle),
   ),
+  'Суточный отдых': (build: DailyRestScreen.new, open: null),
+  'Суточное вождение': (build: DailyDrivingScreen.new, open: null),
+  'Недельное вождение': (build: WeeklyDrivingScreen.new, open: null),
   'Инструкция и правила': (build: GuideScreen.new, open: null),
   'Инструкция · своя перевозка': (
     build: GuideScreen.new,

@@ -368,6 +368,117 @@ class AppLocalizationsPl extends AppLocalizations {
       'Odpoczynek dobowy musi się zakończyć w ciągu 24 godzin od początku zmiany. Skrócony odpoczynek 9 h można wziąć najwyżej trzy razy między odpoczynkami tygodniowymi.';
 
   @override
+  String get dailyRestOngoing => 'Odpoczynek trwa';
+
+  @override
+  String get dailyRestStartBy => 'Rozpocznij odpoczynek najpóźniej';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'skrócony $hours h — do $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Ile odpoczywać';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'pierwsza część dzielonego',
+      'reduced': 'skrócony',
+      'other': 'pełny',
+    });
+    return '$hours h — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'zaliczony';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'jeszcze $left · pozostało ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'skróceń do odpoczynku tygodniowego nie pozostało';
+
+  @override
+  String get dailyRestSplitHint => 'potem odpoczynek od 9 h — razem od 12 h';
+
+  @override
+  String get dailyRestStartLatest => 'rozpocznij najpóźniej';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'rozpocznij najpóźniej · pozostało ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Dopóki odpoczynek trwa krócej niż 9 h, jest przerwą w zmianie. Od 9 h stanie się odpoczynkiem dobowym i zakończy zmianę. Skończyłeś pracę — „Zakończ dzień”.';
+
+  @override
+  String get dailyRestRule =>
+      'Odpoczynek dobowy — 11 h bez przerwy. Skrócony — 9 h, najwyżej trzy razy między odpoczynkami tygodniowymi. Dzielony — najpierw co najmniej 3 h, potem co najmniej 9 h. Odpoczynek musi się zakończyć w ciągu 24 godzin od początku zmiany.';
+
+  @override
+  String get drivingCorrect => 'Popraw jazdę z dnia';
+
+  @override
+  String get drivingLimits => 'Limity';
+
+  @override
+  String get drivingUsedUp => 'wykorzystano w całości';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'dwa razy w tygodniu · pozostało ×$count';
+  }
+
+  @override
+  String get drivingNoExtensions => 'wydłużenia w tym tygodniu wykorzystane';
+
+  @override
+  String get drivingDailyRule =>
+      'Jazda dzienna — czas za kierownicą między dwoma odpoczynkami dobowymi: najwyżej 9 h, dwa razy w tygodniu — do 10 h. Tydzień zaczyna się w poniedziałek o 00:00.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'tydzień od $date';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours h — w tygodniu';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours h — w dwóch tygodniach';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'poprzedni tydzień $previous · jeszcze $left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'Wcześniej skończy się limit dwóch tygodni: w tym tygodniu można jeszcze $left.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'Zmiany tygodnia';
+
+  @override
+  String get drivingNoShifts => 'W tym tygodniu nie ma jeszcze zmian';
+
+  @override
+  String get drivingWeekRule =>
+      'Tydzień — od poniedziałku 00:00 do niedzieli 24:00, jak w tachografie. W tygodniu — najwyżej 56 h jazdy, w dwóch kolejnych tygodniach — najwyżej 90 h.';
+
+  @override
   String get workdayEndDay => 'Zakończ dzień';
 
   @override

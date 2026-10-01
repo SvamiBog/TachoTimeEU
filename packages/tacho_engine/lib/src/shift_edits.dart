@@ -345,7 +345,9 @@ ShiftEditProblem? checkManualShift({
   JournalShift? except,
 }) {
   final spanEnd = end ?? now;
-  if (!spanEnd.isAfter(start)) {
+  // Идущая смена может начаться в эту же минуту: водитель открывает её,
+  // когда начинает
+  if (end == null ? spanEnd.isBefore(start) : !spanEnd.isAfter(start)) {
     return const ShiftEditProblem(ShiftEditError.endBeforeStart);
   }
   if (spanEnd.isAfter(now)) {
@@ -415,4 +417,32 @@ TimeRange freeShiftSlot(
     end = floorTimeToMinute(hit.start.subtract(rest));
   }
   return (start: end.subtract(span), end: end);
+}
+
+/// Время новой смены в форме по умолчанию (JRN-09): водитель вносит смену,
+/// когда начинает или заканчивает её. Идущая ([ongoing]) начинается в
+/// текущую минуту (`end` — тоже она), завершённая заканчивается в текущую
+/// минуту и длится [span], но начинается не раньше конца прошлой смены.
+///
+/// Если сейчас идёт другая смена (её отдых не начат), новая может быть
+/// только прошлой — ближайшее свободное окно, [freeShiftSlot].
+TimeRange newShiftTimes(
+  Iterable<JournalShift> shifts,
+  DateTime now, {
+  required bool ongoing,
+  Duration span = const Duration(hours: 10),
+}) {
+  final minute = floorTimeToMinute(now);
+  if (shifts.any((s) => s.end == null)) {
+    return freeShiftSlot(shifts, now, span: span);
+  }
+  if (ongoing) return (start: minute, end: minute);
+  var start = minute.subtract(span);
+  for (final s in shifts) {
+    final end = s.end!;
+    if (end.isAfter(start)) start = end;
+  }
+  // Прошлая смена закончилась в эту минуту — до сейчас места нет
+  if (!start.isBefore(minute)) return freeShiftSlot(shifts, now, span: span);
+  return (start: start, end: minute);
 }

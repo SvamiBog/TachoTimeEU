@@ -367,6 +367,117 @@ class AppLocalizationsRu extends AppLocalizations {
       'Суточный отдых должен закончиться в пределах 24 часов от начала смены. Сокращённый отдых 9 ч можно брать не больше трёх раз между недельными отдыхами.';
 
   @override
+  String get dailyRestOngoing => 'Отдых идёт';
+
+  @override
+  String get dailyRestStartBy => 'Начать отдых не позже';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'сокращённый $hours ч — до $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Сколько отдыхать';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'первая часть раздельного',
+      'reduced': 'сокращённый',
+      'other': 'полный',
+    });
+    return '$hours ч — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'набран';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'ещё $left · осталось ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'сокращений до недельного отдыха не осталось';
+
+  @override
+  String get dailyRestSplitHint => 'затем отдых от 9 ч — всего от 12 ч';
+
+  @override
+  String get dailyRestStartLatest => 'начать не позже';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'начать не позже · осталось ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Пока отдых короче 9 ч, это перерыв в смене. С 9 ч он станет суточным и завершит смену. Закончили работу — «Завершить день».';
+
+  @override
+  String get dailyRestRule =>
+      'Суточный отдых — 11 ч подряд. Сокращённый — 9 ч, не больше трёх раз между недельными отдыхами. Раздельный — сначала от 3 ч, потом от 9 ч. Отдых должен закончиться в пределах 24 часов от начала смены.';
+
+  @override
+  String get drivingCorrect => 'Исправить вождение за день';
+
+  @override
+  String get drivingLimits => 'Лимиты';
+
+  @override
+  String get drivingUsedUp => 'выбрано полностью';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'дважды в неделю · осталось ×$count';
+  }
+
+  @override
+  String get drivingNoExtensions => 'удлинения на этой неделе использованы';
+
+  @override
+  String get drivingDailyRule =>
+      'Суточное вождение — время за рулём между двумя суточными отдыхами: не больше 9 ч, дважды в неделю — до 10 ч. Неделя начинается в понедельник в 00:00.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'неделя с $date';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours ч — за неделю';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours ч — за две недели';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'прошлая неделя $previous · ещё $left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'Раньше закончится лимит двух недель: на этой неделе можно ещё $left.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'Смены недели';
+
+  @override
+  String get drivingNoShifts => 'На этой неделе смен ещё нет';
+
+  @override
+  String get drivingWeekRule =>
+      'Неделя — с понедельника 00:00 до воскресенья 24:00, как на тахографе. За неделю — не больше 56 ч вождения, за две недели подряд — не больше 90 ч.';
+
+  @override
   String get workdayEndDay => 'Завершить день';
 
   @override

@@ -366,6 +366,119 @@ class AppLocalizationsRo extends AppLocalizations {
       'Repausul zilnic trebuie să se încheie în 24 de ore de la începutul turei. Repausul redus de 9 h se poate lua de cel mult trei ori între două repausuri săptămânale.';
 
   @override
+  String get dailyRestOngoing => 'Repaus în curs';
+
+  @override
+  String get dailyRestStartBy => 'Începeți repausul cel târziu';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'redus $hours h — până la $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Cât să vă odihniți';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'prima parte a repausului fracționat',
+      'reduced': 'redus',
+      'other': 'complet',
+    });
+    return '$hours h — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'realizat';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'încă $left · rămân ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'nu mai rămân reduceri până la repausul săptămânal';
+
+  @override
+  String get dailyRestSplitHint =>
+      'apoi repaus de cel puțin 9 h — în total cel puțin 12 h';
+
+  @override
+  String get dailyRestStartLatest => 'începeți cel târziu';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'începeți cel târziu · rămân ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Cât timp repausul e mai scurt de 9 h, este o pauză în tură. De la 9 h devine repaus zilnic și încheie tura. Ați terminat lucrul — „Încheie ziua”.';
+
+  @override
+  String get dailyRestRule =>
+      'Repausul zilnic — 11 h fără întrerupere. Redus — 9 h, de cel mult trei ori între două repausuri săptămânale. Fracționat — întâi cel puțin 3 h, apoi cel puțin 9 h. Repausul trebuie să se încheie în 24 de ore de la începutul turei.';
+
+  @override
+  String get drivingCorrect => 'Corectează conducerea pe zi';
+
+  @override
+  String get drivingLimits => 'Limite';
+
+  @override
+  String get drivingUsedUp => 'folosit complet';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'de două ori pe săptămână · rămân ×$count';
+  }
+
+  @override
+  String get drivingNoExtensions =>
+      'prelungirile din această săptămână au fost folosite';
+
+  @override
+  String get drivingDailyRule =>
+      'Conducerea zilnică — timpul la volan între două repausuri zilnice: cel mult 9 h, de două ori pe săptămână — până la 10 h. Săptămâna începe luni la 00:00.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'săptămâna din $date';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours h — pe săptămână';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours h — în două săptămâni';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'săptămâna trecută $previous · încă $left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'Limita de două săptămâni se termină mai devreme: săptămâna aceasta mai puteți $left.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'Turele săptămânii';
+
+  @override
+  String get drivingNoShifts => 'Săptămâna aceasta nu există încă ture';
+
+  @override
+  String get drivingWeekRule =>
+      'Săptămâna — de luni 00:00 până duminică 24:00, ca la tahograf. Pe săptămână — cel mult 56 h de conducere, în două săptămâni consecutive — cel mult 90 h.';
+
+  @override
   String get workdayEndDay => 'Încheie ziua';
 
   @override

@@ -14,10 +14,12 @@ import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/compensation_row.dart';
-import 'package:tachogo/features/home/corrections.dart';
+import 'package:tachogo/features/home/daily_driving_screen.dart';
+import 'package:tachogo/features/home/daily_rest_screen.dart';
 import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/limit_row.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
+import 'package:tachogo/features/home/weekly_driving_screen.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
 
@@ -49,14 +51,11 @@ StatusChip? _chip(
 Color _barColor(BuildContext context, Tone tone, Color normal) =>
     tone == Tone.violation ? context.colors.errorText : normal;
 
-void _openWorkday(BuildContext context) =>
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (_) => const WorkdayScreen()));
+void _openWorkday(BuildContext context) => openWorkdayScreen(context);
 
 void _openBreak(BuildContext context) => openBreakScreen(context);
 
-void _openWeeklyRest(BuildContext context) => Navigator.of(context)
-    .push(MaterialPageRoute<void>(builder: (_) => const WeeklyRestScreen()));
+void _openWeeklyRest(BuildContext context) => openWeeklyRestScreen(context);
 
 // ───────────────────────── Сегодня ─────────────────────────
 
@@ -171,10 +170,9 @@ class WorkdayRow extends ConsumerWidget {
   }
 }
 
-typedef _Daily = ({int value, int extensionsLeft, Tone tone, bool shift});
+typedef _Daily = ({int value, int extensionsLeft, Tone tone});
 
 _Daily _daily(ComplianceSnapshot s) => (
-  shift: s.shift != null,
   value: minutes(s.dailyDriving),
   extensionsLeft: s.extensionsLeft,
   tone: toneOf(
@@ -197,10 +195,8 @@ class DailyDrivingRow extends ConsumerWidget {
     const extended = EuLimits.dailyDrivingExtended;
     return LimitRow(
       title: l.rowDailyDriving,
-      // Корректировка — правка журнала (экран 7)
-      onTap: s.shift
-          ? () => unawaited(openDrivingCorrection(context, ref))
-          : null,
+      // Детали и оттуда — правка вождения за день (экран 7)
+      onTap: () => openDailyDrivingScreen(context),
       chip: _chip(
         context,
         s.tone,
@@ -323,6 +319,7 @@ class TodaySection extends StatelessWidget {
 
 typedef _Rest = ({
   int? daily,
+  DateTime? dailyStart,
   int? weekly,
   int reducedLeft,
   bool reducedWeekly,
@@ -331,15 +328,47 @@ typedef _Rest = ({
 });
 
 _Rest _rest(ComplianceSnapshot s) {
-  final rest = s.offDutyRest;
+  // Суточный — и отдых после смены, и отдых внутри неё: пока он короче
+  // 9 ч, это перерыв, но водитель видит, сколько ещё до 9 и 11 ч
+  final daily = dailyRestOf(s);
+  final dailyResting = daily.restStart != null && !daily.weekly;
   return (
-    daily: rest != null && !rest.weekly ? minutes(rest.duration) : null,
-    weekly: rest != null && rest.weekly ? minutes(rest.duration) : null,
+    daily: dailyResting ? daily.rest : null,
+    dailyStart: dailyResting ? daily.restStart : null,
+    weekly: daily.weekly ? daily.rest : null,
     reducedLeft: s.reducedRestsLeft,
     reducedWeekly: s.reducedWeeklyRestAvailable,
     deadline: s.weeklyRestDeadline,
     compensation: s.compensation != null || s.restCompensation != null,
   );
+}
+
+/// Подписи строки идущего суточного отдыха: ближайшая веха — 9 ч, затем
+/// 11 ч.
+(String, String?) _dailyRestCaptions(
+  AppLocalizations l,
+  int minutes,
+  DateTime start,
+) {
+  final rest = _m(minutes);
+  String until(Duration hours) => l.limitLeftUntil(
+    hours.inHours,
+    formatHm(atLeastZero(hours - rest)),
+    formatClock(start.add(hours)),
+  );
+  if (rest < EuLimits.dailyRestReduced) {
+    return (
+      until(EuLimits.dailyRestReduced),
+      l.limitUntil(
+        EuLimits.dailyRestRegular.inHours,
+        formatClock(start.add(EuLimits.dailyRestRegular)),
+      ),
+    );
+  }
+  if (rest < EuLimits.dailyRestRegular) {
+    return (until(EuLimits.dailyRestRegular), null);
+  }
+  return (l.dailyRestCaption, null);
 }
 
 class RestSection extends ConsumerWidget {
@@ -357,6 +386,11 @@ class RestSection extends ConsumerWidget {
           ? l.statusNotStarted
           : l.statusInProgress(formatHm(_m(minutes))),
     );
+    final daily = s.daily;
+    final dailyStart = s.dailyStart;
+    final (dailyLeft, dailyRight) = daily != null && dailyStart != null
+        ? _dailyRestCaptions(l, daily, dailyStart)
+        : (l.dailyRestCaption, l.dailyRestSplit);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -365,7 +399,7 @@ class RestSection extends ConsumerWidget {
           children: [
             LimitRow(
               title: l.rowDailyRest,
-              onTap: () => _openWorkday(context),
+              onTap: () => openDailyRestScreen(context),
               chip: StatusChip(
                 l.chipTimes(EuLimits.dailyRestReduced.inHours, s.reducedLeft),
               ),
@@ -379,8 +413,8 @@ class RestSection extends ConsumerWidget {
                 ],
                 color: colors.rest,
               ),
-              left: l.dailyRestCaption,
-              right: l.dailyRestSplit,
+              left: dailyLeft,
+              right: dailyRight,
             ),
             LimitRow(
               title: l.rowWeeklyRest,
@@ -551,6 +585,7 @@ class WeeklyDrivingRow extends ConsumerWidget {
     const limit = EuLimits.weeklyDriving;
     return LimitRow(
       title: l.rowWeeklyDriving,
+      onTap: () => openWeeklyDrivingScreen(context),
       chip: _chip(context, s.weeklyTone, soon: l.chipLimitSoon),
       value: _duration(context, value, tone: s.weeklyTone),
       bar: LimitBar(
@@ -577,6 +612,7 @@ class FortnightRow extends ConsumerWidget {
     final tone = s.fortnightTone;
     return LimitRow(
       title: l.rowFortnightDriving,
+      onTap: () => openWeeklyDrivingScreen(context),
       chip: tone == Tone.neutral && s.fortnightLimiting
           ? StatusChip(l.chipLimiting, tone: Tone.warning)
           : _chip(context, tone, soon: l.chipLimitSoon),

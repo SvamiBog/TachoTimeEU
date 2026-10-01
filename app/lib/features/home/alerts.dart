@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -8,7 +10,14 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
+import 'package:tachogo/features/home/break_screen.dart';
+import 'package:tachogo/features/home/card_reading.dart';
+import 'package:tachogo/features/home/daily_driving_screen.dart';
+import 'package:tachogo/features/home/daily_rest_screen.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
+import 'package:tachogo/features/home/weekly_driving_screen.dart';
+import 'package:tachogo/features/home/weekly_rest_screen.dart';
+import 'package:tachogo/features/home/workday_screen.dart';
 
 /// Предупреждения и нарушения из движка: нарушения выше предупреждений,
 /// длительности — до минуты, чтобы секундный тик не перестраивал список.
@@ -34,6 +43,30 @@ ValueList<Infringement> _alerts(ComplianceSnapshot s) {
   ]);
 }
 
+/// Экран лимита, о котором предупреждение: там — подробности и что делать.
+void openAlertDetails(BuildContext context, InfringementType type) =>
+    switch (type) {
+      InfringementType.continuousExceeded ||
+      InfringementType.breakSoon => openBreakScreen(context),
+      InfringementType.dailyDriveExceeded ||
+      InfringementType.dailyDriveSoon ||
+      InfringementType.extensionInUse => openDailyDrivingScreen(context),
+      InfringementType.shiftExceeded ||
+      InfringementType.shiftSoon => openWorkdayScreen(context),
+      InfringementType.weeklyDriveExceeded ||
+      InfringementType.weeklyDriveSoon ||
+      InfringementType.fortnightDriveExceeded ||
+      InfringementType.fortnightDriveSoon => openWeeklyDrivingScreen(context),
+      InfringementType.weeklyRestOverdue ||
+      InfringementType.weeklyRestSoon ||
+      InfringementType.weeklyRestContinue ||
+      InfringementType.compensationSoon ||
+      InfringementType.compensationOverdue => openWeeklyRestScreen(context),
+      InfringementType.reducedRestsExceeded => openDailyRestScreen(context),
+      InfringementType.cardOverdue ||
+      InfringementType.cardSoon => unawaited(showCardSheet(context)),
+    };
+
 class AlertsSection extends ConsumerWidget {
   const new({super.key});
 
@@ -53,7 +86,10 @@ class AlertsSection extends ConsumerWidget {
               AppSpacing.screenPadding,
               0,
             ),
-            child: AlertCard(alert),
+            child: AlertCard(
+              alert,
+              onTap: () => openAlertDetails(context, alert.type),
+            ),
           ),
       ],
     );
@@ -61,10 +97,12 @@ class AlertsSection extends ConsumerWidget {
 }
 
 /// Плашка нарушения: заголовок, текст и статья — её видит инспектор.
+/// Касание — экран лимита ([openAlertDetails]).
 class AlertCard extends StatelessWidget {
-  const new(this.infringement, {super.key});
+  const new(this.infringement, {this.onTap, super.key});
 
   final Infringement infringement;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -88,48 +126,63 @@ class AlertCard extends StatelessWidget {
           color: c.background,
           borderRadius: BorderRadius.circular(AppRadius.badge),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                switch (severity) {
-                  InfringementSeverity.violation => Icons.warning_amber_rounded,
-                  InfringementSeverity.warning => Icons.error_outline,
-                  InfringementSeverity.info => Icons.info_outline,
-                },
-                size: 20,
-                color: c.foreground,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      text.title,
-                      style: AppTextStyles.body.copyWith(
-                        color: c.foreground,
-                        fontWeight: FontWeight.w600,
-                      ),
+        // Плашка — не Material: рябь рисует свой прозрачный слой
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(AppRadius.badge),
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    switch (severity) {
+                      InfringementSeverity.violation =>
+                        Icons.warning_amber_rounded,
+                      InfringementSeverity.warning => Icons.error_outline,
+                      InfringementSeverity.info => Icons.info_outline,
+                    },
+                    size: 20,
+                    color: c.foreground,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          text.title,
+                          style: AppTextStyles.body.copyWith(
+                            color: c.foreground,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          text.text,
+                          style: AppTextStyles.caption.copyWith(
+                            color: c.foreground,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          text.article,
+                          style: AppTextStyles.small.copyWith(
+                            color: c.foreground,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      text.text,
-                      style: AppTextStyles.caption.copyWith(
-                        color: c.foreground,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      text.article,
-                      style: AppTextStyles.small.copyWith(color: c.foreground),
-                    ),
+                  ),
+                  if (onTap != null) ...[
+                    const SizedBox(width: 8),
+                    Icon(Icons.chevron_right, size: 20, color: c.foreground),
                   ],
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

@@ -20,6 +20,7 @@ import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
+import 'package:tachogo/features/home/daily_driving_screen.dart';
 import 'package:tachogo/features/home/home_screen.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
@@ -147,8 +148,10 @@ void main() {
       await pump(tester, const JournalScreen());
       await tap(tester, find.text('Смена'));
       expect(find.text('Новая смена'), findsOneWidget);
-      // 10 ч до сейчас, смена идёт — конца и отдыха ещё нет
-      expect(find.text(formatClock(u(23, 2))), findsOneWidget);
+      // JRN-09: начинается сейчас — сегодняшняя дата и текущее время,
+      // смена идёт — конца и отдыха ещё нет
+      expect(find.text(dateButton(u(23, 12))), findsOneWidget);
+      expect(find.text(formatClock(u(23, 12))), findsOneWidget);
       expect(find.text('Сейчас (идёт)'), findsOneWidget);
       expect(find.textContaining('Смена станет текущей'), findsOneWidget);
       await tap(tester, find.byTooltip('Сохранить'));
@@ -156,8 +159,44 @@ void main() {
       expect(find.byType(ShiftEditScreen), findsNothing);
       expect(await manual(tester), isEmpty);
       final m = snapshot(await periods(tester));
-      expect(m.shift?.start, u(23, 2));
+      expect(m.shift?.start, u(23, 12));
       expect(m.currentMode, DriverMode.otherWork);
+      await unmount(tester);
+    });
+
+    testWidgets('JRN-09: после вчерашней смены с отдыхом — тоже сегодня и '
+        'сейчас, «Суточный» — конец сейчас', (tester) async {
+      await defaultCountry(tester, 'PL');
+      // Вчера 06:00–16:00, отдых после неё идёт
+      await io(
+        tester,
+        () => JournalEditRepository(db, SettingsRepository(db)).saveManualShift(
+          ManualShift(
+            start: u(22, 6),
+            end: u(22, 16),
+            driving: h(8),
+            restKind: RestKind.daily,
+          ),
+          const ShiftMeta(startCountry: 'PL', endCountry: 'PL'),
+        ),
+      );
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.byIcon(Icons.add));
+      expect(find.text(dateButton(u(23, 12))), findsOneWidget);
+      expect(find.text(formatClock(u(23, 12))), findsOneWidget);
+      expect(find.text('Сейчас (идёт)'), findsOneWidget);
+
+      // Смена закончилась: конец — сейчас, начало — 10 ч до него
+      await tap(tester, find.text('Суточный').last);
+      expect(find.text('Сейчас (идёт)'), findsNothing);
+      expect(find.text(formatClock(u(23, 2))), findsOneWidget);
+      expect(find.text(formatClock(u(23, 12))), findsOneWidget);
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      expect(find.byType(ShiftEditScreen), findsNothing);
+      final saved = (await manual(tester)).last.shift;
+      expect(saved.start, u(23, 2));
+      expect(saved.end, u(23, 12));
       await unmount(tester);
     });
 
@@ -427,7 +466,10 @@ void main() {
         300,
         scrollable: find.byType(Scrollable).first,
       );
+      // Строка открывает подробности, правка — оттуда
       await tap(tester, find.text('Суточное вождение'));
+      expect(find.byType(DailyDrivingScreen), findsOneWidget);
+      await tap(tester, find.text('Исправить вождение за день'));
       expect(find.text('Посчитано приложением'), findsOneWidget);
       expect(find.text('Можно от 0:00 до 2:30'), findsOneWidget);
       // Больше предела — ошибка, сохранить нельзя

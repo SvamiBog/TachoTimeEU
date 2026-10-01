@@ -367,6 +367,118 @@ class AppLocalizationsUk extends AppLocalizations {
       'Щоденний відпочинок має закінчитися протягом 24 годин від початку зміни. Скорочений відпочинок 9 год можна брати не більше трьох разів між щотижневими відпочинками.';
 
   @override
+  String get dailyRestOngoing => 'Відпочинок триває';
+
+  @override
+  String get dailyRestStartBy => 'Почати відпочинок не пізніше';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'скорочений $hours год — до $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Скільки відпочивати';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'перша частина розділеного',
+      'reduced': 'скорочений',
+      'other': 'повний',
+    });
+    return '$hours год — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'набрано';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'ще $left · залишилося ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'скорочень до щотижневого відпочинку не залишилося';
+
+  @override
+  String get dailyRestSplitHint =>
+      'потім відпочинок від 9 год — разом від 12 год';
+
+  @override
+  String get dailyRestStartLatest => 'почати не пізніше';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'почати не пізніше · залишилося ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Поки відпочинок коротший за 9 год, це перерва в зміні. З 9 год він стане щоденним і завершить зміну. Закінчили роботу — «Завершити день».';
+
+  @override
+  String get dailyRestRule =>
+      'Щоденний відпочинок — 11 год поспіль. Скорочений — 9 год, не більше трьох разів між щотижневими відпочинками. Розділений — спочатку від 3 год, потім від 9 год. Відпочинок має закінчитися протягом 24 годин від початку зміни.';
+
+  @override
+  String get drivingCorrect => 'Виправити керування за день';
+
+  @override
+  String get drivingLimits => 'Ліміти';
+
+  @override
+  String get drivingUsedUp => 'вибрано повністю';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'двічі на тиждень · залишилося ×$count';
+  }
+
+  @override
+  String get drivingNoExtensions => 'подовження на цьому тижні використано';
+
+  @override
+  String get drivingDailyRule =>
+      'Щоденне керування — час за кермом між двома щоденними відпочинками: не більше 9 год, двічі на тиждень — до 10 год. Тиждень починається в понеділок о 00:00.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'тиждень з $date';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours год — за тиждень';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours год — за два тижні';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'минулий тиждень $previous · ще $left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'Раніше закінчиться ліміт двох тижнів: на цьому тижні можна ще $left.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'Зміни тижня';
+
+  @override
+  String get drivingNoShifts => 'На цьому тижні змін ще немає';
+
+  @override
+  String get drivingWeekRule =>
+      'Тиждень — з понеділка 00:00 до неділі 24:00, як на тахографі. За тиждень — не більше 56 год керування, за два тижні поспіль — не більше 90 год.';
+
+  @override
   String get workdayEndDay => 'Завершити день';
 
   @override

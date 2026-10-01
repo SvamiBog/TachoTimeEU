@@ -153,23 +153,23 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
   /// Значения формы из смены — один раз, когда журнал посчитан.
   void _init(Journal journal, String? defaultCountry) {
     final s = _shift;
-    final now = floorTimeToMinute(journal.now);
-    final slot = s == null ? freeShiftSlot(journal.shifts, now) : null;
+    final now = ref.read(clockProvider);
     final meta = s == null ? ShiftMeta.empty : journal.metaOf(s);
     final manual = s?.manual;
-    // Новая смена по умолчанию идёт: отдых водитель отметит, когда закончит
-    // её. Если после неё в журнале уже есть смены, идти она не может.
+    // Новая смена по умолчанию идёт с текущей минуты: водитель открывает
+    // её, когда начинает, а отдых отметит, когда закончит (JRN-09). Пока
+    // идёт другая смена, новая может быть только прошлой.
     final restKind =
         manual?.restKind ??
         s?.rest.kind ??
         widget.presetRest ??
-        (journal.shifts.any((x) => x.start.isAfter(slot!.start))
+        (journal.shifts.any((x) => x.end == null)
             ? RestKind.daily
             : RestKind.none);
+    final slot = s == null
+        ? newShiftTimes(journal.shifts, now, ongoing: restKind == RestKind.none)
+        : null;
     final startCountry = meta.startCountry ?? defaultCountry;
-    if (slot != null && restKind == RestKind.none) {
-      _beforeNone = (end: slot.end, country: startCountry);
-    }
     final initial = _Form(
       start: s?.start ?? slot!.start,
       end: s == null ? (restKind == RestKind.none ? null : slot!.end) : s.end,
@@ -403,11 +403,24 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     f.restKind = kind;
     if (previous == RestKind.none) {
       final before = _beforeNone;
-      f.end =
-          before?.end ??
-          (_liveEnded
-              ? _initial!.end
-              : floorTimeToMinute(journal?.now ?? f.start));
+      final now = ref.read(clockProvider);
+      if (before == null && _isNew) {
+        // Новая смена закончилась — сейчас; начало, если водитель его не
+        // менял, — по умолчанию для завершённой смены (JRN-09)
+        final done = newShiftTimes(
+          journal?.shifts ?? const [],
+          now,
+          ongoing: false,
+        );
+        f.end = done.end;
+        if (f.start == _initial!.start || !f.start.isBefore(done.end)) {
+          f.start = done.start;
+        }
+      } else {
+        f.end =
+            before?.end ??
+            (_liveEnded ? _initial!.end : floorTimeToMinute(now));
+      }
       f.endCountry ??= before?.country ?? (_isNew ? f.startCountry : null);
     }
   });

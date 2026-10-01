@@ -92,6 +92,15 @@ class LimitRow extends StatelessWidget {
                   ),
                   null => const SizedBox.shrink(),
                 },
+                // «›» — у строки есть экран с подробностями
+                if (this.onTap != null) ...[
+                  const SizedBox(width: 2),
+                  Icon(
+                    Icons.chevron_right,
+                    size: 20,
+                    color: colors.textSecondary,
+                  ),
+                ],
               ],
             ),
           ),

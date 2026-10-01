@@ -364,6 +364,118 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die tägliche Ruhezeit muss innerhalb von 24 Stunden nach Schichtbeginn enden. Die reduzierte Ruhezeit von 9 Std. ist höchstens dreimal zwischen zwei wöchentlichen Ruhezeiten erlaubt.';
 
   @override
+  String get dailyRestOngoing => 'Ruhezeit läuft';
+
+  @override
+  String get dailyRestStartBy => 'Ruhezeit spätestens beginnen';
+
+  @override
+  String dailyRestReducedBy(int hours, String time) {
+    return 'reduziert $hours Std. — bis $time';
+  }
+
+  @override
+  String get dailyRestOptions => 'Wie lange ruhen';
+
+  @override
+  String dailyRestMilestone(int hours, String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'split': 'erster Teil der aufgeteilten Ruhezeit',
+      'reduced': 'reduziert',
+      'other': 'regelmäßig',
+    });
+    return '$hours Std. — $_temp0';
+  }
+
+  @override
+  String get dailyRestReached => 'erreicht';
+
+  @override
+  String dailyRestLeftCount(String left, int count) {
+    return 'noch $left · noch ×$count';
+  }
+
+  @override
+  String get dailyRestNoReduced =>
+      'bis zur wöchentlichen Ruhezeit keine Reduzierungen mehr';
+
+  @override
+  String get dailyRestSplitHint =>
+      'danach Ruhezeit ab 9 Std. — insgesamt ab 12 Std.';
+
+  @override
+  String get dailyRestStartLatest => 'spätestens beginnen';
+
+  @override
+  String dailyRestStartLatestCount(int count) {
+    return 'spätestens beginnen · noch ×$count';
+  }
+
+  @override
+  String get dailyRestInShift =>
+      'Solange die Ruhezeit kürzer als 9 Std. ist, ist sie eine Pause in der Schicht. Ab 9 Std. wird sie zur täglichen Ruhezeit und beendet die Schicht. Arbeit beendet? „Tag beenden“.';
+
+  @override
+  String get dailyRestRule =>
+      'Tägliche Ruhezeit: 11 Std. am Stück. Reduziert: 9 Std., höchstens dreimal zwischen zwei wöchentlichen Ruhezeiten. Aufgeteilt: zuerst mindestens 3 Std., dann mindestens 9 Std. Die Ruhezeit muss innerhalb von 24 Stunden nach Schichtbeginn enden.';
+
+  @override
+  String get drivingCorrect => 'Tageslenkzeit korrigieren';
+
+  @override
+  String get drivingLimits => 'Grenzen';
+
+  @override
+  String get drivingUsedUp => 'vollständig genutzt';
+
+  @override
+  String drivingExtensionsLeft(int count) {
+    return 'zweimal pro Woche · noch ×$count';
+  }
+
+  @override
+  String get drivingNoExtensions => 'Verlängerungen dieser Woche aufgebraucht';
+
+  @override
+  String get drivingDailyRule =>
+      'Tageslenkzeit ist die Zeit am Steuer zwischen zwei täglichen Ruhezeiten: höchstens 9 Std., zweimal pro Woche bis zu 10 Std. Die Woche beginnt montags um 00:00.';
+
+  @override
+  String drivingWeekSince(String date) {
+    return 'Woche ab $date';
+  }
+
+  @override
+  String drivingWeekLimit(int hours) {
+    return '$hours Std. — pro Woche';
+  }
+
+  @override
+  String drivingFortnightLimit(int hours) {
+    return '$hours Std. — in zwei Wochen';
+  }
+
+  @override
+  String drivingFortnightHint(String previous, String left) {
+    return 'Vorwoche $previous · noch $left';
+  }
+
+  @override
+  String drivingFortnightLimits(String left) {
+    return 'Die Zwei-Wochen-Grenze endet früher: diese Woche noch $left.';
+  }
+
+  @override
+  String get drivingWeekShifts => 'Schichten der Woche';
+
+  @override
+  String get drivingNoShifts => 'Diese Woche noch keine Schichten';
+
+  @override
+  String get drivingWeekRule =>
+      'Die Woche läuft von Montag 00:00 bis Sonntag 24:00, wie im Fahrtenschreiber. Pro Woche höchstens 56 Std. Lenkzeit, in zwei aufeinanderfolgenden Wochen höchstens 90 Std.';
+
+  @override
   String get workdayEndDay => 'Tag beenden';
 
   @override

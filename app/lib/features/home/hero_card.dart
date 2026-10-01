@@ -12,7 +12,10 @@ import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/features/home/break_screen.dart';
+import 'package:tachogo/features/home/daily_rest_screen.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
+import 'package:tachogo/features/home/weekly_rest_screen.dart';
+import 'package:tachogo/features/home/workday_screen.dart';
 
 /// Главная карточка: кольцо, плашка о перерыве, текущий режим.
 class HeroCard extends StatelessWidget {
@@ -46,7 +49,9 @@ class HeroCard extends StatelessWidget {
   );
 }
 
-enum _RingKind { untilBreak, onBreak, dailyRest, weeklyRest }
+/// [resting] — отдых внутри смены, когда перерыв уже засчитан (или
+/// вождения ещё не было): кольцо копит его к суточному отдыху 11 ч.
+enum _RingKind { untilBreak, onBreak, resting, dailyRest, weeklyRest }
 
 typedef _Ring = ({
   _RingKind kind,
@@ -73,12 +78,13 @@ _Ring _ring(ComplianceSnapshot s) {
     );
   }
   if (s.currentBreak case final b? when s.shift != null) {
+    final counted = s.continuousDriving == Duration.zero;
     return (
-      kind: _RingKind.onBreak,
+      kind: counted ? _RingKind.resting : _RingKind.onBreak,
       big: minutes(b.duration),
       continuous: continuous,
       progress: minutes(b.duration),
-      target: minutes(b.required),
+      target: minutes(counted ? EuLimits.dailyRestRegular : b.required),
       exceeded: false,
     );
   }
@@ -93,7 +99,9 @@ _Ring _ring(ComplianceSnapshot s) {
   );
 }
 
-/// Кольцо: до перерыва, идущий перерыв или отдых после смены.
+/// Кольцо: до перерыва, идущий перерыв, отдых в смене или после неё.
+/// Касание — экран того, что показывает кольцо: перерыв, суточный или
+/// недельный отдых.
 class HeroRing extends ConsumerWidget {
   const new({super.key});
 
@@ -112,6 +120,7 @@ class HeroRing extends ConsumerWidget {
     final label = switch (ring.kind) {
       _RingKind.untilBreak => l.heroUntilBreak,
       _RingKind.onBreak => l.heroBreak,
+      _RingKind.resting => l.modeName(DriverMode.rest),
       _RingKind.dailyRest => l.heroDailyRest,
       _RingKind.weeklyRest => l.heroWeeklyRest,
     };
@@ -126,7 +135,12 @@ class HeroRing extends ConsumerWidget {
     return SizedBox.square(
       dimension: size,
       child: GestureDetector(
-        onTap: () => openBreakScreen(context),
+        onTap: () => switch (ring.kind) {
+          _RingKind.untilBreak || _RingKind.onBreak => openBreakScreen(context),
+          _RingKind.resting ||
+          _RingKind.dailyRest => openDailyRestScreen(context),
+          _RingKind.weeklyRest => openWeeklyRestScreen(context),
+        },
         child: CustomPaint(
           painter: _RingPainter(
             fraction: ring.target == 0 ? 0 : ring.progress / ring.target,
@@ -284,7 +298,9 @@ _Mode _mode(ComplianceSnapshot s) {
   );
 }
 
-/// Текущий режим: «● Отдых с 11:37      0:00».
+/// Текущий режим: «● Отдых с 11:37      0:00». Касание — подробности
+/// того, что сейчас важно в этом режиме: за рулём — перерыв, на отдыхе —
+/// суточный отдых, на работе и в готовности — рабочий день.
 class CurrentModeRow extends ConsumerWidget {
   const new({super.key});
 
@@ -308,7 +324,7 @@ class CurrentModeRow extends ConsumerWidget {
     }
     final duration = Duration(minutes: state.duration);
     final name = l.modeName(mode);
-    return Padding(
+    final row = Padding(
       padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
       child: Row(
         children: [
@@ -349,7 +365,26 @@ class CurrentModeRow extends ConsumerWidget {
             spoken: '$name, ${spokenDuration(l, duration)}',
             style: AppTextStyles.modeTimer,
           ),
+          const SizedBox(width: 4),
+          Icon(Icons.chevron_right, size: 20, color: colors.textSecondary),
         ],
+      ),
+    );
+    // Карточка — не Material: рябь рисует свой прозрачный слой
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadius.badge),
+        onTap: () => switch (mode) {
+          DriverMode.driving => openBreakScreen(context),
+          DriverMode.rest => openDailyRestScreen(context),
+          DriverMode.otherWork ||
+          DriverMode.availability => openWorkdayScreen(context),
+        },
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: AppSize.minTouch),
+          child: Align(alignment: Alignment.centerLeft, child: row),
+        ),
       ),
     );
   }
