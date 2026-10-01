@@ -68,7 +68,7 @@ class AppDatabase extends _$AppDatabase {
   // При изменении схемы: увеличить версию, затем
   // `dart run drift_dev make-migrations` и дописать шаг в onUpgrade.
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -84,6 +84,11 @@ class AppDatabase extends _$AppDatabase {
         // Ручные смены и заметки к сменам (Фаза 2, журнал).
         await m.createTable(schema.manualShifts);
         await m.addColumn(schema.shifts, schema.shifts.note);
+      },
+      from3To4: (m, schema) async {
+        // Недельный отдых, объявленный водителем (отзыв 01.10.2026).
+        final periods = schema.activityPeriods;
+        await m.addColumn(periods, periods.weeklyRest);
       },
     ),
     beforeOpen: (details) async {

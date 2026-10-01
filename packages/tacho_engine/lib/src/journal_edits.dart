@@ -15,8 +15,9 @@ import 'package:tacho_engine/src/timeline.dart';
 ///
 /// Нажатие на уже активный режим ничего не меняет (возвращается тот же
 /// список): иначе текущий отдых дробился бы на части и перерыв не
-/// засчитывался. Исключение — «Завершить день» ([dayEnd]) во время
-/// перерыва: текущий отдых становится концом рабочего дня.
+/// засчитывался. Исключение — «Завершить день» ([dayEnd]) и «Начать
+/// недельный отдых» ([weeklyRest]) во время перерыва: текущий отдых
+/// становится концом рабочего дня или недельным отдыхом.
 ///
 /// Испорченный журнал с несколькими открытыми записями чинится: лишние
 /// закрываются началом следующей записи.
@@ -30,17 +31,22 @@ List<ActivityPeriod> changeMode(
   DateTime now, {
   bool? ferry,
   bool dayEnd = false,
+  bool weeklyRest = false,
 }) {
   final open = periods.where((p) => p.isOpen).toList();
   final current = open.lastOrNull;
   final onFerry = ferry ?? current?.ferry ?? false;
+  final weekly = weeklyRest && mode.isRest;
   if (current != null && current.mode == mode) {
     final markDayEnd = dayEnd && !current.dayEnd;
-    if (open.length == 1 && !markDayEnd) return periods;
+    final markWeekly = weekly && !current.weeklyRest;
+    if (open.length == 1 && !markDayEnd && !markWeekly) return periods;
     return [
       for (final p in periods)
-        if (identical(p, current) && markDayEnd)
-          p.withDayEnd(dayEnd: true)
+        if (identical(p, current) && (markDayEnd || markWeekly))
+          p
+              .withDayEnd(dayEnd: p.dayEnd || dayEnd)
+              .withWeeklyRest(weeklyRest: p.weeklyRest || weekly)
         else if (!identical(p, current) && p.isOpen)
           p.close(_openEnd(periods, p, now))
         else
@@ -51,7 +57,13 @@ List<ActivityPeriod> changeMode(
   return [
     for (final p in periods)
       if (p.isOpen) p.close(_openEnd(periods, p, now)) else p,
-    ActivityPeriod(mode: mode, start: now, ferry: onFerry, dayEnd: dayEnd),
+    ActivityPeriod(
+      mode: mode,
+      start: now,
+      ferry: onFerry,
+      dayEnd: dayEnd,
+      weeklyRest: weekly,
+    ),
   ];
 }
 
@@ -88,9 +100,14 @@ DateTime _openEnd(
 }
 
 /// «Завершить день»: отдых, который считается концом смены, даже пока он
-/// короче 9 ч.
-List<ActivityPeriod> endDay(List<ActivityPeriod> periods, DateTime now) =>
-    changeMode(periods, DriverMode.rest, now, dayEnd: true);
+/// короче 9 ч. [weekly] — «Начать недельный отдых»: пока отдых идёт, он
+/// недельный ([ActivityPeriod.weeklyRest]).
+List<ActivityPeriod> endDay(
+  List<ActivityPeriod> periods,
+  DateTime now, {
+  bool weekly = false,
+}) =>
+    changeMode(periods, DriverMode.rest, now, dayEnd: true, weeklyRest: weekly);
 
 /// Переносит начало записи [target]. Если начало сдвигается раньше,
 /// предыдущие записи укорачиваются или удаляются; если позже — предыдущая

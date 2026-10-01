@@ -812,4 +812,143 @@ void main() {
       await unmount(tester);
     });
   });
+
+  group('JRN-10: недельный отдых, объявленный водителем', () {
+    // Отзыв водителя 01.10.2026: в журнале выбран недельный отдых, а главная
+    // показывала суточный, экран 9 — «недельный не начат».
+    Future<void> openShift(WidgetTester tester, String time) async {
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.text(time));
+      await tap(tester, find.text('Изменить смену'));
+      expect(find.byType(ShiftEditScreen), findsOneWidget);
+    }
+
+    /// Смена 06:00–10:00 по записям, с 10:00 — отдых «конец дня», сейчас
+    /// 12:00.
+    List<ActivityPeriod> dayEnded() {
+      final log = consecutive(DateTime.utc(2026, 9, 22, 19), [
+        (DriverMode.rest, h(11)),
+        (DriverMode.driving, h(4)),
+        (DriverMode.rest, h(2)),
+      ], open: true);
+      return [...log.take(2), log.last.withDayEnd(dayEnd: true)];
+    }
+
+    testWidgets('смена по записям: «Недельный» — главная и экран 9 '
+        'показывают недельный отдых; «Суточный» — снова суточный', (
+      tester,
+    ) async {
+      await defaultCountry(tester, 'PL');
+      await seed(tester, dayEnded());
+      expect(snapshot(await periods(tester)).status, DriverStatus.dailyRest);
+
+      await openShift(tester, span(u(23, 6), u(23, 10)));
+      await tap(tester, find.text('Недельный'));
+      await tap(tester, find.byTooltip('Сохранить'));
+      var after = await periods(tester);
+      expect(after.last.weeklyRest, isTrue);
+      expect(after.last.start, u(23, 10));
+      expect(snapshot(after).status, DriverStatus.weeklyRest);
+      await unmount(tester);
+
+      await pump(tester, const HomeScreen());
+      expect(find.text('НЕДЕЛЬНЫЙ ОТДЫХ'), findsOneWidget);
+      await unmount(tester);
+      await pump(tester, const WeeklyRestScreen());
+      expect(find.text('НЕДЕЛЬНЫЙ ОТДЫХ ИДЁТ'), findsOneWidget);
+      expect(find.text(formatHm(h(2))), findsOneWidget);
+      await unmount(tester);
+
+      // Форма открывается с «Недельный»; водитель передумал
+      await openShift(tester, span(u(23, 6), u(23, 10)));
+      final tabs = tester.widget<SegmentedTabs<RestKind>>(
+        find.byType(SegmentedTabs<RestKind>),
+      );
+      expect(tabs.value, RestKind.weekly);
+      await tap(tester, find.text('Суточный'));
+      await tap(tester, find.byTooltip('Сохранить'));
+      after = await periods(tester);
+      expect(after.last.weeklyRest, isFalse);
+      expect(snapshot(after).status, DriverStatus.dailyRest);
+      await unmount(tester);
+    });
+
+    testWidgets('смена стала ручной после «Завершить день» с вождением — '
+        '«Недельный» у неё, отдых-запись тот же', (tester) async {
+      await defaultCountry(tester, 'PL');
+      final log = consecutive(DateTime.utc(2026, 9, 22, 19), [
+        (DriverMode.rest, h(11)),
+        (DriverMode.otherWork, h(4)),
+        (DriverMode.rest, h(2)),
+      ], open: true);
+      await seed(tester, log.take(2).toList());
+      // «Завершить день» в 10:00 с вождением 3:00; страны переезжают к
+      // ручной смене
+      final edits = JournalEditRepository(
+        db,
+        SettingsRepository(db),
+        clock: () => u(23, 10),
+      );
+      await io(
+        tester,
+        () => edits.setShiftMeta(
+          u(23, 6),
+          const ShiftMeta(startCountry: 'PL', endCountry: 'D'),
+        ),
+      );
+      await io(tester, () => edits.endDay(driving: h(3)));
+      expect((await manual(tester)).single.shift.restKind, RestKind.daily);
+
+      await openShift(tester, span(u(23, 6), u(23, 10)));
+      await tap(tester, find.text('Недельный'));
+      await tap(tester, find.byTooltip('Сохранить'));
+      final saved = (await manual(tester)).single.shift;
+      expect(saved.restKind, RestKind.weekly);
+      final after = await periods(tester);
+      expect(after.last.start, u(23, 10));
+      expect(after.last.isOpen, isTrue);
+      expect(snapshot(after, [saved]).status, DriverStatus.weeklyRest);
+      await unmount(tester);
+    });
+
+    testWidgets('экран 9 на суточном отдыхе: «Начать отдых» — идущий отдых '
+        'становится недельным с его начала', (tester) async {
+      await seed(tester, dayEnded());
+      await pump(tester, const WeeklyRestScreen());
+      expect(find.text('НЕДЕЛЬНЫЙ ОТДЫХ ИДЁТ'), findsNothing);
+      await tap(tester, find.text('Начать отдых'));
+      final after = await periods(tester);
+      expect(after, hasLength(3));
+      expect(after.last.start, u(23, 10));
+      expect(after.last.weeklyRest, isTrue);
+      final s = snapshot(after);
+      expect(s.status, DriverStatus.weeklyRest);
+      expect(s.offDutyRest?.duration, h(2));
+      await unmount(tester);
+    });
+
+    testWidgets('экран 9 во время смены: «Начать отдых» — вождение за день, '
+        'затем недельный отдых с этого момента', (tester) async {
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 22, 19), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(6)),
+        ], open: true),
+      );
+      await pump(tester, const WeeklyRestScreen());
+      await tap(tester, find.text('Начать отдых'));
+      expect(find.text('Вождение за день'), findsOneWidget);
+      await tap(
+        tester,
+        find.widgetWithText(PrimaryButton, 'Начать отдых').last,
+      );
+      final after = await periods(tester);
+      expect(after.last.mode, DriverMode.rest);
+      expect(after.last.start, now);
+      expect(after.last.weeklyRest, isTrue);
+      expect(snapshot(after).status, DriverStatus.weeklyRest);
+      await unmount(tester);
+    });
+  });
 }

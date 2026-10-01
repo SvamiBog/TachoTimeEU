@@ -153,6 +153,7 @@ class JournalBackup {
             'note': p.note,
             'ferry': p.ferry,
             'dayEnd': p.dayEnd,
+            'weeklyRest': p.weeklyRest,
             'createdAt': _time(p.createdAt),
             'updatedAt': _time(p.updatedAt),
           },
@@ -253,6 +254,8 @@ class JournalBackup {
           note: Value(p.optString('note')),
           ferry: Value(p.boolean('ferry')),
           dayEnd: Value(p.boolean('dayEnd')),
+          // С 01.10.2026; в файлах прежних версий поля нет
+          weeklyRest: Value(p.optBoolean('weeklyRest')),
           createdAt: p.time('createdAt'),
           updatedAt: p.time('updatedAt'),
         ),
@@ -356,6 +359,13 @@ class _Fields {
   };
 
   bool boolean(String key) => switch (_map[key]) {
+    final bool b => b,
+    _ => _bad(key),
+  };
+
+  /// Поле, которого нет в файлах прежних версий приложения: нет — false.
+  bool optBoolean(String key) => switch (_map[key]) {
+    null => false,
     final bool b => b,
     _ => _bad(key),
   };

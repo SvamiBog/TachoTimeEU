@@ -104,6 +104,21 @@ class $ActivityPeriodsTable extends ActivityPeriods
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _weeklyRestMeta = const VerificationMeta(
+    'weeklyRest',
+  );
+  @override
+  late final GeneratedColumn<bool> weeklyRest = GeneratedColumn<bool>(
+    'weekly_rest',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("weekly_rest" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   late final GeneratedColumnWithTypeConverter<DateTime, DateTime> createdAt =
       GeneratedColumn<DateTime>(
@@ -133,6 +148,7 @@ class $ActivityPeriodsTable extends ActivityPeriods
     note,
     ferry,
     dayEnd,
+    weeklyRest,
     createdAt,
     updatedAt,
   ];
@@ -178,6 +194,12 @@ class $ActivityPeriodsTable extends ActivityPeriods
       context.handle(
         _dayEndMeta,
         dayEnd.isAcceptableOrUnknown(data['day_end']!, _dayEndMeta),
+      );
+    }
+    if (data.containsKey('weekly_rest')) {
+      context.handle(
+        _weeklyRestMeta,
+        weeklyRest.isAcceptableOrUnknown(data['weekly_rest']!, _weeklyRestMeta),
       );
     }
     return context;
@@ -232,6 +254,10 @@ class $ActivityPeriodsTable extends ActivityPeriods
       dayEnd: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}day_end'],
+      )!,
+      weeklyRest: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}weekly_rest'],
       )!,
       createdAt: $ActivityPeriodsTable.$convertercreatedAt.fromSql(
         attachedDatabase.typeMapping.read(
@@ -289,6 +315,10 @@ class ActivityPeriodRow extends DataClass
 
   /// Отдых начат как конец рабочего дня («Завершить день»).
   final bool dayEnd;
+
+  /// Отдых объявлен недельным: «Начать недельный отдых» или недельный
+  /// отдых после смены в журнале (`ActivityPeriod.weeklyRest`).
+  final bool weeklyRest;
   final DateTime createdAt;
   final DateTime updatedAt;
   const ActivityPeriodRow({
@@ -301,6 +331,7 @@ class ActivityPeriodRow extends DataClass
     this.note,
     required this.ferry,
     required this.dayEnd,
+    required this.weeklyRest,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -334,6 +365,7 @@ class ActivityPeriodRow extends DataClass
     }
     map['ferry'] = Variable<bool>(ferry);
     map['day_end'] = Variable<bool>(dayEnd);
+    map['weekly_rest'] = Variable<bool>(weeklyRest);
     {
       map['created_at'] = Variable<DateTime>(
         $ActivityPeriodsTable.$convertercreatedAt.toSql(createdAt),
@@ -360,6 +392,7 @@ class ActivityPeriodRow extends DataClass
       note: note == null && nullToAbsent ? const Value.absent() : Value(note),
       ferry: Value(ferry),
       dayEnd: Value(dayEnd),
+      weeklyRest: Value(weeklyRest),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -384,6 +417,7 @@ class ActivityPeriodRow extends DataClass
       note: serializer.fromJson<String?>(json['note']),
       ferry: serializer.fromJson<bool>(json['ferry']),
       dayEnd: serializer.fromJson<bool>(json['dayEnd']),
+      weeklyRest: serializer.fromJson<bool>(json['weeklyRest']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -405,6 +439,7 @@ class ActivityPeriodRow extends DataClass
       'note': serializer.toJson<String?>(note),
       'ferry': serializer.toJson<bool>(ferry),
       'dayEnd': serializer.toJson<bool>(dayEnd),
+      'weeklyRest': serializer.toJson<bool>(weeklyRest),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -420,6 +455,7 @@ class ActivityPeriodRow extends DataClass
     Value<String?> note = const Value.absent(),
     bool? ferry,
     bool? dayEnd,
+    bool? weeklyRest,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => ActivityPeriodRow(
@@ -432,6 +468,7 @@ class ActivityPeriodRow extends DataClass
     note: note.present ? note.value : this.note,
     ferry: ferry ?? this.ferry,
     dayEnd: dayEnd ?? this.dayEnd,
+    weeklyRest: weeklyRest ?? this.weeklyRest,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -448,6 +485,9 @@ class ActivityPeriodRow extends DataClass
       note: data.note.present ? data.note.value : this.note,
       ferry: data.ferry.present ? data.ferry.value : this.ferry,
       dayEnd: data.dayEnd.present ? data.dayEnd.value : this.dayEnd,
+      weeklyRest: data.weeklyRest.present
+          ? data.weeklyRest.value
+          : this.weeklyRest,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -465,6 +505,7 @@ class ActivityPeriodRow extends DataClass
           ..write('note: $note, ')
           ..write('ferry: $ferry, ')
           ..write('dayEnd: $dayEnd, ')
+          ..write('weeklyRest: $weeklyRest, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -482,6 +523,7 @@ class ActivityPeriodRow extends DataClass
     note,
     ferry,
     dayEnd,
+    weeklyRest,
     createdAt,
     updatedAt,
   );
@@ -498,6 +540,7 @@ class ActivityPeriodRow extends DataClass
           other.note == this.note &&
           other.ferry == this.ferry &&
           other.dayEnd == this.dayEnd &&
+          other.weeklyRest == this.weeklyRest &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -512,6 +555,7 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
   final Value<String?> note;
   final Value<bool> ferry;
   final Value<bool> dayEnd;
+  final Value<bool> weeklyRest;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const ActivityPeriodsCompanion({
@@ -524,6 +568,7 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
     this.note = const Value.absent(),
     this.ferry = const Value.absent(),
     this.dayEnd = const Value.absent(),
+    this.weeklyRest = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -537,6 +582,7 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
     this.note = const Value.absent(),
     this.ferry = const Value.absent(),
     this.dayEnd = const Value.absent(),
+    this.weeklyRest = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : mode = Value(mode),
@@ -555,6 +601,7 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
     Expression<String>? note,
     Expression<bool>? ferry,
     Expression<bool>? dayEnd,
+    Expression<bool>? weeklyRest,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -568,6 +615,7 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
       if (note != null) 'note': note,
       if (ferry != null) 'ferry': ferry,
       if (dayEnd != null) 'day_end': dayEnd,
+      if (weeklyRest != null) 'weekly_rest': weeklyRest,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -583,6 +631,7 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
     Value<String?>? note,
     Value<bool>? ferry,
     Value<bool>? dayEnd,
+    Value<bool>? weeklyRest,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
@@ -596,6 +645,7 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
       note: note ?? this.note,
       ferry: ferry ?? this.ferry,
       dayEnd: dayEnd ?? this.dayEnd,
+      weeklyRest: weeklyRest ?? this.weeklyRest,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -639,6 +689,9 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
     if (dayEnd.present) {
       map['day_end'] = Variable<bool>(dayEnd.value);
     }
+    if (weeklyRest.present) {
+      map['weekly_rest'] = Variable<bool>(weeklyRest.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(
         $ActivityPeriodsTable.$convertercreatedAt.toSql(createdAt.value),
@@ -664,6 +717,7 @@ class ActivityPeriodsCompanion extends UpdateCompanion<ActivityPeriodRow> {
           ..write('note: $note, ')
           ..write('ferry: $ferry, ')
           ..write('dayEnd: $dayEnd, ')
+          ..write('weeklyRest: $weeklyRest, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -2447,6 +2501,7 @@ typedef $$ActivityPeriodsTableCreateCompanionBuilder =
       Value<String?> note,
       Value<bool> ferry,
       Value<bool> dayEnd,
+      Value<bool> weeklyRest,
       required DateTime createdAt,
       required DateTime updatedAt,
     });
@@ -2461,6 +2516,7 @@ typedef $$ActivityPeriodsTableUpdateCompanionBuilder =
       Value<String?> note,
       Value<bool> ferry,
       Value<bool> dayEnd,
+      Value<bool> weeklyRest,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
     });
@@ -2520,6 +2576,11 @@ class $$ActivityPeriodsTableFilterComposer
 
   ColumnFilters<bool> get dayEnd => $composableBuilder(
     column: $table.dayEnd,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get weeklyRest => $composableBuilder(
+    column: $table.weeklyRest,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2590,6 +2651,11 @@ class $$ActivityPeriodsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get weeklyRest => $composableBuilder(
+    column: $table.weeklyRest,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2638,6 +2704,11 @@ class $$ActivityPeriodsTableAnnotationComposer
 
   GeneratedColumn<bool> get dayEnd =>
       $composableBuilder(column: $table.dayEnd, builder: (column) => column);
+
+  GeneratedColumn<bool> get weeklyRest => $composableBuilder(
+    column: $table.weeklyRest,
+    builder: (column) => column,
+  );
 
   GeneratedColumnWithTypeConverter<DateTime, DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -2692,6 +2763,7 @@ class $$ActivityPeriodsTableTableManager
                 Value<String?> note = const Value.absent(),
                 Value<bool> ferry = const Value.absent(),
                 Value<bool> dayEnd = const Value.absent(),
+                Value<bool> weeklyRest = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
               }) => ActivityPeriodsCompanion(
@@ -2704,6 +2776,7 @@ class $$ActivityPeriodsTableTableManager
                 note: note,
                 ferry: ferry,
                 dayEnd: dayEnd,
+                weeklyRest: weeklyRest,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),
@@ -2718,6 +2791,7 @@ class $$ActivityPeriodsTableTableManager
                 Value<String?> note = const Value.absent(),
                 Value<bool> ferry = const Value.absent(),
                 Value<bool> dayEnd = const Value.absent(),
+                Value<bool> weeklyRest = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
               }) => ActivityPeriodsCompanion.insert(
@@ -2730,6 +2804,7 @@ class $$ActivityPeriodsTableTableManager
                 note: note,
                 ferry: ferry,
                 dayEnd: dayEnd,
+                weeklyRest: weeklyRest,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),

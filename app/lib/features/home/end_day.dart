@@ -15,26 +15,38 @@ import 'package:tachogo/features/journal/pickers.dart';
 /// — вождение по записям, если режимы переключали; разошлось с ними — смена
 /// становится ручной с этим итогом (`endDayWithDriving`). Смены нет — день
 /// завершается сразу. true — день завершён, false — водитель передумал.
-Future<bool> finishDay(BuildContext context, WidgetRef ref) async {
+///
+/// [weekly] — «Начать недельный отдых» (экран 9): отдых сразу недельный, а
+/// без смены идущий отдых становится недельным (`declareWeeklyRest`).
+Future<bool> finishDay(
+  BuildContext context,
+  WidgetRef ref, {
+  bool weekly = false,
+}) async {
   final s = ref.read(complianceProvider).value;
   if (s == null || s.shift == null) {
-    await ref.read(activityRepositoryProvider).endDay();
+    await (weekly
+        ? ref.read(journalEditRepositoryProvider).startWeeklyRest()
+        : ref.read(activityRepositoryProvider).endDay());
     return true;
   }
   final l = context.l10n;
+  final title = weekly ? l.weeklyStartRest : l.workdayEndDay;
   final recorded = floorToMinute(s.dailyDriving);
   final driving = await showDurationSheet(
     context,
-    title: l.workdayEndDay,
+    title: title,
     subtitle: l.endDayDrivingHint,
     label: l.endDayDriving,
     initial: recorded,
     max: floorToMinute(s.shiftDuration),
     computed: recorded > Duration.zero ? recorded : null,
-    action: l.workdayEndDay,
+    action: title,
   );
   if (driving == null) return false;
-  await ref.read(journalEditRepositoryProvider).endDay(driving: driving);
+  await ref
+      .read(journalEditRepositoryProvider)
+      .endDay(driving: driving, weekly: weekly);
   return true;
 }
 

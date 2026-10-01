@@ -34,6 +34,10 @@ class ActivityPeriods extends Table {
 
   /// Отдых начат как конец рабочего дня («Завершить день»).
   BoolColumn get dayEnd => boolean().withDefault(const Constant(false))();
+
+  /// Отдых объявлен недельным: «Начать недельный отдых» или недельный
+  /// отдых после смены в журнале (`ActivityPeriod.weeklyRest`).
+  BoolColumn get weeklyRest => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt =>
       dateTime().map(const UtcDateTimeConverter())();
   DateTimeColumn get updatedAt =>

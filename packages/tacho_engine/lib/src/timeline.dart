@@ -14,6 +14,7 @@ class Block {
     required this.open,
     required this.ferry,
     required this.dayEnd,
+    this.weeklyRest = false,
   });
 
   final DriverMode mode;
@@ -28,6 +29,9 @@ class Block {
 
   /// Водитель завершил этим отдыхом рабочий день.
   final bool dayEnd;
+
+  /// Водитель объявил этот отдых недельным.
+  final bool weeklyRest;
 
   Duration get duration => durationBetween(start, end);
 
@@ -72,6 +76,7 @@ List<Block> buildBlocks(Iterable<ActivityPeriod> periods, DateTime now) {
         open: prev.open || open,
         ferry: prev.ferry && p.ferry,
         dayEnd: prev.dayEnd || p.dayEnd,
+        weeklyRest: prev.weeklyRest || p.weeklyRest,
       );
       continue;
     }
@@ -83,6 +88,7 @@ List<Block> buildBlocks(Iterable<ActivityPeriod> periods, DateTime now) {
         open: open,
         ferry: p.ferry,
         dayEnd: p.dayEnd,
+        weeklyRest: p.weeklyRest,
       ),
     );
   }
@@ -111,6 +117,7 @@ class RestPeriod {
     required this.dayEnd,
     required this.firstBlock,
     required this.lastBlock,
+    this.weeklyRest = false,
   });
 
   final DateTime start;
@@ -123,16 +130,24 @@ class RestPeriod {
   /// Отдых объявлен концом рабочего дня.
   final bool dayEnd;
 
+  /// Отдых объявлен недельным ([ActivityPeriod.weeklyRest]).
+  final bool weeklyRest;
+
   /// Индексы первого и последнего блока периода в шкале.
   final int firstBlock;
   final int lastBlock;
 
   /// Отдых, который завершает смену: суточный (≥ 9 ч) или недельный, а также
-  /// идущий отдых, которым водитель завершил день.
-  bool get endsShift => rest >= EuLimits.dailyRestReduced || (open && dayEnd);
+  /// идущий отдых, которым водитель завершил день или начал недельный.
+  bool get endsShift =>
+      rest >= EuLimits.dailyRestReduced || (open && (dayEnd || weeklyRest));
 
-  /// Недельный отдых: не меньше сокращённого (24 ч).
-  bool get isWeekly => rest >= EuLimits.weeklyRestReduced;
+  /// Недельный отдых: не меньше сокращённого (24 ч), а пока идёт — и
+  /// объявленный недельным. Прерванный раньше 24 ч объявление теряет: он
+  /// суточный или перерыв по длительности, как и отдых «конец дня» короче
+  /// 9 ч.
+  bool get isWeekly =>
+      rest >= EuLimits.weeklyRestReduced || (open && weeklyRest);
 
   @override
   String toString() =>
@@ -213,10 +228,12 @@ Duration _crossing(List<Block> blocks, int first, int last) {
 RestPeriod _periodOf(List<Block> blocks, int first, int last) {
   var rest = Duration.zero;
   var dayEnd = false;
+  var weeklyRest = false;
   for (var k = first; k <= last; k++) {
     if (!blocks[k].mode.isRest) continue;
     rest += blocks[k].duration;
     dayEnd = dayEnd || blocks[k].dayEnd;
+    weeklyRest = weeklyRest || blocks[k].weeklyRest;
   }
   return RestPeriod(
     start: blocks[first].start,
@@ -226,5 +243,6 @@ RestPeriod _periodOf(List<Block> blocks, int first, int last) {
     dayEnd: dayEnd,
     firstBlock: first,
     lastBlock: last,
+    weeklyRest: weeklyRest,
   );
 }

@@ -172,7 +172,11 @@ String formatDiagnostics(Diagnostics d) {
   final lastCard = d.lastCard;
   String record(ActivityPeriod r) {
     final end = r.end;
-    final flags = [if (r.ferry) 'ferry', if (r.dayEnd) 'day-end'];
+    final flags = [
+      if (r.ferry) 'ferry',
+      if (r.dayEnd) 'day-end',
+      if (r.weeklyRest) 'weekly',
+    ];
     return '  ${_utc(r.start)} → ${end == null ? 'now' : _utc(end)} '
         '${[r.mode.name, ...flags].join(' ')}';
   }

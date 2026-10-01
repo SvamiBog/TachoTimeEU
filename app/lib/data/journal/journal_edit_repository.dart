@@ -180,10 +180,11 @@ class JournalEditRepository {
 
   /// «Завершить день» с вождением за день, которое ввёл водитель
   /// (`endDayWithDriving`). Разошлось с записями — смена становится ручной
-  /// с этим итогом, её страны и заметка переезжают к ней.
-  Future<void> endDay({required Duration driving}) =>
+  /// с этим итогом, её страны и заметка переезжают к ней. [weekly] —
+  /// «Начать недельный отдых»: отдых после смены сразу недельный.
+  Future<void> endDay({required Duration driving, bool weekly = false}) =>
       _write((periods, now) async {
-        final result = endDayWithDriving(periods, driving, now);
+        final result = endDayWithDriving(periods, driving, now, weekly: weekly);
         await savePeriodChanges(
           _db,
           periods,
@@ -197,6 +198,31 @@ class JournalEditRepository {
         await _deleteMeta(manual.start);
         await _putManual(manual, meta, now);
       });
+
+  /// «Начать недельный отдых», когда смены нет (`declareWeeklyRest`):
+  /// идущий отдых становится недельным, после ручной смены — у неё.
+  Future<void> startWeeklyRest() => _write((periods, now) async {
+    final manual = await manualShifts();
+    final result = declareWeeklyRest(periods, manual, now);
+    await savePeriodChanges(
+      _db,
+      periods,
+      result.periods,
+      now,
+      EntrySource.live,
+    );
+    final changed = result.manual;
+    if (changed == null) return;
+    await (_db.update(
+      _db.manualShifts,
+    )..where((t) => t.id.equals(changed.id!))).write(
+      ManualShiftsCompanion(
+        restKind: Value(changed.restKind),
+        splitRest: const Value(false),
+        updatedAt: Value(now),
+      ),
+    );
+  });
 
   /// Длительность последнего перерыва текущей смены (экран 8).
   Future<void> setLastBreak(DateTime shiftStart, Duration duration) => _write((

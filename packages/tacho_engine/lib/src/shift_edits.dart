@@ -1,7 +1,9 @@
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/activity_period.dart';
+import 'package:tacho_engine/src/driver_mode.dart';
 import 'package:tacho_engine/src/journal.dart';
 import 'package:tacho_engine/src/journal_edits.dart';
+import 'package:tacho_engine/src/manual_rest.dart';
 import 'package:tacho_engine/src/manual_shift.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
@@ -30,7 +32,7 @@ class LiveShiftEdit {
     this.resume = false,
     this.drivingDelta = Duration.zero,
     this.manualDriving,
-    this.restKind = RestKind.daily,
+    this.restKind,
     this.splitRest = false,
   });
 
@@ -59,9 +61,12 @@ class LiveShiftEdit {
   /// Идущую смену так не правят — у неё таймеры главной по записям.
   final Duration? manualDriving;
 
-  /// Отдых после смены, если она станет ручной ([manualDriving]): суточный
-  /// или недельный, разделённый суточный.
-  final RestKind restKind;
+  /// Отдых после смены: суточный или недельный, разделённый суточный; null
+  /// — вид не меняется (корректировки с экранов лимитов). У смены по
+  /// записям недельный отмечается у записи идущего отдыха
+  /// ([ActivityPeriod.weeklyRest]); у смены, ставшей ручной
+  /// ([manualDriving]), — у ручной смены.
+  final RestKind? restKind;
   final bool splitRest;
 }
 
@@ -132,7 +137,85 @@ editLiveShift(List<ActivityPeriod> periods, LiveShiftEdit edit, DateTime now) {
       );
     }
   }
-  return (periods: result, shiftStart: shiftStart, manual: null);
+  final restKind = edit.restKind;
+  return (
+    periods: restKind == null
+        ? result
+        : declareRest(
+            result,
+            shiftStart,
+            weekly: restKind == RestKind.weekly,
+            now: now,
+          ),
+    shiftStart: shiftStart,
+    manual: null,
+  );
+}
+
+/// Вид идущего отдыха после смены [shiftStart] по записям: [weekly] —
+/// недельный, иначе — по длительности. Отметка ставится у записей отдыха
+/// ([ActivityPeriod.weeklyRest]); завершённый отдых не меняется — он
+/// считается по длительности. Без изменений возвращается тот же список.
+List<ActivityPeriod> declareRest(
+  List<ActivityPeriod> periods,
+  DateTime shiftStart, {
+  required bool weekly,
+  required DateTime now,
+}) {
+  final rest = analyzeTimeline(
+    periods,
+    now,
+  ).shifts.where((s) => s.start == shiftStart).firstOrNull?.restAfter;
+  if (rest == null || !rest.open) return periods;
+  bool target(ActivityPeriod p) =>
+      p.mode.isRest && !p.start.isBefore(rest.start) && p.weeklyRest != weekly;
+  if (!periods.any(target)) return periods;
+  return [
+    for (final p in periods)
+      if (target(p)) p.withWeeklyRest(weeklyRest: weekly) else p,
+  ];
+}
+
+/// «Начать недельный отдых», когда смены нет: идущий отдых становится
+/// недельным с его начала, а если отдыха нет — он начинается сейчас. Отдых
+/// после ручной смены — недельный у неё ([ManualShift.restKind]), иначе —
+/// отметка у записи отдыха. `manual` — изменённая ручная смена, null — не
+/// менялась.
+({List<ActivityPeriod> periods, ManualShift? manual}) declareWeeklyRest(
+  List<ActivityPeriod> periods,
+  List<ManualShift> manualShifts,
+  DateTime now,
+) {
+  final timeline = analyzeTimeline(periods, now);
+  final rests = manualRests(manualShifts, timeline, now);
+  ManualShift? after;
+  for (final (i, r) in rests.indexed) {
+    final m = manualShifts[i];
+    if (r != null && r.ongoing && (after?.start.isBefore(m.start) ?? true)) {
+      after = m;
+    }
+  }
+  final recorded = timeline.shifts.lastOrNull;
+  if (after != null &&
+      (recorded == null || recorded.start.isBefore(after.start))) {
+    return (
+      periods: periods,
+      manual: after.restKind == RestKind.weekly
+          ? null
+          : ManualShift(
+              id: after.id,
+              start: after.start,
+              end: after.end,
+              driving: after.driving,
+              continuousDrivingAtEnd: after.continuousDrivingAtEnd,
+              restKind: RestKind.weekly,
+            ),
+    );
+  }
+  return (
+    periods: changeMode(periods, DriverMode.rest, now, weeklyRest: true),
+    manual: null,
+  );
 }
 
 /// «Завершить день» с вождением за день, которое ввёл водитель. Журнал
@@ -147,25 +230,33 @@ editLiveShift(List<ActivityPeriod> periods, LiveShiftEdit edit, DateTime now) {
 ({List<ActivityPeriod> periods, ManualShift? manual}) endDayWithDriving(
   List<ActivityPeriod> periods,
   Duration driving,
-  DateTime now,
-) {
-  final ended = endDay(periods, now);
+  DateTime now, {
+  bool weekly = false,
+}) {
+  final ended = endDay(periods, now, weekly: weekly);
   final shift = analyzeTimeline(ended, now).shifts.lastOrNull;
   final converted = shift != null && (shift.restAfter?.dayEnd ?? false)
-      ? _toManual(ended, shift, driving)
+      ? _toManual(
+          ended,
+          shift,
+          driving,
+          restKind: weekly ? RestKind.weekly : null,
+        )
       : null;
   return converted ?? (periods: ended, manual: null);
 }
 
 /// Записи завершённой смены [shift], после которой идёт отдых, заменяет
 /// ручная смена с вождением [driving] (не длиннее смены); отдых остаётся
-/// записью. null — отдых после смены не идёт или вождение совпало с
-/// записями.
+/// записью. Вид отдыха теперь у ручной смены ([restKind]; null — какой
+/// был), отметка «недельный» с записей отдыха снимается — иначе её не
+/// изменить правкой смены. null — отдых после смены не идёт или вождение
+/// совпало с записями.
 ({List<ActivityPeriod> periods, ManualShift manual})? _toManual(
   List<ActivityPeriod> periods,
   Shift shift,
   Duration driving, {
-  RestKind restKind = RestKind.daily,
+  RestKind? restKind,
   bool splitRest = false,
 }) {
   final rest = shift.restAfter;
@@ -174,9 +265,17 @@ editLiveShift(List<ActivityPeriod> periods, LiveShiftEdit edit, DateTime now) {
   final span = floorToMinute(durationBetween(shift.start, end));
   final entered = shorter(floorToMinute(clampToZero(driving)), span);
   if (entered == floorToMinute(shift.driving)) return null;
-  final kind = restKind == RestKind.none ? RestKind.daily : restKind;
+  final kind = restKind == null || restKind == RestKind.none
+      ? (rest.isWeekly ? RestKind.weekly : RestKind.daily)
+      : restKind;
   return (
-    periods: deleteShiftPeriods(periods, shift.start, end),
+    periods: [
+      for (final p in deleteShiftPeriods(periods, shift.start, end))
+        if (p.weeklyRest && !p.start.isBefore(end))
+          p.withWeeklyRest(weeklyRest: false)
+        else
+          p,
+    ],
     manual: ManualShift(
       start: shift.start,
       end: end,
@@ -236,8 +335,9 @@ List<ActivityPeriod> deleteShiftPeriods(
 
 /// Вырезает время ручной смены [start]–[end] из записанного отдыха: водитель
 /// забыл переключить режим, и работа числится отдыхом. Записи отдыха
-/// обрезаются или делятся на две части вокруг смены; отметка «конец дня»
-/// остаётся только у части после смены — перед сменой день не кончался.
+/// обрезаются или делятся на две части вокруг смены; отметки «конец дня» и
+/// «недельный» остаются только у части после смены — перед сменой день не
+/// кончался.
 List<ActivityPeriod> carveRest(
   List<ActivityPeriod> periods,
   DateTime start,
@@ -250,7 +350,11 @@ List<ActivityPeriod> carveRest(
         !p.start.isBefore(end))
       p
     else ...[
-      if (p.start.isBefore(start)) p.withEnd(start).withDayEnd(dayEnd: false),
+      if (p.start.isBefore(start))
+        p
+            .withEnd(start)
+            .withDayEnd(dayEnd: false)
+            .withWeeklyRest(weeklyRest: false),
       if ((p.end ?? now).isAfter(end))
         ActivityPeriod(
           // Часть после смены — новая запись, если первая часть осталась
@@ -260,6 +364,7 @@ List<ActivityPeriod> carveRest(
           end: p.end,
           ferry: p.ferry,
           dayEnd: p.dayEnd,
+          weeklyRest: p.weeklyRest,
         ),
     ],
 ];

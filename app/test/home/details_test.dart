@@ -257,9 +257,8 @@ void main() {
       expect(find.textContaining('Пакет мобильности'), findsNothing);
     });
 
-    testWidgets('«Недельный отдых» без данных и «Начать отдых» — конец дня', (
-      tester,
-    ) async {
+    testWidgets('«Недельный отдых» без данных и «Начать отдых» — конец дня '
+        'и сразу недельный отдых (JRN-10)', (tester) async {
       final db = memoryDatabase();
       addTearDown(db.close);
       await tester.runAsync(
@@ -278,10 +277,13 @@ void main() {
       await tester.tap(find.text('Начать отдых'));
       await tester.pumpAndSettle();
       // Как «Завершить день»: вождение за день — по записям
-      await tester.tap(find.widgetWithText(PrimaryButton, 'Завершить день'));
+      await tester.tap(find.widgetWithText(PrimaryButton, 'Начать отдых').last);
       await settle(tester);
       final last = (await periods(tester, db)).last;
-      expect((last.mode, last.dayEnd), (DriverMode.rest, true));
+      expect(
+        (last.mode, last.dayEnd, last.weeklyRest),
+        (DriverMode.rest, true, true),
+      );
       await unmount(tester);
     });
   });
