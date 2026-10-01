@@ -8,6 +8,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
+import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/features/home/hero_card.dart';
 import 'package:tachogo/features/home/mode_buttons.dart';
@@ -39,12 +40,23 @@ void main() {
       );
       expect(find.text(ru.heroUntilBreak.toUpperCase()), findsOneWidget);
 
-      // Перерыв 45 мин засчитан — непрерывное вождение с нуля
+      // Идёт перерыв — кольцо «Перерыв»
       await tapMode(tester, DriverMode.rest);
-      clock.now = monday.add(h(5, 15));
+      clock.now = monday.add(h(4, 50));
       await settle(tester);
       s = await expectScreenMatchesEngine(tester, db, clock.now);
       expect(find.text(ru.heroBreak.toUpperCase()), findsOneWidget);
+
+      // Перерыв 45 мин засчитан — непрерывное вождение с нуля, кольцо
+      // копит отдых к суточному 11 ч (UI-22)
+      clock.now = monday.add(h(5, 15));
+      await settle(tester);
+      s = await expectScreenMatchesEngine(tester, db, clock.now);
+      expect(s.continuousDriving, Duration.zero);
+      expect(
+        find.text(ru.modeName(DriverMode.rest).toUpperCase()),
+        findsOneWidget,
+      );
 
       await tapMode(tester, DriverMode.driving);
       clock.now = monday.add(h(9, 45));
