@@ -10,12 +10,14 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/setting_rows.dart';
+import 'package:tachogo/features/bans/driving_bans_screen.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/more/problem_report.dart';
 import 'package:tachogo/features/more/transfer_sheet.dart';
 
-/// «Ещё» (экран 4): экспорт отчёта, перенос журнала на другой телефон,
+/// «Ещё» (экран 4): запреты движения, экспорт отчёта, перенос журнала на
+/// другой телефон,
 /// инструкция и правила, о приложении, политика конфиденциальности (Google
 /// Play требует ссылку и в приложении, `docs/store/play-audit.md`).
 /// В бете — «Сообщить о проблеме» (Фаза 4). Баннер Premium появится
@@ -51,6 +53,17 @@ class MoreScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 12),
+            CardGroup(
+              children: [
+                NavRow(
+                  icon: Icons.do_not_disturb_on_outlined,
+                  title: l.bansTitle,
+                  subtitle: l.bansHint,
+                  onTap: () => openDrivingBans(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.betweenCardsMax),
             CardGroup(
               children: [
                 NavRow(

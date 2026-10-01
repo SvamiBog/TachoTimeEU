@@ -3650,6 +3650,252 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Отдых вместил долг {time} за сокращённый недельный отдых — долг погашен.'**
   String notifyCompensationTakenText(String time);
+
+  /// Экран и строка «Запреты движения»
+  ///
+  /// In ru, this message translates to:
+  /// **'Запреты движения'**
+  String get bansTitle;
+
+  /// Подпись строки «Запреты движения» в «Ещё»
+  ///
+  /// In ru, this message translates to:
+  /// **'Где и когда грузовику нельзя ехать'**
+  String get bansHint;
+
+  /// Масса машины для запретов: строка и шторка
+  ///
+  /// In ru, this message translates to:
+  /// **'Масса машины'**
+  String get bansMassTitle;
+
+  /// Класс массы машины: van — до 3,5 т, light — 3,5–7,5 т, medium — 7,5–12 т, other — больше 12 т
+  ///
+  /// In ru, this message translates to:
+  /// **'{mass, select, van{до 3,5 т} light{3,5–7,5 т} medium{7,5–12 т} other{больше 12 т}}'**
+  String bansMass(String mass);
+
+  /// Шторка массы машины: зачем она
+  ///
+  /// In ru, this message translates to:
+  /// **'Укажите разрешённую максимальную массу машины: запреты в странах начинаются с 3,5, 7,5 или 12 т.'**
+  String get bansMassAsk;
+
+  /// Описание карты для экранного диктора
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта запретов движения в Европе'**
+  String get bansMapLabel;
+
+  /// Легенда карты: идёт запрет
+  ///
+  /// In ru, this message translates to:
+  /// **'Запрет сейчас'**
+  String get bansLegendActive;
+
+  /// Легенда карты: запрет начнётся скоро
+  ///
+  /// In ru, this message translates to:
+  /// **'Скоро запрет'**
+  String get bansLegendSoon;
+
+  /// Легенда карты: запрет на части дорог, в части регионов или не для всех машин
+  ///
+  /// In ru, this message translates to:
+  /// **'Частично'**
+  String get bansLegendPartial;
+
+  /// Легенда карты: запрета нет
+  ///
+  /// In ru, this message translates to:
+  /// **'Можно ехать'**
+  String get bansLegendClear;
+
+  /// Легенда карты: запреты только на отдельных дорогах
+  ///
+  /// In ru, this message translates to:
+  /// **'Отдельные дороги'**
+  String get bansLegendRoads;
+
+  /// Легенда карты: данных о стране нет
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет данных'**
+  String get bansLegendNoData;
+
+  /// Запрет идёт до времени (местное время страны, «вс 22:00»)
+  ///
+  /// In ru, this message translates to:
+  /// **'Запрет до {time}'**
+  String bansActiveUntil(String time);
+
+  /// Запрет начнётся во время
+  ///
+  /// In ru, this message translates to:
+  /// **'Запрет с {time}'**
+  String bansSoonFrom(String time);
+
+  /// Запрета нет до начала следующего
+  ///
+  /// In ru, this message translates to:
+  /// **'Можно ехать до {time}'**
+  String bansClearUntil(String time);
+
+  /// Запретов в ближайшие 7 дней нет
+  ///
+  /// In ru, this message translates to:
+  /// **'Запретов в ближайшую неделю нет'**
+  String get bansClearWeek;
+
+  /// Частичный запрет идёт до времени
+  ///
+  /// In ru, this message translates to:
+  /// **'Частичный запрет до {time}'**
+  String bansPartialUntil(String time);
+
+  /// Страна: запреты только на отдельных дорогах
+  ///
+  /// In ru, this message translates to:
+  /// **'Запреты на отдельных дорогах'**
+  String get bansSomeRoads;
+
+  /// Страна: общих запретов нет
+  ///
+  /// In ru, this message translates to:
+  /// **'Общих запретов нет'**
+  String get bansNone;
+
+  /// Страна: запреты есть, но не для машины этой массы
+  ///
+  /// In ru, this message translates to:
+  /// **'Для вашей машины запретов нет'**
+  String get bansNotForMass;
+
+  /// Экран страны: раздел «Сейчас»
+  ///
+  /// In ru, this message translates to:
+  /// **'Сейчас'**
+  String get bansNowTitle;
+
+  /// Экран страны: раздел правил
+  ///
+  /// In ru, this message translates to:
+  /// **'Правила'**
+  String get bansRules;
+
+  /// Экран страны: ближайшие запреты на две недели
+  ///
+  /// In ru, this message translates to:
+  /// **'Ближайшие запреты'**
+  String get bansUpcoming;
+
+  /// Экран страны: впереди запретов нет
+  ///
+  /// In ru, this message translates to:
+  /// **'В ближайшие две недели запретов нет'**
+  String get bansNoUpcoming;
+
+  /// Экран страны: ссылки на источники
+  ///
+  /// In ru, this message translates to:
+  /// **'Где проверить'**
+  String get bansSources;
+
+  /// Экран страны: дата сверки данных и что время — местное
+  ///
+  /// In ru, this message translates to:
+  /// **'Сверено {date}. Время — местное время страны.'**
+  String bansChecked(String date);
+
+  /// Экран страны: данные расходятся, проверить
+  ///
+  /// In ru, this message translates to:
+  /// **'Источники расходятся в деталях — перед рейсом проверьте по официальному источнику.'**
+  String get bansNeedsCheck;
+
+  /// Экраны запретов: справка, не официальный источник
+  ///
+  /// In ru, this message translates to:
+  /// **'Справка, не официальный источник: бывают исключения (скоропортящиеся грузы, разрешения) и местные запреты. Проверяйте маршрут по источнику страны.'**
+  String get bansDisclaimer;
+
+  /// Запрет позже известного календаря страны
+  ///
+  /// In ru, this message translates to:
+  /// **'Предварительно: календарь страны на этот год ещё не известен'**
+  String get bansProvisional;
+
+  /// Откуда запрет: weekend — выходные, holiday — праздник, holidayEve — канун праздника, summer — летний, night — ночной, other — день годового календаря страны
+  ///
+  /// In ru, this message translates to:
+  /// **'{kind, select, weekend{Выходные} holiday{Праздник} holidayEve{Канун праздника} summer{Летний запрет} night{Ночной запрет} other{По календарю страны}}'**
+  String bansKind(String kind);
+
+  /// Где действует запрет: allRoads, mainRoads, someRoads, someRegions, other — не для всех машин
+  ///
+  /// In ru, this message translates to:
+  /// **'{scope, select, allRoads{все дороги} mainRoads{магистрали и главные дороги} someRoads{отдельные дороги} someRegions{часть регионов} other{не для всех машин}}'**
+  String bansScope(String scope);
+
+  /// Порог массы правила: «больше 7,5 т»
+  ///
+  /// In ru, this message translates to:
+  /// **'больше {tonnes} т'**
+  String bansOver(String tonnes);
+
+  /// Правило: праздники страны
+  ///
+  /// In ru, this message translates to:
+  /// **'Праздники'**
+  String get bansRuleHolidays;
+
+  /// Правило: каждую ночь
+  ///
+  /// In ru, this message translates to:
+  /// **'Каждую ночь'**
+  String get bansRuleNights;
+
+  /// Правило: дни годового календаря страны
+  ///
+  /// In ru, this message translates to:
+  /// **'Дни календаря {year}'**
+  String bansRuleCalendar(String year);
+
+  /// Правило: часть года «с 1.07 по 31.08»
+  ///
+  /// In ru, this message translates to:
+  /// **'с {from} по {to}'**
+  String bansSeason(String from, String to);
+
+  /// Правило: с вечера накануне праздника до вечера праздника
+  ///
+  /// In ru, this message translates to:
+  /// **'накануне {from} – {to}'**
+  String bansSpanEve(String from, String to);
+
+  /// Страна с запретами на отдельных дорогах
+  ///
+  /// In ru, this message translates to:
+  /// **'Время запретов зависит от дороги и меняется каждый год — смотрите источник страны.'**
+  String get bansRoadsText;
+
+  /// Страна без общих запретов
+  ///
+  /// In ru, this message translates to:
+  /// **'Общих запретов для грузовиков нет. Ограничения бывают для опасных грузов и на отдельных участках.'**
+  String get bansNoneText;
+
+  /// Экран запретов: список стран
+  ///
+  /// In ru, this message translates to:
+  /// **'Страны'**
+  String get bansCountries;
+
+  /// Список стран: страна текущей смены
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы здесь'**
+  String get bansCurrentCountry;
 }
 
 class _AppLocalizationsDelegate

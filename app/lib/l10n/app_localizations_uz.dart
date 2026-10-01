@@ -2303,4 +2303,178 @@ class AppLocalizationsUz extends AppLocalizations {
   String notifyCompensationTakenText(String time) {
     return 'Dam olish qisqartirilgan haftalik dam olish uchun $time qarzni qopladi — qarz yopildi.';
   }
+
+  @override
+  String get bansTitle => 'Harakat taqiqlari';
+
+  @override
+  String get bansHint => 'Yuk mashinasi qayerda va qachon yura olmaydi';
+
+  @override
+  String get bansMassTitle => 'Mashina massasi';
+
+  @override
+  String bansMass(String mass) {
+    String _temp0 = intl.Intl.selectLogic(mass, {
+      'van': '3,5 t gacha',
+      'light': '3,5–7,5 t',
+      'medium': '7,5–12 t',
+      'other': '12 t dan ortiq',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get bansMassAsk =>
+      'Mashinaning ruxsat etilgan maksimal massasini tanlang: mamlakatlarda taqiqlar 3,5, 7,5 yoki 12 t dan boshlanadi.';
+
+  @override
+  String get bansMapLabel => 'Yevropadagi harakat taqiqlari xaritasi';
+
+  @override
+  String get bansLegendActive => 'Hozir taqiq';
+
+  @override
+  String get bansLegendSoon => 'Tez orada taqiq';
+
+  @override
+  String get bansLegendPartial => 'Qisman';
+
+  @override
+  String get bansLegendClear => 'Yurish mumkin';
+
+  @override
+  String get bansLegendRoads => 'Ayrim yoʻllar';
+
+  @override
+  String get bansLegendNoData => 'Ma’lumot yoʻq';
+
+  @override
+  String bansActiveUntil(String time) {
+    return 'Taqiq $time gacha';
+  }
+
+  @override
+  String bansSoonFrom(String time) {
+    return 'Taqiq $time dan';
+  }
+
+  @override
+  String bansClearUntil(String time) {
+    return '$time gacha yurish mumkin';
+  }
+
+  @override
+  String get bansClearWeek => 'Yaqin bir haftada taqiqlar yoʻq';
+
+  @override
+  String bansPartialUntil(String time) {
+    return 'Qisman taqiq $time gacha';
+  }
+
+  @override
+  String get bansSomeRoads => 'Ayrim yoʻllarda taqiqlar';
+
+  @override
+  String get bansNone => 'Umumiy taqiqlar yoʻq';
+
+  @override
+  String get bansNotForMass => 'Mashinangiz uchun taqiqlar yoʻq';
+
+  @override
+  String get bansNowTitle => 'Hozir';
+
+  @override
+  String get bansRules => 'Qoidalar';
+
+  @override
+  String get bansUpcoming => 'Yaqin taqiqlar';
+
+  @override
+  String get bansNoUpcoming => 'Yaqin ikki haftada taqiqlar yoʻq';
+
+  @override
+  String get bansSources => 'Qayerda tekshirish';
+
+  @override
+  String bansChecked(String date) {
+    return '$date da tekshirilgan. Vaqt — mamlakatning mahalliy vaqti.';
+  }
+
+  @override
+  String get bansNeedsCheck =>
+      'Manbalar tafsilotlarda farq qiladi — reys oldidan rasmiy manbada tekshiring.';
+
+  @override
+  String get bansDisclaimer =>
+      'Ma’lumotnoma, rasmiy manba emas: istisnolar (tez buziladigan yuklar, ruxsatnomalar) va mahalliy taqiqlar boʻladi. Yoʻnalishni mamlakat manbasida tekshiring.';
+
+  @override
+  String get bansProvisional =>
+      'Taxminan: mamlakatning bu yilgi kalendari hali ma’lum emas';
+
+  @override
+  String bansKind(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'weekend': 'Dam olish kunlari',
+      'holiday': 'Bayram',
+      'holidayEve': 'Bayram arafasi',
+      'summer': 'Yozgi taqiq',
+      'night': 'Tungi taqiq',
+      'other': 'Mamlakat kalendari boʻyicha',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansScope(String scope) {
+    String _temp0 = intl.Intl.selectLogic(scope, {
+      'allRoads': 'barcha yoʻllar',
+      'mainRoads': 'magistrallar va asosiy yoʻllar',
+      'someRoads': 'ayrim yoʻllar',
+      'someRegions': 'hududlarning bir qismi',
+      'other': 'hamma mashinalar uchun emas',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansOver(String tonnes) {
+    return '$tonnes t dan ortiq';
+  }
+
+  @override
+  String get bansRuleHolidays => 'Bayramlar';
+
+  @override
+  String get bansRuleNights => 'Har kecha';
+
+  @override
+  String bansRuleCalendar(String year) {
+    return '$year kalendari kunlari';
+  }
+
+  @override
+  String bansSeason(String from, String to) {
+    return '$from dan $to gacha';
+  }
+
+  @override
+  String bansSpanEve(String from, String to) {
+    return 'arafasida $from – $to';
+  }
+
+  @override
+  String get bansRoadsText =>
+      'Taqiq vaqti yoʻlga bogʻliq va har yili oʻzgaradi — mamlakat manbasini koʻring.';
+
+  @override
+  String get bansNoneText =>
+      'Yuk mashinalari uchun umumiy taqiqlar yoʻq. Xavfli yuklar uchun va ayrim uchastkalarda cheklovlar boʻladi.';
+
+  @override
+  String get bansCountries => 'Mamlakatlar';
+
+  @override
+  String get bansCurrentCountry => 'Siz shu yerdasiz';
 }

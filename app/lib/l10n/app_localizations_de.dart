@@ -2315,4 +2315,178 @@ class AppLocalizationsDe extends AppLocalizations {
   String notifyCompensationTakenText(String time) {
     return 'Diese Ruhezeit deckt die $time aus der reduzierten wöchentlichen Ruhezeit — ausgeglichen.';
   }
+
+  @override
+  String get bansTitle => 'Fahrverbote';
+
+  @override
+  String get bansHint => 'Wo und wann Lkw nicht fahren dürfen';
+
+  @override
+  String get bansMassTitle => 'Zulässige Gesamtmasse';
+
+  @override
+  String bansMass(String mass) {
+    String _temp0 = intl.Intl.selectLogic(mass, {
+      'van': 'bis 3,5 t',
+      'light': '3,5–7,5 t',
+      'medium': '7,5–12 t',
+      'other': 'über 12 t',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get bansMassAsk =>
+      'Wählen Sie die zulässige Gesamtmasse: Fahrverbote gelten je nach Land ab 3,5, 7,5 oder 12 t.';
+
+  @override
+  String get bansMapLabel => 'Karte der Fahrverbote in Europa';
+
+  @override
+  String get bansLegendActive => 'Verbot jetzt';
+
+  @override
+  String get bansLegendSoon => 'Verbot bald';
+
+  @override
+  String get bansLegendPartial => 'Teilweise';
+
+  @override
+  String get bansLegendClear => 'Fahren erlaubt';
+
+  @override
+  String get bansLegendRoads => 'Einzelne Strecken';
+
+  @override
+  String get bansLegendNoData => 'Keine Daten';
+
+  @override
+  String bansActiveUntil(String time) {
+    return 'Verbot bis $time';
+  }
+
+  @override
+  String bansSoonFrom(String time) {
+    return 'Verbot ab $time';
+  }
+
+  @override
+  String bansClearUntil(String time) {
+    return 'Fahren bis $time erlaubt';
+  }
+
+  @override
+  String get bansClearWeek => 'Keine Verbote in den nächsten 7 Tagen';
+
+  @override
+  String bansPartialUntil(String time) {
+    return 'Teilverbot bis $time';
+  }
+
+  @override
+  String get bansSomeRoads => 'Verbote auf einzelnen Strecken';
+
+  @override
+  String get bansNone => 'Keine allgemeinen Verbote';
+
+  @override
+  String get bansNotForMass => 'Für Ihr Fahrzeug keine Verbote';
+
+  @override
+  String get bansNowTitle => 'Jetzt';
+
+  @override
+  String get bansRules => 'Regeln';
+
+  @override
+  String get bansUpcoming => 'Nächste Verbote';
+
+  @override
+  String get bansNoUpcoming => 'Keine Verbote in den nächsten zwei Wochen';
+
+  @override
+  String get bansSources => 'Wo prüfen';
+
+  @override
+  String bansChecked(String date) {
+    return 'Geprüft am $date. Zeiten in Ortszeit des Landes.';
+  }
+
+  @override
+  String get bansNeedsCheck =>
+      'Quellen weichen im Detail ab — vor der Fahrt in der amtlichen Quelle prüfen.';
+
+  @override
+  String get bansDisclaimer =>
+      'Zur Orientierung, keine amtliche Quelle: Es gibt Ausnahmen (verderbliche Waren, Genehmigungen) und örtliche Verbote. Route in der Quelle des Landes prüfen.';
+
+  @override
+  String get bansProvisional =>
+      'Vorläufig: Der Kalender des Landes für dieses Jahr ist noch nicht veröffentlicht';
+
+  @override
+  String bansKind(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'weekend': 'Wochenende',
+      'holiday': 'Feiertag',
+      'holidayEve': 'Vortag eines Feiertags',
+      'summer': 'Ferienfahrverbot',
+      'night': 'Nachtfahrverbot',
+      'other': 'Laut Kalender des Landes',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansScope(String scope) {
+    String _temp0 = intl.Intl.selectLogic(scope, {
+      'allRoads': 'alle Straßen',
+      'mainRoads': 'Autobahnen und Hauptstraßen',
+      'someRoads': 'einzelne Strecken',
+      'someRegions': 'einige Regionen',
+      'other': 'nicht für alle Fahrzeuge',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansOver(String tonnes) {
+    return 'über $tonnes t';
+  }
+
+  @override
+  String get bansRuleHolidays => 'Feiertage';
+
+  @override
+  String get bansRuleNights => 'Jede Nacht';
+
+  @override
+  String bansRuleCalendar(String year) {
+    return 'Kalendertage $year';
+  }
+
+  @override
+  String bansSeason(String from, String to) {
+    return 'vom $from bis $to';
+  }
+
+  @override
+  String bansSpanEve(String from, String to) {
+    return 'am Vortag $from – $to';
+  }
+
+  @override
+  String get bansRoadsText =>
+      'Die Verbotszeiten hängen von der Strecke ab und ändern sich jährlich — siehe Quelle des Landes.';
+
+  @override
+  String get bansNoneText =>
+      'Keine allgemeinen Lkw-Fahrverbote. Für Gefahrgut und auf einzelnen Abschnitten kann es Beschränkungen geben.';
+
+  @override
+  String get bansCountries => 'Länder';
+
+  @override
+  String get bansCurrentCountry => 'Sie sind hier';
 }
