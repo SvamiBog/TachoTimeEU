@@ -220,17 +220,20 @@ jobs:
             echo "::error::$message (docs/beta/README.md, «APK из CI на свой телефон»)"
             exit 1
           fi
-          mkdir -p ~/.android
-          echo "$DEBUG_KEYSTORE_BASE64" | base64 -d > ~/.android/debug.keystore
+          # Путь — Gradle явно (android/app/build.gradle.kts), а не
+          # ~/.android: место ключа по умолчанию зависит от окружения
+          keystore="$RUNNER_TEMP/debug.keystore"
+          echo "$DEBUG_KEYSTORE_BASE64" | base64 -d > "$keystore"
           # Ключ открывается паролями debug-ключа, с которыми подписывает
           # сборка; отпечаток — сверить, что все APK подписаны одним ключом
-          if ! key=$(keytool -list -v -keystore ~/.android/debug.keystore \
+          if ! key=$(keytool -list -v -keystore "$keystore" \
             -storepass android -alias androiddebugkey); then
             echo "$key"
             echo "::error::Секрет ANDROID_DEBUG_KEYSTORE_BASE64 — не debug-ключ: нужен псевдоним androiddebugkey и пароль android (docs/beta/README.md)"
             exit 1
           fi
           echo "$key" | grep -E '^\s*SHA256:'
+          echo "TACHOGO_DEBUG_KEYSTORE=$keystore" >> "$GITHUB_ENV"
 
       # versionCode растёт с каждым запуском CI, как у выпусков в Google
       # Play: Android не ставит сборку с номером меньше установленной.
@@ -239,6 +242,25 @@ jobs:
           flutter build apk --debug --dart-define-from-file=env/dev.json
           --build-number=$((1000 + GITHUB_RUN_NUMBER))
           --build-name="$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)-dev.$GITHUB_RUN_NUMBER"
+
+      # Подпись самой APK, а не только файла ключа: Gradle мог подписать
+      # своим ключом, и тогда APK не встанет поверх прошлой.
+      - name: APK подписана постоянным ключом
+        if: ${{ env.TACHOGO_DEBUG_KEYSTORE != '' }}
+        run: |
+          sdk=${ANDROID_HOME:-$ANDROID_SDK_ROOT}
+          apksigner=$(ls -d "$sdk"/build-tools/*/apksigner | sort -V | tail -n 1)
+          signed=$("$apksigner" verify --print-certs \
+            build/app/outputs/flutter-apk/app-debug.apk |
+            sed -n 's/^Signer #1 certificate SHA-256 digest: //p')
+          expected=$(keytool -list -v -keystore "$TACHOGO_DEBUG_KEYSTORE" \
+            -storepass android -alias androiddebugkey |
+            sed -n 's/^[[:space:]]*SHA256: //p' | tr -d ':' | tr 'A-F' 'a-f')
+          echo "Подпись APK: $signed"
+          if [ -z "$signed" ] || [ "$signed" != "$expected" ]; then
+            echo "::error::APK подписана не постоянным ключом: $signed, нужен $expected"
+            exit 1
+          fi
 
       # Нативная часть на JVM (Robolectric): экран автозапуска, BG-09.
       # gradlew создаёт сборка выше.
