@@ -13,6 +13,7 @@ import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/daily_rest_screen.dart';
+import 'package:tachogo/features/home/driving_screen.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
@@ -376,7 +377,7 @@ class CurrentModeRow extends ConsumerWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadius.badge),
         onTap: () => switch (mode) {
-          DriverMode.driving => openBreakScreen(context),
+          DriverMode.driving => openDrivingScreen(context),
           DriverMode.rest => openDailyRestScreen(context),
           DriverMode.otherWork ||
           DriverMode.availability => openWorkdayScreen(context),

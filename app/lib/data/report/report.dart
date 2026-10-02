@@ -8,7 +8,7 @@ import 'package:tachogo/data/journal/shift_meta.dart';
 // же данных в features/export. Выгрузка — Premium (docs/premium.md).
 
 /// Период отчёта.
-enum ReportPeriod { week, twoWeeks, days28, custom }
+enum ReportPeriod { week, twoWeeks, days28, days56, custom }
 
 /// Границы отчёта [start, end). Все границы — UTC, как неделя тахографа
 /// (ст. 4(i)): время на экране местное, а сутки и недели отчёта от пояса
@@ -17,6 +17,8 @@ enum ReportPeriod { week, twoWeeks, days28, custom }
 /// - «Эта неделя» — с понедельника 00:00 UTC до сейчас.
 /// - «2 недели» — с понедельника прошлой недели.
 /// - «28 дней» — 28 суток вместе с сегодняшними: с 00:00 UTC 27 дней назад.
+/// - «56 дней» — так же 56 суток: с 31.12.2024 при проверке предъявляют
+///   записи за 56 дней (ст. 36 Регламента 165/2014).
 /// - Свой период — с 00:00 UTC дня [first] до конца дня [last], не позже
 ///   сейчас. Берутся только год, месяц и день выбранных дат.
 TimeRange reportRange(
@@ -34,6 +36,8 @@ TimeRange reportRange(
       return (start: week.subtract(const Duration(days: 7)), end: now);
     case ReportPeriod.days28:
       return (start: today.subtract(const Duration(days: 27)), end: now);
+    case ReportPeriod.days56:
+      return (start: today.subtract(const Duration(days: 55)), end: now);
     case ReportPeriod.custom:
       final a = first ?? today;
       final b = last ?? today;

@@ -1,7 +1,7 @@
-// UI-24 (docs/testing.md): «Запреты движения» — масса машины, схема Европы,
-// страны списком, экран страны. Расчёт — в движке (BAN-01…10), здесь — что
-// показывают экраны. Время — воскресенье 4 октября 2026, полдень в Центральной
-// Европе.
+// UI-24 (docs/testing.md): «Запреты движения» для грузовика больше 12 т —
+// схема Европы, страны списком, экран страны. Расчёт — в движке
+// (BAN-01…10), здесь — что показывают экраны. Время — воскресенье 4 октября
+// 2026, полдень в Центральной Европе.
 
 import 'dart:io';
 
@@ -10,7 +10,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:tacho_engine/driving_bans.dart';
 import 'package:tachogo/core/config/app_links.dart';
-import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/bans/ban_format.dart';
 import 'package:tachogo/features/bans/country_bans_screen.dart';
 import 'package:tachogo/features/bans/driving_bans_screen.dart';
@@ -34,25 +33,20 @@ final sunday = DateTime.utc(2026, 10, 4, 10);
 final AppLocalizations ru = lookupAppLocalizations(const Locale('ru'));
 
 void main() {
-  Future<void> pump(
-    WidgetTester tester,
-    Widget screen, {
-    VehicleMass? mass = VehicleMass.over12,
-    _FakeLinks? links,
-  }) => pumpScreen(
-    tester,
-    screen,
-    viewport: const Size(412, 2400),
-    overrides: [
-      ...journalOverrides(
-        periods: const [],
-        now: sunday,
-        defaultCountry: 'PL',
-        vehicleMass: mass,
-      ),
-      if (links != null) linkOpenerProvider.overrideWithValue(links),
-    ],
-  );
+  Future<void> pump(WidgetTester tester, Widget screen, {_FakeLinks? links}) =>
+      pumpScreen(
+        tester,
+        screen,
+        viewport: const Size(412, 2400),
+        overrides: [
+          ...journalOverrides(
+            periods: const [],
+            now: sunday,
+            defaultCountry: 'PL',
+          ),
+          if (links != null) linkOpenerProvider.overrideWithValue(links),
+        ],
+      );
 
   group('UI-24: тексты запретов', () {
     setUpAll(() => initializeDateFormatting('ru'));
@@ -98,9 +92,8 @@ void main() {
       await unmount(tester);
     });
 
-    testWidgets('масса не выбрана — только выбор массы; выбор сохраняется', (
-      tester,
-    ) async {
+    testWidgets('выбора массы нет: сразу схема и страны, правила — для '
+        'грузовика больше 12 т', (tester) async {
       final db = memoryDatabase();
       addTearDown(db.close);
       await pumpScreen(
@@ -109,16 +102,8 @@ void main() {
         viewport: const Size(412, 2400),
         overrides: databaseOverrides(db, now: () => sunday),
       );
-      expect(find.text(ru.bansMassAsk), findsOneWidget);
-      expect(find.byType(BansMap), findsNothing);
-      await tester.tap(find.text(ru.bansMass('heavy')));
-      await settle(tester);
-      expect(
-        await tester.runAsync(
-          () => SettingsRepository(db).watchVehicleMass().first,
-        ),
-        VehicleMass.over12,
-      );
+      expect(find.text('Для грузовиков больше 12 т'), findsOneWidget);
+      expect(find.textContaining('Масса'), findsNothing);
       expect(find.byType(BansMap), findsOneWidget);
       expect(find.text(ru.countryName('D')), findsOneWidget);
       await unmount(tester);
@@ -141,10 +126,10 @@ void main() {
       await unmount(tester);
     });
 
-    testWidgets('фургон: Германия — не для вашей машины, Швейцария — '
-        'запрет до 05:00 понедельника', (tester) async {
-      await pump(tester, const DrivingBansScreen(), mass: VehicleMass.upTo7_5);
-      expect(find.text(ru.bansNotForMass), findsWidgets);
+    testWidgets('Швейцария и Лихтенштейн — запрет до 05:00 понедельника', (
+      tester,
+    ) async {
+      await pump(tester, const DrivingBansScreen());
       expect(find.text('Запрет до пн 05:00'), findsNWidgets(2)); // CH и FL
       await unmount(tester);
     });

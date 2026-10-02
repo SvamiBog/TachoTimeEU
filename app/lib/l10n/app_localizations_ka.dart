@@ -307,6 +307,29 @@ class AppLocalizationsKa extends AppLocalizations {
   String get workWeekUnknown => 'წინა კვირეული დასვენების მონაცემები არ არის';
 
   @override
+  String get workWeekRestEnd => 'კვირეული დასვენების დასასრული';
+
+  @override
+  String workWeekDeadline(int hours) {
+    return '$hours სთ — კვირეული დასვენების დაწყება';
+  }
+
+  @override
+  String get workWeekOnRest =>
+      'მიმდინარეობს კვირეული დასვენება: ახალი სამუშაო კვირა მის შემდეგ დაიწყება.';
+
+  @override
+  String get workWeekShifts => 'სამუშაო კვირის ცვლები';
+
+  @override
+  String get workWeekNoShifts =>
+      'კვირეული დასვენების შემდეგ ცვლები ჯერ არ არის';
+
+  @override
+  String get workWeekRule =>
+      'სამუშაო კვირა — დრო კვირეული დასვენების დასრულებიდან. შემდეგი კვირეული დასვენება უნდა დაიწყოს არაუგვიანეს ექვსი 24-საათიანი პერიოდის ბოლოს — 144 სთ (რეგლამენტ 561/2006-ის მე-8 მუხლის მე-6 პუნქტი).';
+
+  @override
   String get cardTitle => 'ბარათის წაკითხვა';
 
   @override
@@ -420,9 +443,6 @@ class AppLocalizationsKa extends AppLocalizations {
   String get drivingCorrect => 'დღის მართვის შესწორება';
 
   @override
-  String get drivingLimits => 'ლიმიტები';
-
-  @override
   String get drivingUsedUp => 'სრულად ამოწურულია';
 
   @override
@@ -471,6 +491,49 @@ class AppLocalizationsKa extends AppLocalizations {
   @override
   String get drivingWeekRule =>
       'კვირა — ორშაბათის 00:00-დან კვირის 24:00-მდე, როგორც ტაქოგრაფზე. კვირაში — არაუმეტეს 56 სთ მართვა, ზედიზედ ორ კვირაში — არაუმეტეს 90 სთ.';
+
+  @override
+  String get drivingCanDrive => 'კიდევ შეიძლება მართვა';
+
+  @override
+  String drivingStop(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'შესვენებამდე',
+      'workday': 'სამუშაო დღის დასრულებამდე',
+      'daily': 'დღიური მართვის ლიმიტამდე',
+      'weekly': 'კვირის ლიმიტამდე',
+      'fortnight': 'ორკვირიან ლიმიტამდე',
+      'other': 'ლიმიტამდე',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String drivingStopped(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'საჭიროა შესვენება',
+      'workday': 'სამუშაო დღე დასრულდა',
+      'daily': 'დღიური მართვა ამოწურულია',
+      'weekly': 'კვირეული მართვა ამოწურულია',
+      'fortnight': 'ორკვირიანი მართვა ამოწურულია',
+      'other': 'ლიმიტი ამოწურულია',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get drivingContinuousNow => 'საჭესთან შესვენების გარეშე';
+
+  @override
+  String drivingBreakDue(String time) {
+    return '$time — საჭიროა შესვენება';
+  }
+
+  @override
+  String get drivingThisShift => 'ამ ცვლაში';
+
+  @override
+  String get drivingThisWeek => 'ამ კვირაში';
 
   @override
   String get workdayEndDay => 'დღის დასრულება';
@@ -1304,6 +1367,9 @@ class AppLocalizationsKa extends AppLocalizations {
   String get exportDays28 => '28 დღე';
 
   @override
+  String get exportDays56 => '56 დღე';
+
+  @override
   String get exportCustom => 'საკუთარი პერიოდი';
 
   @override
@@ -1326,7 +1392,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get exportFormat => 'ფორმატი';
 
   @override
-  String get exportPdf => 'PDF · ინსპექციისთვის';
+  String get exportPdf => 'PDF';
 
   @override
   String get exportCsv => 'CSV · ცხრილი';
@@ -2150,6 +2216,13 @@ class AppLocalizationsKa extends AppLocalizations {
   String get moreAbout => 'აპლიკაციის შესახებ';
 
   @override
+  String get aboutLicenses => 'ღია კოდის ლიცენზიები';
+
+  @override
+  String get aboutLicensesHint =>
+      'ბიბლიოთეკები და შრიფტები, რომლებითაც აპლიკაციაა შექმნილი';
+
+  @override
   String get moreDisclaimer =>
       'TachoGo გეხმარებათ საჭესთან დროისა და დასვენების დაგეგმვაში, მაგრამ არ ცვლის ტაქოგრაფს და არ არის იურიდიული კონსულტაცია.';
 
@@ -2301,22 +2374,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get bansHint => 'სად და როდის არ შეიძლება სატვირთოს მოძრაობა';
 
   @override
-  String get bansMassTitle => 'მანქანის მასა';
-
-  @override
-  String bansMass(String mass) {
-    String _temp0 = intl.Intl.selectLogic(mass, {
-      'van': '3,5 ტ-მდე',
-      'light': '3,5–7,5 ტ',
-      'medium': '7,5–12 ტ',
-      'other': '12 ტ-ზე მეტი',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get bansMassAsk =>
-      'მიუთითეთ მანქანის ნებადართული მაქსიმალური მასა: ქვეყნებში აკრძალვები იწყება 3,5, 7,5 ან 12 ტ-დან.';
+  String get bansForTrucks => '12 ტ-ზე მძიმე სატვირთოებისთვის';
 
   @override
   String get bansMapLabel => 'ევროპაში მოძრაობის აკრძალვების რუკა';
@@ -2367,9 +2425,6 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get bansNone => 'საერთო აკრძალვები არ არის';
-
-  @override
-  String get bansNotForMass => 'თქვენი მანქანისთვის აკრძალვები არ არის';
 
   @override
   String get bansNowTitle => 'ახლა';

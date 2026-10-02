@@ -307,6 +307,29 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workWeekUnknown => 'No hay datos del descanso semanal anterior';
 
   @override
+  String get workWeekRestEnd => 'Fin del descanso semanal';
+
+  @override
+  String workWeekDeadline(int hours) {
+    return '$hours h — empezar el descanso semanal';
+  }
+
+  @override
+  String get workWeekOnRest =>
+      'Descanso semanal en curso: la nueva semana de trabajo empieza después.';
+
+  @override
+  String get workWeekShifts => 'Jornadas de la semana de trabajo';
+
+  @override
+  String get workWeekNoShifts =>
+      'Aún no hay jornadas desde el descanso semanal';
+
+  @override
+  String get workWeekRule =>
+      'La semana de trabajo es el tiempo desde el final del descanso semanal. El siguiente descanso semanal debe empezar como muy tarde al final de seis periodos de 24 horas — 144 h (art. 8, apdo. 6, del Reglamento 561/2006).';
+
+  @override
   String get cardTitle => 'Descarga de la tarjeta';
 
   @override
@@ -422,9 +445,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get drivingCorrect => 'Corregir la conducción del día';
 
   @override
-  String get drivingLimits => 'Límites';
-
-  @override
   String get drivingUsedUp => 'agotado';
 
   @override
@@ -473,6 +493,49 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get drivingWeekRule =>
       'La semana va del lunes 00:00 al domingo 24:00, como en el tacógrafo. Como máximo 56 h de conducción por semana y 90 h en dos semanas consecutivas.';
+
+  @override
+  String get drivingCanDrive => 'Aún puede conducir';
+
+  @override
+  String drivingStop(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'hasta la pausa',
+      'workday': 'hasta el final de la jornada',
+      'daily': 'hasta el límite de conducción diaria',
+      'weekly': 'hasta el límite semanal',
+      'fortnight': 'hasta el límite de dos semanas',
+      'other': 'hasta el límite',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String drivingStopped(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'pausa necesaria',
+      'workday': 'la jornada ha terminado',
+      'daily': 'conducción diaria agotada',
+      'weekly': 'conducción semanal agotada',
+      'fortnight': 'conducción de dos semanas agotada',
+      'other': 'límite agotado',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get drivingContinuousNow => 'Al volante sin pausa';
+
+  @override
+  String drivingBreakDue(String time) {
+    return '$time — pausa obligatoria';
+  }
+
+  @override
+  String get drivingThisShift => 'En esta jornada';
+
+  @override
+  String get drivingThisWeek => 'Esta semana';
 
   @override
   String get workdayEndDay => 'Terminar el día';
@@ -1313,6 +1376,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportDays28 => '28 días';
 
   @override
+  String get exportDays56 => '56 días';
+
+  @override
   String get exportCustom => 'Periodo propio';
 
   @override
@@ -1335,7 +1401,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportFormat => 'Formato';
 
   @override
-  String get exportPdf => 'PDF · para inspección';
+  String get exportPdf => 'PDF';
 
   @override
   String get exportCsv => 'CSV · tabla';
@@ -2161,6 +2227,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get moreAbout => 'Acerca de la aplicación';
 
   @override
+  String get aboutLicenses => 'Licencias de código abierto';
+
+  @override
+  String get aboutLicensesHint =>
+      'Bibliotecas y fuentes con las que está hecha la aplicación';
+
+  @override
   String get moreDisclaimer =>
       'TachoGo ayuda a planificar los tiempos de conducción y descanso, pero no sustituye al tacógrafo ni es asesoramiento jurídico.';
 
@@ -2314,22 +2387,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get bansHint => 'Dónde y cuándo no pueden circular los camiones';
 
   @override
-  String get bansMassTitle => 'Masa del vehículo';
-
-  @override
-  String bansMass(String mass) {
-    String _temp0 = intl.Intl.selectLogic(mass, {
-      'van': 'hasta 3,5 t',
-      'light': '3,5–7,5 t',
-      'medium': '7,5–12 t',
-      'other': 'más de 12 t',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get bansMassAsk =>
-      'Indique la masa máxima autorizada: según el país, las prohibiciones empiezan a partir de 3,5, 7,5 o 12 t.';
+  String get bansForTrucks => 'Para camiones de más de 12 t';
 
   @override
   String get bansMapLabel => 'Mapa de prohibiciones de circulación en Europa';
@@ -2380,9 +2438,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get bansNone => 'Sin prohibiciones generales';
-
-  @override
-  String get bansNotForMass => 'Sin prohibiciones para su vehículo';
 
   @override
   String get bansNowTitle => 'Ahora';

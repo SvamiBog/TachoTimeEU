@@ -12,10 +12,9 @@ import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/card_reading.dart';
-import 'package:tachogo/features/home/daily_driving_screen.dart';
 import 'package:tachogo/features/home/daily_rest_screen.dart';
+import 'package:tachogo/features/home/driving_screen.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
-import 'package:tachogo/features/home/weekly_driving_screen.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
 
@@ -50,13 +49,19 @@ void openAlertDetails(BuildContext context, InfringementType type) =>
       InfringementType.breakSoon => openBreakScreen(context),
       InfringementType.dailyDriveExceeded ||
       InfringementType.dailyDriveSoon ||
-      InfringementType.extensionInUse => openDailyDrivingScreen(context),
+      InfringementType.extensionInUse => openDrivingScreen(
+        context,
+        DrivingSection.daily,
+      ),
       InfringementType.shiftExceeded ||
       InfringementType.shiftSoon => openWorkdayScreen(context),
       InfringementType.weeklyDriveExceeded ||
       InfringementType.weeklyDriveSoon ||
       InfringementType.fortnightDriveExceeded ||
-      InfringementType.fortnightDriveSoon => openWeeklyDrivingScreen(context),
+      InfringementType.fortnightDriveSoon => openDrivingScreen(
+        context,
+        DrivingSection.week,
+      ),
       InfringementType.weeklyRestOverdue ||
       InfringementType.weeklyRestSoon ||
       InfringementType.weeklyRestContinue ||

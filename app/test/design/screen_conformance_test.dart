@@ -23,16 +23,17 @@ import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
-import 'package:tachogo/features/home/daily_driving_screen.dart';
 import 'package:tachogo/features/home/daily_rest_screen.dart';
+import 'package:tachogo/features/home/driving_screen.dart';
 import 'package:tachogo/features/home/home_screen.dart';
-import 'package:tachogo/features/home/weekly_driving_screen.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
+import 'package:tachogo/features/home/work_week_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
 import 'package:tachogo/features/journal/journal_parts.dart';
 import 'package:tachogo/features/journal/journal_screen.dart';
 import 'package:tachogo/features/journal/shift_day_screen.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
+import 'package:tachogo/features/more/about_screen.dart';
 import 'package:tachogo/features/more/more_screen.dart';
 import 'package:tachogo/features/onboarding/onboarding_screen.dart';
 import 'package:tachogo/features/settings/settings_screen.dart';
@@ -104,7 +105,7 @@ Future<void> _openDrivingCorrection(
     300,
     scrollable: find.byType(Scrollable).first,
   );
-  // Строка главной — экран «Суточное вождение», правка — его кнопкой
+  // Строка главной — экран «Вождение», правка — его кнопкой
   await _tapText((l) => l.rowDailyDriving)(tester, l);
   await tester.tap(find.text(l.drivingCorrect));
   await tester.pumpAndSettle();
@@ -182,6 +183,7 @@ final _screens = <String, _Screen>{
     open: _onboardingStep(4),
   ),
   'Ещё': (build: MoreScreen.new, open: null),
+  'О приложении': (build: AboutScreen.new, open: null),
   'Шторка «Сообщить о проблеме»': (
     build: MoreScreen.new,
     open: _tapText((l) => l.problemTitle),
@@ -191,11 +193,15 @@ final _screens = <String, _Screen>{
     open: _tapText((l) => l.transferTitle),
   ),
   'Суточный отдых': (build: DailyRestScreen.new, open: null),
-  'Суточное вождение': (build: DailyDrivingScreen.new, open: null),
+  'Вождение': (build: DrivingScreen.new, open: null),
+  'Вождение · неделя': (
+    build: () => const DrivingScreen(section: DrivingSection.week),
+    open: null,
+  ),
+  'Рабочая неделя': (build: WorkWeekScreen.new, open: null),
   'Запреты движения': (build: DrivingBansScreen.new, open: null),
   'Запреты: Германия': (build: () => const CountryBansScreen('D'), open: null),
   'Запреты: Испания': (build: () => const CountryBansScreen('E'), open: null),
-  'Недельное вождение': (build: WeeklyDrivingScreen.new, open: null),
   'Инструкция и правила': (build: GuideScreen.new, open: null),
   'Инструкция · своя перевозка': (
     build: GuideScreen.new,

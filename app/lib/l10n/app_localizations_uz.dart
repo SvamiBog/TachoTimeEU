@@ -308,6 +308,29 @@ class AppLocalizationsUz extends AppLocalizations {
       'Oldingi haftalik dam olish haqida maʼlumot yoʻq';
 
   @override
+  String get workWeekRestEnd => 'Haftalik dam olish tugashi';
+
+  @override
+  String workWeekDeadline(int hours) {
+    return '$hours soat — haftalik dam olishni boshlash';
+  }
+
+  @override
+  String get workWeekOnRest =>
+      'Haftalik dam olish davom etmoqda: yangi ish haftasi undan keyin boshlanadi.';
+
+  @override
+  String get workWeekShifts => 'Ish haftasi smenalari';
+
+  @override
+  String get workWeekNoShifts =>
+      'Haftalik dam olishdan keyin hali smenalar yoʻq';
+
+  @override
+  String get workWeekRule =>
+      'Ish haftasi — haftalik dam olish tugaganidan keyingi vaqt. Keyingi haftalik dam olishni oltita 24 soatlik davr — 144 soatdan kechiktirmay boshlash kerak (561/2006-sonli Reglamentning 8(6)-moddasi).';
+
+  @override
   String get cardTitle => 'Kartani oʻqish';
 
   @override
@@ -423,9 +446,6 @@ class AppLocalizationsUz extends AppLocalizations {
   String get drivingCorrect => 'Kunlik haydashni tuzatish';
 
   @override
-  String get drivingLimits => 'Limitlar';
-
-  @override
   String get drivingUsedUp => 'toʻliq sarflandi';
 
   @override
@@ -474,6 +494,49 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get drivingWeekRule =>
       'Hafta — dushanba 00:00 dan yakshanba 24:00 gacha, taxografdagidek. Haftada — koʻpi bilan 56 soat haydash, ketma-ket ikki haftada — koʻpi bilan 90 soat.';
+
+  @override
+  String get drivingCanDrive => 'Yana haydash mumkin';
+
+  @override
+  String drivingStop(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'tanaffusgacha',
+      'workday': 'ish kuni tugaguncha',
+      'daily': 'kunlik haydash limitigacha',
+      'weekly': 'haftalik limitgacha',
+      'fortnight': 'ikki haftalik limitgacha',
+      'other': 'limitgacha',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String drivingStopped(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'tanaffus kerak',
+      'workday': 'ish kuni tugadi',
+      'daily': 'kunlik haydash sarflandi',
+      'weekly': 'haftalik haydash sarflandi',
+      'fortnight': 'ikki haftalik haydash sarflandi',
+      'other': 'limit sarflandi',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get drivingContinuousNow => 'Tanaffussiz rul ortida';
+
+  @override
+  String drivingBreakDue(String time) {
+    return '$time — tanaffus kerak';
+  }
+
+  @override
+  String get drivingThisShift => 'Bu smenada';
+
+  @override
+  String get drivingThisWeek => 'Bu hafta';
 
   @override
   String get workdayEndDay => 'Kunni yakunlash';
@@ -1308,6 +1371,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get exportDays28 => '28 kun';
 
   @override
+  String get exportDays56 => '56 kun';
+
+  @override
   String get exportCustom => 'Oʻz davringiz';
 
   @override
@@ -1330,7 +1396,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get exportFormat => 'Format';
 
   @override
-  String get exportPdf => 'PDF · tekshiruv uchun';
+  String get exportPdf => 'PDF';
 
   @override
   String get exportCsv => 'CSV · jadval';
@@ -2156,6 +2222,12 @@ class AppLocalizationsUz extends AppLocalizations {
   String get moreAbout => 'Ilova haqida';
 
   @override
+  String get aboutLicenses => 'Ochiq kodli dasturlar litsenziyalari';
+
+  @override
+  String get aboutLicensesHint => 'Ilova asosidagi kutubxonalar va shriftlar';
+
+  @override
   String get moreDisclaimer =>
       'TachoGo rul ortidagi vaqt va dam olishni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas.';
 
@@ -2311,22 +2383,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get bansHint => 'Yuk mashinasi qayerda va qachon yura olmaydi';
 
   @override
-  String get bansMassTitle => 'Mashina massasi';
-
-  @override
-  String bansMass(String mass) {
-    String _temp0 = intl.Intl.selectLogic(mass, {
-      'van': '3,5 t gacha',
-      'light': '3,5–7,5 t',
-      'medium': '7,5–12 t',
-      'other': '12 t dan ortiq',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get bansMassAsk =>
-      'Mashinaning ruxsat etilgan maksimal massasini tanlang: mamlakatlarda taqiqlar 3,5, 7,5 yoki 12 t dan boshlanadi.';
+  String get bansForTrucks => '12 t dan ogʻir yuk mashinalari uchun';
 
   @override
   String get bansMapLabel => 'Yevropadagi harakat taqiqlari xaritasi';
@@ -2377,9 +2434,6 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get bansNone => 'Umumiy taqiqlar yoʻq';
-
-  @override
-  String get bansNotForMass => 'Mashinangiz uchun taqiqlar yoʻq';
 
   @override
   String get bansNowTitle => 'Hozir';

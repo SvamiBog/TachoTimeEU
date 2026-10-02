@@ -311,6 +311,28 @@ class AppLocalizationsRu extends AppLocalizations {
   String get workWeekUnknown => 'Нет данных о прошлом недельном отдыхе';
 
   @override
+  String get workWeekRestEnd => 'Конец недельного отдыха';
+
+  @override
+  String workWeekDeadline(int hours) {
+    return '$hours ч — начать недельный отдых';
+  }
+
+  @override
+  String get workWeekOnRest =>
+      'Идёт недельный отдых: новая рабочая неделя начнётся после него.';
+
+  @override
+  String get workWeekShifts => 'Смены рабочей недели';
+
+  @override
+  String get workWeekNoShifts => 'Смен после недельного отдыха ещё нет';
+
+  @override
+  String get workWeekRule =>
+      'Рабочая неделя — время от конца недельного отдыха. Следующий недельный отдых нужно начать не позже чем через шесть периодов по 24 часа — 144 ч (ст. 8(6) Регламента 561/2006).';
+
+  @override
   String get cardTitle => 'Считывание карты';
 
   @override
@@ -425,9 +447,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get drivingCorrect => 'Исправить вождение за день';
 
   @override
-  String get drivingLimits => 'Лимиты';
-
-  @override
   String get drivingUsedUp => 'выбрано полностью';
 
   @override
@@ -476,6 +495,49 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get drivingWeekRule =>
       'Неделя — с понедельника 00:00 до воскресенья 24:00, как на тахографе. За неделю — не больше 56 ч вождения, за две недели подряд — не больше 90 ч.';
+
+  @override
+  String get drivingCanDrive => 'Можно ехать ещё';
+
+  @override
+  String drivingStop(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'до перерыва',
+      'workday': 'до конца рабочего дня',
+      'daily': 'до лимита суточного вождения',
+      'weekly': 'до лимита за неделю',
+      'fortnight': 'до лимита за две недели',
+      'other': 'до лимита',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String drivingStopped(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'нужен перерыв',
+      'workday': 'рабочий день закончился',
+      'daily': 'суточное вождение выбрано',
+      'weekly': 'недельное вождение выбрано',
+      'fortnight': 'вождение за две недели выбрано',
+      'other': 'лимит выбран',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get drivingContinuousNow => 'За рулём без перерыва';
+
+  @override
+  String drivingBreakDue(String time) {
+    return '$time — нужен перерыв';
+  }
+
+  @override
+  String get drivingThisShift => 'В этой смене';
+
+  @override
+  String get drivingThisWeek => 'На этой неделе';
 
   @override
   String get workdayEndDay => 'Завершить день';
@@ -1318,6 +1380,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get exportDays28 => '28 дней';
 
   @override
+  String get exportDays56 => '56 дней';
+
+  @override
   String get exportCustom => 'Свой период';
 
   @override
@@ -1340,7 +1405,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get exportFormat => 'Формат';
 
   @override
-  String get exportPdf => 'PDF · для инспекции';
+  String get exportPdf => 'PDF';
 
   @override
   String get exportCsv => 'CSV · таблица';
@@ -2172,6 +2237,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get moreAbout => 'О приложении';
 
   @override
+  String get aboutLicenses => 'Лицензии открытого ПО';
+
+  @override
+  String get aboutLicensesHint =>
+      'Библиотеки и шрифты, на которых сделано приложение';
+
+  @override
   String get moreDisclaimer =>
       'TachoGo помогает планировать время за рулём и отдых, но не заменяет тахограф и не является юридической консультацией.';
 
@@ -2324,22 +2396,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get bansHint => 'Где и когда грузовику нельзя ехать';
 
   @override
-  String get bansMassTitle => 'Масса машины';
-
-  @override
-  String bansMass(String mass) {
-    String _temp0 = intl.Intl.selectLogic(mass, {
-      'van': 'до 3,5 т',
-      'light': '3,5–7,5 т',
-      'medium': '7,5–12 т',
-      'other': 'больше 12 т',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get bansMassAsk =>
-      'Укажите разрешённую максимальную массу машины: запреты в странах начинаются с 3,5, 7,5 или 12 т.';
+  String get bansForTrucks => 'Для грузовиков больше 12 т';
 
   @override
   String get bansMapLabel => 'Карта запретов движения в Европе';
@@ -2390,9 +2447,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get bansNone => 'Общих запретов нет';
-
-  @override
-  String get bansNotForMass => 'Для вашей машины запретов нет';
 
   @override
   String get bansNowTitle => 'Сейчас';

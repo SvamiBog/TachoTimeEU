@@ -18,9 +18,8 @@ import 'package:tachogo/features/export/report_exporter.dart';
 import 'package:tachogo/features/journal/pickers.dart';
 import 'package:tachogo/features/settings/language_sheet.dart';
 
-/// Шторка «Экспорт отчёта» (экран 16): период, PDF для инспекции или CSV,
-/// язык PDF, страны и заметки. Готовый файл уходит в системное
-/// «Поделиться».
+/// Шторка «Экспорт отчёта» (экран 16): период, PDF или CSV, язык PDF,
+/// страны и заметки. Готовый файл уходит в системное «Поделиться».
 Future<void> showExportSheet(BuildContext context) =>
     showModalBottomSheet<void>(
       context: context,
@@ -115,6 +114,7 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
                     (ReportPeriod.week, l.exportWeek),
                     (ReportPeriod.twoWeeks, l.exportTwoWeeks),
                     (ReportPeriod.days28, l.exportDays28),
+                    (ReportPeriod.days56, l.exportDays56),
                     (ReportPeriod.custom, l.exportCustom),
                   ])
                     ChoicePill(

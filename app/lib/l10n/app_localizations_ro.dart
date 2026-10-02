@@ -310,6 +310,28 @@ class AppLocalizationsRo extends AppLocalizations {
       'Nu există date despre repausul săptămânal anterior';
 
   @override
+  String get workWeekRestEnd => 'Sfârșitul repausului săptămânal';
+
+  @override
+  String workWeekDeadline(int hours) {
+    return '$hours h — începerea repausului săptămânal';
+  }
+
+  @override
+  String get workWeekOnRest =>
+      'Repausul săptămânal este în curs: noua săptămână de lucru începe după el.';
+
+  @override
+  String get workWeekShifts => 'Turele săptămânii de lucru';
+
+  @override
+  String get workWeekNoShifts => 'După repausul săptămânal nu există încă ture';
+
+  @override
+  String get workWeekRule =>
+      'Săptămâna de lucru este timpul de la sfârșitul repausului săptămânal. Următorul repaus săptămânal trebuie început cel târziu după șase perioade de 24 de ore — 144 h (art. 8 alin. (6) din Regulamentul 561/2006).';
+
+  @override
   String get cardTitle => 'Descărcarea cardului';
 
   @override
@@ -425,9 +447,6 @@ class AppLocalizationsRo extends AppLocalizations {
   String get drivingCorrect => 'Corectează conducerea pe zi';
 
   @override
-  String get drivingLimits => 'Limite';
-
-  @override
   String get drivingUsedUp => 'folosit complet';
 
   @override
@@ -477,6 +496,49 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get drivingWeekRule =>
       'Săptămâna — de luni 00:00 până duminică 24:00, ca la tahograf. Pe săptămână — cel mult 56 h de conducere, în două săptămâni consecutive — cel mult 90 h.';
+
+  @override
+  String get drivingCanDrive => 'Mai puteți conduce';
+
+  @override
+  String drivingStop(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'până la pauză',
+      'workday': 'până la sfârșitul zilei de lucru',
+      'daily': 'până la limita conducerii zilnice',
+      'weekly': 'până la limita săptămânală',
+      'fortnight': 'până la limita pe două săptămâni',
+      'other': 'până la limită',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String drivingStopped(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'e nevoie de pauză',
+      'workday': 'ziua de lucru s-a încheiat',
+      'daily': 'conducerea zilnică a fost folosită',
+      'weekly': 'conducerea săptămânală a fost folosită',
+      'fortnight': 'conducerea pe două săptămâni a fost folosită',
+      'other': 'limita a fost folosită',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get drivingContinuousNow => 'La volan fără pauză';
+
+  @override
+  String drivingBreakDue(String time) {
+    return '$time — e nevoie de pauză';
+  }
+
+  @override
+  String get drivingThisShift => 'În această tură';
+
+  @override
+  String get drivingThisWeek => 'Săptămâna aceasta';
 
   @override
   String get workdayEndDay => 'Încheie ziua';
@@ -1317,6 +1379,9 @@ class AppLocalizationsRo extends AppLocalizations {
   String get exportDays28 => '28 de zile';
 
   @override
+  String get exportDays56 => '56 de zile';
+
+  @override
   String get exportCustom => 'Perioadă proprie';
 
   @override
@@ -1339,7 +1404,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get exportFormat => 'Format';
 
   @override
-  String get exportPdf => 'PDF · pentru control';
+  String get exportPdf => 'PDF';
 
   @override
   String get exportCsv => 'CSV · tabel';
@@ -2167,6 +2232,13 @@ class AppLocalizationsRo extends AppLocalizations {
   String get moreAbout => 'Despre aplicație';
 
   @override
+  String get aboutLicenses => 'Licențe open source';
+
+  @override
+  String get aboutLicensesHint =>
+      'Bibliotecile și fonturile folosite în aplicație';
+
+  @override
   String get moreDisclaimer =>
       'TachoGo ajută la planificarea timpului la volan și a repausului, dar nu înlocuiește tahograful și nu este consultanță juridică.';
 
@@ -2320,22 +2392,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get bansHint => 'Unde și când camionul nu are voie să circule';
 
   @override
-  String get bansMassTitle => 'Masa vehiculului';
-
-  @override
-  String bansMass(String mass) {
-    String _temp0 = intl.Intl.selectLogic(mass, {
-      'van': 'până la 3,5 t',
-      'light': '3,5–7,5 t',
-      'medium': '7,5–12 t',
-      'other': 'peste 12 t',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get bansMassAsk =>
-      'Indicați masa maximă autorizată a vehiculului: restricțiile din țări încep de la 3,5, 7,5 sau 12 t.';
+  String get bansForTrucks => 'Pentru camioane de peste 12 t';
 
   @override
   String get bansMapLabel => 'Harta restricțiilor de circulație din Europa';
@@ -2386,9 +2443,6 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get bansNone => 'Fără restricții generale';
-
-  @override
-  String get bansNotForMass => 'Pentru vehiculul dvs. nu există restricții';
 
   @override
   String get bansNowTitle => 'Acum';

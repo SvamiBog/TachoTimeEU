@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
+import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
@@ -14,13 +15,14 @@ import 'package:tachogo/features/home/alerts.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
-import 'package:tachogo/features/home/daily_driving_screen.dart';
 import 'package:tachogo/features/home/daily_rest_screen.dart';
+import 'package:tachogo/features/home/detail_rows.dart';
+import 'package:tachogo/features/home/driving_screen.dart';
 import 'package:tachogo/features/home/hero_card.dart';
 import 'package:tachogo/features/home/home_screen.dart';
 import 'package:tachogo/features/home/limit_sections.dart';
-import 'package:tachogo/features/home/weekly_driving_screen.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
+import 'package:tachogo/features/home/work_week_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
 import 'package:tachogo/features/journal/shift_day_screen.dart';
 
@@ -110,7 +112,7 @@ void main() {
         const HomeScreen(),
         overrides: journalOverrides(periods: week.periods, now: week.now),
       );
-      await openRow(tester, 'Непрерывное вождение');
+      await openRow(tester, 'Перерыв');
       expect(find.byType(BreakScreen), findsOneWidget);
       expect(find.text('Перерыв после 4:30 вождения'), findsOneWidget);
       expect(find.text('0:15 / 0:45'), findsOneWidget);
@@ -186,7 +188,7 @@ void main() {
         const HomeScreen(),
         overrides: journalOverrides(periods: week.periods, now: week.now),
       );
-      await openRow(tester, 'Рабочая неделя');
+      await openRow(tester, 'Недельный отдых');
       expect(find.byType(WeeklyRestScreen), findsOneWidget);
       expect(find.text('НАЧАТЬ НЕ ПОЗЖЕ'), findsOneWidget);
       expect(
@@ -437,16 +439,106 @@ void main() {
       ),
     );
 
-    testWidgets('«Суточное вождение»: из 9 ч, 9 и 10 ч, удлинения, неделя, '
-        'правка', (tester) async {
+    /// Раздел экрана «Вождение» прокручен наверх: заголовок под шапкой.
+    void expectSectionOnTop(WidgetTester tester, String title) {
+      expect(tester.getTopLeft(find.text(title)).dy, lessThan(200));
+    }
+
+    testWidgets('«Непрерывное вождение» — экран «Вождение»: сколько ещё '
+        'можно ехать и почему, 4:30, переход к перерыву', (tester) async {
+      // За рулём непрерывно 4:01 — до перерыва 0:29, раньше всех лимитов
+      final week = designWeek(driving: true);
+      final s = calculateCompliance(periods: week.periods, now: week.now);
+      expect(s.drivingUntilBreak, const Duration(minutes: 29));
+      await pumpHome(tester, week.periods, week.now);
+      await openRow(tester, 'Непрерывное вождение');
+      expect(find.byType(DrivingScreen), findsOneWidget);
+      expect(find.text('Вождение'), findsOneWidget);
+      expect(find.text('МОЖНО ЕХАТЬ ЕЩЁ'), findsOneWidget);
+      final breakAt = formatClock(week.now.add(s.drivingUntilBreak));
+      expect(find.text('до перерыва → $breakAt'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.widgetWithText(MilestoneRow, 'За рулём без перерыва'),
+          matching: find.text(formatHm(s.continuousDriving)),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('4:30 — нужен перерыв'), findsOneWidget);
+      expect(find.text('ещё 0:29 → $breakAt'), findsOneWidget);
+      await scrollTo(tester, find.text('Перерыв'));
+      await tester.tap(find.text('Перерыв'));
+      await tester.pumpAndSettle();
+      expect(find.byType(BreakScreen), findsOneWidget);
+    });
+
+    testWidgets('«Вождение»: ехать нельзя — 0:00 и почему', (tester) async {
+      // 4:40 за рулём без перерыва
+      final periods = consecutive(t0, [
+        (DriverMode.driving, Duration.zero),
+      ], open: true);
+      await pumpHome(
+        tester,
+        periods,
+        t0.add(const Duration(hours: 4, minutes: 40)),
+      );
+      await openRow(tester, 'Непрерывное вождение');
+      expect(find.text('0:00'), findsWidgets);
+      expect(find.text('нужен перерыв'), findsOneWidget);
+      expect(find.text('выбрано полностью'), findsOneWidget);
+    });
+
+    testWidgets('«Вождение»: рабочий день кончится раньше лимитов вождения', (
+      tester,
+    ) async {
+      // 11:30 другой работы, полчаса за рулём: до 15 ч рабочего дня — 3:00,
+      // до перерыва — 4:00
+      final periods = consecutive(t0, [
+        (DriverMode.otherWork, const Duration(hours: 11, minutes: 30)),
+        (DriverMode.driving, Duration.zero),
+      ], open: true);
+      final now = t0.add(const Duration(hours: 12));
+      await pumpHome(tester, periods, now);
+      await openRow(tester, 'Непрерывное вождение');
+      expect(find.text('3:00'), findsWidgets);
+      expect(
+        find.text(
+          'до конца рабочего дня → '
+          '${formatClock(now.add(const Duration(hours: 3)))}',
+        ),
+        findsOneWidget,
+      );
+      await unmount(tester);
+
+      // На перерыве рабочий день идёт: тронуться сейчас — до 15 ч осталось
+      // 3:30, хотя строка «Рабочий день» считает до начала перерыва
+      final resting = consecutive(t0, [
+        (DriverMode.otherWork, const Duration(hours: 11)),
+        (DriverMode.rest, Duration.zero),
+      ], open: true);
+      await pumpScreen(
+        tester,
+        const DrivingScreen(),
+        overrides: journalOverrides(
+          periods: resting,
+          now: t0.add(const Duration(hours: 11, minutes: 30)),
+        ),
+      );
+      expect(find.text('3:30'), findsWidgets);
+      expect(find.text('до конца рабочего дня'), findsOneWidget);
+    });
+
+    testWidgets('«Суточное вождение» — тот же экран, раздел смены: 9 и 10 ч, '
+        'удлинения, правка', (tester) async {
       final week = designWeek(driving: true);
       final s = calculateCompliance(periods: week.periods, now: week.now);
       await pumpHome(tester, week.periods, week.now);
       await openRow(tester, 'Суточное вождение');
-      expect(find.byType(DailyDrivingScreen), findsOneWidget);
+      expect(find.byType(DrivingScreen), findsOneWidget);
+      expectSectionOnTop(tester, 'СУТОЧНОЕ ВОЖДЕНИЕ');
+      expect(find.text('В этой смене'), findsOneWidget);
+      expect(find.text('с ${formatClock(s.shift!.start)}'), findsOneWidget);
       expect(find.text(formatHm(s.dailyDriving)), findsOneWidget);
-      // Лимит дня — 10 ч, пока на неделе есть удлинения
-      expect(find.text('из ${s.dailyDrivingLimit.inHours} ч'), findsOneWidget);
       final left = EuLimits.dailyDriving - s.dailyDriving;
       expect(find.text('9 ч — обычный день'), findsOneWidget);
       // За рулём — во сколько кончится
@@ -463,20 +555,23 @@ void main() {
         find.widgetWithText(SecondaryButton, 'Исправить вождение за день'),
         findsOneWidget,
       );
-      await scrollTo(tester, find.text('Недельное вождение'));
-      await tester.tap(find.text('Недельное вождение'));
-      await tester.pumpAndSettle();
-      expect(find.byType(WeeklyDrivingScreen), findsOneWidget);
     });
 
-    testWidgets('«Недельное» и «Двухнедельное вождение»: 56 и 90 ч, прошлая '
-        'неделя, смены недели — к деталям дня', (tester) async {
+    testWidgets('«Недельное» и «Двухнедельное вождение» — тот же экран, '
+        'раздел недели: 56 и 90 ч, прошлая неделя, смены недели', (
+      tester,
+    ) async {
       final week = designWeek(driving: true);
       final s = calculateCompliance(periods: week.periods, now: week.now);
       await pumpHome(tester, week.periods, week.now);
       await openRow(tester, 'Двухнедельное вождение');
-      expect(find.byType(WeeklyDrivingScreen), findsOneWidget);
-      expect(find.text('из 56 ч'), findsOneWidget);
+      expect(find.byType(DrivingScreen), findsOneWidget);
+      expectSectionOnTop(tester, 'НЕДЕЛЬНОЕ ВОЖДЕНИЕ');
+      expect(find.text('На этой неделе'), findsOneWidget);
+      expect(
+        find.text('неделя с ${formatWeekdayDayClock(s.weekStart, 'ru')}'),
+        findsOneWidget,
+      );
       expect(find.text('56 ч — за неделю'), findsOneWidget);
       expect(find.text('90 ч — за две недели'), findsOneWidget);
       final previous = s.fortnightDriving - s.weeklyDriving;
@@ -502,7 +597,101 @@ void main() {
         await tester.pumpAndSettle();
       }
       await openRow(tester, 'Недельное вождение');
-      expect(find.byType(WeeklyDrivingScreen), findsOneWidget);
+      expect(find.byType(DrivingScreen), findsOneWidget);
+      expectSectionOnTop(tester, 'НЕДЕЛЬНОЕ ВОЖДЕНИЕ');
+    });
+
+    testWidgets('«Рабочая неделя» — свой экран: 144 ч от недельного отдыха, '
+        'когда начать следующий, смены, переход к недельному отдыху', (
+      tester,
+    ) async {
+      final week = designWeek(driving: true);
+      final s = calculateCompliance(periods: week.periods, now: week.now);
+      final since = s.workWeekStart!;
+      final deadline = s.weeklyRestDeadline!;
+      await pumpHome(tester, week.periods, week.now);
+      await openRow(tester, 'Рабочая неделя');
+      expect(find.byType(WorkWeekScreen), findsOneWidget);
+      expect(find.byType(WeeklyRestScreen), findsNothing);
+      expect(find.text(formatHm(s.workWeekDuration)), findsOneWidget);
+      expect(find.text('из 144 ч'), findsOneWidget);
+      expect(
+        find.text('с ${formatWeekdayDayClock(since, 'ru')}'),
+        findsOneWidget,
+      );
+      expect(find.text('Конец недельного отдыха'), findsOneWidget);
+      expect(find.text(formatClock(since)), findsOneWidget);
+      expect(find.text('144 ч — начать недельный отдых'), findsOneWidget);
+      expect(
+        find.text('ещё ${formatHm(s.workWeekRemaining!)}'),
+        findsOneWidget,
+      );
+      expect(find.text(formatWeekdayClock(deadline, 'ru')), findsOneWidget);
+      // Смены после недельного отдыха: пн, вт, ср
+      await scrollTo(tester, find.text('СМЕНЫ РАБОЧЕЙ НЕДЕЛИ'));
+      for (final day in [21, 22, 23]) {
+        final start = week.periods
+            .firstWhere(
+              (p) =>
+                  p.mode == DriverMode.driving &&
+                  p.start.day == day &&
+                  p.start.month == 9,
+            )
+            .start;
+        await scrollTo(
+          tester,
+          find.widgetWithText(NavRow, formatWeekdayDay(start, 'ru')),
+        );
+      }
+      await scrollTo(tester, find.textContaining('ст. 8(6)'));
+      await scrollTo(tester, find.text('Недельный отдых'));
+      await tester.tap(find.text('Недельный отдых'));
+      await tester.pumpAndSettle();
+      expect(find.byType(WeeklyRestScreen), findsOneWidget);
+    });
+
+    testWidgets('«Рабочая неделя» без недельного отдыха в журнале и во время '
+        'недельного отдыха', (tester) async {
+      await pumpScreen(
+        tester,
+        const WorkWeekScreen(),
+        overrides: journalOverrides(
+          periods: consecutive(t0, [
+            (DriverMode.driving, Duration.zero),
+          ], open: true),
+          now: t0.add(const Duration(hours: 1)),
+        ),
+      );
+      expect(find.text('—'), findsOneWidget);
+      expect(
+        find.text(
+          'Нет данных о прошлом недельном отдыхе. Срок появится после '
+          'отдыха от 24 ч.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('144 ч — начать недельный отдых'), findsNothing);
+      expect(find.text('Недельный отдых'), findsOneWidget);
+      await unmount(tester);
+
+      // Отдых после смены в ср идёт больше суток — недельный
+      final week = designWeek();
+      await pumpScreen(
+        tester,
+        const WorkWeekScreen(),
+        overrides: journalOverrides(
+          periods: week.periods,
+          now: DateTime.utc(2026, 9, 24, 18),
+        ),
+      );
+      expect(
+        find.text(
+          'Идёт недельный отдых: новая рабочая неделя начнётся после него.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('144 ч — начать недельный отдых'), findsNothing);
+      expect(find.text('Конец недельного отдыха'), findsOneWidget);
     });
 
     testWidgets('строка текущего режима — экран по режиму', (tester) async {
@@ -522,7 +711,7 @@ void main() {
         await unmount(tester);
       }
 
-      await check(DriverMode.driving, BreakScreen);
+      await check(DriverMode.driving, DrivingScreen);
       await check(DriverMode.rest, DailyRestScreen);
       await check(DriverMode.otherWork, WorkdayScreen);
       await check(DriverMode.availability, WorkdayScreen);

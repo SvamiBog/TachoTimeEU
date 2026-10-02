@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:tacho_engine/driving_bans.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/countries/tacho_countries.dart';
 import 'package:tachogo/data/db/app_database.dart';
@@ -145,7 +144,6 @@ class SettingsRepository {
   static const _notifyShiftEnd = 'notify_shift_end';
   static const _notifyDriving = 'notify_driving';
   static const _notifyCard = 'notify_card';
-  static const _vehicleMass = 'vehicle_mass';
 
   final AppDatabase _db;
 
@@ -245,7 +243,6 @@ class SettingsRepository {
     _notifyShiftEnd,
     _notifyDriving,
     _notifyCard,
-    _vehicleMass,
   };
 
   /// Заданные переносимые настройки как есть, для файла переноса.
@@ -282,15 +279,6 @@ class SettingsRepository {
     _notifyDriving: '${s.driving}',
     _notifyCard: '${s.card}',
   });
-
-  /// Масса машины для запретов движения; null — водитель ещё не выбирал.
-  Stream<VehicleMass?> watchVehicleMass() =>
-      _watch(_vehicleMass)
-          .map((v) => VehicleMass.values.asNameMap()[v])
-          .distinct();
-
-  Future<void> setVehicleMass(VehicleMass mass) =>
-      _put(_vehicleMass, mass.name);
 
   /// Страна для новой смены — последняя выбранная; null — ещё не выбирали.
   Stream<String?> watchDefaultCountry() =>

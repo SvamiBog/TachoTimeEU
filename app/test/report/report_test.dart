@@ -240,6 +240,16 @@ void main() {
       );
     });
 
+    test('«56 дней» — 56 суток с сегодняшними, с 00:00 UTC', () {
+      final r = reportRange(ReportPeriod.days56, now);
+      expect(r.start, DateTime.utc(2026, 7, 30));
+      expect(r.end, now);
+      expect(
+        DateTime.utc(now.year, now.month, now.day + 1).difference(r.start),
+        const Duration(days: 56),
+      );
+    });
+
     test('в понедельник 00:00 неделя только началась', () {
       final monday = DateTime.utc(2026, 9, 21);
       expect(reportRange(ReportPeriod.week, monday).start, monday);

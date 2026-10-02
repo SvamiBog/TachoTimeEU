@@ -308,6 +308,28 @@ class AppLocalizationsNl extends AppLocalizations {
   String get workWeekUnknown => 'Geen gegevens over de vorige wekelijkse rust';
 
   @override
+  String get workWeekRestEnd => 'Einde van de wekelijkse rust';
+
+  @override
+  String workWeekDeadline(int hours) {
+    return '$hours u — wekelijkse rust beginnen';
+  }
+
+  @override
+  String get workWeekOnRest =>
+      'Wekelijkse rust loopt: de nieuwe werkweek begint daarna.';
+
+  @override
+  String get workWeekShifts => 'Diensten van de werkweek';
+
+  @override
+  String get workWeekNoShifts => 'Nog geen diensten sinds de wekelijkse rust';
+
+  @override
+  String get workWeekRule =>
+      'De werkweek is de tijd sinds het einde van de wekelijkse rust. De volgende wekelijkse rust moet uiterlijk na zes perioden van 24 uur beginnen — 144 u (art. 8, lid 6, Verordening 561/2006).';
+
+  @override
   String get cardTitle => 'Kaart uitlezen';
 
   @override
@@ -423,9 +445,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get drivingCorrect => 'Rijtijd van vandaag corrigeren';
 
   @override
-  String get drivingLimits => 'Limieten';
-
-  @override
   String get drivingUsedUp => 'volledig gebruikt';
 
   @override
@@ -474,6 +493,49 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get drivingWeekRule =>
       'De week loopt van maandag 00:00 tot zondag 24:00, zoals op de tachograaf. Maximaal 56 u rijtijd per week en 90 u in twee opeenvolgende weken.';
+
+  @override
+  String get drivingCanDrive => 'Nog te rijden';
+
+  @override
+  String drivingStop(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'tot de pauze',
+      'workday': 'tot het einde van de werkdag',
+      'daily': 'tot de grens van de dagelijkse rijtijd',
+      'weekly': 'tot de weekgrens',
+      'fortnight': 'tot de grens van twee weken',
+      'other': 'tot de grens',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String drivingStopped(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'pauze nodig',
+      'workday': 'de werkdag is voorbij',
+      'daily': 'dagelijkse rijtijd opgebruikt',
+      'weekly': 'wekelijkse rijtijd opgebruikt',
+      'fortnight': 'rijtijd voor twee weken opgebruikt',
+      'other': 'grens opgebruikt',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get drivingContinuousNow => 'Achter het stuur zonder pauze';
+
+  @override
+  String drivingBreakDue(String time) {
+    return '$time — pauze verplicht';
+  }
+
+  @override
+  String get drivingThisShift => 'In deze dienst';
+
+  @override
+  String get drivingThisWeek => 'Deze week';
 
   @override
   String get workdayEndDay => 'Dag beëindigen';
@@ -1310,6 +1372,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get exportDays28 => '28 dagen';
 
   @override
+  String get exportDays56 => '56 dagen';
+
+  @override
   String get exportCustom => 'Eigen periode';
 
   @override
@@ -1332,7 +1397,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get exportFormat => 'Formaat';
 
   @override
-  String get exportPdf => 'PDF · voor controle';
+  String get exportPdf => 'PDF';
 
   @override
   String get exportCsv => 'CSV · tabel';
@@ -2158,6 +2223,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get moreAbout => 'Over de app';
 
   @override
+  String get aboutLicenses => 'Opensourcelicenties';
+
+  @override
+  String get aboutLicensesHint =>
+      'Bibliotheken en lettertypen waarmee de app is gemaakt';
+
+  @override
   String get moreDisclaimer =>
       'TachoGo helpt rij- en rusttijden te plannen, maar vervangt de tachograaf niet en is geen juridisch advies.';
 
@@ -2312,22 +2384,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get bansHint => 'Waar en wanneer vrachtwagens niet mogen rijden';
 
   @override
-  String get bansMassTitle => 'Gewicht van het voertuig';
-
-  @override
-  String bansMass(String mass) {
-    String _temp0 = intl.Intl.selectLogic(mass, {
-      'van': 'tot 3,5 t',
-      'light': '3,5–7,5 t',
-      'medium': '7,5–12 t',
-      'other': 'meer dan 12 t',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get bansMassAsk =>
-      'Kies de toegestane maximummassa: afhankelijk van het land gelden verboden vanaf 3,5, 7,5 of 12 t.';
+  String get bansForTrucks => 'Voor vrachtwagens boven 12 t';
 
   @override
   String get bansMapLabel => 'Kaart van rijverboden in Europa';
@@ -2378,9 +2435,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get bansNone => 'Geen algemene verboden';
-
-  @override
-  String get bansNotForMass => 'Geen verboden voor uw voertuig';
 
   @override
   String get bansNowTitle => 'Nu';
