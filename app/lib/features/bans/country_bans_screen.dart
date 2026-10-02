@@ -23,6 +23,20 @@ void openCountryBans(BuildContext context, String code) =>
 /// Сколько дней вперёд показывает «Ближайшие запреты».
 const upcomingDays = 14;
 
+/// Страница источника под адресом сайта — когда у страны несколько
+/// источников на одном сайте: иначе строки выглядят одинаково.
+String? sourcePage(List<String> sources, String source) {
+  final uri = Uri.parse(source);
+  if (sources.where((s) => Uri.parse(s).host == uri.host).length < 2) {
+    return null;
+  }
+  final page = '${uri.path}${uri.hasQuery ? '?${uri.query}' : ''}'.replaceAll(
+    RegExp(r'^/+|/+$'),
+    '',
+  );
+  return page.isEmpty ? null : Uri.decodeComponent(page);
+}
+
 /// Запреты страны для грузовика больше 12 т: что сейчас, правила,
 /// ближайшие запреты на две недели (календарь — Premium, Фаза 5), где
 /// проверить, дата сверки.
@@ -95,6 +109,7 @@ class CountryBansScreen extends ConsumerWidget {
                 NavRow(
                   icon: Icons.open_in_new,
                   title: Uri.parse(source).host,
+                  subtitle: sourcePage(country.sources, source),
                   onTap: () => unawaited(
                     ref.read(linkOpenerProvider).open(Uri.parse(source)),
                   ),

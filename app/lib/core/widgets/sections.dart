@@ -32,7 +32,8 @@ class SectionTitle extends StatelessWidget {
   );
 }
 
-/// Карточка со строками через линию.
+/// Карточка со строками через линию. Строки — во всю ширину карточки:
+/// строка из одного текста иначе сжимается до него и встаёт по центру.
 class CardGroup extends StatelessWidget {
   const new({required this.children, super.key});
 
@@ -48,6 +49,7 @@ class CardGroup extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.card),
         clipBehavior: Clip.antiAlias,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             for (final (i, child) in children.indexed) ...[
               if (i > 0)

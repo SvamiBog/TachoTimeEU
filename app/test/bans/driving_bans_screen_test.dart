@@ -196,6 +196,14 @@ void main() {
       expect(find.text(ru.bansUpcoming.toUpperCase()), findsOneWidget);
       // Ближайший — сегодняшний: с 00:00 до 22:00
       expect(find.text('Вс 04.10 00:00–22:00'), findsOneWidget);
+      // Строки — во всю ширину карточки, текст от левого края, а не по
+      // центру: иначе длинная строка сдвинута относительно коротких
+      final left = tester.getTopLeft(find.text('Вс 00:00–22:00')).dx;
+      expect(tester.getTopLeft(find.text('Сб 07:00–20:00')).dx, left);
+      expect(tester.getTopLeft(find.text('Вс 04.10 00:00–22:00')).dx, left);
+      // Два источника на одном сайте различаются страницей
+      expect(find.text('stvo_2013/__30.html'), findsOneWidget);
+      expect(find.text('ferreisev'), findsOneWidget);
       expect(find.textContaining('Сверено 01.10.2026'), findsOneWidget);
       await tester.tap(find.text('www.gesetze-im-internet.de').first);
       expect(links.opened.first.host, 'www.gesetze-im-internet.de');
