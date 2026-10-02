@@ -2316,4 +2316,178 @@ class AppLocalizationsRu extends AppLocalizations {
   String notifyCompensationTakenText(String time) {
     return 'Отдых вместил долг $time за сокращённый недельный отдых — долг погашен.';
   }
+
+  @override
+  String get bansTitle => 'Запреты движения';
+
+  @override
+  String get bansHint => 'Где и когда грузовику нельзя ехать';
+
+  @override
+  String get bansMassTitle => 'Масса машины';
+
+  @override
+  String bansMass(String mass) {
+    String _temp0 = intl.Intl.selectLogic(mass, {
+      'van': 'до 3,5 т',
+      'light': '3,5–7,5 т',
+      'medium': '7,5–12 т',
+      'other': 'больше 12 т',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get bansMassAsk =>
+      'Укажите разрешённую максимальную массу машины: запреты в странах начинаются с 3,5, 7,5 или 12 т.';
+
+  @override
+  String get bansMapLabel => 'Карта запретов движения в Европе';
+
+  @override
+  String get bansLegendActive => 'Запрет сейчас';
+
+  @override
+  String get bansLegendSoon => 'Скоро запрет';
+
+  @override
+  String get bansLegendPartial => 'Частично';
+
+  @override
+  String get bansLegendClear => 'Можно ехать';
+
+  @override
+  String get bansLegendRoads => 'Отдельные дороги';
+
+  @override
+  String get bansLegendNoData => 'Нет данных';
+
+  @override
+  String bansActiveUntil(String time) {
+    return 'Запрет до $time';
+  }
+
+  @override
+  String bansSoonFrom(String time) {
+    return 'Запрет с $time';
+  }
+
+  @override
+  String bansClearUntil(String time) {
+    return 'Можно ехать до $time';
+  }
+
+  @override
+  String get bansClearWeek => 'Запретов в ближайшую неделю нет';
+
+  @override
+  String bansPartialUntil(String time) {
+    return 'Частичный запрет до $time';
+  }
+
+  @override
+  String get bansSomeRoads => 'Запреты на отдельных дорогах';
+
+  @override
+  String get bansNone => 'Общих запретов нет';
+
+  @override
+  String get bansNotForMass => 'Для вашей машины запретов нет';
+
+  @override
+  String get bansNowTitle => 'Сейчас';
+
+  @override
+  String get bansRules => 'Правила';
+
+  @override
+  String get bansUpcoming => 'Ближайшие запреты';
+
+  @override
+  String get bansNoUpcoming => 'В ближайшие две недели запретов нет';
+
+  @override
+  String get bansSources => 'Где проверить';
+
+  @override
+  String bansChecked(String date) {
+    return 'Сверено $date. Время — местное время страны.';
+  }
+
+  @override
+  String get bansNeedsCheck =>
+      'Источники расходятся в деталях — перед рейсом проверьте по официальному источнику.';
+
+  @override
+  String get bansDisclaimer =>
+      'Справка, не официальный источник: бывают исключения (скоропортящиеся грузы, разрешения) и местные запреты. Проверяйте маршрут по источнику страны.';
+
+  @override
+  String get bansProvisional =>
+      'Предварительно: календарь страны на этот год ещё не известен';
+
+  @override
+  String bansKind(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'weekend': 'Выходные',
+      'holiday': 'Праздник',
+      'holidayEve': 'Канун праздника',
+      'summer': 'Летний запрет',
+      'night': 'Ночной запрет',
+      'other': 'По календарю страны',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansScope(String scope) {
+    String _temp0 = intl.Intl.selectLogic(scope, {
+      'allRoads': 'все дороги',
+      'mainRoads': 'магистрали и главные дороги',
+      'someRoads': 'отдельные дороги',
+      'someRegions': 'часть регионов',
+      'other': 'не для всех машин',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansOver(String tonnes) {
+    return 'больше $tonnes т';
+  }
+
+  @override
+  String get bansRuleHolidays => 'Праздники';
+
+  @override
+  String get bansRuleNights => 'Каждую ночь';
+
+  @override
+  String bansRuleCalendar(String year) {
+    return 'Дни календаря $year';
+  }
+
+  @override
+  String bansSeason(String from, String to) {
+    return 'с $from по $to';
+  }
+
+  @override
+  String bansSpanEve(String from, String to) {
+    return 'накануне $from – $to';
+  }
+
+  @override
+  String get bansRoadsText =>
+      'Время запретов зависит от дороги и меняется каждый год — смотрите источник страны.';
+
+  @override
+  String get bansNoneText =>
+      'Общих запретов для грузовиков нет. Ограничения бывают для опасных грузов и на отдельных участках.';
+
+  @override
+  String get bansCountries => 'Страны';
+
+  @override
+  String get bansCurrentCountry => 'Вы здесь';
 }

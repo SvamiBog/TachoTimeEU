@@ -2304,4 +2304,178 @@ class AppLocalizationsNl extends AppLocalizations {
   String notifyCompensationTakenText(String time) {
     return 'Deze rust dekt de $time voor een verkorte wekelijkse rust — de schuld is voldaan.';
   }
+
+  @override
+  String get bansTitle => 'Rijverboden';
+
+  @override
+  String get bansHint => 'Waar en wanneer vrachtwagens niet mogen rijden';
+
+  @override
+  String get bansMassTitle => 'Gewicht van het voertuig';
+
+  @override
+  String bansMass(String mass) {
+    String _temp0 = intl.Intl.selectLogic(mass, {
+      'van': 'tot 3,5 t',
+      'light': '3,5–7,5 t',
+      'medium': '7,5–12 t',
+      'other': 'meer dan 12 t',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get bansMassAsk =>
+      'Kies de toegestane maximummassa: afhankelijk van het land gelden verboden vanaf 3,5, 7,5 of 12 t.';
+
+  @override
+  String get bansMapLabel => 'Kaart van rijverboden in Europa';
+
+  @override
+  String get bansLegendActive => 'Verbod nu';
+
+  @override
+  String get bansLegendSoon => 'Verbod binnenkort';
+
+  @override
+  String get bansLegendPartial => 'Gedeeltelijk';
+
+  @override
+  String get bansLegendClear => 'Rijden toegestaan';
+
+  @override
+  String get bansLegendRoads => 'Bepaalde wegen';
+
+  @override
+  String get bansLegendNoData => 'Geen gegevens';
+
+  @override
+  String bansActiveUntil(String time) {
+    return 'Verbod tot $time';
+  }
+
+  @override
+  String bansSoonFrom(String time) {
+    return 'Verbod vanaf $time';
+  }
+
+  @override
+  String bansClearUntil(String time) {
+    return 'Rijden toegestaan tot $time';
+  }
+
+  @override
+  String get bansClearWeek => 'Geen verboden in de komende 7 dagen';
+
+  @override
+  String bansPartialUntil(String time) {
+    return 'Gedeeltelijk verbod tot $time';
+  }
+
+  @override
+  String get bansSomeRoads => 'Verboden op bepaalde wegen';
+
+  @override
+  String get bansNone => 'Geen algemene verboden';
+
+  @override
+  String get bansNotForMass => 'Geen verboden voor uw voertuig';
+
+  @override
+  String get bansNowTitle => 'Nu';
+
+  @override
+  String get bansRules => 'Regels';
+
+  @override
+  String get bansUpcoming => 'Komende verboden';
+
+  @override
+  String get bansNoUpcoming => 'Geen verboden in de komende twee weken';
+
+  @override
+  String get bansSources => 'Waar controleren';
+
+  @override
+  String bansChecked(String date) {
+    return 'Gecontroleerd op $date. Tijden in lokale tijd van het land.';
+  }
+
+  @override
+  String get bansNeedsCheck =>
+      'Bronnen verschillen in details — controleer de officiële bron vóór de rit.';
+
+  @override
+  String get bansDisclaimer =>
+      'Ter informatie, geen officiële bron: er zijn uitzonderingen (bederfelijke goederen, vergunningen) en lokale verboden. Controleer de route bij de bron van het land.';
+
+  @override
+  String get bansProvisional =>
+      'Voorlopig: de kalender van het land voor dit jaar is nog niet gepubliceerd';
+
+  @override
+  String bansKind(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'weekend': 'Weekend',
+      'holiday': 'Feestdag',
+      'holidayEve': 'Dag voor feestdag',
+      'summer': 'Zomerverbod',
+      'night': 'Nachtverbod',
+      'other': 'Volgens kalender van het land',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansScope(String scope) {
+    String _temp0 = intl.Intl.selectLogic(scope, {
+      'allRoads': 'alle wegen',
+      'mainRoads': 'snelwegen en hoofdwegen',
+      'someRoads': 'bepaalde wegen',
+      'someRegions': 'sommige regio’s',
+      'other': 'niet voor alle voertuigen',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansOver(String tonnes) {
+    return 'meer dan $tonnes t';
+  }
+
+  @override
+  String get bansRuleHolidays => 'Feestdagen';
+
+  @override
+  String get bansRuleNights => 'Elke nacht';
+
+  @override
+  String bansRuleCalendar(String year) {
+    return 'Kalenderdagen $year';
+  }
+
+  @override
+  String bansSeason(String from, String to) {
+    return 'van $from tot $to';
+  }
+
+  @override
+  String bansSpanEve(String from, String to) {
+    return 'dag ervoor $from – $to';
+  }
+
+  @override
+  String get bansRoadsText =>
+      'De tijden hangen af van de weg en veranderen elk jaar — zie de bron van het land.';
+
+  @override
+  String get bansNoneText =>
+      'Geen algemene verboden voor vrachtwagens. Voor gevaarlijke stoffen en op sommige trajecten kunnen beperkingen gelden.';
+
+  @override
+  String get bansCountries => 'Landen';
+
+  @override
+  String get bansCurrentCountry => 'U bent hier';
 }

@@ -2315,4 +2315,178 @@ class AppLocalizationsCs extends AppLocalizations {
   String notifyCompensationTakenText(String time) {
     return 'Odpočinek pokryl dluh $time za zkrácený týdenní odpočinek — dluh je splacen.';
   }
+
+  @override
+  String get bansTitle => 'Zákazy jízdy';
+
+  @override
+  String get bansHint => 'Kde a kdy nákladní auto nesmí jet';
+
+  @override
+  String get bansMassTitle => 'Hmotnost vozidla';
+
+  @override
+  String bansMass(String mass) {
+    String _temp0 = intl.Intl.selectLogic(mass, {
+      'van': 'do 3,5 t',
+      'light': '3,5–7,5 t',
+      'medium': '7,5–12 t',
+      'other': 'nad 12 t',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get bansMassAsk =>
+      'Zvolte největší povolenou hmotnost vozidla: zákazy v zemích platí od 3,5, 7,5 nebo 12 t.';
+
+  @override
+  String get bansMapLabel => 'Mapa zákazů jízdy v Evropě';
+
+  @override
+  String get bansLegendActive => 'Zákaz teď';
+
+  @override
+  String get bansLegendSoon => 'Brzy zákaz';
+
+  @override
+  String get bansLegendPartial => 'Částečně';
+
+  @override
+  String get bansLegendClear => 'Lze jet';
+
+  @override
+  String get bansLegendRoads => 'Jednotlivé silnice';
+
+  @override
+  String get bansLegendNoData => 'Bez údajů';
+
+  @override
+  String bansActiveUntil(String time) {
+    return 'Zákaz do $time';
+  }
+
+  @override
+  String bansSoonFrom(String time) {
+    return 'Zákaz od $time';
+  }
+
+  @override
+  String bansClearUntil(String time) {
+    return 'Lze jet do $time';
+  }
+
+  @override
+  String get bansClearWeek => 'Žádné zákazy v nejbližším týdnu';
+
+  @override
+  String bansPartialUntil(String time) {
+    return 'Částečný zákaz do $time';
+  }
+
+  @override
+  String get bansSomeRoads => 'Zákazy na jednotlivých silnicích';
+
+  @override
+  String get bansNone => 'Bez obecných zákazů';
+
+  @override
+  String get bansNotForMass => 'Pro vaše vozidlo bez zákazů';
+
+  @override
+  String get bansNowTitle => 'Teď';
+
+  @override
+  String get bansRules => 'Pravidla';
+
+  @override
+  String get bansUpcoming => 'Nejbližší zákazy';
+
+  @override
+  String get bansNoUpcoming => 'V nejbližších dvou týdnech bez zákazů';
+
+  @override
+  String get bansSources => 'Kde ověřit';
+
+  @override
+  String bansChecked(String date) {
+    return 'Ověřeno $date. Čas je místní čas země.';
+  }
+
+  @override
+  String get bansNeedsCheck =>
+      'Zdroje se v detailech liší — před jízdou ověřte v oficiálním zdroji.';
+
+  @override
+  String get bansDisclaimer =>
+      'Orientační informace, ne oficiální zdroj: existují výjimky (rychle se kazící zboží, povolení) a místní zákazy. Trasu ověřte ve zdroji země.';
+
+  @override
+  String get bansProvisional =>
+      'Předběžně: kalendář země na tento rok ještě není zveřejněn';
+
+  @override
+  String bansKind(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'weekend': 'Víkend',
+      'holiday': 'Svátek',
+      'holidayEve': 'Den před svátkem',
+      'summer': 'Letní zákaz',
+      'night': 'Noční zákaz',
+      'other': 'Podle kalendáře země',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansScope(String scope) {
+    String _temp0 = intl.Intl.selectLogic(scope, {
+      'allRoads': 'všechny silnice',
+      'mainRoads': 'dálnice a hlavní silnice',
+      'someRoads': 'jednotlivé silnice',
+      'someRegions': 'část regionů',
+      'other': 'ne pro všechna vozidla',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansOver(String tonnes) {
+    return 'nad $tonnes t';
+  }
+
+  @override
+  String get bansRuleHolidays => 'Svátky';
+
+  @override
+  String get bansRuleNights => 'Každou noc';
+
+  @override
+  String bansRuleCalendar(String year) {
+    return 'Dny kalendáře $year';
+  }
+
+  @override
+  String bansSeason(String from, String to) {
+    return 'od $from do $to';
+  }
+
+  @override
+  String bansSpanEve(String from, String to) {
+    return 'předchozí den $from – $to';
+  }
+
+  @override
+  String get bansRoadsText =>
+      'Časy zákazů závisí na silnici a mění se každý rok — viz zdroj země.';
+
+  @override
+  String get bansNoneText =>
+      'Obecné zákazy pro nákladní auta nejsou. Omezení bývají pro nebezpečné věci a na některých úsecích.';
+
+  @override
+  String get bansCountries => 'Země';
+
+  @override
+  String get bansCurrentCountry => 'Jste zde';
 }

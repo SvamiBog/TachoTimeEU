@@ -30,8 +30,8 @@ void main() {
   });
 
   /// Журнал старого телефона: смена с перерывом и идущим отдыхом, паром,
-  /// «Завершить день», страны и заметка, смена итогами, считывание карты,
-  /// настройки расчёта.
+  /// недельный отдых («Начать недельный отдых»), страны и заметка, смена
+  /// итогами, считывание карты, настройки расчёта.
   Future<void> seed(AppDatabase db) async {
     var t = now.subtract(const Duration(hours: 12));
     final activity = ActivityRepository(db, clock: () => t);
@@ -41,7 +41,7 @@ void main() {
     t = t.add(const Duration(minutes: 45));
     await activity.switchMode(DriverMode.driving, ferry: true);
     t = t.add(const Duration(hours: 2));
-    await activity.endDay();
+    await activity.endDay(weekly: true);
 
     final settings = SettingsRepository(db);
     final edits = JournalEditRepository(db, settings, clock: () => now);
@@ -77,7 +77,7 @@ void main() {
   Future<Map<String, Object?>> snapshot(AppDatabase db) async => {
     'periods': [
       for (final p in await ActivityRepository(db).periods())
-        (p.mode, p.start, p.end, p.ferry, p.dayEnd),
+        (p.mode, p.start, p.end, p.ferry, p.dayEnd, p.weeklyRest),
     ],
     'rows': [
       for (final r in await db.select(db.activityPeriods).get())
@@ -216,6 +216,30 @@ void main() {
           reason: '$version',
         );
       }
+    });
+
+    test('файл прежнего приложения без отметки «недельный» читается — '
+        'отдых по длительности', () async {
+      await seed(oldPhone);
+      final json = jsonDecode(
+        utf8.decode(await backup(oldPhone).export()),
+      ) as Map<String, Object?>;
+      final periods = json['periods']! as List<Object?>;
+      expect(
+        periods.cast<Map<String, Object?>>().any(
+          (p) => p['weeklyRest'] == true,
+        ),
+        isTrue,
+      );
+      for (final p in periods.cast<Map<String, Object?>>()) {
+        p.remove('weeklyRest');
+      }
+      await backup(newPhone)
+          .restore(JournalBackup.parse(utf8.encode(jsonEncode(json))));
+      final restored = await ActivityRepository(newPhone).periods();
+      expect(restored, hasLength(periods.length));
+      expect(restored.any((p) => p.weeklyRest), isFalse);
+      expect(restored.last.dayEnd, isTrue);
     });
 
     test('текущая версия и BOM в начале читаются', () {

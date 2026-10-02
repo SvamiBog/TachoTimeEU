@@ -15,6 +15,7 @@ class ActivityPeriod {
     this.id,
     this.ferry = false,
     this.dayEnd = false,
+    this.weeklyRest = false,
   }) {
     if (!start.isUtc) {
       throw ArgumentError.value(start, 'start', 'должно быть в UTC');
@@ -44,6 +45,12 @@ class ActivityPeriod {
   /// перерывом.
   final bool dayEnd;
 
+  /// Отдых объявлен недельным: «Начать недельный отдых» или недельный
+  /// отдых после смены в журнале. Пока он идёт, это недельный отдых и конец
+  /// рабочего дня, даже короче 24 ч. Прерванный раньше 24 ч считается по
+  /// длительности, как любой отдых.
+  final bool weeklyRest;
+
   bool get isOpen => end == null;
 
   /// Длительность периода; для открытого периода — до момента [now].
@@ -59,6 +66,7 @@ class ActivityPeriod {
     end: end,
     ferry: ferry,
     dayEnd: dayEnd,
+    weeklyRest: weeklyRest,
   );
 
   ActivityPeriod withStart(DateTime start) => ActivityPeriod(
@@ -68,6 +76,7 @@ class ActivityPeriod {
     end: end,
     ferry: ferry,
     dayEnd: dayEnd,
+    weeklyRest: weeklyRest,
   );
 
   ActivityPeriod withFerry({required bool ferry}) => ActivityPeriod(
@@ -77,6 +86,7 @@ class ActivityPeriod {
     end: end,
     ferry: ferry,
     dayEnd: dayEnd,
+    weeklyRest: weeklyRest,
   );
 
   ActivityPeriod withDayEnd({required bool dayEnd}) => ActivityPeriod(
@@ -86,6 +96,17 @@ class ActivityPeriod {
     end: end,
     ferry: ferry,
     dayEnd: dayEnd,
+    weeklyRest: weeklyRest,
+  );
+
+  ActivityPeriod withWeeklyRest({required bool weeklyRest}) => ActivityPeriod(
+    id: id,
+    mode: mode,
+    start: start,
+    end: end,
+    ferry: ferry,
+    dayEnd: dayEnd,
+    weeklyRest: weeklyRest,
   );
 
   @override
@@ -96,14 +117,17 @@ class ActivityPeriod {
       other.start == start &&
       other.end == end &&
       other.ferry == ferry &&
-      other.dayEnd == dayEnd;
+      other.dayEnd == dayEnd &&
+      other.weeklyRest == weeklyRest;
 
   @override
-  int get hashCode => Object.hash(id, mode, start, end, ferry, dayEnd);
+  int get hashCode =>
+      Object.hash(id, mode, start, end, ferry, dayEnd, weeklyRest);
 
   @override
   String toString() =>
       'ActivityPeriod(${id ?? 'new'}, $mode, '
       '$start → ${end ?? 'now'}'
-      '${ferry ? ', паром' : ''}${dayEnd ? ', конец дня' : ''})';
+      '${ferry ? ', паром' : ''}${dayEnd ? ', конец дня' : ''}'
+      '${weeklyRest ? ', недельный' : ''})';
 }

@@ -23,6 +23,7 @@ ActivityPeriod periodFromRow(ActivityPeriodRow r) => ActivityPeriod(
   end: r.endUtc,
   ferry: r.ferry,
   dayEnd: r.dayEnd,
+  weeklyRest: r.weeklyRest,
 );
 
 /// Сохраняет разницу между [before] и [after]: записи без id вставляются
@@ -51,6 +52,7 @@ Future<void> savePeriodChanges(
               source: source,
               ferry: Value(p.ferry),
               dayEnd: Value(p.dayEnd),
+              weeklyRest: Value(p.weeklyRest),
               createdAt: now,
               updatedAt: now,
             ),
@@ -66,6 +68,7 @@ Future<void> savePeriodChanges(
         endUtc: Value(p.end),
         ferry: Value(p.ferry),
         dayEnd: Value(p.dayEnd),
+        weeklyRest: Value(p.weeklyRest),
         updatedAt: Value(now),
       ),
     );

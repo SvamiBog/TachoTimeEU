@@ -430,15 +430,16 @@ ComplianceSnapshot calculateCompliance({
       manualOffDuty = r;
     }
   }
+  // Недельным отдых объявляют у записи ([RestPeriod.weeklyRest]) или у
+  // ручной смены перед ним — после «Завершить день» с вождением смена стала
+  // ручной, а отдых остался записью.
   final offDutyRest = shift != null
       ? null
-      : lastRest != null &&
-            lastRest.open &&
-            (lastRest.rest >= EuLimits.dailyRestReduced || lastRest.dayEnd)
+      : lastRest != null && lastRest.open && lastRest.endsShift
       ? OffDutyRest(
           start: lastRest.start,
           duration: lastRest.rest,
-          weekly: lastRest.isWeekly,
+          weekly: lastRest.isWeekly || manualOffDuty?.kind == RestKind.weekly,
         )
       : manualOffDuty != null
       ? OffDutyRest(

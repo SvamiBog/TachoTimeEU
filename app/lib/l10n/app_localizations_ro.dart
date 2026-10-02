@@ -2312,4 +2312,178 @@ class AppLocalizationsRo extends AppLocalizations {
   String notifyCompensationTakenText(String time) {
     return 'Repausul a cuprins datoria de $time pentru repausul săptămânal redus — datoria este achitată.';
   }
+
+  @override
+  String get bansTitle => 'Restricții de circulație';
+
+  @override
+  String get bansHint => 'Unde și când camionul nu are voie să circule';
+
+  @override
+  String get bansMassTitle => 'Masa vehiculului';
+
+  @override
+  String bansMass(String mass) {
+    String _temp0 = intl.Intl.selectLogic(mass, {
+      'van': 'până la 3,5 t',
+      'light': '3,5–7,5 t',
+      'medium': '7,5–12 t',
+      'other': 'peste 12 t',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get bansMassAsk =>
+      'Indicați masa maximă autorizată a vehiculului: restricțiile din țări încep de la 3,5, 7,5 sau 12 t.';
+
+  @override
+  String get bansMapLabel => 'Harta restricțiilor de circulație din Europa';
+
+  @override
+  String get bansLegendActive => 'Restricție acum';
+
+  @override
+  String get bansLegendSoon => 'Restricție în curând';
+
+  @override
+  String get bansLegendPartial => 'Parțial';
+
+  @override
+  String get bansLegendClear => 'Se poate circula';
+
+  @override
+  String get bansLegendRoads => 'Anumite drumuri';
+
+  @override
+  String get bansLegendNoData => 'Fără date';
+
+  @override
+  String bansActiveUntil(String time) {
+    return 'Restricție până la $time';
+  }
+
+  @override
+  String bansSoonFrom(String time) {
+    return 'Restricție de la $time';
+  }
+
+  @override
+  String bansClearUntil(String time) {
+    return 'Se poate circula până la $time';
+  }
+
+  @override
+  String get bansClearWeek => 'Fără restricții în următoarea săptămână';
+
+  @override
+  String bansPartialUntil(String time) {
+    return 'Restricție parțială până la $time';
+  }
+
+  @override
+  String get bansSomeRoads => 'Restricții pe anumite drumuri';
+
+  @override
+  String get bansNone => 'Fără restricții generale';
+
+  @override
+  String get bansNotForMass => 'Pentru vehiculul dvs. nu există restricții';
+
+  @override
+  String get bansNowTitle => 'Acum';
+
+  @override
+  String get bansRules => 'Reguli';
+
+  @override
+  String get bansUpcoming => 'Restricții apropiate';
+
+  @override
+  String get bansNoUpcoming => 'Fără restricții în următoarele două săptămâni';
+
+  @override
+  String get bansSources => 'Unde verificați';
+
+  @override
+  String bansChecked(String date) {
+    return 'Verificat la $date. Ora este ora locală a țării.';
+  }
+
+  @override
+  String get bansNeedsCheck =>
+      'Sursele diferă în detalii — înainte de cursă verificați sursa oficială.';
+
+  @override
+  String get bansDisclaimer =>
+      'Informație orientativă, nu sursă oficială: există excepții (mărfuri perisabile, autorizații) și restricții locale. Verificați traseul la sursa țării.';
+
+  @override
+  String get bansProvisional =>
+      'Provizoriu: calendarul țării pentru acest an nu este încă cunoscut';
+
+  @override
+  String bansKind(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'weekend': 'Weekend',
+      'holiday': 'Sărbătoare',
+      'holidayEve': 'Ajun de sărbătoare',
+      'summer': 'Restricție de vară',
+      'night': 'Restricție de noapte',
+      'other': 'După calendarul țării',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansScope(String scope) {
+    String _temp0 = intl.Intl.selectLogic(scope, {
+      'allRoads': 'toate drumurile',
+      'mainRoads': 'autostrăzi și drumuri principale',
+      'someRoads': 'anumite drumuri',
+      'someRegions': 'o parte din regiuni',
+      'other': 'nu pentru toate vehiculele',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansOver(String tonnes) {
+    return 'peste $tonnes t';
+  }
+
+  @override
+  String get bansRuleHolidays => 'Sărbători';
+
+  @override
+  String get bansRuleNights => 'În fiecare noapte';
+
+  @override
+  String bansRuleCalendar(String year) {
+    return 'Zile din calendarul $year';
+  }
+
+  @override
+  String bansSeason(String from, String to) {
+    return 'de la $from până la $to';
+  }
+
+  @override
+  String bansSpanEve(String from, String to) {
+    return 'în ajun $from – $to';
+  }
+
+  @override
+  String get bansRoadsText =>
+      'Orele restricțiilor depind de drum și se schimbă anual — consultați sursa țării.';
+
+  @override
+  String get bansNoneText =>
+      'Nu există restricții generale pentru camioane. Pot exista limitări pentru mărfuri periculoase și pe anumite tronsoane.';
+
+  @override
+  String get bansCountries => 'Țări';
+
+  @override
+  String get bansCurrentCountry => 'Sunteți aici';
 }

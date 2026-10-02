@@ -17,6 +17,8 @@ import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
+import 'package:tachogo/features/bans/country_bans_screen.dart';
+import 'package:tachogo/features/bans/driving_bans_screen.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/card_reading.dart';
@@ -190,6 +192,9 @@ final _screens = <String, _Screen>{
   ),
   'Суточный отдых': (build: DailyRestScreen.new, open: null),
   'Суточное вождение': (build: DailyDrivingScreen.new, open: null),
+  'Запреты движения': (build: DrivingBansScreen.new, open: null),
+  'Запреты: Германия': (build: () => const CountryBansScreen('D'), open: null),
+  'Запреты: Испания': (build: () => const CountryBansScreen('E'), open: null),
   'Недельное вождение': (build: WeeklyDrivingScreen.new, open: null),
   'Инструкция и правила': (build: GuideScreen.new, open: null),
   'Инструкция · своя перевозка': (
@@ -208,6 +213,10 @@ final _screens = <String, _Screen>{
 
 /// Экраны без времени и цифр: проверка JetBrains Mono им не нужна.
 const _withoutNumbers = {
+  // Время запретов — внутри фраз: «Запрет до 22:00», «Сб 15:00 – вс 22:00»
+  'Запреты движения',
+  'Запреты: Германия',
+  'Запреты: Испания',
   'Инструкция · своя перевозка',
   'Настройки',
   'Шторка «Язык»',

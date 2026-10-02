@@ -2295,4 +2295,178 @@ class AppLocalizationsEn extends AppLocalizations {
   String notifyCompensationTakenText(String time) {
     return 'This rest covered the $time owed for a reduced weekly rest — the debt is paid.';
   }
+
+  @override
+  String get bansTitle => 'Driving bans';
+
+  @override
+  String get bansHint => 'Where and when trucks may not drive';
+
+  @override
+  String get bansMassTitle => 'Vehicle weight';
+
+  @override
+  String bansMass(String mass) {
+    String _temp0 = intl.Intl.selectLogic(mass, {
+      'van': 'up to 3.5 t',
+      'light': '3.5–7.5 t',
+      'medium': '7.5–12 t',
+      'other': 'over 12 t',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get bansMassAsk =>
+      'Choose the vehicle’s maximum permissible weight: country bans start at 3.5, 7.5 or 12 t.';
+
+  @override
+  String get bansMapLabel => 'Map of driving bans in Europe';
+
+  @override
+  String get bansLegendActive => 'Ban now';
+
+  @override
+  String get bansLegendSoon => 'Ban soon';
+
+  @override
+  String get bansLegendPartial => 'Partly';
+
+  @override
+  String get bansLegendClear => 'Clear to drive';
+
+  @override
+  String get bansLegendRoads => 'Some roads';
+
+  @override
+  String get bansLegendNoData => 'No data';
+
+  @override
+  String bansActiveUntil(String time) {
+    return 'Ban until $time';
+  }
+
+  @override
+  String bansSoonFrom(String time) {
+    return 'Ban from $time';
+  }
+
+  @override
+  String bansClearUntil(String time) {
+    return 'Clear until $time';
+  }
+
+  @override
+  String get bansClearWeek => 'No bans in the next 7 days';
+
+  @override
+  String bansPartialUntil(String time) {
+    return 'Partial ban until $time';
+  }
+
+  @override
+  String get bansSomeRoads => 'Bans on some roads';
+
+  @override
+  String get bansNone => 'No general bans';
+
+  @override
+  String get bansNotForMass => 'No bans for your vehicle';
+
+  @override
+  String get bansNowTitle => 'Now';
+
+  @override
+  String get bansRules => 'Rules';
+
+  @override
+  String get bansUpcoming => 'Upcoming bans';
+
+  @override
+  String get bansNoUpcoming => 'No bans in the next two weeks';
+
+  @override
+  String get bansSources => 'Where to check';
+
+  @override
+  String bansChecked(String date) {
+    return 'Checked $date. Times are local to the country.';
+  }
+
+  @override
+  String get bansNeedsCheck =>
+      'Sources differ in details — check the official source before your trip.';
+
+  @override
+  String get bansDisclaimer =>
+      'For reference, not an official source: there are exemptions (perishable goods, permits) and local bans. Check your route with the country’s source.';
+
+  @override
+  String get bansProvisional =>
+      'Provisional: the country’s calendar for this year isn’t published yet';
+
+  @override
+  String bansKind(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'weekend': 'Weekend',
+      'holiday': 'Public holiday',
+      'holidayEve': 'Holiday eve',
+      'summer': 'Summer ban',
+      'night': 'Night ban',
+      'other': 'Country calendar',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansScope(String scope) {
+    String _temp0 = intl.Intl.selectLogic(scope, {
+      'allRoads': 'all roads',
+      'mainRoads': 'motorways and main roads',
+      'someRoads': 'some roads',
+      'someRegions': 'some regions',
+      'other': 'not for all vehicles',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansOver(String tonnes) {
+    return 'over $tonnes t';
+  }
+
+  @override
+  String get bansRuleHolidays => 'Public holidays';
+
+  @override
+  String get bansRuleNights => 'Every night';
+
+  @override
+  String bansRuleCalendar(String year) {
+    return 'Calendar days $year';
+  }
+
+  @override
+  String bansSeason(String from, String to) {
+    return '$from to $to';
+  }
+
+  @override
+  String bansSpanEve(String from, String to) {
+    return 'day before $from – $to';
+  }
+
+  @override
+  String get bansRoadsText =>
+      'Ban times depend on the road and change every year — see the country’s source.';
+
+  @override
+  String get bansNoneText =>
+      'No general truck bans. There may be restrictions for dangerous goods and on some sections.';
+
+  @override
+  String get bansCountries => 'Countries';
+
+  @override
+  String get bansCurrentCountry => 'You are here';
 }

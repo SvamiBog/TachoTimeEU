@@ -48,6 +48,9 @@ flutter:
   generate: true
   # Лицензии шрифтов — в списке лицензий «Ещё» → «О приложении».
   assets:
+    # Схема Европы для запретов движения: tool/europe_map.dart из Natural
+    # Earth (общественное достояние).
+    - assets/maps/europe.json
     - assets/fonts/Onest-OFL.txt
     - assets/fonts/JetBrainsMono-OFL.txt
     - assets/fonts/NotoSansGeorgian-OFL.txt

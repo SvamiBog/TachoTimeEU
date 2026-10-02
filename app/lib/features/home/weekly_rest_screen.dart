@@ -29,7 +29,6 @@ typedef _Weekly = ({
   int left,
   int overdue,
   int? onWeekly,
-  bool offDuty,
   bool reducedAvailable,
   _Last? last,
   int? debt,
@@ -48,7 +47,6 @@ _Weekly _weekly(ComplianceSnapshot s) {
         ? 0
         : minutes(s.now.difference(deadline)),
     onWeekly: rest != null && rest.weekly ? minutes(rest.duration) : null,
-    offDuty: rest != null,
     reducedAvailable: s.reducedWeeklyRestAvailable,
     last: last == null
         ? null
@@ -95,7 +93,7 @@ class WeeklyRestScreen extends ConsumerWidget {
             child: PrimaryButton(
               label: l.weeklyStartRest,
               color: context.colors.rest,
-              onPressed: s == null || s.offDuty
+              onPressed: s == null || s.onWeekly != null
                   ? null
                   : () => _startRest(context, ref),
             ),
@@ -115,11 +113,12 @@ class WeeklyRestScreen extends ConsumerWidget {
     );
   }
 
-  /// Отдых, который сразу завершает смену: станет недельным через 24 ч.
-  /// Как «Завершить день» — водитель вводит вождение за день.
+  /// Недельный отдых сразу, ещё до 24 ч: смена завершается — как
+  /// «Завершить день», водитель вводит вождение за день, — а идущий
+  /// суточный отдых становится недельным с его начала.
   static Future<void> _startRest(BuildContext context, WidgetRef ref) async {
     final navigator = Navigator.of(context);
-    if (await finishDay(context, ref)) navigator.pop();
+    if (await finishDay(context, ref, weekly: true)) navigator.pop();
   }
 }
 

@@ -502,7 +502,13 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     if (shift != null && (_live || (_recorded && !_timingChanged))) {
       final r = shift.rest;
       return (
-        kind: r.kind == RestKind.none ? f.restKind : r.kind,
+        // Идущий отдых короче 24 ч — какой выбран: недельный отмечается у
+        // записи отдыха (`declareRest`)
+        kind: _live && r.duration < EuLimits.weeklyRestReduced
+            ? f.restKind
+            : r.kind == RestKind.none
+            ? f.restKind
+            : r.kind,
         duration: _liveEnded || !_live ? r.duration : Duration.zero,
         end: shift.restEnd,
         ongoing: _live || r.ongoing,

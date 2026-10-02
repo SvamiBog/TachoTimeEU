@@ -2293,4 +2293,178 @@ class AppLocalizationsKa extends AppLocalizations {
   String notifyCompensationTakenText(String time) {
     return 'დასვენებამ დაიტია $time ვალი შემცირებული კვირის დასვენებისთვის — ვალი დაფარულია.';
   }
+
+  @override
+  String get bansTitle => 'მოძრაობის აკრძალვები';
+
+  @override
+  String get bansHint => 'სად და როდის არ შეიძლება სატვირთოს მოძრაობა';
+
+  @override
+  String get bansMassTitle => 'მანქანის მასა';
+
+  @override
+  String bansMass(String mass) {
+    String _temp0 = intl.Intl.selectLogic(mass, {
+      'van': '3,5 ტ-მდე',
+      'light': '3,5–7,5 ტ',
+      'medium': '7,5–12 ტ',
+      'other': '12 ტ-ზე მეტი',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get bansMassAsk =>
+      'მიუთითეთ მანქანის ნებადართული მაქსიმალური მასა: ქვეყნებში აკრძალვები იწყება 3,5, 7,5 ან 12 ტ-დან.';
+
+  @override
+  String get bansMapLabel => 'ევროპაში მოძრაობის აკრძალვების რუკა';
+
+  @override
+  String get bansLegendActive => 'აკრძალვა ახლა';
+
+  @override
+  String get bansLegendSoon => 'მალე აკრძალვა';
+
+  @override
+  String get bansLegendPartial => 'ნაწილობრივ';
+
+  @override
+  String get bansLegendClear => 'შეიძლება მოძრაობა';
+
+  @override
+  String get bansLegendRoads => 'ცალკეული გზები';
+
+  @override
+  String get bansLegendNoData => 'მონაცემები არ არის';
+
+  @override
+  String bansActiveUntil(String time) {
+    return 'აკრძალვა $time-მდე';
+  }
+
+  @override
+  String bansSoonFrom(String time) {
+    return 'აკრძალვა $time-დან';
+  }
+
+  @override
+  String bansClearUntil(String time) {
+    return 'შეიძლება მოძრაობა $time-მდე';
+  }
+
+  @override
+  String get bansClearWeek => 'უახლოეს კვირაში აკრძალვები არ არის';
+
+  @override
+  String bansPartialUntil(String time) {
+    return 'ნაწილობრივი აკრძალვა $time-მდე';
+  }
+
+  @override
+  String get bansSomeRoads => 'აკრძალვები ცალკეულ გზებზე';
+
+  @override
+  String get bansNone => 'საერთო აკრძალვები არ არის';
+
+  @override
+  String get bansNotForMass => 'თქვენი მანქანისთვის აკრძალვები არ არის';
+
+  @override
+  String get bansNowTitle => 'ახლა';
+
+  @override
+  String get bansRules => 'წესები';
+
+  @override
+  String get bansUpcoming => 'უახლოესი აკრძალვები';
+
+  @override
+  String get bansNoUpcoming => 'უახლოეს ორ კვირაში აკრძალვები არ არის';
+
+  @override
+  String get bansSources => 'სად შევამოწმოთ';
+
+  @override
+  String bansChecked(String date) {
+    return 'შემოწმებულია $date. დრო — ქვეყნის ადგილობრივი დრო.';
+  }
+
+  @override
+  String get bansNeedsCheck =>
+      'წყაროები დეტალებში განსხვავდება — რეისამდე შეამოწმეთ ოფიციალურ წყაროში.';
+
+  @override
+  String get bansDisclaimer =>
+      'ცნობა და არა ოფიციალური წყარო: არსებობს გამონაკლისები (მალფუჭებადი ტვირთი, ნებართვები) და ადგილობრივი აკრძალვები. მარშრუტი ქვეყნის წყაროში შეამოწმეთ.';
+
+  @override
+  String get bansProvisional =>
+      'წინასწარ: ქვეყნის კალენდარი ამ წლისთვის ჯერ უცნობია';
+
+  @override
+  String bansKind(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'weekend': 'შაბათ-კვირა',
+      'holiday': 'დღესასწაული',
+      'holidayEve': 'დღესასწაულის წინა დღე',
+      'summer': 'ზაფხულის აკრძალვა',
+      'night': 'ღამის აკრძალვა',
+      'other': 'ქვეყნის კალენდრით',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansScope(String scope) {
+    String _temp0 = intl.Intl.selectLogic(scope, {
+      'allRoads': 'ყველა გზა',
+      'mainRoads': 'მაგისტრალები და მთავარი გზები',
+      'someRoads': 'ცალკეული გზები',
+      'someRegions': 'რეგიონების ნაწილი',
+      'other': 'არა ყველა მანქანისთვის',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String bansOver(String tonnes) {
+    return '$tonnes ტ-ზე მეტი';
+  }
+
+  @override
+  String get bansRuleHolidays => 'დღესასწაულები';
+
+  @override
+  String get bansRuleNights => 'ყოველ ღამე';
+
+  @override
+  String bansRuleCalendar(String year) {
+    return '$year წლის კალენდრის დღეები';
+  }
+
+  @override
+  String bansSeason(String from, String to) {
+    return '$from-დან $to-მდე';
+  }
+
+  @override
+  String bansSpanEve(String from, String to) {
+    return 'წინა დღეს $from – $to';
+  }
+
+  @override
+  String get bansRoadsText =>
+      'აკრძალვების დრო გზაზეა დამოკიდებული და ყოველწლიურად იცვლება — იხილეთ ქვეყნის წყარო.';
+
+  @override
+  String get bansNoneText =>
+      'სატვირთოებისთვის საერთო აკრძალვები არ არის. შეზღუდვები შეიძლება იყოს სახიფათო ტვირთებზე და ცალკეულ მონაკვეთებზე.';
+
+  @override
+  String get bansCountries => 'ქვეყნები';
+
+  @override
+  String get bansCurrentCountry => 'თქვენ აქ ხართ';
 }

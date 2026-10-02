@@ -2019,5 +2019,235 @@
         "type": "String"
       }
     }
+  },
+  "bansTitle": "Запреты движения",
+  "@bansTitle": {
+    "description": "Экран и строка «Запреты движения»"
+  },
+  "bansHint": "Где и когда грузовику нельзя ехать",
+  "@bansHint": {
+    "description": "Подпись строки «Запреты движения» в «Ещё»"
+  },
+  "bansMassTitle": "Масса машины",
+  "@bansMassTitle": {
+    "description": "Масса машины для запретов: строка и шторка"
+  },
+  "bansMass": "{mass, select, van{до 3,5 т} light{3,5–7,5 т} medium{7,5–12 т} other{больше 12 т}}",
+  "@bansMass": {
+    "description": "Класс массы машины: van — до 3,5 т, light — 3,5–7,5 т, medium — 7,5–12 т, other — больше 12 т",
+    "placeholders": {
+      "mass": {
+        "type": "String"
+      }
+    }
+  },
+  "bansMassAsk": "Укажите разрешённую максимальную массу машины: запреты в странах начинаются с 3,5, 7,5 или 12 т.",
+  "@bansMassAsk": {
+    "description": "Шторка массы машины: зачем она"
+  },
+  "bansMapLabel": "Карта запретов движения в Европе",
+  "@bansMapLabel": {
+    "description": "Описание карты для экранного диктора"
+  },
+  "bansLegendActive": "Запрет сейчас",
+  "@bansLegendActive": {
+    "description": "Легенда карты: идёт запрет"
+  },
+  "bansLegendSoon": "Скоро запрет",
+  "@bansLegendSoon": {
+    "description": "Легенда карты: запрет начнётся скоро"
+  },
+  "bansLegendPartial": "Частично",
+  "@bansLegendPartial": {
+    "description": "Легенда карты: запрет на части дорог, в части регионов или не для всех машин"
+  },
+  "bansLegendClear": "Можно ехать",
+  "@bansLegendClear": {
+    "description": "Легенда карты: запрета нет"
+  },
+  "bansLegendRoads": "Отдельные дороги",
+  "@bansLegendRoads": {
+    "description": "Легенда карты: запреты только на отдельных дорогах"
+  },
+  "bansLegendNoData": "Нет данных",
+  "@bansLegendNoData": {
+    "description": "Легенда карты: данных о стране нет"
+  },
+  "bansActiveUntil": "Запрет до {time}",
+  "@bansActiveUntil": {
+    "description": "Запрет идёт до времени (местное время страны, «вс 22:00»)",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bansSoonFrom": "Запрет с {time}",
+  "@bansSoonFrom": {
+    "description": "Запрет начнётся во время",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bansClearUntil": "Можно ехать до {time}",
+  "@bansClearUntil": {
+    "description": "Запрета нет до начала следующего",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bansClearWeek": "Запретов в ближайшую неделю нет",
+  "@bansClearWeek": {
+    "description": "Запретов в ближайшие 7 дней нет"
+  },
+  "bansPartialUntil": "Частичный запрет до {time}",
+  "@bansPartialUntil": {
+    "description": "Частичный запрет идёт до времени",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bansSomeRoads": "Запреты на отдельных дорогах",
+  "@bansSomeRoads": {
+    "description": "Страна: запреты только на отдельных дорогах"
+  },
+  "bansNone": "Общих запретов нет",
+  "@bansNone": {
+    "description": "Страна: общих запретов нет"
+  },
+  "bansNotForMass": "Для вашей машины запретов нет",
+  "@bansNotForMass": {
+    "description": "Страна: запреты есть, но не для машины этой массы"
+  },
+  "bansNowTitle": "Сейчас",
+  "@bansNowTitle": {
+    "description": "Экран страны: раздел «Сейчас»"
+  },
+  "bansRules": "Правила",
+  "@bansRules": {
+    "description": "Экран страны: раздел правил"
+  },
+  "bansUpcoming": "Ближайшие запреты",
+  "@bansUpcoming": {
+    "description": "Экран страны: ближайшие запреты на две недели"
+  },
+  "bansNoUpcoming": "В ближайшие две недели запретов нет",
+  "@bansNoUpcoming": {
+    "description": "Экран страны: впереди запретов нет"
+  },
+  "bansSources": "Где проверить",
+  "@bansSources": {
+    "description": "Экран страны: ссылки на источники"
+  },
+  "bansChecked": "Сверено {date}. Время — местное время страны.",
+  "@bansChecked": {
+    "description": "Экран страны: дата сверки данных и что время — местное",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bansNeedsCheck": "Источники расходятся в деталях — перед рейсом проверьте по официальному источнику.",
+  "@bansNeedsCheck": {
+    "description": "Экран страны: данные расходятся, проверить"
+  },
+  "bansDisclaimer": "Справка, не официальный источник: бывают исключения (скоропортящиеся грузы, разрешения) и местные запреты. Проверяйте маршрут по источнику страны.",
+  "@bansDisclaimer": {
+    "description": "Экраны запретов: справка, не официальный источник"
+  },
+  "bansProvisional": "Предварительно: календарь страны на этот год ещё не известен",
+  "@bansProvisional": {
+    "description": "Запрет позже известного календаря страны"
+  },
+  "bansKind": "{kind, select, weekend{Выходные} holiday{Праздник} holidayEve{Канун праздника} summer{Летний запрет} night{Ночной запрет} other{По календарю страны}}",
+  "@bansKind": {
+    "description": "Откуда запрет: weekend — выходные, holiday — праздник, holidayEve — канун праздника, summer — летний, night — ночной, other — день годового календаря страны",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "bansScope": "{scope, select, allRoads{все дороги} mainRoads{магистрали и главные дороги} someRoads{отдельные дороги} someRegions{часть регионов} other{не для всех машин}}",
+  "@bansScope": {
+    "description": "Где действует запрет: allRoads, mainRoads, someRoads, someRegions, other — не для всех машин",
+    "placeholders": {
+      "scope": {
+        "type": "String"
+      }
+    }
+  },
+  "bansOver": "больше {tonnes} т",
+  "@bansOver": {
+    "description": "Порог массы правила: «больше 7,5 т»",
+    "placeholders": {
+      "tonnes": {
+        "type": "String"
+      }
+    }
+  },
+  "bansRuleHolidays": "Праздники",
+  "@bansRuleHolidays": {
+    "description": "Правило: праздники страны"
+  },
+  "bansRuleNights": "Каждую ночь",
+  "@bansRuleNights": {
+    "description": "Правило: каждую ночь"
+  },
+  "bansRuleCalendar": "Дни календаря {year}",
+  "@bansRuleCalendar": {
+    "description": "Правило: дни годового календаря страны",
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "bansSeason": "с {from} по {to}",
+  "@bansSeason": {
+    "description": "Правило: часть года «с 1.07 по 31.08»",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "bansSpanEve": "накануне {from} – {to}",
+  "@bansSpanEve": {
+    "description": "Правило: с вечера накануне праздника до вечера праздника",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "bansRoadsText": "Время запретов зависит от дороги и меняется каждый год — смотрите источник страны.",
+  "@bansRoadsText": {
+    "description": "Страна с запретами на отдельных дорогах"
+  },
+  "bansNoneText": "Общих запретов для грузовиков нет. Ограничения бывают для опасных грузов и на отдельных участках.",
+  "@bansNoneText": {
+    "description": "Страна без общих запретов"
+  },
+  "bansCountries": "Страны",
+  "@bansCountries": {
+    "description": "Экран запретов: список стран"
+  },
+  "bansCurrentCountry": "Вы здесь",
+  "@bansCurrentCountry": {
+    "description": "Список стран: страна текущей смены"
   }
 }

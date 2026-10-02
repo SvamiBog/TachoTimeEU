@@ -43,9 +43,11 @@ class ActivityRepository {
       );
 
   /// «Завершить день»: отдых, который сразу завершает смену. Во время
-  /// перерыва текущий отдых становится концом дня.
-  Future<void> endDay() => _changeOpen(
-    (open, at) => changeMode(open, DriverMode.rest, at, dayEnd: true),
+  /// перерыва текущий отдых становится концом дня. [weekly] — «Начать
+  /// недельный отдых»: пока отдых идёт, он недельный.
+  Future<void> endDay({bool weekly = false}) => _changeOpen(
+    (open, at) =>
+        changeMode(open, DriverMode.rest, at, dayEnd: true, weeklyRest: weekly),
   );
 
   /// Режим «паром / поезд» (ст. 9): отметка у текущей записи, следующие
