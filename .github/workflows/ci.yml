@@ -250,15 +250,25 @@ jobs:
         run: |
           sdk=${ANDROID_HOME:-$ANDROID_SDK_ROOT}
           apksigner=$(ls -d "$sdk"/build-tools/*/apksigner | sort -V | tail -n 1)
-          signed=$("$apksigner" verify --print-certs \
-            build/app/outputs/flutter-apk/app-debug.apk |
-            sed -n 's/^Signer #1 certificate SHA-256 digest: //p')
+          echo "$apksigner"
+          # Вывод — целиком в лог: в нём только сертификат. Строка подписи —
+          # «Signer #1 …», у схемы v3.1 — «Signer (minSdkVersion=…) …»
+          if ! certs=$("$apksigner" verify --print-certs \
+            build/app/outputs/flutter-apk/app-debug.apk 2>&1); then
+            echo "$certs"
+            echo "::error::apksigner не проверил подпись APK"
+            exit 1
+          fi
+          echo "$certs"
+          signed=$(echo "$certs" | grep -m 1 -i -E 'SHA-?256 digest:' |
+            sed 's/.*digest: *//' | tr -d '[:space:]' | tr 'A-F' 'a-f')
           expected=$(keytool -list -v -keystore "$TACHOGO_DEBUG_KEYSTORE" \
             -storepass android -alias androiddebugkey |
-            sed -n 's/^[[:space:]]*SHA256: //p' | tr -d ':' | tr 'A-F' 'a-f')
+            sed -n 's/^[[:space:]]*SHA256: //p' | tr -d ':[:space:]' |
+            tr 'A-F' 'a-f')
           echo "Подпись APK: $signed"
           if [ -z "$signed" ] || [ "$signed" != "$expected" ]; then
-            echo "::error::APK подписана не постоянным ключом: $signed, нужен $expected"
+            echo "::error::APK подписана не постоянным ключом: ${signed:-нет подписи}, нужен $expected"
             exit 1
           fi
 
