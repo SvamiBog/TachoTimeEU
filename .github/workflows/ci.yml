@@ -204,16 +204,33 @@ jobs:
       # README.md, «APK из CI на свой телефон»): нужен один ключ у всех
       # сборок — иначе у каждой свой случайный debug-ключ раннера, и Android
       # не обновляет установленную, только удалить и поставить заново.
+      # Без секрета на main, тегах и ручном запуске сборка падает: такую APK
+      # поверх не поставить. В PR — предупреждение: у PR из форков секретов
+      # нет.
       - name: Постоянный ключ тестовой APK
         env:
           DEBUG_KEYSTORE_BASE64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
         run: |
           if [ -z "$DEBUG_KEYSTORE_BASE64" ]; then
-            echo "::warning::Секрет ANDROID_DEBUG_KEYSTORE_BASE64 не задан: APK подписана случайным ключом и не обновит прошлую установку"
-            exit 0
+            message="Секрет ANDROID_DEBUG_KEYSTORE_BASE64 не задан: APK подписана случайным ключом и не обновит прошлую установку"
+            if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+              echo "::warning::$message"
+              exit 0
+            fi
+            echo "::error::$message (docs/beta/README.md, «APK из CI на свой телефон»)"
+            exit 1
           fi
           mkdir -p ~/.android
           echo "$DEBUG_KEYSTORE_BASE64" | base64 -d > ~/.android/debug.keystore
+          # Ключ открывается паролями debug-ключа, с которыми подписывает
+          # сборка; отпечаток — сверить, что все APK подписаны одним ключом
+          if ! key=$(keytool -list -v -keystore ~/.android/debug.keystore \
+            -storepass android -alias androiddebugkey); then
+            echo "$key"
+            echo "::error::Секрет ANDROID_DEBUG_KEYSTORE_BASE64 — не debug-ключ: нужен псевдоним androiddebugkey и пароль android (docs/beta/README.md)"
+            exit 1
+          fi
+          echo "$key" | grep -E '^\s*SHA256:'
 
       # versionCode растёт с каждым запуском CI, как у выпусков в Google
       # Play: Android не ставит сборку с номером меньше установленной.
