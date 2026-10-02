@@ -13,13 +13,14 @@ import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/features/bans/driving_bans_screen.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
+import 'package:tachogo/features/more/about_screen.dart';
 import 'package:tachogo/features/more/problem_report.dart';
 import 'package:tachogo/features/more/transfer_sheet.dart';
 
 /// «Ещё» (экран 4): запреты движения, экспорт отчёта, перенос журнала на
-/// другой телефон,
-/// инструкция и правила, о приложении, политика конфиденциальности (Google
-/// Play требует ссылку и в приложении, `docs/store/play-audit.md`).
+/// другой телефон, инструкция и правила, о приложении (лицензии — там),
+/// политика конфиденциальности (Google Play требует ссылку и в приложении,
+/// `docs/store/play-audit.md`).
 /// В бете — «Сообщить о проблеме» (Фаза 4). Баннер Premium появится
 /// с покупками (Фаза 5), аккаунт — с синхронизацией (Фаза 6), обратная
 /// связь и «Поделиться» — к публикации (Фаза 7).
@@ -105,12 +106,7 @@ class MoreScreen extends ConsumerWidget {
                   title: l.moreAbout,
                   value: version,
                   numericValue: true,
-                  onTap: () => showLicensePage(
-                    context: context,
-                    applicationName: l.appTitle,
-                    applicationVersion: version,
-                    applicationLegalese: l.moreDisclaimer,
-                  ),
+                  onTap: () => openAbout(context),
                 ),
                 NavRow(
                   icon: Icons.privacy_tip_outlined,

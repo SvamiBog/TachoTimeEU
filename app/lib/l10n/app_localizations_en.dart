@@ -307,6 +307,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workWeekUnknown => 'No data on the previous weekly rest';
 
   @override
+  String get workWeekRestEnd => 'End of weekly rest';
+
+  @override
+  String workWeekDeadline(int hours) {
+    return '$hours h — start weekly rest';
+  }
+
+  @override
+  String get workWeekOnRest =>
+      'Weekly rest in progress: the new working week starts after it.';
+
+  @override
+  String get workWeekShifts => 'Shifts this working week';
+
+  @override
+  String get workWeekNoShifts => 'No shifts since the weekly rest yet';
+
+  @override
+  String get workWeekRule =>
+      'The working week is the time since the end of the weekly rest. The next weekly rest must start no later than at the end of six 24-hour periods — 144 h (Art. 8(6) of Regulation 561/2006).';
+
+  @override
   String get cardTitle => 'Card download';
 
   @override
@@ -421,9 +443,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drivingCorrect => 'Correct today’s driving';
 
   @override
-  String get drivingLimits => 'Limits';
-
-  @override
   String get drivingUsedUp => 'fully used';
 
   @override
@@ -472,6 +491,49 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get drivingWeekRule =>
       'The week runs from Monday 00:00 to Sunday 24:00, as on the tachograph. At most 56 h of driving per week and 90 h in any two consecutive weeks.';
+
+  @override
+  String get drivingCanDrive => 'You can still drive';
+
+  @override
+  String drivingStop(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'until the break',
+      'workday': 'until the end of the working day',
+      'daily': 'until the daily driving limit',
+      'weekly': 'until the weekly limit',
+      'fortnight': 'until the two-week limit',
+      'other': 'until the limit',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String drivingStopped(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'break needed',
+      'workday': 'the working day is over',
+      'daily': 'daily driving used up',
+      'weekly': 'weekly driving used up',
+      'fortnight': 'two-week driving used up',
+      'other': 'limit used up',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get drivingContinuousNow => 'At the wheel without a break';
+
+  @override
+  String drivingBreakDue(String time) {
+    return '$time — break due';
+  }
+
+  @override
+  String get drivingThisShift => 'This shift';
+
+  @override
+  String get drivingThisWeek => 'This week';
 
   @override
   String get workdayEndDay => 'End day';
@@ -1305,6 +1367,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportDays28 => '28 days';
 
   @override
+  String get exportDays56 => '56 days';
+
+  @override
   String get exportCustom => 'Custom period';
 
   @override
@@ -1327,7 +1392,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportFormat => 'Format';
 
   @override
-  String get exportPdf => 'PDF · for inspection';
+  String get exportPdf => 'PDF';
 
   @override
   String get exportCsv => 'CSV · spreadsheet';
@@ -2152,6 +2217,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moreAbout => 'About the app';
 
   @override
+  String get aboutLicenses => 'Open-source licences';
+
+  @override
+  String get aboutLicensesHint => 'Libraries and fonts the app is built with';
+
+  @override
   String get moreDisclaimer =>
       'TachoGo helps plan driving and rest times but does not replace the tachograph and is not legal advice.';
 
@@ -2303,22 +2374,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bansHint => 'Where and when trucks may not drive';
 
   @override
-  String get bansMassTitle => 'Vehicle weight';
-
-  @override
-  String bansMass(String mass) {
-    String _temp0 = intl.Intl.selectLogic(mass, {
-      'van': 'up to 3.5 t',
-      'light': '3.5–7.5 t',
-      'medium': '7.5–12 t',
-      'other': 'over 12 t',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get bansMassAsk =>
-      'Choose the vehicle’s maximum permissible weight: country bans start at 3.5, 7.5 or 12 t.';
+  String get bansForTrucks => 'For trucks over 12 t';
 
   @override
   String get bansMapLabel => 'Map of driving bans in Europe';
@@ -2369,9 +2425,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bansNone => 'No general bans';
-
-  @override
-  String get bansNotForMass => 'No bans for your vehicle';
 
   @override
   String get bansNowTitle => 'Now';

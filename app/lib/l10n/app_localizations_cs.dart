@@ -311,6 +311,28 @@ class AppLocalizationsCs extends AppLocalizations {
   String get workWeekUnknown => 'Chybí údaje o předchozím týdenním odpočinku';
 
   @override
+  String get workWeekRestEnd => 'Konec týdenního odpočinku';
+
+  @override
+  String workWeekDeadline(int hours) {
+    return '$hours h — začít týdenní odpočinek';
+  }
+
+  @override
+  String get workWeekOnRest =>
+      'Probíhá týdenní odpočinek: nový pracovní týden začne po něm.';
+
+  @override
+  String get workWeekShifts => 'Směny pracovního týdne';
+
+  @override
+  String get workWeekNoShifts => 'Od týdenního odpočinku zatím žádné směny';
+
+  @override
+  String get workWeekRule =>
+      'Pracovní týden je doba od konce týdenního odpočinku. Další týdenní odpočinek je nutné začít nejpozději po šesti 24hodinových obdobích — 144 h (čl. 8 odst. 6 nařízení 561/2006).';
+
+  @override
   String get cardTitle => 'Stažení karty';
 
   @override
@@ -426,9 +448,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get drivingCorrect => 'Opravit řízení za den';
 
   @override
-  String get drivingLimits => 'Limity';
-
-  @override
   String get drivingUsedUp => 'vyčerpáno';
 
   @override
@@ -477,6 +496,49 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get drivingWeekRule =>
       'Týden trvá od pondělí 00:00 do neděle 24:00, jako na tachografu. Za týden nejvýše 56 h řízení, za dva po sobě jdoucí týdny nejvýše 90 h.';
+
+  @override
+  String get drivingCanDrive => 'Můžete jet ještě';
+
+  @override
+  String drivingStop(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'do přestávky',
+      'workday': 'do konce pracovního dne',
+      'daily': 'do limitu denního řízení',
+      'weekly': 'do týdenního limitu',
+      'fortnight': 'do dvoutýdenního limitu',
+      'other': 'do limitu',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String drivingStopped(String stop) {
+    String _temp0 = intl.Intl.selectLogic(stop, {
+      'breakDue': 'nutná přestávka',
+      'workday': 'pracovní den skončil',
+      'daily': 'denní řízení vyčerpáno',
+      'weekly': 'týdenní řízení vyčerpáno',
+      'fortnight': 'řízení za dva týdny vyčerpáno',
+      'other': 'limit vyčerpán',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get drivingContinuousNow => 'Za volantem bez přestávky';
+
+  @override
+  String drivingBreakDue(String time) {
+    return '$time — nutná přestávka';
+  }
+
+  @override
+  String get drivingThisShift => 'V této směně';
+
+  @override
+  String get drivingThisWeek => 'Tento týden';
 
   @override
   String get workdayEndDay => 'Ukončit den';
@@ -1318,6 +1380,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get exportDays28 => '28 dní';
 
   @override
+  String get exportDays56 => '56 dní';
+
+  @override
   String get exportCustom => 'Vlastní období';
 
   @override
@@ -1340,7 +1405,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get exportFormat => 'Formát';
 
   @override
-  String get exportPdf => 'PDF · pro kontrolu';
+  String get exportPdf => 'PDF';
 
   @override
   String get exportCsv => 'CSV · tabulka';
@@ -2171,6 +2236,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get moreAbout => 'O aplikaci';
 
   @override
+  String get aboutLicenses => 'Licence open source';
+
+  @override
+  String get aboutLicensesHint =>
+      'Knihovny a písma, na kterých je aplikace postavená';
+
+  @override
   String get moreDisclaimer =>
       'TachoGo pomáhá plánovat dobu řízení a odpočinku, ale nenahrazuje tachograf a není právní poradou.';
 
@@ -2323,22 +2395,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get bansHint => 'Kde a kdy nákladní auto nesmí jet';
 
   @override
-  String get bansMassTitle => 'Hmotnost vozidla';
-
-  @override
-  String bansMass(String mass) {
-    String _temp0 = intl.Intl.selectLogic(mass, {
-      'van': 'do 3,5 t',
-      'light': '3,5–7,5 t',
-      'medium': '7,5–12 t',
-      'other': 'nad 12 t',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get bansMassAsk =>
-      'Zvolte největší povolenou hmotnost vozidla: zákazy v zemích platí od 3,5, 7,5 nebo 12 t.';
+  String get bansForTrucks => 'Pro nákladní auta nad 12 t';
 
   @override
   String get bansMapLabel => 'Mapa zákazů jízdy v Evropě';
@@ -2389,9 +2446,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get bansNone => 'Bez obecných zákazů';
-
-  @override
-  String get bansNotForMass => 'Pro vaše vozidlo bez zákazů';
 
   @override
   String get bansNowTitle => 'Teď';

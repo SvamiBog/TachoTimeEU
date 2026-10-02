@@ -1,6 +1,6 @@
-// «Ещё» (экран 4): экспорт, инструкция и правила, о приложении с
-// лицензиями шрифтов, политика конфиденциальности, в бете — «Сообщить
-// о проблеме». План тестов: UI-21, BETA-02 в docs/testing.md.
+// «Ещё» (экран 4): экспорт, инструкция и правила, о приложении (лицензии
+// пакетов и шрифтов — строкой на нём), политика конфиденциальности, в бете —
+// «Сообщить о проблеме». План тестов: UI-21, BETA-02 в docs/testing.md.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,7 @@ import 'package:tachogo/core/diagnostics/diagnostics.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
+import 'package:tachogo/features/more/about_screen.dart';
 import 'package:tachogo/features/more/more_screen.dart';
 import 'package:tachogo/features/more/problem_report.dart';
 
@@ -109,9 +110,17 @@ void main() {
     expect(find.text('Создать отчёт'), findsOneWidget);
   });
 
-  testWidgets('«О приложении» — название, версия и лицензии', (tester) async {
+  testWidgets('«О приложении» — название, версия и оговорка; лицензии — '
+      'строкой на нём', (tester) async {
     await pump(tester);
     await tester.tap(find.text('О приложении'));
+    await tester.pumpAndSettle();
+    expect(find.byType(AboutScreen), findsOneWidget);
+    expect(find.byType(LicensePage), findsNothing);
+    expect(find.text('TachoGo'), findsOneWidget);
+    expect(find.text('0.1.0'), findsOneWidget);
+    expect(find.textContaining('не заменяет тахограф'), findsOneWidget);
+    await tester.tap(find.text('Лицензии открытого ПО'));
     await tester.pumpAndSettle();
     expect(find.byType(LicensePage), findsOneWidget);
     expect(find.text('TachoGo'), findsWidgets);

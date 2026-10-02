@@ -12,7 +12,6 @@ import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
-import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/features/bans/ban_format.dart';
 import 'package:tachogo/features/home/detail_rows.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
@@ -24,8 +23,9 @@ void openCountryBans(BuildContext context, String code) =>
 /// Сколько дней вперёд показывает «Ближайшие запреты».
 const upcomingDays = 14;
 
-/// Запреты страны: что сейчас, правила, ближайшие запреты на две недели
-/// (календарь — Premium, Фаза 5), где проверить, дата сверки.
+/// Запреты страны для грузовика больше 12 т: что сейчас, правила,
+/// ближайшие запреты на две недели (календарь — Premium, Фаза 5), где
+/// проверить, дата сверки.
 class CountryBansScreen extends ConsumerWidget {
   const new(this.code, {super.key});
 
@@ -36,16 +36,11 @@ class CountryBansScreen extends ConsumerWidget {
     final l = context.l10n;
     final locale = context.localeTag;
     final country = europeBans[code]!;
-    final mass = ref.watch(vehicleMassProvider).value ?? VehicleMass.over12;
     final now = ref.watch(clockProvider.select(minuteOf));
-    final status = banStatus(country, mass, now);
-    final rules = [
-      for (final r in country.rules)
-        if (mass.heavierThan(r.overTonnes)) r,
-    ];
+    final status = banStatus(country, bansMass, now);
     final upcoming = banWindows(
       country,
-      mass,
+      bansMass,
       now,
       now.add(const Duration(days: upcomingDays)),
     );
@@ -53,6 +48,7 @@ class CountryBansScreen extends ConsumerWidget {
     String two(int n) => n.toString().padLeft(2, '0');
     return DetailScaffold(
       title: l.countryName(code),
+      subtitle: l.bansForTrucks,
       children: [
         SectionTitle(l.bansNowTitle, top: 8),
         _Now(country: country, status: status, now: now),
@@ -64,30 +60,27 @@ class CountryBansScreen extends ConsumerWidget {
                 _Line(
                   title: banRuleText(l, r, locale),
                   subtitle: banRuleCaption(l, r, locale),
-                  muted: !rules.contains(r),
                 ),
             ],
           ),
-          if (rules.isNotEmpty) ...[
-            SectionTitle(l.bansUpcoming),
-            CardGroup(
-              children: [
-                if (upcoming.isEmpty)
-                  _Line(title: l.bansNoUpcoming)
-                else
-                  for (final w in upcoming)
-                    _Line(
-                      title: banSpan(w, country.zone, locale),
-                      subtitle: [
-                        w.kinds.map((k) => l.bansKind(k.name)).join(', '),
-                        l.bansScope(w.scope.name),
-                        if (w.provisional) l.bansProvisional,
-                      ].join(' · '),
-                      warn: w.scope.definite,
-                    ),
-              ],
-            ),
-          ],
+          SectionTitle(l.bansUpcoming),
+          CardGroup(
+            children: [
+              if (upcoming.isEmpty)
+                _Line(title: l.bansNoUpcoming)
+              else
+                for (final w in upcoming)
+                  _Line(
+                    title: banSpan(w, country.zone, locale),
+                    subtitle: [
+                      w.kinds.map((k) => l.bansKind(k.name)).join(', '),
+                      l.bansScope(w.scope.name),
+                      if (w.provisional) l.bansProvisional,
+                    ].join(' · '),
+                    warn: w.scope.definite,
+                  ),
+            ],
+          ),
         ] else
           InfoNote(
             country.coverage == BanCoverage.someRoads
@@ -191,18 +184,10 @@ class _Now extends StatelessWidget {
 
 /// Строка правила или запрета: текст и подпись.
 class _Line extends StatelessWidget {
-  const new({
-    required this.title,
-    this.subtitle,
-    this.muted = false,
-    this.warn = false,
-  });
+  const new({required this.title, this.subtitle, this.warn = false});
 
   final String title;
   final String? subtitle;
-
-  /// Правило не для этой массы машины.
-  final bool muted;
 
   /// Запрет по всей сети дорог.
   final bool warn;
@@ -224,11 +209,7 @@ class _Line extends StatelessWidget {
             Text(
               title,
               style: AppTextStyles.rowTitle.copyWith(
-                color: muted
-                    ? colors.textSecondary
-                    : warn
-                    ? colors.errorText
-                    : null,
+                color: warn ? colors.errorText : null,
               ),
             ),
             if (subtitle case final subtitle?)

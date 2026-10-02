@@ -20,7 +20,7 @@ import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/home/break_screen.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
-import 'package:tachogo/features/home/daily_driving_screen.dart';
+import 'package:tachogo/features/home/driving_screen.dart';
 import 'package:tachogo/features/home/home_screen.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
@@ -468,7 +468,7 @@ void main() {
       );
       // Строка открывает подробности, правка — оттуда
       await tap(tester, find.text('Суточное вождение'));
-      expect(find.byType(DailyDrivingScreen), findsOneWidget);
+      expect(find.byType(DrivingScreen), findsOneWidget);
       await tap(tester, find.text('Исправить вождение за день'));
       expect(find.text('Посчитано приложением'), findsOneWidget);
       expect(find.text('Можно от 0:00 до 2:30'), findsOneWidget);

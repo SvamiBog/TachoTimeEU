@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tacho_engine/driving_bans.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/background/tracking_service.dart';
@@ -72,9 +71,7 @@ List<Override> journalOverrides({
   bool analyticsConsent = false,
   TrackingHealth health = allowed,
   FakeTrackingPlatform? platform,
-  VehicleMass? vehicleMass = VehicleMass.over12,
 }) => [
-  vehicleMassProvider.overrideWith((ref) => Stream.value(vehicleMass)),
   preferencesProvider.overrideWith((ref) => Stream.value(preferences)),
   notificationSettingsProvider.overrideWith(
     (ref) => Stream.value(notifications),

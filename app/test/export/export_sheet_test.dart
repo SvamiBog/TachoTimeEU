@@ -98,6 +98,17 @@ void main() {
     expect(find.text('8 смен в отчёте'), findsOneWidget);
   });
 
+  testWidgets('EXP-03: «56 дней» — 56 суток вместе с сегодняшними; формат — '
+      'просто PDF', (tester) async {
+    await open(tester);
+    expect(find.text('PDF'), findsOneWidget);
+    expect(find.textContaining('инспекц'), findsNothing);
+    await tester.tap(find.text('56 дней'));
+    await tester.pump();
+    expect(find.text('30.07 — 23.09'), findsOneWidget);
+    expect(find.text('13 смен в отчёте'), findsOneWidget);
+  });
+
   testWidgets('CSV за неделю уходит в «Поделиться»', (tester) async {
     final sharer = await open(tester);
     await tester.tap(find.text('Эта неделя'));

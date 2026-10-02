@@ -584,6 +584,42 @@ abstract class AppLocalizations {
   /// **'Нет данных о прошлом недельном отдыхе'**
   String get workWeekUnknown;
 
+  /// Экран «Рабочая неделя»: веха — конец прошлого недельного отдыха
+  ///
+  /// In ru, this message translates to:
+  /// **'Конец недельного отдыха'**
+  String get workWeekRestEnd;
+
+  /// Экран «Рабочая неделя»: веха 144 ч — не позже неё начать недельный отдых
+  ///
+  /// In ru, this message translates to:
+  /// **'{hours} ч — начать недельный отдых'**
+  String workWeekDeadline(int hours);
+
+  /// Экран «Рабочая неделя», пока идёт недельный отдых
+  ///
+  /// In ru, this message translates to:
+  /// **'Идёт недельный отдых: новая рабочая неделя начнётся после него.'**
+  String get workWeekOnRest;
+
+  /// Экран «Рабочая неделя»: заголовок списка смен после недельного отдыха
+  ///
+  /// In ru, this message translates to:
+  /// **'Смены рабочей недели'**
+  String get workWeekShifts;
+
+  /// Экран «Рабочая неделя»: после недельного отдыха смен ещё нет
+  ///
+  /// In ru, this message translates to:
+  /// **'Смен после недельного отдыха ещё нет'**
+  String get workWeekNoShifts;
+
+  /// Правило рабочей недели внизу экрана «Рабочая неделя»
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочая неделя — время от конца недельного отдыха. Следующий недельный отдых нужно начать не позже чем через шесть периодов по 24 часа — 144 ч (ст. 8(6) Регламента 561/2006).'**
+  String get workWeekRule;
+
   /// No description provided for @cardTitle.
   ///
   /// In ru, this message translates to:
@@ -752,12 +788,6 @@ abstract class AppLocalizations {
   /// **'Исправить вождение за день'**
   String get drivingCorrect;
 
-  /// Заголовок раздела с лимитами на экранах вождения
-  ///
-  /// In ru, this message translates to:
-  /// **'Лимиты'**
-  String get drivingLimits;
-
   /// Лимит вождения выбран полностью
   ///
   /// In ru, this message translates to:
@@ -829,6 +859,48 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Неделя — с понедельника 00:00 до воскресенья 24:00, как на тахографе. За неделю — не больше 56 ч вождения, за две недели подряд — не больше 90 ч.'**
   String get drivingWeekRule;
+
+  /// Экран «Вождение»: надпись над временем, сколько ещё можно ехать
+  ///
+  /// In ru, this message translates to:
+  /// **'Можно ехать ещё'**
+  String get drivingCanDrive;
+
+  /// Экран «Вождение»: что остановит вождение раньше всего. breakDue — перерыв после 4:30, workday — конец рабочего дня 13/15 ч, daily — 9/10 ч за смену, weekly — 56 ч, fortnight — 90 ч за две недели
+  ///
+  /// In ru, this message translates to:
+  /// **'{stop, select, breakDue{до перерыва} workday{до конца рабочего дня} daily{до лимита суточного вождения} weekly{до лимита за неделю} fortnight{до лимита за две недели} other{до лимита}}'**
+  String drivingStop(String stop);
+
+  /// Экран «Вождение»: ехать уже нельзя — почему. Варианты как у drivingStop
+  ///
+  /// In ru, this message translates to:
+  /// **'{stop, select, breakDue{нужен перерыв} workday{рабочий день закончился} daily{суточное вождение выбрано} weekly{недельное вождение выбрано} fortnight{вождение за две недели выбрано} other{лимит выбран}}'**
+  String drivingStopped(String stop);
+
+  /// Экран «Вождение»: сколько уже за рулём без перерыва
+  ///
+  /// In ru, this message translates to:
+  /// **'За рулём без перерыва'**
+  String get drivingContinuousNow;
+
+  /// Экран «Вождение»: веха 4:30 — после неё нужен перерыв
+  ///
+  /// In ru, this message translates to:
+  /// **'{time} — нужен перерыв'**
+  String drivingBreakDue(String time);
+
+  /// Экран «Вождение»: вождение в идущей смене (между суточными отдыхами)
+  ///
+  /// In ru, this message translates to:
+  /// **'В этой смене'**
+  String get drivingThisShift;
+
+  /// Экран «Вождение»: вождение на этой неделе (с понедельника)
+  ///
+  /// In ru, this message translates to:
+  /// **'На этой неделе'**
+  String get drivingThisWeek;
 
   /// No description provided for @workdayEndDay.
   ///
@@ -2043,6 +2115,12 @@ abstract class AppLocalizations {
   /// **'28 дней'**
   String get exportDays28;
 
+  /// Период отчёта: 56 суток вместе с сегодняшними. С 31.12.2024 при проверке водитель предъявляет записи за текущий день и 56 предыдущих (ст. 36 Регламента 165/2014)
+  ///
+  /// In ru, this message translates to:
+  /// **'56 дней'**
+  String get exportDays56;
+
   /// No description provided for @exportCustom.
   ///
   /// In ru, this message translates to:
@@ -2082,7 +2160,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportPdf.
   ///
   /// In ru, this message translates to:
-  /// **'PDF · для инспекции'**
+  /// **'PDF'**
   String get exportPdf;
 
   /// No description provided for @exportCsv.
@@ -3411,6 +3489,18 @@ abstract class AppLocalizations {
   /// **'О приложении'**
   String get moreAbout;
 
+  /// Строка экрана «О приложении»: тексты лицензий библиотек и шрифтов
+  ///
+  /// In ru, this message translates to:
+  /// **'Лицензии открытого ПО'**
+  String get aboutLicenses;
+
+  /// Подпись строки «Лицензии открытого ПО»
+  ///
+  /// In ru, this message translates to:
+  /// **'Библиотеки и шрифты, на которых сделано приложение'**
+  String get aboutLicensesHint;
+
   /// No description provided for @moreDisclaimer.
   ///
   /// In ru, this message translates to:
@@ -3663,23 +3753,11 @@ abstract class AppLocalizations {
   /// **'Где и когда грузовику нельзя ехать'**
   String get bansHint;
 
-  /// Масса машины для запретов: строка и шторка
+  /// Подпись под заголовком экранов запретов: правила показаны для грузовика больше 12 т
   ///
   /// In ru, this message translates to:
-  /// **'Масса машины'**
-  String get bansMassTitle;
-
-  /// Класс массы машины: van — до 3,5 т, light — 3,5–7,5 т, medium — 7,5–12 т, other — больше 12 т
-  ///
-  /// In ru, this message translates to:
-  /// **'{mass, select, van{до 3,5 т} light{3,5–7,5 т} medium{7,5–12 т} other{больше 12 т}}'**
-  String bansMass(String mass);
-
-  /// Шторка массы машины: зачем она
-  ///
-  /// In ru, this message translates to:
-  /// **'Укажите разрешённую максимальную массу машины: запреты в странах начинаются с 3,5, 7,5 или 12 т.'**
-  String get bansMassAsk;
+  /// **'Для грузовиков больше 12 т'**
+  String get bansForTrucks;
 
   /// Описание карты для экранного диктора
   ///
@@ -3764,12 +3842,6 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Общих запретов нет'**
   String get bansNone;
-
-  /// Страна: запреты есть, но не для машины этой массы
-  ///
-  /// In ru, this message translates to:
-  /// **'Для вашей машины запретов нет'**
-  String get bansNotForMass;
 
   /// Экран страны: раздел «Сейчас»
   ///

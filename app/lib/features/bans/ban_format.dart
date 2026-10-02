@@ -7,13 +7,9 @@ import 'package:tachogo/l10n/app_localizations.dart';
 // Тексты и цвета запретов движения. Время — местное время страны, как в
 // её правилах и на дорожных знаках, а не время телефона.
 
-/// Ключ класса массы в ARB (`bansMass`).
-String massKey(VehicleMass mass) => switch (mass) {
-  VehicleMass.upTo3_5 => 'van',
-  VehicleMass.upTo7_5 => 'light',
-  VehicleMass.upTo12 => 'medium',
-  VehicleMass.over12 => 'heavy',
-};
+/// Запреты считаются для грузовика больше 12 т: под него попадают все
+/// правила стран. Выбора массы нет (решение владельца 2026-10-02).
+const VehicleMass bansMass = VehicleMass.over12;
 
 String _two(int n) => n.toString().padLeft(2, '0');
 
@@ -71,8 +67,7 @@ String banStatusText(
     BanLevel.clear =>
       s.next == null ? l.bansClearWeek : l.bansClearUntil(at(s.next!.start)),
     BanLevel.someRoads => l.bansSomeRoads,
-    BanLevel.none =>
-      country.coverage == BanCoverage.none ? l.bansNone : l.bansNotForMass,
+    BanLevel.none => l.bansNone,
   };
 }
 
