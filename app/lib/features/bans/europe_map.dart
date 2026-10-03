@@ -102,7 +102,7 @@ class BansMap extends ConsumerWidget {
                   child: GestureDetector(
                     onTapUp: (d) {
                       final code = map.countryAt(d.localPosition / scale);
-                      if (code != null && europeBans.containsKey(code)) {
+                      if (code != null && levels.containsKey(code)) {
                         onCountry(code);
                       }
                     },

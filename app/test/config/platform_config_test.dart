@@ -77,6 +77,14 @@ void main() {
       expect(manifestProblems(noBoot), [contains('перезагрузки')]);
     });
 
+    test('BAN-12: проверка ловит манифест без доступа в интернет', () {
+      final bad = source.replaceFirst(
+        '<uses-permission android:name="android.permission.INTERNET" />',
+        '',
+      );
+      expect(manifestProblems(bad), [contains('INTERNET')]);
+    });
+
     test('проверка ловит автозапуск PostHog', () {
       final bad = source.replaceFirst(
         RegExp('(com.posthog.posthog.AUTO_INIT"[^>]*)android:value="false"'),

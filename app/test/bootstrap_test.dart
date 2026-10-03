@@ -7,6 +7,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tacho_engine/driving_bans.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/background/tracking_service.dart';
@@ -15,6 +16,7 @@ import 'package:tachogo/bootstrap.dart';
 import 'package:tachogo/core/observability/analytics.dart';
 import 'package:tachogo/core/observability/crash_reporter.dart';
 import 'package:tachogo/core/observability/observability_providers.dart';
+import 'package:tachogo/data/bans/ban_data_providers.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
@@ -26,6 +28,7 @@ import 'package:tachogo/notifications/alert_scheduler.dart';
 
 import 'background/fake_tracking_platform.dart';
 import 'notifications/fake_notification_platform.dart';
+import 'support/app_harness.dart';
 
 class _Analytics implements Analytics {
   final consents = <bool>[];
@@ -57,6 +60,7 @@ void main() {
   late FakeTrackingPlatform platform;
   late FakeNotificationPlatform alerts;
   late ProviderContainer container;
+  late FakeBanData bans;
 
   // Обработчики ошибок меняет bootstrap — после теста возвращаем прежние.
   late FlutterExceptionHandler? flutterOnError;
@@ -70,6 +74,7 @@ void main() {
     crashes = _Crashes();
     platform = FakeTrackingPlatform();
     alerts = FakeNotificationPlatform();
+    bans = FakeBanData(downloaded: downloadedBans(const BanDate(2026, 11, 2)));
     container = ProviderContainer(
       overrides: [
         alertSchedulerProvider.overrideWithValue(
@@ -84,6 +89,7 @@ void main() {
           ),
         ),
         databaseProvider.overrideWithValue(db),
+        banDataRepositoryProvider.overrideWithValue(bans),
         analyticsProvider.overrideWithValue(analytics),
         crashReporterProvider.overrideWithValue(crashes),
         trackingServiceProvider.overrideWith(
@@ -107,6 +113,12 @@ void main() {
 
   test('отчёты о падениях готовы до запуска приложения', () {
     expect(crashes.initialized, isTrue);
+  });
+
+  test('BAN-12: правила запретов при запуске — скачанные раньше, и сайт '
+      'спрошен', () {
+    expect(container.read(banDataProvider), bans.downloaded);
+    expect(bans.updates, 1);
   });
 
   group('OBS-02: согласие на аналитику', () {

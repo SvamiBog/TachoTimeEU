@@ -11,6 +11,7 @@ import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/setting_rows.dart';
+import 'package:tachogo/data/bans/ban_data_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/bans/ban_format.dart';
 import 'package:tachogo/features/home/detail_rows.dart';
@@ -22,6 +23,20 @@ void openCountryBans(BuildContext context, String code) =>
 
 /// Сколько дней вперёд показывает «Ближайшие запреты».
 const upcomingDays = 14;
+
+/// Страница источника под адресом сайта — когда у страны несколько
+/// источников на одном сайте: иначе строки выглядят одинаково.
+String? sourcePage(List<String> sources, String source) {
+  final uri = Uri.parse(source);
+  if (sources.where((s) => Uri.parse(s).host == uri.host).length < 2) {
+    return null;
+  }
+  final page = '${uri.path}${uri.hasQuery ? '?${uri.query}' : ''}'.replaceAll(
+    RegExp(r'^/+|/+$'),
+    '',
+  );
+  return page.isEmpty ? null : Uri.decodeComponent(page);
+}
 
 /// Запреты страны для грузовика больше 12 т: что сейчас, правила,
 /// ближайшие запреты на две недели (календарь — Premium, Фаза 5), где
@@ -35,7 +50,7 @@ class CountryBansScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final locale = context.localeTag;
-    final country = europeBans[code]!;
+    final country = ref.watch(banDataProvider)[code]!;
     final now = ref.watch(clockProvider.select(minuteOf));
     final status = banStatus(country, bansMass, now);
     final upcoming = banWindows(
@@ -95,6 +110,7 @@ class CountryBansScreen extends ConsumerWidget {
                 NavRow(
                   icon: Icons.open_in_new,
                   title: Uri.parse(source).host,
+                  subtitle: sourcePage(country.sources, source),
                   onTap: () => unawaited(
                     ref.read(linkOpenerProvider).open(Uri.parse(source)),
                   ),

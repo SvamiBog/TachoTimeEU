@@ -36,6 +36,18 @@ android {
     }
 
     signingConfigs {
+        // Тестовые APK из CI — постоянным debug-ключом (секрет
+        // ANDROID_DEBUG_KEYSTORE_BASE64), чтобы каждая ставилась поверх
+        // прошлой. Путь задан явно: место ключа по умолчанию (~/.android)
+        // зависит от переменных окружения, и Gradle молча создаёт там свой.
+        System.getenv("TACHOGO_DEBUG_KEYSTORE")?.let { path ->
+            getByName("debug") {
+                storeFile = file(path)
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
+            }
+        }
         if (keystoreProperties.isNotEmpty()) {
             fun required(key: String): String =
                 keystoreProperties.getProperty(key)

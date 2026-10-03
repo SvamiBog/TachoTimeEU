@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/driving_bans.dart';
@@ -7,6 +9,7 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/sections.dart';
+import 'package:tachogo/data/bans/ban_data_providers.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/bans/ban_format.dart';
@@ -22,7 +25,8 @@ void openDrivingBans(BuildContext context) => Navigator.of(context)
 final banStatusesProvider = Provider<Map<String, BanStatus>>((ref) {
   final now = ref.watch(clockProvider.select(minuteOf));
   return {
-    for (final c in europeBans.values) c.code: banStatus(c, bansMass, now),
+    for (final c in ref.watch(banDataProvider).values)
+      c.code: banStatus(c, bansMass, now),
   };
 });
 
@@ -36,12 +40,26 @@ final banCountryProvider = Provider<String?>((ref) {
 /// сейчас, скоро, частичный, — и страны списком: касание — экран страны.
 /// Сегодня и сейчас — бесплатно; календарь на будущие дни — Premium
 /// (Фаза 5, docs/premium.md). Макета нет — из компонентов дизайн-системы.
-class DrivingBansScreen extends ConsumerWidget {
+/// Открытый экран проверяет, нет ли на сайте новых правил: приложение
+/// может жить в памяти неделями без нового запуска.
+class DrivingBansScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DrivingBansScreen> createState() => _DrivingBansScreenState();
+}
+
+class _DrivingBansScreenState extends ConsumerState<DrivingBansScreen> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(ref.read(banDataProvider.notifier).refresh());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l = context.l10n;
+    final countries = ref.watch(banDataProvider);
     final statuses = ref.watch(banStatusesProvider);
     final current = ref.watch(banCountryProvider);
     final now = ref.watch(clockProvider.select(minuteOf));
@@ -52,7 +70,12 @@ class DrivingBansScreen extends ConsumerWidget {
         const SizedBox(height: 8),
         _MapCard(statuses: statuses, current: current),
         SectionTitle(l.bansCountries),
-        _CountryList(statuses: statuses, current: current, now: now),
+        _CountryList(
+          countries: countries,
+          statuses: statuses,
+          current: current,
+          now: now,
+        ),
         InfoNote(l.bansDisclaimer),
       ],
     );
@@ -124,8 +147,14 @@ class _MapCard extends StatelessWidget {
 }
 
 class _CountryList extends StatelessWidget {
-  const new({required this.statuses, required this.current, required this.now});
+  const new({
+    required this.countries,
+    required this.statuses,
+    required this.current,
+    required this.now,
+  });
 
+  final Map<String, CountryBans> countries;
   final Map<String, BanStatus> statuses;
   final String? current;
   final DateTime now;
@@ -154,7 +183,7 @@ class _CountryList extends StatelessWidget {
             status: statuses[code]!,
             text: banStatusText(
               l,
-              europeBans[code]!,
+              countries[code]!,
               statuses[code]!,
               now,
               locale,
