@@ -12,6 +12,8 @@
          USE_EXACT_ALARM Google Play даёт только будильникам и календарям. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- Правила запретов движения с сайта TachoGo (lib/data/bans), раз в сутки. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:label="TachoGo"
         android:name=".TachoGoApplication"

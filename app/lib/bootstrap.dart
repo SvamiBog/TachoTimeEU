@@ -8,13 +8,14 @@ import 'package:tachogo/background/tracking_service.dart';
 import 'package:tachogo/core/config/app_info.dart';
 import 'package:tachogo/core/observability/crash_reporter.dart';
 import 'package:tachogo/core/observability/observability_providers.dart';
+import 'package:tachogo/data/bans/ban_data_providers.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/notifications/alert_providers.dart';
 
 /// Подготовка приложения до `runApp`: отчёты о падениях, перехват ошибок,
 /// согласие на аналитику, связь с фоновым сервисом, лицензии шрифтов,
-/// расписание уведомлений.
+/// расписание уведомлений, правила запретов движения.
 /// Отдельно от `main()`, чтобы её проверяли тесты.
 Future<void> bootstrap(
   ProviderContainer container, {
@@ -50,6 +51,10 @@ Future<void> bootstrap(
   container
       .read(alertSchedulerProvider)
       .start(container.read(databaseProvider));
+
+  // Правила запретов: скачанные раньше — из БД, новые — с сайта, если
+  // пора. Без сети — встроенные.
+  unawaited(container.read(banDataProvider.notifier).refresh());
 }
 
 /// Ошибки Flutter и необработанные асинхронные ошибки — в [crash]. Они не

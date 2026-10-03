@@ -8,11 +8,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tacho_engine/driving_bans.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/background/tracking_service.dart';
 import 'package:tachogo/core/config/app_info.dart';
 import 'package:tachogo/core/theme/app_theme.dart';
+import 'package:tachogo/data/bans/ban_data_file.dart';
+import 'package:tachogo/data/bans/ban_data_providers.dart';
+import 'package:tachogo/data/bans/ban_data_repository.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/countries/country_repository.dart';
 import 'package:tachogo/data/db/app_database.dart';
@@ -44,6 +48,46 @@ class TestClock extends Clock {
   set now(DateTime t) => state = t;
 }
 
+/// Правила запретов без сайта: скачанных нет или [downloaded], сайт не
+/// спрашивается. [updates] — сколько раз спросили.
+class FakeBanData implements BanDataRepository {
+  new({this.downloaded});
+
+  final Map<String, CountryBans>? downloaded;
+  int updates = 0;
+
+  @override
+  Map<String, String> get keys => banSigningKeys;
+
+  @override
+  Future<Map<String, CountryBans>?> stored() async => downloaded;
+
+  @override
+  Future<Map<String, CountryBans>?> update(DateTime now) async {
+    updates++;
+    return null;
+  }
+}
+
+/// Встроенные правила запретов, сверенные [checkedOn], у стран из [rules] —
+/// эти правила: как будто скачаны с сайта.
+Map<String, CountryBans> downloadedBans(
+  BanDate checkedOn, {
+  Map<String, List<BanRule>> rules = const {},
+}) => {
+  for (final c in europeBans.values)
+    c.code: CountryBans(
+      code: c.code,
+      zone: c.zone,
+      coverage: c.coverage,
+      checkedOn: checkedOn,
+      calendarUntil: c.calendarUntil,
+      sources: c.sources,
+      needsCheck: c.needsCheck,
+      rules: rules[c.code] ?? c.rules,
+    ),
+};
+
 /// Разрешения и экономия батареи для экранов без БД: всё разрешено.
 const TrackingHealth allowed = (
   location: true,
@@ -54,7 +98,8 @@ const TrackingHealth allowed = (
 /// Журнал, настройки, считывание карты и страны смен — готовыми
 /// значениями, без данных в БД. Страна новой смене не записывается.
 /// Разрешения — [health], платформа автоопределения — [platform]
-/// (по умолчанию Android, всё разрешено).
+/// (по умолчанию Android, всё разрешено). Правила запретов — встроенные
+/// или из [bans], сайт не спрашивается.
 List<Override> journalOverrides({
   required List<ActivityPeriod> periods,
   required DateTime now,
@@ -71,6 +116,7 @@ List<Override> journalOverrides({
   bool analyticsConsent = false,
   TrackingHealth health = allowed,
   FakeTrackingPlatform? platform,
+  FakeBanData? bans,
 }) => [
   preferencesProvider.overrideWith((ref) => Stream.value(preferences)),
   notificationSettingsProvider.overrideWith(
@@ -110,6 +156,7 @@ List<Override> journalOverrides({
   ),
   defaultCountryProvider.overrideWith((ref) => Stream.value(defaultCountry)),
   shiftCountryAutofillProvider.overrideWith((ref) {}),
+  banDataRepositoryProvider.overrideWithValue(bans ?? FakeBanData()),
 ];
 
 /// База в памяти: запись режимов и считываний идёт через настоящие
@@ -143,6 +190,7 @@ List<Override> databaseOverrides(
       JournalEditRepository(db, SettingsRepository(db), clock: now),
     ),
     clockProvider.overrideWith(() => TestClock(now())),
+    banDataRepositoryProvider.overrideWithValue(FakeBanData()),
     if (notifications != null) ...[
       notificationPlatformProvider.overrideWithValue(notifications),
       alertSchedulerProvider.overrideWithValue(

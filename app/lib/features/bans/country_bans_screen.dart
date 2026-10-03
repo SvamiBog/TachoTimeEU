@@ -11,6 +11,7 @@ import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/setting_rows.dart';
+import 'package:tachogo/data/bans/ban_data_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/bans/ban_format.dart';
 import 'package:tachogo/features/home/detail_rows.dart';
@@ -49,7 +50,7 @@ class CountryBansScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final locale = context.localeTag;
-    final country = europeBans[code]!;
+    final country = ref.watch(banDataProvider)[code]!;
     final now = ref.watch(clockProvider.select(minuteOf));
     final status = banStatus(country, bansMass, now);
     final upcoming = banWindows(

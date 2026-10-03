@@ -5,6 +5,9 @@ Thumbs.db
 .vscode/
 *.iml
 
+# Сайт: файл с правилами запретов собирает «Сайт» (pages.yml)
+site/bans/
+
 # Node / Vite (веб-прототип)
 node_modules/
 dist/

@@ -3,7 +3,8 @@
 // исключение из экономии батареи, USE_EXACT_ALARM и рекламного ID, сервис
 // автоопределения с типом location, при включении экрана его уведомление
 // обновляется (`TachoGoApplication`), уведомления о лимитах по расписанию
-// переживают перезагрузку, PostHog не стартует до согласия.
+// переживают перезагрузку, есть доступ в интернет для правил запретов,
+// PostHog не стартует до согласия.
 //
 //   dart tool/check_android_manifest.dart [AndroidManifest.xml …]
 //
@@ -58,6 +59,12 @@ List<String> manifestProblems(String xml) {
     if (!tags('uses-permission').any((t) => named(t, permission))) {
       problems.add('Нет разрешения $permission для уведомлений о лимитах');
     }
+  }
+  if (!tags('uses-permission')
+      .any((t) => named(t, 'android.permission.INTERNET'))) {
+    problems.add(
+      'Нет разрешения android.permission.INTERNET для правил запретов с сайта',
+    );
   }
   const receivers = 'com.dexterous.flutterlocalnotifications';
   for (final receiver in const [

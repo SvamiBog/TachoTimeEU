@@ -94,7 +94,7 @@ final class CalendarDays extends BanDays {
 
 /// Дата без времени: годовые календари и даты сверки данных.
 @immutable
-class BanDate {
+class BanDate implements Comparable<BanDate> {
   const new(this.year, this.month, this.day);
 
   final int year;
@@ -102,6 +102,22 @@ class BanDate {
   final int day;
 
   DateTime get date => DateTime.utc(year, month, day);
+
+  @override
+  int compareTo(BanDate other) => date.compareTo(other.date);
+
+  @override
+  bool operator ==(Object other) =>
+      other is BanDate &&
+      other.year == year &&
+      other.month == month &&
+      other.day == day;
+
+  @override
+  int get hashCode => Object.hash(year, month, day);
+
+  @override
+  String toString() => 'BanDate($year, $month, $day)';
 }
 
 /// Часть года, когда действует правило, включая границы: «с 1 июля по

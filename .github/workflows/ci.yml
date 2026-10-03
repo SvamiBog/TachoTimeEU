@@ -98,6 +98,18 @@ jobs:
       - name: Интеграционные сценарии без устройства
         run: flutter test -d flutter-tester integration_test/all_test.dart
       - run: flutter test --coverage
+      # Файл с правилами запретов для сайта собирается и читается, как в
+      # приложении. Ключ из секрета — тот, что в приложении: иначе «Сайт»
+      # опубликует файл, который приложение не примет. Без секрета (PR из
+      # форков) — подпись случайным ключом.
+      - name: Файл с правилами запретов для сайта
+        env:
+          BANS_SIGNING_KEY: ${{ secrets.BANS_SIGNING_KEY }}
+        run: |
+          if [ -z "$BANS_SIGNING_KEY" ]; then
+            echo "::warning::Секрет BANS_SIGNING_KEY не задан: сайт не опубликует правила запретов (docs/domain/driving-bans.md, «Обновление по сети»)"
+          fi
+          dart run tool/bans_publish.dart
       - name: Покрытие lib/data не ниже 80 %
         run: >-
           dart run ../packages/tacho_engine/tool/check_coverage.dart

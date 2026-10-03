@@ -3,7 +3,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 /// Политика конфиденциальности — страница `site/privacy/index.html` на
 /// GitHub Pages. Тот же адрес — в Play Console. Домен — открытый вопрос 11
-/// PRD: при переезде сменить здесь, в Play Console и в
+/// PRD: при переезде сменить здесь, в `banDataUri`
+/// (`data/bans/ban_data_file.dart`), в Play Console и в
 /// `docs/beta/play-console.md`, а по старому адресу оставить переадресацию —
 /// ссылку из уже установленных версий не поменять.
 const privacyPolicyPage = 'https://svamibog.github.io/TachoTimeEU/privacy/';

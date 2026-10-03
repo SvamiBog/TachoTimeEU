@@ -1,14 +1,18 @@
 # Сайт на GitHub Pages из site/: политика конфиденциальности для Google Play
-# и приложения (адрес — app/lib/core/config/app_links.dart). Включить один
-# раз: Settings → Pages → Build and deployment → Source: GitHub Actions.
+# и приложения (адрес — app/lib/core/config/app_links.dart) и файл с
+# правилами запретов движения bans/v1.json, по которому приложения
+# обновляют правила без новой версии (docs/domain/driving-bans.md). Включить
+# один раз: Settings → Pages → Build and deployment → Source: GitHub Actions.
+#
+# Публикуется после зелёного CI на main: правила из файла через сутки у всех
+# водителей — только проверенные тестами. Вручную — текущий main.
 name: Сайт
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
-    paths:
-      - 'site/**'
-      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -23,12 +27,22 @@ concurrency:
 jobs:
   deploy:
     name: Публикация на GitHub Pages
+    # Только push в main этого репозитория: в PR из форка ветка тоже может
+    # называться main, а здесь доступен ключ подписи.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          # Тот коммит, который проверил CI, а не новый main
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       # Владелец и адрес для связи в политике — до отправки в Google Play
       # (docs/beta/play-console.md).
       - name: Заглушки TODO
@@ -36,6 +50,26 @@ jobs:
           if grep -rn 'TODO' site; then
             echo "::warning::В site/ остались заглушки TODO — вписать до отправки политики в Google Play"
           fi
+      - uses: subosito/flutter-action@v2
+        with:
+          # Как FLUTTER_VERSION в ci.yml
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+      # Правила движка, подписанные ключом BANS_SIGNING_KEY: подпись
+      # проверяет приложение. Без ключа сайт не публикуется — иначе файл
+      # пропал бы с сайта (приложения остались бы на прошлых правилах).
+      - name: Файл с правилами запретов
+        working-directory: app
+        env:
+          BANS_SIGNING_KEY: ${{ secrets.BANS_SIGNING_KEY }}
+        run: |
+          if [ -z "$BANS_SIGNING_KEY" ]; then
+            echo "::error::Секрет BANS_SIGNING_KEY не задан: файл с правилами запретов не подписать (docs/domain/driving-bans.md, «Обновление по сети»)"
+            exit 1
+          fi
+          flutter pub get
+          dart run tool/bans_publish.dart ../site
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
