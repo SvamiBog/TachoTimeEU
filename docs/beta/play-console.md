@@ -122,11 +122,11 @@ Play Console → Контент приложения → Разрешения fo
 
 ## Политика конфиденциальности
 
-Текст — `site/privacy/index.html`, на одной странице русский и английский. Адрес — `https://svamibog.github.io/TachoTimeEU/privacy/`: его вписать в Play Console, тот же адрес открывает приложение («Ещё» → «Политика конфиденциальности», `app/lib/core/config/app_links.dart`; русский интерфейс — русский текст, остальные — английский). Публикует workflow «Сайт» (`.github/workflows/pages.yml`) при изменении `site/` в `main`. Не юридический текст — в Фазе 7 его проверяет юрист.
+Текст — `site/privacy/index.html`, на одной странице русский и английский. Адрес — `https://svamibog.github.io/TachoTimeEU/privacy/`: его вписать в Play Console, тот же адрес открывает приложение («Ещё» → «Политика конфиденциальности», `app/lib/core/config/app_links.dart`; русский интерфейс — русский текст, остальные — английский). Публикует workflow «Сайт» (`.github/workflows/pages.yml`) после зелёного CI на `main`, вместе с файлом правил запретов `bans/v1.json` (`docs/domain/driving-bans.md`, «Обновление по сети»). Не юридический текст — в Фазе 7 его проверяет юрист.
 
 До отправки в Play Console:
 1. Вписать ответственного за данные (имя или название, адрес) и почту для связи вместо `[TODO: …]` — в обеих частях страницы. Пока заглушки есть, workflow «Сайт» предупреждает.
 2. Sentry → проект → Settings → Security & Privacy → «Prevent Storing of IP Addresses»; PostHog → Project settings → «Discard client IP data». Политика обещает, что IP-адрес не хранится.
-3. GitHub → Settings → Pages → Build and deployment → Source: «GitHub Actions», затем Actions → «Сайт» → «Run workflow». Проверить, что страница открывается без входа.
+3. GitHub → Settings → Pages → Build and deployment → Source: «GitHub Actions», затем Actions → «Сайт» → «Run workflow». Проверить, что страница открывается без входа. Без этого «Сайт» падает на шаге `configure-pages` («Get Pages site failed … Not Found») — нет ни политики, ни файла правил запретов.
 
 Домен (вопрос 11 PRD): при переезде — новый адрес в `app_links.dart` и Play Console, а старый оставить с переадресацией: установленные версии открывают его. Новая редакция — с датой на странице и вместе с Data safety, если меняется, что собирает приложение: покупки и сервер лицензий (Фаза 5), аккаунт (Фаза 6).
