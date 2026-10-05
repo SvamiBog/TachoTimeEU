@@ -368,7 +368,12 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
         );
   }
 
-  void _selectRest(RestKind kind, Journal? journal) => setState(() {
+  void _selectRest(RestKind kind, Journal? journal) =>
+      setState(() => _applyRest(kind, journal));
+
+  /// Вид отдыха после смены [kind]: «Не начат» — смена снова идёт, отдых —
+  /// смена кончилась (у идущей — сейчас).
+  void _applyRest(RestKind kind, Journal? journal) {
     final f = _form;
     _error = null;
     if (kind == RestKind.none) {
@@ -423,7 +428,7 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
       }
       f.endCountry ??= before?.country ?? (_isNew ? f.startCountry : null);
     }
-  });
+  }
 
   // ───────────────────────── карточки ─────────────────────────
 
@@ -733,10 +738,14 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     if (picked != null && mounted) {
       setState(() {
         _error = null;
-        // Конечную страну идущей смены можно выбрать заранее, как на главной
+        final ended = _form.restKind == RestKind.none && picked.end != null;
         _form
           ..startCountry = picked.start
           ..endCountry = picked.end;
+        // Конечная страна у идущей смены — смена кончилась: сейчас, дальше
+        // суточный отдых (отзыв водителя 05.10.2026). На главной конечную
+        // страну по-прежнему выбирают заранее, смена идёт.
+        if (ended) _applyRest(RestKind.daily, ref.read(journalProvider).value);
       });
     }
   }
