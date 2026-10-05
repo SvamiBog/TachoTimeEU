@@ -585,6 +585,83 @@ void main() {
       await unmount(tester);
     });
 
+    testWidgets('JRN-11: идущая смена — выбрана страна конца: смена '
+        'кончается сейчас, дальше суточный отдых', (tester) async {
+      await defaultCountry(tester, 'PL');
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 22, 19), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(6)),
+        ], open: true),
+      );
+      await openFromJournal(tester, span(u(23, 6)));
+      expect(find.text('в пути'), findsOneWidget);
+      expect(find.text('Сейчас (идёт)'), findsOneWidget);
+      // Конечная страна не выбрана — кнопка «—»
+      await tap(tester, find.text('—'));
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(CountryPicker),
+          matching: find.byType(TextField),
+        ),
+        'D',
+      );
+      await tester.pump();
+      await tap(tester, find.text('Германия'));
+
+      expect(find.byType(CountryPicker), findsNothing);
+      expect(find.text('в пути'), findsNothing);
+      expect(find.text('Сейчас (идёт)'), findsNothing);
+      expect(find.text(dateButton(now)), findsNWidgets(2));
+      expect(
+        find.text(
+          'Смена закончится в ${formatClock(now)}, дальше пойдёт отдых.',
+        ),
+        findsOneWidget,
+      );
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      final after = await periods(tester);
+      expect(after.last.mode, DriverMode.rest);
+      expect(after.last.start, now);
+      expect(after.last.dayEnd, isTrue);
+      expect(after.last.weeklyRest, isFalse);
+      expect(snapshot(after).status, DriverStatus.dailyRest);
+      final meta = await io(
+        tester,
+        () => JournalEditRepository(
+          db,
+          SettingsRepository(db),
+        ).watchShiftMeta().first,
+      );
+      expect(
+        meta[u(23, 6)],
+        const ShiftMeta(startCountry: 'PL', endCountry: 'D'),
+      );
+      await unmount(tester);
+    });
+
+    testWidgets('JRN-11: «Не указывать» конечную страну — смена идёт', (
+      tester,
+    ) async {
+      await defaultCountry(tester, 'PL');
+      await seed(
+        tester,
+        consecutive(DateTime.utc(2026, 9, 22, 19), [
+          (DriverMode.rest, h(11)),
+          (DriverMode.driving, h(6)),
+        ], open: true),
+      );
+      await openFromJournal(tester, span(u(23, 6)));
+      await tap(tester, find.text('—'));
+      await tap(tester, find.text('Не указывать'));
+      expect(find.byType(CountryPicker), findsNothing);
+      expect(find.text('в пути'), findsOneWidget);
+      expect(find.text('Сейчас (идёт)'), findsOneWidget);
+      await unmount(tester);
+    });
+
     testWidgets('JRN-08: весь день «Работа», день завершён — вождение за '
         'день вводится, смена становится ручной, отдых идёт', (tester) async {
       await defaultCountry(tester, 'PL');
