@@ -34,6 +34,11 @@ typedef AlertChannelNames = Map<AlertChannel, ({String name, String hint})>;
 class NotificationPlatform {
   const new();
 
+  /// Значок в строке состояния — белый знак TachoGo
+  /// (`res/drawable/ic_stat_tachogo.xml`): Android рисует его по
+  /// альфа-каналу, цветная иконка приложения стала бы белым пятном.
+  static const smallIcon = '@drawable/ic_stat_tachogo';
+
   static final _plugin = FlutterLocalNotificationsPlugin();
   static Future<void>? _initialized;
 
@@ -49,7 +54,7 @@ class NotificationPlatform {
   Future<void> initialize() => _initialized ??= _plugin
       .initialize(
         settings: const InitializationSettings(
-          android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+          android: AndroidInitializationSettings(smallIcon),
         ),
       )
       .then<void>(

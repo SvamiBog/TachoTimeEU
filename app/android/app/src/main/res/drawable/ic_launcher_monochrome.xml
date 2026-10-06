@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Знак одним цветом — слой тематических значков Android 13+: система
+     берёт его форму и красит в цвета обоев. Построение — как у
+     ic_launcher_foreground.xml. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="50"
+        android:pivotY="50"
+        android:scaleX="0.72"
+        android:scaleY="0.72"
+        android:translateX="4"
+        android:translateY="4">
+        <path
+            android:pathData="M63.61 24.39A29 29 0 1 0 78.72 45.96"
+            android:strokeWidth="11"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M54.98 51.19L81.95 27.63L50.59 44.91Z"
+            android:fillColor="#FFFFFF"
+            android:strokeWidth="1.5"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineJoin="round" />
+        <path
+            android:fillType="evenOdd"
+            android:pathData="M42.5 50a7.5 7.5 0 1 0 15 0a7.5 7.5 0 1 0-15 0ZM47.6 50a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0-4.8 0Z"
+            android:fillColor="#FFFFFF" />
+    </group>
+</vector>

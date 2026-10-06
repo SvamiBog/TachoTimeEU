@@ -4,12 +4,19 @@
 // автоопределения с типом location, при включении экрана его уведомление
 // обновляется (`TachoGoApplication`), уведомления о лимитах по расписанию
 // переживают перезагрузку, есть доступ в интернет для правил запретов,
-// PostHog не стартует до согласия.
+// у уведомлений белый значок, PostHog не стартует до согласия.
 //
 //   dart tool/check_android_manifest.dart [AndroidManifest.xml …]
 //
 // Без аргументов проверяет итоговые манифесты сборки в build/app.
 import 'dart:io';
+
+/// meta-data со значком уведомлений: по этому имени его берёт уведомление
+/// сервиса (`TrackingPlatform.notificationIcon`), а ссылка из манифеста не
+/// даёт сжатию ресурсов убрать значок из release — уведомления о лимитах
+/// берут его по имени (`NotificationPlatform.smallIcon`).
+const notificationIconMetaData = 'eu.tachogo.app.NOTIFICATION_ICON';
+const notificationIconResource = '@drawable/ic_stat_tachogo';
 
 /// Нарушения в тексте манифеста; пустой список — всё в порядке.
 List<String> manifestProblems(String xml) {
@@ -81,6 +88,18 @@ List<String> manifestProblems(String xml) {
   ).firstMatch(xml)?[0];
   if (boot != null && !boot.contains('android.intent.action.BOOT_COMPLETED')) {
     problems.add('Расписание уведомлений не восстановится после перезагрузки');
+  }
+
+  final icon = tags('meta-data')
+      .where((t) => named(t, notificationIconMetaData));
+  if (icon.isEmpty ||
+      !icon.every(
+        (t) => t.contains('android:resource="$notificationIconResource"'),
+      )) {
+    problems.add(
+      'Нет $notificationIconMetaData → $notificationIconResource: у '
+      'уведомлений будет белое пятно вместо значка',
+    );
   }
 
   const posthogAutoInit = 'com.posthog.posthog.AUTO_INIT';

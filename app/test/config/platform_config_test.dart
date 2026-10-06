@@ -1,10 +1,13 @@
-// Настройки платформ в исходниках: манифест Android и Info.plist iOS.
-// Итоговый манифест с плагинами проверяет CI после сборки APK
-// (tool/check_android_manifest.dart). План тестов: CI-06, CI-07 в
-// docs/testing.md.
+// Настройки платформ в исходниках: манифест, иконка и сплэш Android,
+// Info.plist iOS. Итоговый манифест с плагинами проверяет CI после сборки
+// APK (tool/check_android_manifest.dart). План тестов: CI-06, CI-07, CI-11
+// в docs/testing.md.
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tachogo/background/tracking_platform.dart';
+import 'package:tachogo/notifications/notification_platform.dart';
 
 import '../../tool/check_android_manifest.dart';
 
@@ -91,6 +94,104 @@ void main() {
         'com.posthog.posthog.AUTO_INIT" android:value="true"',
       );
       expect(manifestProblems(bad), [contains('AUTO_INIT')]);
+    });
+
+    test('CI-11: проверка ловит уведомления без белого значка', () {
+      final bad = source.replaceFirst(
+        'android:resource="$notificationIconResource"',
+        'android:resource="@mipmap/ic_launcher"',
+      );
+      expect(manifestProblems(bad), [contains(notificationIconMetaData)]);
+    });
+  });
+
+  group('CI-11: иконка, значок уведомлений и сплэш Android', () {
+    const res = 'android/app/src/main/res';
+    String read(String path) => File('$res/$path').readAsStringSync();
+
+    test('иконка — адаптивная: знак на цвете бренда и монохромный слой '
+        'для тематических значков Android 13+', () {
+      final icon = read('mipmap-anydpi-v26/ic_launcher.xml');
+      for (final layer in [
+        '<background android:drawable="@color/brand_navy" />',
+        '<foreground android:drawable="@drawable/ic_launcher_foreground" />',
+        '<monochrome android:drawable="@drawable/ic_launcher_monochrome" />',
+      ]) {
+        expect(icon, contains(layer));
+      }
+      for (final drawable in [
+        'ic_launcher_foreground',
+        'ic_launcher_monochrome',
+      ]) {
+        expect(File('$res/drawable/$drawable.xml').existsSync(), isTrue);
+      }
+      expect(
+        File('android/app/src/main/AndroidManifest.xml').readAsStringSync(),
+        contains('android:icon="@mipmap/ic_launcher"'),
+      );
+    });
+
+    test('PNG для Android 7 — в каждой плотности своего размера', () {
+      const sizes = {
+        'mdpi': 48,
+        'hdpi': 72,
+        'xhdpi': 96,
+        'xxhdpi': 144,
+        'xxxhdpi': 192,
+      };
+      for (final MapEntry(key: density, value: size) in sizes.entries) {
+        final png = File('$res/mipmap-$density/ic_launcher.png')
+            .readAsBytesSync();
+        // Ширина и высота — в заголовке IHDR, с 16-го байта
+        final header = ByteData.sublistView(png, 16, 24);
+        expect(
+          (header.getUint32(0), header.getUint32(4)),
+          (size, size),
+          reason: density,
+        );
+      }
+    });
+
+    test('значок уведомлений — белый знак, один у уведомлений о лимитах '
+        'и сервиса', () {
+      expect(NotificationPlatform.smallIcon, notificationIconResource);
+      expect(
+        TrackingPlatform.notificationIcon.metaDataName,
+        notificationIconMetaData,
+      );
+      final icon = read('drawable/ic_stat_tachogo.xml');
+      final colors = {
+        for (final m in RegExp(
+          'android:(?:fill|stroke)Color="([^"]+)"',
+        ).allMatches(icon))
+          m[1],
+      };
+      expect(colors, {'#FFFFFF'});
+    });
+
+    test('сплэш — знак на цвете иконки до Android 12 и с 12, в светлой и '
+        'тёмной теме', () {
+      final launch = read('drawable/launch_background.xml');
+      expect(launch, contains('@color/brand_navy'));
+      expect(launch, contains('@drawable/ic_launcher_foreground'));
+      // При minSdk 24 drawable-v21 перекрыл бы общий файл на всех версиях
+      expect(
+        File('$res/drawable-v21/launch_background.xml').existsSync(),
+        isFalse,
+      );
+      final v31 = read('values-v31/styles.xml');
+      for (final (name, value) in [
+        ('windowSplashScreenBackground', '@color/brand_navy'),
+        ('windowSplashScreenAnimatedIcon', '@drawable/ic_launcher_foreground'),
+      ]) {
+        expect(v31, contains('<item name="android:$name">$value</item>'));
+      }
+      // Тема ночи выбирается раньше версии: LaunchTheme в values-night
+      // увёл бы тёмную тему Android 12+ от сплэша из values-v31
+      expect(
+        read('values-night/styles.xml'),
+        isNot(contains('name="LaunchTheme"')),
+      );
     });
   });
 

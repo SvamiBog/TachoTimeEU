@@ -50,6 +50,13 @@
             android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
             android:foregroundServiceType="location"
             android:exported="false" />
+        <!-- Значок уведомлений в строке состояния — белый знак: по этому имени
+             его берёт уведомление сервиса (TrackingPlatform.notificationIcon).
+             Ссылка отсюда сохраняет его и в release-сборке со сжатием
+             ресурсов: уведомления о лимитах берут его по имени из Dart. -->
+        <meta-data
+            android:name="eu.tachogo.app.NOTIFICATION_ICON"
+            android:resource="@drawable/ic_stat_tachogo" />
         <!-- Уведомления о лимитах по расписанию и их восстановление после
              перезагрузки и обновления приложения. -->
         <receiver
