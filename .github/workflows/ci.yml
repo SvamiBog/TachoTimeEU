@@ -20,10 +20,16 @@ concurrency:
 env:
   FLUTTER_VERSION: '3.47.5'
 
+# Раннеры — ubuntu-24.04, а не ubuntu-latest: с 19.10.2026 ubuntu-latest
+# станет Ubuntu 26 (actions/runner-images#14748), и сборка Android или
+# эмулятор могут сломаться без изменений в коде. На новую версию — отдельным
+# PR, когда пройдут все jobs, включая эмулятор и обновление поверх прошлой
+# версии. То же — в pages.yml.
+
 jobs:
   engine:
     name: Движок (tacho_engine)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: packages/tacho_engine
@@ -56,7 +62,7 @@ jobs:
 
   app:
     name: Приложение
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: app
@@ -125,7 +131,7 @@ jobs:
   # там, где его быть не должно.
   timezones:
     name: Часовой пояс ${{ matrix.tz }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -152,7 +158,7 @@ jobs:
 
   prototype:
     name: Веб-прототип
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -165,7 +171,7 @@ jobs:
 
   secrets:
     name: Поиск секретов
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
         with:
@@ -195,7 +201,7 @@ jobs:
   build-android:
     name: Сборка Android
     needs: [engine, app]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: app
@@ -310,7 +316,7 @@ jobs:
   release-plan:
     name: План выпуска
     if: ${{ github.event_name == 'push' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       build: ${{ steps.plan.outputs.build }}
       env: ${{ steps.plan.outputs.env }}
@@ -363,7 +369,7 @@ jobs:
       - integration-android
       - upgrade-android
     if: ${{ needs.release-plan.outputs.build == 'yes' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: app
@@ -499,7 +505,7 @@ jobs:
   integration-android:
     name: Эмулятор Android
     needs: [engine, app]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 50
     defaults:
       run:
@@ -544,7 +550,7 @@ jobs:
   upgrade-android:
     name: Обновление поверх прошлой версии
     needs: [engine, app]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 50
     defaults:
       run:
