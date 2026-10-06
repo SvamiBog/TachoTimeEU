@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Значок уведомлений в строке состояния: белый знак (Android рисует его
+     по альфа-каналу, цветная иконка стала бы белым пятном). Уведомления о
+     лимитах и сервиса автоопределения; имя — в AndroidManifest.xml.
+     Холст 24 dp, знак 69 × 69 из координат 100 × 100 — в середине 22 dp
+     (×22/69). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <group
+        android:pivotX="50"
+        android:pivotY="50"
+        android:scaleX="0.3188"
+        android:scaleY="0.3188"
+        android:translateX="-38"
+        android:translateY="-38">
+        <path
+            android:pathData="M63.61 24.39A29 29 0 1 0 78.72 45.96"
+            android:strokeWidth="11"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M54.98 51.19L81.95 27.63L50.59 44.91Z"
+            android:fillColor="#FFFFFF"
+            android:strokeWidth="1.5"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineJoin="round" />
+        <path
+            android:fillType="evenOdd"
+            android:pathData="M42.5 50a7.5 7.5 0 1 0 15 0a7.5 7.5 0 1 0-15 0ZM47.6 50a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0-4.8 0Z"
+            android:fillColor="#FFFFFF" />
+    </group>
+</vector>

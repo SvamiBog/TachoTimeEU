@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is off -->
-    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
-        <!-- Show a splash screen on the activity. Automatically removed when
-             the Flutter engine draws its first frame -->
+    <!-- Окно при запуске, пока Flutter не нарисовал первый кадр: знак на
+         цвете иконки (drawable/launch_background.xml), в светлой и тёмной
+         теме одинаково — поэтому в values-night его нет. Android 12+ —
+         values-v31/styles.xml. -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">@drawable/launch_background</item>
     </style>
     <!-- Theme applied to the Android Window as soon as the process has started.

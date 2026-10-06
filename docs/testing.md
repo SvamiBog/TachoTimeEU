@@ -7,7 +7,7 @@
 | Набор | Где | Объявлено тестов¹ | При запуске | В CI |
 |---|---|---|---|---|
 | Движок 561/2006 и запреты движения | `packages/tacho_engine/test/` | 434 | 752 | да, покрытие ≥ 95 % |
-| Приложение | `app/test/` | 529 | 1904 | да, покрытие `lib/data` ≥ 80 % |
+| Приложение | `app/test/` | 534 | 1909 | да, покрытие `lib/data` ≥ 80 % |
 | Интеграционные сценарии | `app/integration_test/` | 8 | 8 | да: flutter_tester — 4, эмулятор Android — 6, обновление поверх прошлой версии — 2 |
 | Kotlin (Robolectric) | `app/android/app/src/test/` | 8 | 8 | да, после сборки APK |
 | Веб-прототип | `src/**/*.test.ts` | 170 | 220 | да |
@@ -393,7 +393,7 @@
 ## 13. CI, сборка и документы — static
 
 ### Есть
-Движок без `package:flutter` и `dart:ui`; `dart format`; `analyze --fatal-infos`; тесты движка и приложения, в том числе в трёх часовых поясах; покрытие; сгенерированный код и снимки схемы Drift актуальны; веб-прототип; поиск секретов; debug APK с проверкой итогового манифеста и тестами Kotlin на Robolectric; интеграционные сценарии на flutter_tester (job «Приложение») и на эмуляторе Android API 34 (job «Эмулятор Android», помощник хоста — `app/tool/integration/`); обновление поверх прошлой версии на эмуляторе (job «Обновление поверх прошлой версии», UPG-01); release AAB — только после всех проверок, кроме веб-прототипа (CI-10): из `main` — staging во внутреннее тестирование Google Play, тег `v…-beta.N` — staging в закрытое, `v…` — prod; сборка iOS без подписи — только при ручном запуске (iOS приостановлен до релиза; вход `ios` у ручного запуска выключает её).
+Движок без `package:flutter` и `dart:ui`; `dart format`; `analyze --fatal-infos`; тесты движка и приложения, в том числе в трёх часовых поясах; покрытие; сгенерированный код и снимки схемы Drift актуальны; веб-прототип; поиск секретов; debug APK с проверкой итогового манифеста и тестами Kotlin на Robolectric; иконка, значок уведомлений и сплэш Android (CI-11); интеграционные сценарии на flutter_tester (job «Приложение») и на эмуляторе Android API 34 (job «Эмулятор Android», помощник хоста — `app/tool/integration/`); обновление поверх прошлой версии на эмуляторе (job «Обновление поверх прошлой версии», UPG-01); release AAB — только после всех проверок, кроме веб-прототипа (CI-10): из `main` — staging во внутреннее тестирование Google Play, тег `v…-beta.N` — staging в закрытое, `v…` — prod; сборка iOS без подписи — только при ручном запуске (iOS приостановлен до релиза; вход `ios` у ручного запуска выключает её).
 
 ### Добавить
 - [x] CI-01. Тесты движка и приложения ещё и в часовых поясах `Europe/Warsaw`, `Asia/Kolkata` (+5:30), `America/New_York` (переменная `TZ`): ловит местное время там, где нужен UTC.
@@ -401,10 +401,11 @@
 - [x] CI-03. Веб-прототип: `npm ci`, `npm run lint`, `npm test`.
 - [x] CI-04. Снимки схемы Drift актуальны: после `make-migrations` нет изменений в `drift_schemas/` и `test/drift/`.
 - [x] CI-05. Поиск секретов в PR (gitleaks или аналог): ключи, PEM, keystore, `key.properties`.
-- [x] CI-06. Итоговый манифест собранного APK, с манифестами плагинов: нет `ACCESS_BACKGROUND_LOCATION`, `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`, `USE_EXACT_ALARM` и рекламного ID (`AD_ID`), приложение — `TachoGoApplication` (BG-10), сервис с типом location, для уведомлений по расписанию — `RECEIVE_BOOT_COMPLETED`, `SCHEDULE_EXACT_ALARM` и ресиверы плагина, PostHog `AUTO_INIT = false` (`tool/check_android_manifest.dart`).
+- [x] CI-06. Итоговый манифест собранного APK, с манифестами плагинов: нет `ACCESS_BACKGROUND_LOCATION`, `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`, `USE_EXACT_ALARM` и рекламного ID (`AD_ID`), приложение — `TachoGoApplication` (BG-10), сервис с типом location, для уведомлений по расписанию — `RECEIVE_BOOT_COMPLETED`, `SCHEDULE_EXACT_ALARM` и ресиверы плагина, белый значок уведомлений (meta-data `eu.tachogo.app.NOTIFICATION_ICON` → `@drawable/ic_stat_tachogo`), PostHog `AUTO_INIT = false` (`tool/check_android_manifest.dart`).
 - [x] CI-07. `Info.plist`: `NSLocationWhenInUseUsageDescription`, `UIBackgroundModes: location`, PostHog `AUTO_INIT = false`, нет запроса геолокации «всегда»; iOS не ниже 14 (App Attest). Проверяется тестом `test/config/platform_config_test.dart`.
 - [x] CI-08. Сборка iOS без подписи (`flutter build ios --no-codesign` на macOS). До релиза — только ручной запуск (`workflow_dispatch`), в PR не идёт; вернуть в PR — вместе с iOS-версией.
 - [x] CI-10. Выпуск в Google Play (job «Выпуск Android») ждёт все проверки приложения — движок, приложение, три пояса, поиск секретов, debug-сборку с Robolectric и манифестом, эмулятор, обновление поверх прошлой версии — в том числе на тегах; упала одна — ничего не уходит. Из `main` — во внутреннее тестирование (`PLAY_MAIN_TRACK`), тег беты — в закрытое, «Что нового» — из сообщения тега или заголовка PR. Без ключа загрузки выпуск из `main` пропускается, CI зелёный.
+- [x] CI-11. Иконка и значки Android по фирменному комплекту (`docs/brand/`): адаптивная иконка — фон, знак и монохромный слой для тематических значков Android 13+; PNG для Android 7 своего размера в каждой плотности; значок уведомлений белый и один у уведомлений о лимитах и сервиса — имена в коде совпадают с манифестом; сплэш со знаком до Android 12 и с 12 в обеих темах (нет `drawable-v21/launch_background.xml` и `LaunchTheme` в `values-night`, которые перекрыли бы общий сплэш). Проверяется тестом `test/config/platform_config_test.dart`.
 - [ ] CI-09. Release (Фаза 5): `--obfuscate --split-debug-info`, символы загружены в Sentry, R8 не отключён в `build.gradle.kts`.
 - [x] DOC-01. Таблица лимитов `docs/domain/eu-561-rules.md` совпадает с `EuLimits` — так же, как уже сверяются цвета.
 - [x] DOC-02. Пороги детектора в `docs/background.md` совпадают с `MotionThresholds` по умолчанию.
@@ -454,7 +455,7 @@
 | 3 ✓ | Фаза 1 | Обёртки над плагинами и подготовка из `main()`, затем BG-05…07, OBS-01…04; CI-05…08 |
 | 4 ✓ | Фаза 2 | UI (кроме UI-15), DES-01, DES-03…05, JRN, EXP, REP-01, BG-08, DOC-04, DOC-06, ENG-21, PERF-01…02 |
 | 5 ✓ | Фаза 3 | NTF-01…05, L10N-01…07 |
-| 6 | Фаза 4 | INT-01…05 (эмулятор в CI), BG-09…10, BETA-01…02, L10N-09, CI-10, TRF-04…07, UPG-01 — введены; DEV-01…03, ENG-20, PERF-03 на телефоне — ждут беты |
+| 6 | Фаза 4 | INT-01…05 (эмулятор в CI), BG-09…10, BETA-01…02, L10N-09, CI-10…11, TRF-04…07, UPG-01 — введены; DEV-01…03, ENG-20, PERF-03 на телефоне — ждут беты |
 | 7 | Фаза 5 | PRM, LIC (кроме LIC-04), TRF-01…03 — если перенос через сервер, CI-09, DOC-05, DEV-04 |
 | 8 | Фазы 6 и 8 | SYNC, L10N-08 |
 | ✓ | Фаза 1 | ENG-16…19 — решения по регламенту |

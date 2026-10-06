@@ -57,6 +57,15 @@ class TrackingPlatform {
 
   // Foreground service (Android)
 
+  /// Значок уведомления сервиса — белый знак, как у уведомлений о лимитах
+  /// (`NotificationPlatform.smallIcon`): плагин находит его по meta-data в
+  /// `AndroidManifest.xml`, без него берёт цветную иконку приложения. Идёт
+  /// и с каждым обновлением уведомления: сервис, запущенный прошлой версией,
+  /// получит значок с первым обновлением.
+  static const notificationIcon = NotificationIcon(
+    metaDataName: 'eu.tachogo.app.NOTIFICATION_ICON',
+  );
+
   void initService({
     required AndroidNotificationOptions android,
     required IOSNotificationOptions ios,
@@ -80,6 +89,7 @@ class TrackingPlatform {
     serviceTypes: serviceTypes,
     notificationTitle: notificationTitle,
     notificationText: notificationText,
+    notificationIcon: notificationIcon,
     callback: callback,
   );
 
@@ -93,6 +103,7 @@ class TrackingPlatform {
   }) => FlutterForegroundTask.updateService(
     notificationTitle: notificationTitle,
     notificationText: notificationText,
+    notificationIcon: notificationIcon,
     notificationButtons: notificationButtons,
   );
 
