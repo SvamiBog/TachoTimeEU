@@ -622,7 +622,7 @@ void main() {
       expect(inRow('Рабочий день', '2:20'), findsNothing);
       final left = tester.widget<Text>(inRow('Рабочий день', '10:40'));
       final elapsed = tester.widget<Text>(inRow('Рабочий день', 'прошло 2:20'));
-      expect(left.style!.fontSize!, greaterThan(elapsed.style!.fontSize!));
+      expect(left.style!.fontSize, greaterThan(elapsed.style!.fontSize!));
       expect(colorsOf(tester, '10:40'), {null});
     });
 
