@@ -204,7 +204,13 @@ void main() {
       // Два источника на одном сайте различаются страницей
       expect(find.text('stvo_2013/__30.html'), findsOneWidget);
       expect(find.text('ferreisev'), findsOneWidget);
-      expect(find.textContaining('Сверено 01.10.2026'), findsOneWidget);
+      expect(
+        find.textContaining(
+          'Правила от 01.10.2026: обновятся, когда появится интернет. '
+          'Время — местное время страны.',
+        ),
+        findsOneWidget,
+      );
       await tester.tap(find.text('www.gesetze-im-internet.de').first);
       expect(links.opened.first.host, 'www.gesetze-im-internet.de');
       await unmount(tester);

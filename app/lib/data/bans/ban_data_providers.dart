@@ -19,6 +19,12 @@ final banDataRepositoryProvider = Provider<BanDataRepository>(
   ),
 );
 
+/// Когда приложение в последний раз удачно проверило сайт с правилами:
+/// экраны показывают, что правила свежие, а не дату их сверки.
+final banCheckedAtProvider = StreamProvider<DateTime?>(
+  (ref) => ref.watch(banDataRepositoryProvider).watchCheckedAt(),
+);
+
 /// Правила запретов на экранах: встроенные в приложение или скачанные с
 /// сайта — какие новее. Сразу — встроенные; скачанные приходят после
 /// [BanDataNotifier.refresh]: при запуске и на экране запретов.

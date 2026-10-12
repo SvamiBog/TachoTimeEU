@@ -2452,9 +2452,17 @@ class AppLocalizationsKa extends AppLocalizations {
   String get bansSources => 'სად შევამოწმოთ';
 
   @override
-  String bansChecked(String date) {
-    return 'შემოწმებულია $date. დრო — ქვეყნის ადგილობრივი დრო.';
+  String bansUpdated(String date, String time) {
+    return 'წესები განახლდა $date $time-ზე, მოწმდება დღეში ერთხელ.';
   }
+
+  @override
+  String bansNotUpdated(String date) {
+    return 'წესები $date-დან: განახლდება, როცა ინტერნეტი გამოჩნდება.';
+  }
+
+  @override
+  String get bansLocalTime => 'დრო — ქვეყნის ადგილობრივი დრო.';
 
   @override
   String get bansNeedsCheck =>

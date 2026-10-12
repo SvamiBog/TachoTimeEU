@@ -1,4 +1,4 @@
-// BAN-12, BAN-13 (docs/testing.md): правила запретов с сайта. Файл
+// BAN-12…14 (docs/testing.md): правила запретов с сайта. Файл
 // подписан ключом из приложения, скачивается не чаще раза в сутки, без
 // сети и с чужим или испорченным файлом остаются прежние правила;
 // показываются скачанные или встроенные — какие сверены позже.
@@ -13,6 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:tacho_engine/driving_bans.dart';
+import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/data/bans/ban_data_file.dart';
 import 'package:tachogo/data/bans/ban_data_providers.dart';
 import 'package:tachogo/data/bans/ban_data_repository.dart';
@@ -153,6 +154,20 @@ void main() {
       expect(site.requests, hasLength(2));
     });
 
+    test('BAN-14: время удачной проверки сайта — для экранов; без '
+        'проверки — нет', () async {
+      final times = repository.watchCheckedAt();
+      expect(await times.first, isNull);
+      site.error = const SocketException('нет сети');
+      await repository.update(noon);
+      expect(await repository.watchCheckedAt().first, isNull);
+      site
+        ..error = null
+        ..body = await signed(europeBans.values);
+      await repository.update(noon);
+      expect(await repository.watchCheckedAt().first, noon);
+    });
+
     test('часы переведены назад — спрашивает сразу', () async {
       site.body = await signed(europeBans.values);
       await repository.update(noon);
@@ -287,6 +302,7 @@ void main() {
             'D': [sundayFrom6, ...germany.rules.skip(1)],
           },
         ),
+        checkedAt: noon,
       );
       await pumpScreen(
         tester,
@@ -302,7 +318,63 @@ void main() {
       await settle(tester);
       expect(find.byType(CountryBansScreen), findsOneWidget);
       expect(find.text(banRuleText(ru, sundayFrom6, 'ru')), findsOneWidget);
-      expect(find.textContaining(ru.bansChecked('02.11.2026')), findsOneWidget);
+      // Свежесть — время проверки сайта, а не дата сверки правил
+      final updated = ru.bansUpdated(
+        formatDayMonthYear(noon),
+        formatClock(noon),
+      );
+      expect(find.textContaining(updated), findsOneWidget);
+      expect(find.textContaining('02.11.2026'), findsNothing);
+    });
+
+    testWidgets('BAN-14: на экранах — когда правила обновлены и что '
+        'проверяются раз в сутки; не обновлялись — дата правил', (
+      tester,
+    ) async {
+      final updated = ru.bansUpdated(
+        formatDayMonthYear(noon),
+        formatClock(noon),
+      );
+      await pumpScreen(
+        tester,
+        const DrivingBansScreen(),
+        viewport: const Size(412, 2400),
+        overrides: journalOverrides(
+          periods: const [],
+          now: noon,
+          bans: FakeBanData(checkedAt: noon),
+        ),
+      );
+      // Подпись — под списком стран
+      Future<void> scrollTo(Finder f) => tester.scrollUntilVisible(
+        f,
+        400,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await scrollTo(find.textContaining(updated));
+      expect(find.textContaining(updated), findsOneWidget);
+      expect(updated, contains('раз в сутки'));
+
+      await tester.tap(find.text(ru.countryName('D')));
+      await settle(tester);
+      expect(
+        find.textContaining('$updated ${ru.bansLocalTime}'),
+        findsOneWidget,
+      );
+      await unmount(tester);
+
+      await pumpScreen(
+        tester,
+        const DrivingBansScreen(),
+        viewport: const Size(412, 2400),
+        overrides: journalOverrides(periods: const [], now: noon),
+      );
+      await scrollTo(find.textContaining(ru.bansNotUpdated('01.10.2026')));
+      expect(
+        find.textContaining(ru.bansNotUpdated('01.10.2026')),
+        findsOneWidget,
+      );
+      await unmount(tester);
     });
   });
 }

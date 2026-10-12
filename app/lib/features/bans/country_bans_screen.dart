@@ -59,8 +59,8 @@ class CountryBansScreen extends ConsumerWidget {
       now,
       now.add(const Duration(days: upcomingDays)),
     );
-    final checked = country.checkedOn;
-    String two(int n) => n.toString().padLeft(2, '0');
+    final checkedAt = ref.watch(banCheckedAtProvider).value;
+    final rules = ref.watch(banDataProvider).values;
     return DetailScaffold(
       title: l.countryName(code),
       subtitle: l.bansForTrucks,
@@ -120,9 +120,7 @@ class CountryBansScreen extends ConsumerWidget {
         ],
         InfoNote(
           [
-            l.bansChecked(
-              '${two(checked.day)}.${two(checked.month)}.${checked.year}',
-            ),
+            '${banFreshness(l, checkedAt, rules)} ${l.bansLocalTime}',
             if (country.needsCheck) l.bansNeedsCheck,
             l.bansDisclaimer,
           ].join('\n\n'),

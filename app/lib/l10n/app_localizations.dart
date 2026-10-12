@@ -3885,11 +3885,23 @@ abstract class AppLocalizations {
   /// **'Где проверить'**
   String get bansSources;
 
-  /// Экран страны: дата сверки данных и что время — местное
+  /// Запреты движения: когда приложение последний раз удачно проверило сайт с правилами — дата и время телефона
   ///
   /// In ru, this message translates to:
-  /// **'Сверено {date}. Время — местное время страны.'**
-  String bansChecked(String date);
+  /// **'Правила обновлены {date} в {time}, проверяются раз в сутки.'**
+  String bansUpdated(String date, String time);
+
+  /// Запреты движения: сайт ещё ни разу не проверен (нет сети с установки) — дата встроенных правил
+  ///
+  /// In ru, this message translates to:
+  /// **'Правила от {date}: обновятся, когда появится интернет.'**
+  String bansNotUpdated(String date);
+
+  /// Экран страны: время запретов — местное время страны, а не телефона
+  ///
+  /// In ru, this message translates to:
+  /// **'Время — местное время страны.'**
+  String get bansLocalTime;
 
   /// Экран страны: данные расходятся, проверить
   ///

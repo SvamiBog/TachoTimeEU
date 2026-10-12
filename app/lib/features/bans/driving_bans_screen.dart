@@ -63,6 +63,7 @@ class _DrivingBansScreenState extends ConsumerState<DrivingBansScreen> {
     final statuses = ref.watch(banStatusesProvider);
     final current = ref.watch(banCountryProvider);
     final now = ref.watch(clockProvider.select(minuteOf));
+    final checkedAt = ref.watch(banCheckedAtProvider).value;
     return DetailScaffold(
       title: l.bansTitle,
       subtitle: l.bansForTrucks,
@@ -76,7 +77,12 @@ class _DrivingBansScreenState extends ConsumerState<DrivingBansScreen> {
           current: current,
           now: now,
         ),
-        InfoNote(l.bansDisclaimer),
+        InfoNote(
+          [
+            banFreshness(l, checkedAt, countries.values),
+            l.bansDisclaimer,
+          ].join('\n\n'),
+        ),
       ],
     );
   }

@@ -2474,9 +2474,17 @@ class AppLocalizationsRu extends AppLocalizations {
   String get bansSources => 'Где проверить';
 
   @override
-  String bansChecked(String date) {
-    return 'Сверено $date. Время — местное время страны.';
+  String bansUpdated(String date, String time) {
+    return 'Правила обновлены $date в $time, проверяются раз в сутки.';
   }
+
+  @override
+  String bansNotUpdated(String date) {
+    return 'Правила от $date: обновятся, когда появится интернет.';
+  }
+
+  @override
+  String get bansLocalTime => 'Время — местное время страны.';
 
   @override
   String get bansNeedsCheck =>

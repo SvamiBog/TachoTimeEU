@@ -51,10 +51,16 @@ class TestClock extends Clock {
 /// Правила запретов без сайта: скачанных нет или [downloaded], сайт не
 /// спрашивается. [updates] — сколько раз спросили.
 class FakeBanData implements BanDataRepository {
-  new({this.downloaded});
+  new({this.downloaded, this.checkedAt});
 
   final Map<String, CountryBans>? downloaded;
+
+  /// Последняя удачная проверка сайта; null — не было.
+  final DateTime? checkedAt;
   int updates = 0;
+
+  @override
+  Stream<DateTime?> watchCheckedAt() => Stream.value(checkedAt);
 
   @override
   Map<String, String> get keys => banSigningKeys;

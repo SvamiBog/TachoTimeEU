@@ -38,6 +38,13 @@ class BanDataRepository {
     return file == null ? null : await _read(file);
   }
 
+  /// Когда сайт в последний раз удачно проверен: правила на экранах — самые
+  /// новые на этот момент. null — ещё ни разу (нет сети с установки).
+  Stream<DateTime?> watchCheckedAt() =>
+      (_db.select(_db.settings)..where((s) => s.key.equals(_checkedAtKey)))
+          .watchSingleOrNull()
+          .map((row) => DateTime.tryParse(row?.value ?? ''));
+
   /// Скачивает правила, если с прошлой удачной проверки на [now] прошло
   /// [checkEvery] или часы переведены назад. Новый файл сохраняется вместо
   /// старого, даже если правила в нём старше встроенных: выбирает
