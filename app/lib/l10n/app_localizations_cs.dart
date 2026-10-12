@@ -233,6 +233,16 @@ class AppLocalizationsCs extends AppLocalizations {
   String get workdayNoShift => 'Směna nezačala';
 
   @override
+  String workdayElapsed(String time) {
+    return 'uplynulo $time';
+  }
+
+  @override
+  String workdayLeftTo(int hours) {
+    return 'zbývá do $hours h';
+  }
+
+  @override
   String get rowDailyDriving => 'Denní řízení';
 
   @override

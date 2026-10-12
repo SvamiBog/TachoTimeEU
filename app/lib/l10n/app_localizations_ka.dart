@@ -229,6 +229,16 @@ class AppLocalizationsKa extends AppLocalizations {
   String get workdayNoShift => 'ცვლა არ დაწყებულა';
 
   @override
+  String workdayElapsed(String time) {
+    return 'გავიდა $time';
+  }
+
+  @override
+  String workdayLeftTo(int hours) {
+    return '$hours სთ-მდე დარჩა';
+  }
+
+  @override
   String get rowDailyDriving => 'დღიური მართვა';
 
   @override

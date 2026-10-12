@@ -55,6 +55,8 @@
   "limitUntil": "{hours} soat → {time}",
   "rowWorkday": "Ish kuni",
   "workdayNoShift": "Smena boshlanmagan",
+  "workdayElapsed": "o'tdi {time}",
+  "workdayLeftTo": "{hours} soatgacha qoldi",
   "rowDailyDriving": "Kunlik haydash",
   "rowBreak": "Tanaffus",
   "breakTaken": "{minutes} daq olindi, {time} da",

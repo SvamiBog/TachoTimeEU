@@ -111,6 +111,7 @@ typedef _Workday = ({
   int value,
   int regular,
   int extended,
+  int limit,
   int reducedLeft,
   Tone tone,
 });
@@ -120,6 +121,7 @@ _Workday _workday(ComplianceSnapshot s) => (
   value: minutes(s.shiftDuration),
   regular: minutes(s.shiftRegularLimit),
   extended: minutes(s.shiftExtendedLimit),
+  limit: minutes(s.shiftLimit),
   reducedLeft: s.reducedRestsLeft,
   tone: toneOf(
     s,
@@ -128,6 +130,10 @@ _Workday _workday(ComplianceSnapshot s) => (
   ),
 );
 
+/// Рабочий день: крупно — сколько осталось до 13 и до 15 ч и во сколько
+/// они наступят, прошедшее время — мелко. Водитель планирует день по
+/// остатку, а не по тому, сколько уже отработал (отзыв водителя
+/// 12.10.2026).
 class WorkdayRow extends ConsumerWidget {
   const new({super.key});
 
@@ -149,23 +155,83 @@ class WorkdayRow extends ConsumerWidget {
         soon: l.chipShiftSoon,
         normal: l.chipTimes(extended.inHours, s.reducedLeft),
       ),
-      value: _duration(context, value, tone: s.tone),
+      value: StatusValue(
+        start == null ? l.workdayNoShift : l.workdayElapsed(formatHm(value)),
+      ),
       bar: LimitBar(
         value: value,
         max: extended,
         ticks: [if (regular < extended) regular],
         color: _barColor(context, s.tone, context.colors.text),
       ),
-      left: start == null
-          ? l.workdayNoShift
-          : l.limitLeftUntil(
-              regular.inHours,
-              formatHm(atLeastZero(regular - value)),
-              formatClock(start.add(regular)),
-            ),
-      right: start == null
+      footer: start == null
           ? null
-          : l.limitUntil(extended.inHours, formatClock(start.add(extended))),
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final (i, limit) in [regular, extended].indexed) ...[
+                  if (i > 0) const SizedBox(width: 12),
+                  Expanded(
+                    child: _WorkdayLeft(
+                      limit: limit,
+                      elapsed: value,
+                      start: start,
+                      // Предупреждение движка — о лимите смены: 15 ч,
+                      // пока можно сократить отдых, иначе 13 ч
+                      tone: limit == _m(s.limit) ? s.tone : Tone.neutral,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+    );
+  }
+}
+
+/// Остаток рабочего дня до лимита [limit]: «осталось до 13 ч», «10:40 →
+/// 21:00». Прошёл — «0:00», серым; лимит смены — в цвете предупреждения.
+class _WorkdayLeft extends StatelessWidget {
+  const new({
+    required this.limit,
+    required this.elapsed,
+    required this.start,
+    required this.tone,
+  });
+
+  final Duration limit;
+  final Duration elapsed;
+  final DateTime start;
+  final Tone tone;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final colors = context.colors;
+    final caption = AppTextStyles.caption.copyWith(color: colors.textSecondary);
+    final left = atLeastZero(limit - elapsed);
+    final color = switch (tone) {
+      Tone.violation => colors.errorText,
+      Tone.warning => colors.drive,
+      _ => left == Duration.zero ? colors.textSecondary : null,
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l.workdayLeftTo(limit.inHours), style: caption),
+        const SizedBox(height: 2),
+        Wrap(
+          spacing: 6,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            DurationText(
+              formatHm(left),
+              spoken: spokenDuration(l, left),
+              style: AppTextStyles.value.copyWith(color: color),
+            ),
+            Text('→ ${formatClock(start.add(limit))}', style: caption),
+          ],
+        ),
+      ],
     );
   }
 }

@@ -452,6 +452,18 @@ abstract class AppLocalizations {
   /// **'Смена не начата'**
   String get workdayNoShift;
 
+  /// Главная, строка «Рабочий день»: сколько времени прошло с начала смены — мелко, главное — остатки
+  ///
+  /// In ru, this message translates to:
+  /// **'прошло {time}'**
+  String workdayElapsed(String time);
+
+  /// Главная, строка «Рабочий день»: подпись над остатком до лимита смены 13 / 15 ч (экипаж — 19 / 21 ч)
+  ///
+  /// In ru, this message translates to:
+  /// **'осталось до {hours} ч'**
+  String workdayLeftTo(int hours);
+
   /// No description provided for @rowDailyDriving.
   ///
   /// In ru, this message translates to:

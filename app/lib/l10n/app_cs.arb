@@ -55,6 +55,8 @@
   "limitUntil": "{hours} h → {time}",
   "rowWorkday": "Pracovní den",
   "workdayNoShift": "Směna nezačala",
+  "workdayElapsed": "uplynulo {time}",
+  "workdayLeftTo": "zbývá do {hours} h",
   "rowDailyDriving": "Denní řízení",
   "rowBreak": "Přestávka",
   "breakTaken": "Čerpáno {minutes} min v {time}",

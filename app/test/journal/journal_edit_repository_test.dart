@@ -1,6 +1,6 @@
 // Слой ручных правок журнала: записи, ручные смены, страны и заметки в БД.
-// План тестов: REP-01, JRN-04, JRN-05 в docs/testing.md. Логика правок —
-// в движке (shift_edits_test.dart), здесь — что и как сохраняется.
+// План тестов: REP-01, JRN-04, JRN-05, JRN-12 в docs/testing.md. Логика
+// правок — в движке (shift_edits_test.dart), здесь — что и как сохраняется.
 
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
@@ -374,6 +374,48 @@ void main() {
       expect(after[1].source, EntrySource.manual);
       final journal = await shifts();
       expect(journal.single.manual, isNotNull);
+    });
+  });
+
+  group('JRN-12: отдых после ручной смены — с её конца', () {
+    test('конец смены после «Завершить день» перенесли раньше — отдых и '
+        'долг сразу от нового конца', () async {
+      // Отзыв водителя 12.10.2026: суббота, 4 ч вождения итогом и
+      // недельный отдых с 12:09; понедельник 08:56 — работа
+      now = DateTime.utc(2026, 10, 9, 22);
+      await live.switchMode(DriverMode.rest);
+      now = DateTime.utc(2026, 10, 10, 7, 27);
+      await live.switchMode(DriverMode.driving);
+      now = DateTime.utc(2026, 10, 10, 12, 9);
+      await edits.endDay(driving: h(4), weekly: true);
+      now = DateTime.utc(2026, 10, 12, 8, 56);
+      await live.switchMode(DriverMode.otherWork);
+      now = DateTime.utc(2026, 10, 12, 9, 16);
+      final saved = (await edits.manualShifts()).single;
+      changes = 0;
+
+      final end = DateTime.utc(2026, 10, 10, 12);
+      await edits.saveManualShift(
+        ManualShift(
+          id: saved.id,
+          start: saved.start,
+          end: end,
+          driving: saved.driving,
+          restKind: RestKind.weekly,
+        ),
+        const ShiftMeta(startCountry: 'D', endCountry: 'PL'),
+      );
+      final rest = (await rows()).singleWhere((r) => r.dayEnd);
+      expect(rest.startUtc, end);
+      expect(rest.endUtc, DateTime.utc(2026, 10, 12, 8, 56));
+      final m = calculateCompliance(
+        periods: await live.periods(),
+        now: now,
+        manualShifts: await edits.manualShifts(),
+      );
+      expect(m.lastWeeklyRest?.duration, h(44, 56));
+      expect(m.compensation?.debt, h(0, 4));
+      expect(changes, 1);
     });
   });
 

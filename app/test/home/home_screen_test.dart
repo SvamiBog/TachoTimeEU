@@ -98,7 +98,14 @@ void main() {
         inRow('Непрерывное вождение', formatHm(s.continuousDriving)),
         findsOneWidget,
       );
-      expect(inRow('Рабочий день', formatHm(s.shiftDuration)), findsOneWidget);
+      expect(
+        inRow('Рабочий день', 'прошло ${formatHm(s.shiftDuration)}'),
+        findsOneWidget,
+      );
+      expect(
+        inRow('Рабочий день', formatHm(s.shiftRegularLimit - s.shiftDuration)),
+        findsOneWidget,
+      );
       expect(
         inRow('Суточное вождение', formatHm(s.dailyDriving)),
         findsOneWidget,
@@ -453,7 +460,7 @@ void main() {
       );
       // Длительности считаются в UTC: в любом поясе CI те же цифры
       expect(find.text('0:29'), findsOneWidget);
-      expect(inRow('Рабочий день', '4:31'), findsOneWidget);
+      expect(inRow('Рабочий день', 'прошло 4:31'), findsOneWidget);
     });
   });
 
@@ -571,6 +578,69 @@ void main() {
         AppColors.dark.errorBg,
       );
       expect(valueColor(tester, '4:31'), AppColors.dark.errorText);
+    });
+  });
+
+  group('UI-25: «Рабочий день» — остатки до 13 и 15 ч', () {
+    // Отзыв водителя 12.10.2026: главное — сколько осталось до 13 и 15 ч,
+    // а не сколько прошло. Смена с 08:00, только «Работа».
+    Future<void> pumpWorkday(WidgetTester tester, Duration worked) =>
+        pumpScreen(
+          tester,
+          const HomeScreen(),
+          overrides: journalOverrides(
+            periods: consecutive(t0.subtract(const Duration(hours: 11)), [
+              (DriverMode.rest, const Duration(hours: 11)),
+              (DriverMode.otherWork, worked),
+            ], open: true),
+            now: t0.add(worked),
+            settings: const ComplianceSettings(
+              warningLead: Duration(minutes: 15),
+            ),
+          ),
+        );
+
+    Set<Color?> colorsOf(WidgetTester tester, String value) => {
+      for (final t in tester.widgetList<Text>(inRow('Рабочий день', value)))
+        t.style?.color,
+    };
+
+    testWidgets('остатки и время, когда наступят, — крупно; прошедшее — '
+        'мелко', (tester) async {
+      await pumpWorkday(tester, const Duration(hours: 2, minutes: 20));
+      for (final text in [
+        'прошло 2:20',
+        'осталось до 13 ч',
+        '10:40',
+        '→ ${formatClock(t0.add(const Duration(hours: 13)))}',
+        'осталось до 15 ч',
+        '12:40',
+        '→ ${formatClock(t0.add(const Duration(hours: 15)))}',
+      ]) {
+        expect(inRow('Рабочий день', text), findsOneWidget, reason: text);
+      }
+      expect(inRow('Рабочий день', '2:20'), findsNothing);
+      final left = tester.widget<Text>(inRow('Рабочий день', '10:40'));
+      final elapsed = tester.widget<Text>(inRow('Рабочий день', 'прошло 2:20'));
+      expect(left.style!.fontSize, greaterThan(elapsed.style!.fontSize!));
+      expect(colorsOf(tester, '10:40'), {null});
+    });
+
+    testWidgets('13 ч прошли — там 0:00 серым; до 15 ч меньше порога — '
+        'янтарный и «скоро конец»', (tester) async {
+      await pumpWorkday(tester, const Duration(hours: 14, minutes: 50));
+      expect(colorsOf(tester, '0:00'), {AppColors.dark.textSecondary});
+      expect(colorsOf(tester, '0:10'), {AppColors.dark.drive});
+      expect(inRow('Рабочий день', 'скоро конец'), findsOneWidget);
+    });
+
+    testWidgets('15 ч прошли — 0:00 красным и «превышено»', (tester) async {
+      await pumpWorkday(tester, const Duration(hours: 15, minutes: 10));
+      expect(colorsOf(tester, '0:00'), {
+        AppColors.dark.textSecondary,
+        AppColors.dark.errorText,
+      });
+      expect(inRow('Рабочий день', 'превышено'), findsOneWidget);
     });
   });
 

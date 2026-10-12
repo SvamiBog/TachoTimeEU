@@ -233,6 +233,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get workdayNoShift => 'Zmiana nierozpoczęta';
 
   @override
+  String workdayElapsed(String time) {
+    return 'minęło $time';
+  }
+
+  @override
+  String workdayLeftTo(int hours) {
+    return 'zostało do $hours h';
+  }
+
+  @override
   String get rowDailyDriving => 'Jazda dzienna';
 
   @override

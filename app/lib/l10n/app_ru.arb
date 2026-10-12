@@ -229,6 +229,24 @@
   },
   "rowWorkday": "Рабочий день",
   "workdayNoShift": "Смена не начата",
+  "workdayElapsed": "прошло {time}",
+  "@workdayElapsed": {
+    "description": "Главная, строка «Рабочий день»: сколько времени прошло с начала смены — мелко, главное — остатки",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "workdayLeftTo": "осталось до {hours} ч",
+  "@workdayLeftTo": {
+    "description": "Главная, строка «Рабочий день»: подпись над остатком до лимита смены 13 / 15 ч (экипаж — 19 / 21 ч)",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "rowDailyDriving": "Суточное вождение",
   "rowBreak": "Перерыв",
   "breakTaken": "Взято {minutes} мин в {time}",

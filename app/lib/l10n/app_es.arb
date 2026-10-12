@@ -55,6 +55,8 @@
   "limitUntil": "{hours} h → {time}",
   "rowWorkday": "Jornada de trabajo",
   "workdayNoShift": "Jornada no iniciada",
+  "workdayElapsed": "transcurrido {time}",
+  "workdayLeftTo": "quedan hasta {hours} h",
   "rowDailyDriving": "Conducción diaria",
   "rowBreak": "Pausa",
   "breakTaken": "{minutes} min tomados a las {time}",

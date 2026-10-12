@@ -369,6 +369,39 @@ List<ActivityPeriod> carveRest(
     ],
 ];
 
+/// Отдых после ручной смены — с её конца [end]: первая запись после [end]
+/// начинается с [end], если это отдых, между ними нет других записей и не
+/// начинается другая смена из [shiftStarts]. «Завершить день» с вождением
+/// оставляет отдых записью ([endDayWithDriving]), и после правки конца
+/// смены на более ранний запись отдыха начиналась бы позже смены: отдых и
+/// компенсация считались бы по старому концу (отзыв водителя 12.10.2026).
+/// Так же отдых считает и движок: от конца ручной смены до начала
+/// следующей ([manualRestAfter]). Конец позже начала отдыха обрезает
+/// [carveRest]. Без изменений возвращается тот же список.
+List<ActivityPeriod> attachRest(
+  List<ActivityPeriod> periods,
+  DateTime end,
+  Iterable<DateTime> shiftStarts,
+) {
+  final sorted = sortedByStart(periods);
+  final idx = sorted.indexWhere((p) => !p.start.isBefore(end));
+  if (idx < 0) return periods;
+  final rest = sorted[idx];
+  if (!rest.mode.isRest || rest.start == end) return periods;
+  if (idx > 0) {
+    final before = sorted[idx - 1].end;
+    if (before == null || before.isAfter(end)) return periods;
+  }
+  final otherShift = shiftStarts.any(
+    (s) => !s.isBefore(end) && s.isBefore(rest.start),
+  );
+  if (otherShift) return periods;
+  return [
+    for (final (i, p) in sorted.indexed)
+      if (i == idx) p.withStart(end) else p,
+  ];
+}
+
 /// Одна и та же смена в двух расчётах журнала: у ручной — тот же id, у
 /// записанной — то же начало.
 bool sameShift(JournalShift a, JournalShift b) {

@@ -97,10 +97,21 @@ class JournalEditRepository {
 
   /// Сохраняет ручную смену: новую (id == null) или изменённую. Если она
   /// попала на записанный отдых — водитель забыл переключить режим, —
-  /// время смены вырезается из отдыха. Возвращает id смены.
+  /// время смены вырезается из отдыха. Записанный отдых сразу после смены
+  /// начинается с её конца (`attachRest`): конец перенесли раньше — отдых
+  /// и всё, что от него зависит, сразу считаются от нового конца.
+  /// Возвращает id смены.
   Future<int> saveManualShift(ManualShift shift, ShiftMeta meta) =>
       _write((periods, now) async {
-        await _carve(periods, shift, now);
+        var updated = carveRest(periods, shift.start, shift.end ?? now, now);
+        final end = shift.end;
+        if (end != null) {
+          updated = attachRest(updated, end, [
+            for (final m in await manualShifts())
+              if (m.id != shift.id) m.start,
+          ]);
+        }
+        await savePeriodChanges(_db, periods, updated, now, EntrySource.manual);
         return await _putManual(shift, meta, now);
       });
 

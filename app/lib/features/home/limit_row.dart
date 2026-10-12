@@ -36,6 +36,7 @@ class LimitRow extends StatelessWidget {
     this.chip,
     this.left,
     this.right,
+    this.footer,
     this.onTap,
     super.key,
   });
@@ -46,6 +47,9 @@ class LimitRow extends StatelessWidget {
   final LimitBar bar;
   final String? left;
   final String? right;
+
+  /// Низ строки вместо подписей [left] и [right]: остатки рабочего дня.
+  final Widget? footer;
   final VoidCallback? onTap;
 
   @override
@@ -106,7 +110,10 @@ class LimitRow extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           bar,
-          if (left != null || right != null) ...[
+          if (footer case final footer?) ...[
+            const SizedBox(height: 10),
+            footer,
+          ] else if (left != null || right != null) ...[
             const SizedBox(height: 10),
             // Обе подписи в одну строку, если помещаются, иначе правая —
             // строкой ниже.

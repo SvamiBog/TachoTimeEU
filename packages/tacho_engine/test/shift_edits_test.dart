@@ -695,6 +695,87 @@ void main() {
     });
   });
 
+  group('JRN-12: отдых после ручной смены — с её конца', () {
+    // Отзыв водителя 12.10.2026: в субботу в 12:09 «Завершить день» с
+    // вождением 4 ч и недельным отдыхом, в понедельник в 08:56 — работа;
+    // потом в журнале конец субботней смены перенесли на 12:00.
+    final saturday = utc('2026-10-10 12:09');
+    final monday = utc('2026-10-12 08:56');
+    final at = utc('2026-10-12 09:16');
+    final ended = endDayWithDriving(
+      logUntil(saturday, [rest('9:26'), drive('4:42')]),
+      dur('4:00'),
+      saturday,
+      weekly: true,
+    );
+    final periods = changeMode(ended.periods, DriverMode.otherWork, monday);
+    final edited = ManualShift(
+      id: 1,
+      start: ended.manual!.start,
+      end: utc('2026-10-10 12:00'),
+      driving: dur('4:00'),
+      restKind: RestKind.weekly,
+    );
+
+    test('конец смены раньше — недельный отдых и долг от нового конца', () {
+      final stale = calc(periods, at, manual: [edited]);
+      expect(stale.lastWeeklyRest?.start, saturday, reason: 'до правки');
+      expect(stale.compensation?.debt, dur(13));
+
+      final fixed = attachRest(
+        carveRest(periods, edited.start, edited.end!, at),
+        edited.end!,
+        const [],
+      );
+      final weekly = fixed.singleWhere((p) => p.dayEnd);
+      expect(weekly.start, edited.end);
+      expect(fixed, hasLength(periods.length), reason: 'та же запись');
+      final m = calc(fixed, at, manual: [edited]);
+      expect(m.lastWeeklyRest?.start, edited.end);
+      expect(m.lastWeeklyRest?.duration, dur('44:56'));
+      expect(m.compensation?.debt, dur(4));
+      final week = buildJournal(
+        timeline: m.timeline,
+        now: at,
+        manualShifts: [edited],
+      ).firstWhere((w) => w.weeklyRests.isNotEmpty);
+      expect(week.weeklyRests.single.start, edited.end);
+    });
+
+    test('отдых уже с конца смены — тот же журнал', () {
+      final end = ended.manual!.end!;
+      expect(attachRest(periods, end, const []), same(periods));
+    });
+
+    test('другая смена между концом и отдыхом — отдых не её', () {
+      final end = utc('2026-10-10 09:00');
+      expect(
+        attachRest(periods, end, [utc('2026-10-10 10:00')]),
+        same(periods),
+      );
+      expect(
+        attachRest(periods, end, [
+          end.subtract(hour),
+        ]).singleWhere((p) => p.dayEnd).start,
+        end,
+        reason: 'смены раньше конца не мешают',
+      );
+    });
+
+    test('запись между концом и отдыхом или после конца не отдых — без '
+        'изменений', () {
+      final log = logUntil(at, [rest('11:00'), work(30), rest('2:00')]);
+      final job = log[1];
+      // Конец посреди работы: остаток работы — между концом и отдыхом
+      expect(attachRest(log, job.start.add(minute * 14), const []), same(log));
+      // Первая запись после конца — работа
+      expect(
+        attachRest(log, job.start.subtract(minute * 16), const []),
+        same(log),
+      );
+    });
+  });
+
   group('JRN-05: удаление смены', () {
     final periods = logUntil(now, [
       rest('11:00'),

@@ -55,6 +55,8 @@
   "limitUntil": "{hours} год → {time}",
   "rowWorkday": "Робочий день",
   "workdayNoShift": "Зміну не розпочато",
+  "workdayElapsed": "минуло {time}",
+  "workdayLeftTo": "залишилось до {hours} год",
   "rowDailyDriving": "Щоденне керування",
   "rowBreak": "Перерва",
   "breakTaken": "Взято {minutes} хв о {time}",
