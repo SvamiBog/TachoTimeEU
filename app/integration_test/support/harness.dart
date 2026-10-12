@@ -287,7 +287,15 @@ Future<void> expectTimersMatch(
 ) async {
   final rows = [
     (ru.rowContinuous, formatHm(s.continuousDriving)),
-    (ru.rowWorkday, formatHm(s.shiftDuration)),
+    // Рабочий день: прошедшее — мелко, крупно — остатки до 13 и 15 ч
+    (
+      ru.rowWorkday,
+      s.shift == null
+          ? ru.workdayNoShift
+          : ru.workdayElapsed(formatHm(s.shiftDuration)),
+    ),
+    if (s.shift != null && s.shiftDuration < s.shiftExtendedLimit)
+      (ru.rowWorkday, formatHm(s.shiftExtendedLimit - s.shiftDuration)),
     (ru.rowDailyDriving, formatHm(s.dailyDriving)),
     (ru.rowWeeklyDriving, formatHm(s.weeklyDriving)),
     (ru.rowFortnightDriving, formatHm(s.fortnightDriving)),
