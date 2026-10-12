@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tacho_engine/driving_bans.dart';
+import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 
@@ -20,6 +21,22 @@ String _weekday(DateTime local, String locale) =>
 
 String _capitalize(String s) =>
     s.isEmpty ? s : '${s[0].toUpperCase()}${s.substring(1)}';
+
+/// Свежесть правил: когда приложение последний раз удачно проверило сайт —
+/// правила на тот момент самые новые; не проверяло — дата правил [rules].
+/// Дата сверки с источниками водителю ничего не говорит, а старая дата
+/// выглядит как давно не обновлявшиеся данные (отзыв водителя 12.10.2026).
+String banFreshness(
+  AppLocalizations l,
+  DateTime? checkedAt,
+  Iterable<CountryBans> rules,
+) {
+  if (checkedAt != null) {
+    return l.bansUpdated(formatDayMonthYear(checkedAt), formatClock(checkedAt));
+  }
+  final d = latestCheck(rules);
+  return l.bansNotUpdated('${_two(d.day)}.${_two(d.month)}.${d.year}');
+}
 
 /// «22:00» сегодня по местному времени страны, иначе «вс 22:00».
 String banMoment(DateTime utc, BanZone zone, DateTime now, String locale) {

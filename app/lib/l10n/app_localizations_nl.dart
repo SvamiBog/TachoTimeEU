@@ -2462,9 +2462,17 @@ class AppLocalizationsNl extends AppLocalizations {
   String get bansSources => 'Waar controleren';
 
   @override
-  String bansChecked(String date) {
-    return 'Gecontroleerd op $date. Tijden in lokale tijd van het land.';
+  String bansUpdated(String date, String time) {
+    return 'Regels bijgewerkt op $date om $time, eenmaal per dag gecontroleerd.';
   }
+
+  @override
+  String bansNotUpdated(String date) {
+    return 'Regels van $date: worden bijgewerkt zodra er internet is.';
+  }
+
+  @override
+  String get bansLocalTime => 'Tijden in lokale tijd van het land.';
 
   @override
   String get bansNeedsCheck =>

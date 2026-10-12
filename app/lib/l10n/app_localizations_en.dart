@@ -2452,9 +2452,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bansSources => 'Where to check';
 
   @override
-  String bansChecked(String date) {
-    return 'Checked $date. Times are local to the country.';
+  String bansUpdated(String date, String time) {
+    return 'Rules updated $date at $time, checked once a day.';
   }
+
+  @override
+  String bansNotUpdated(String date) {
+    return 'Rules from $date: they will update when you are online.';
+  }
+
+  @override
+  String get bansLocalTime => 'Times are local to the country.';
 
   @override
   String get bansNeedsCheck =>

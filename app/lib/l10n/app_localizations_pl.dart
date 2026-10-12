@@ -2481,9 +2481,17 @@ class AppLocalizationsPl extends AppLocalizations {
   String get bansSources => 'Gdzie sprawdzić';
 
   @override
-  String bansChecked(String date) {
-    return 'Sprawdzono $date. Czas lokalny kraju.';
+  String bansUpdated(String date, String time) {
+    return 'Przepisy zaktualizowano $date o $time, sprawdzane raz na dobę.';
   }
+
+  @override
+  String bansNotUpdated(String date) {
+    return 'Przepisy z $date: zaktualizują się po połączeniu z internetem.';
+  }
+
+  @override
+  String get bansLocalTime => 'Czas lokalny kraju.';
 
   @override
   String get bansNeedsCheck =>

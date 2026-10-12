@@ -2475,9 +2475,17 @@ class AppLocalizationsSk extends AppLocalizations {
   String get bansSources => 'Kde overiť';
 
   @override
-  String bansChecked(String date) {
-    return 'Overené $date. Čas je miestny čas krajiny.';
+  String bansUpdated(String date, String time) {
+    return 'Pravidlá aktualizované $date o $time, kontrolujú sa raz denne.';
   }
+
+  @override
+  String bansNotUpdated(String date) {
+    return 'Pravidlá z $date: aktualizujú sa po pripojení na internet.';
+  }
+
+  @override
+  String get bansLocalTime => 'Čas je miestny čas krajiny.';
 
   @override
   String get bansNeedsCheck =>

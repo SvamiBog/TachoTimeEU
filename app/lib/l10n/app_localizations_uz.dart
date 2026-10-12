@@ -2461,9 +2461,17 @@ class AppLocalizationsUz extends AppLocalizations {
   String get bansSources => 'Qayerda tekshirish';
 
   @override
-  String bansChecked(String date) {
-    return '$date da tekshirilgan. Vaqt — mamlakatning mahalliy vaqti.';
+  String bansUpdated(String date, String time) {
+    return 'Qoidalar $date soat $time da yangilandi, kuniga bir marta tekshiriladi.';
   }
+
+  @override
+  String bansNotUpdated(String date) {
+    return '$date dagi qoidalar: internet paydo bo\'lganda yangilanadi.';
+  }
+
+  @override
+  String get bansLocalTime => 'Vaqt — mamlakatning mahalliy vaqti.';
 
   @override
   String get bansNeedsCheck =>

@@ -2473,9 +2473,17 @@ class AppLocalizationsCs extends AppLocalizations {
   String get bansSources => 'Kde ověřit';
 
   @override
-  String bansChecked(String date) {
-    return 'Ověřeno $date. Čas je místní čas země.';
+  String bansUpdated(String date, String time) {
+    return 'Pravidla aktualizována $date v $time, kontrolují se jednou denně.';
   }
+
+  @override
+  String bansNotUpdated(String date) {
+    return 'Pravidla z $date: aktualizují se po připojení k internetu.';
+  }
+
+  @override
+  String get bansLocalTime => 'Čas je místní čas země.';
 
   @override
   String get bansNeedsCheck =>

@@ -2470,9 +2470,17 @@ class AppLocalizationsRo extends AppLocalizations {
   String get bansSources => 'Unde verificați';
 
   @override
-  String bansChecked(String date) {
-    return 'Verificat la $date. Ora este ora locală a țării.';
+  String bansUpdated(String date, String time) {
+    return 'Regulile au fost actualizate pe $date la $time, se verifică o dată pe zi.';
   }
+
+  @override
+  String bansNotUpdated(String date) {
+    return 'Reguli din $date: se actualizează când apare internetul.';
+  }
+
+  @override
+  String get bansLocalTime => 'Ora este ora locală a țării.';
 
   @override
   String get bansNeedsCheck =>
