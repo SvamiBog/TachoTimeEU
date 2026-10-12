@@ -229,6 +229,16 @@ class AppLocalizationsUz extends AppLocalizations {
   String get workdayNoShift => 'Smena boshlanmagan';
 
   @override
+  String workdayElapsed(String time) {
+    return 'o\'tdi $time';
+  }
+
+  @override
+  String workdayLeftTo(int hours) {
+    return '$hours soatgacha qoldi';
+  }
+
+  @override
   String get rowDailyDriving => 'Kunlik haydash';
 
   @override

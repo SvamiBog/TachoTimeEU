@@ -55,6 +55,8 @@
   "limitUntil": "{hours} h → {time}",
   "rowWorkday": "Zi de lucru",
   "workdayNoShift": "Tura nu a început",
+  "workdayElapsed": "au trecut {time}",
+  "workdayLeftTo": "rămân până la {hours} h",
   "rowDailyDriving": "Conducere zilnică",
   "rowBreak": "Pauză",
   "breakTaken": "Luat {minutes} min la {time}",

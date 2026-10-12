@@ -230,6 +230,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get workdayNoShift => 'Dienst niet begonnen';
 
   @override
+  String workdayElapsed(String time) {
+    return 'verstreken $time';
+  }
+
+  @override
+  String workdayLeftTo(int hours) {
+    return 'nog tot $hours u';
+  }
+
+  @override
   String get rowDailyDriving => 'Dagelijkse rijtijd';
 
   @override

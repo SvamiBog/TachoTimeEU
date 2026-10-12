@@ -229,6 +229,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get workdayNoShift => 'Schicht nicht begonnen';
 
   @override
+  String workdayElapsed(String time) {
+    return 'vergangen $time';
+  }
+
+  @override
+  String workdayLeftTo(int hours) {
+    return 'noch bis $hours Std.';
+  }
+
+  @override
   String get rowDailyDriving => 'Tageslenkzeit';
 
   @override

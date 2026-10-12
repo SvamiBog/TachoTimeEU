@@ -55,6 +55,8 @@
   "limitUntil": "{hours} სთ → {time}",
   "rowWorkday": "სამუშაო დღე",
   "workdayNoShift": "ცვლა არ დაწყებულა",
+  "workdayElapsed": "გავიდა {time}",
+  "workdayLeftTo": "{hours} სთ-მდე დარჩა",
   "rowDailyDriving": "დღიური მართვა",
   "rowBreak": "შესვენება",
   "breakTaken": "აღებულია {minutes} წთ {time}-ზე",

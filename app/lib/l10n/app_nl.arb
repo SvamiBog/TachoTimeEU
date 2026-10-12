@@ -55,6 +55,8 @@
   "limitUntil": "{hours} u → {time}",
   "rowWorkday": "Werkdag",
   "workdayNoShift": "Dienst niet begonnen",
+  "workdayElapsed": "verstreken {time}",
+  "workdayLeftTo": "nog tot {hours} u",
   "rowDailyDriving": "Dagelijkse rijtijd",
   "rowBreak": "Pauze",
   "breakTaken": "{minutes} min genomen om {time}",

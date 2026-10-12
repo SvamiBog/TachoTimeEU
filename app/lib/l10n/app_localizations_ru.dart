@@ -233,6 +233,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get workdayNoShift => 'Смена не начата';
 
   @override
+  String workdayElapsed(String time) {
+    return 'прошло $time';
+  }
+
+  @override
+  String workdayLeftTo(int hours) {
+    return 'осталось до $hours ч';
+  }
+
+  @override
   String get rowDailyDriving => 'Суточное вождение';
 
   @override

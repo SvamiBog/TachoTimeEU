@@ -231,6 +231,16 @@ class AppLocalizationsRo extends AppLocalizations {
   String get workdayNoShift => 'Tura nu a început';
 
   @override
+  String workdayElapsed(String time) {
+    return 'au trecut $time';
+  }
+
+  @override
+  String workdayLeftTo(int hours) {
+    return 'rămân până la $hours h';
+  }
+
+  @override
   String get rowDailyDriving => 'Conducere zilnică';
 
   @override
