@@ -1,0 +1,8 @@
+Kolik zbývá do přestávky|a do konce směny – na hlavní obrazovce
+Pracovní den: do 13 a 15 hodin|Vidíte, kdy ukončit směnu
+Jak dlouho ještě smíte řídit|Dnes, tento týden a za dva týdny
+Přestávka 45 minut nebo 15 + 30|Vidíte, která část už se počítá
+Deník po týdnech a dnech|Bez přepínání? Zadejte součet za den
+Výkaz PDF a CSV|Týden, 28 nebo 56 dní, v jazyce kontroly
+Zákazy jízdy nákladních aut|31 zemí Evropy, v místním čase
+Pravidla a nejbližší zákazy|Víkendy, svátky, léto

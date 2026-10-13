@@ -1,0 +1,33 @@
+TachoGo liczy czas jazdy i odpoczynku kierowcy według przepisów UE 561/2006 i umowy AETR — dla kierowców ciężarówek, autobusów i busów 2,5–3,5 t. Przełączaj czynności jak na tachografie, a aplikacja pokaże, ile zostało do przerwy, końca zmiany i odpoczynku tygodniowego, i ostrzeże z wyprzedzeniem.
+
+Ile zostało — na ekranie głównym
+• Jazda ciągła 4:30 i przerwa 45 minut, można 15 + 30
+• Dzienny czas jazdy 9 godzin, dwa razy w tygodniu 10
+• 56 godzin w tygodniu i 90 w dwóch tygodniach
+• Dzień pracy: ile zostało do 13 i do 15 godzin
+• Odpoczynek dobowy 11 godzin, skrócony 9, dzielony 3 + 9
+• Odpoczynek tygodniowy 45 godzin lub skrócony 24, rekompensata i jej termin
+• Załoga dwuosobowa, prom i pociąg
+
+Ostrzega z wyprzedzeniem
+15, 30 lub 60 minut przed przerwą i końcem dnia pracy, przy naruszeniu, gdy odpoczynek jest zaliczony i gdy trzeba zgrać kartę kierowcy. Powiadomienia przychodzą, nawet gdy aplikacja jest zamknięta.
+
+Dziennik i raport
+Cała historia według tygodni i dni: jazda, praca, odpoczynek, kraje rozpoczęcia i zakończenia zmiany zgodnie z pakietem mobilności. Nie przełączałeś czynności — na koniec dnia wpisz łączny czas jazdy. Raport PDF lub CSV za tydzień, 28 lub 56 dni — w wybranym języku, np. w języku kraju kontroli.
+
+Automatyczne wykrywanie jazdy
+Opcjonalnie. Ruszasz — „Jazda”, stoisz 3 minuty — „Inna praca”. Światła i korek nie przerywają jazdy. Współrzędne nie są zapisywane ani nigdzie wysyłane.
+
+Zakazy ruchu ciężarówek
+Mapa Europy: gdzie zakaz obowiązuje teraz i dziś, przepisy 31 krajów — weekendy, święta, zakazy wakacyjne — według czasu lokalnego kraju. Przepisy są sprawdzane raz na dobę, bez internetu działają ostatnio pobrane.
+
+Prosto i niezawodnie
+• Bez internetu, bez konta, bez reklam
+• Duże przyciski — wygodne w rękawicach
+• 14 języków: polski, ukraiński, rosyjski, rumuński, gruziński, uzbecki, angielski, niemiecki, francuski, hiszpański, włoski, niderlandzki, czeski, słowacki
+• Przepisy prostymi słowami i sprawdzenie, czy dotyczą Twojego busa
+
+Za darmo i Premium
+Za darmo: czynności, wszystkie liczniki i ostrzeżenia, „Zakończ dzień”, dziennik, zakazy na dziś. Premium: edycja dziennika, raporty PDF i CSV, przeniesienie na inny telefon, kalendarz zakazów. Subskrypcja miesięczna lub roczna (7 dni za darmo) albo zakup na zawsze.
+
+TachoGo pomaga planować czas, ale nie zastępuje tachografu i nie jest oficjalnym zapisem. Podczas kontroli liczą się dane z tachografu i karty kierowcy.

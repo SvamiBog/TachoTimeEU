@@ -1,0 +1,33 @@
+TachoGo calculează timpul de conducere și de repaus după regulile UE 561/2006 și AETR — pentru șoferii de camioane, autocare și dube de 2,5–3,5 t. Schimbați activitatea ca pe tahograf, iar aplicația arată cât a mai rămas până la pauză, sfârșitul turei și repausul săptămânal și vă avertizează din timp.
+
+Cât a mai rămas — pe ecranul principal
+• Conducere continuă 4:30 și pauză de 45 de minute, se poate 15 + 30
+• Conducere zilnică 9 ore, de două ori pe săptămână 10
+• 56 de ore pe săptămână și 90 în două săptămâni
+• Ziua de lucru: cât a mai rămas până la 13 și până la 15 ore
+• Repaus zilnic 11 ore, redus 9, fracționat 3 + 9
+• Repaus săptămânal 45 de ore sau redus 24, compensarea datorată și termenul ei
+• Echipaj de doi șoferi, feribot și tren
+
+Avertizează din timp
+Cu 15, 30 sau 60 de minute înainte de pauză și de sfârșitul zilei de lucru, la depășirea unei limite, când repausul este complet și când trebuie descărcat cardul șoferului. Notificările vin chiar dacă aplicația este închisă.
+
+Jurnal și raport
+Tot istoricul pe săptămâni și zile: conducere, muncă, repaus, țările de început și de sfârșit ale turei conform Pachetului mobilitate. Nu ați schimbat activitățile? La sfârșitul zilei introduceți totalul de conducere. Raport PDF sau CSV pentru o săptămână, 28 sau 56 de zile — în limba dorită, de exemplu în limba țării în care sunteți controlat.
+
+Detectarea automată a conducerii
+Opțional. Porniți — „Conducere”, stați 3 minute — „Altă muncă”. Semaforul și ambuteiajul nu întrerup conducerea. Coordonatele nu se salvează și nu se trimit nicăieri.
+
+Restricții de circulație pentru camioane
+Harta Europei: unde e restricție acum și astăzi, regulile din 31 de țări — weekenduri, sărbători, restricții de vară — după ora locală a țării. Regulile se verifică o dată pe zi; fără internet se folosesc ultimele descărcate.
+
+Simplu și sigur
+• Fără internet, fără cont, fără reclame
+• Butoane mari — comode și cu mănuși
+• 14 limbi: română, rusă, ucraineană, poloneză, georgiană, uzbecă, engleză, germană, franceză, spaniolă, italiană, neerlandeză, cehă, slovacă
+• Reguli pe înțelesul tuturor și verificarea: se aplică dubei dumneavoastră?
+
+Gratuit și Premium
+Gratuit: activitățile, toate cronometrele și avertizările, „Încheie ziua”, jurnalul, restricțiile de azi. Premium: editarea jurnalului, rapoarte PDF și CSV, transfer pe alt telefon, calendarul restricțiilor. Abonament lunar sau anual (7 zile gratuit) ori cumpărare pe viață.
+
+TachoGo vă ajută să vă planificați timpul, dar nu înlocuiește tahograful și nu este o înregistrare oficială. La control contează datele tahografului și ale cardului șoferului.

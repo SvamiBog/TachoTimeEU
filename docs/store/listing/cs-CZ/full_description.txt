@@ -1,0 +1,33 @@
+TachoGo počítá dobu řízení a odpočinku podle nařízení EU 561/2006 a dohody AETR – pro řidiče nákladních aut, autobusů a dodávek 2,5–3,5 t. Přepínejte činnost jako na tachografu a aplikace ukáže, kolik zbývá do přestávky, konce směny a týdenního odpočinku, a včas upozorní.
+
+Kolik zbývá – na hlavní obrazovce
+• Nepřetržité řízení 4:30 a přestávka 45 minut, i 15 + 30
+• Denní doba řízení 9 hodin, dvakrát týdně 10
+• 56 hodin za týden a 90 za dva týdny
+• Pracovní den: kolik zbývá do 13 a do 15 hodin
+• Denní odpočinek 11 hodin, zkrácený 9, rozdělený 3 + 9
+• Týdenní odpočinek 45 hodin nebo zkrácený 24, dlužná náhrada a její lhůta
+• Osádka dvou řidičů, trajekt a vlak
+
+Včas upozorní
+15, 30 nebo 60 minut před přestávkou a koncem pracovního dne, při překročení limitu, když je odpočinek splněn a když je čas stáhnout kartu řidiče. Upozornění přicházejí i při zavřené aplikaci.
+
+Deník a výkaz
+Celá historie po týdnech a dnech: řízení, práce, odpočinek, země začátku a konce směny podle balíčku mobility. Nepřepínali jste činnosti? Na konci dne zadejte celkovou dobu řízení. Výkaz PDF nebo CSV za týden, 28 nebo 56 dní – v potřebném jazyce, například v jazyce země kontroly.
+
+Automatické rozpoznání řízení
+Volitelně. Rozjedete se – „Řízení“, stojíte 3 minuty – „Jiná práce“. Semafor ani kolona řízení nepřeruší. Poloha se neukládá ani neodesílá.
+
+Zákazy jízdy nákladních aut
+Mapa Evropy: kde platí zákaz teď a dnes, pravidla 31 zemí – víkendy, svátky, letní zákazy – v místním čase země. Pravidla se kontrolují jednou denně, bez internetu platí naposledy stažená.
+
+Jednoduše a spolehlivě
+• Bez internetu, bez účtu, bez reklam
+• Velká tlačítka – pohodlná i v rukavicích
+• 14 jazyků: čeština, slovenština, polština, angličtina, němčina, francouzština, španělština, italština, nizozemština, rumunština, ukrajinština, ruština, gruzínština, uzbečtina
+• Pravidla jednoduchými slovy a kontrola, zda se týkají vaší dodávky
+
+Zdarma a Premium
+Zdarma: činnosti, všechny časovače a upozornění, „Ukončit den“, deník, dnešní zákazy. Premium: úpravy deníku, výkazy PDF a CSV, přenos do jiného telefonu, kalendář zákazů. Předplatné měsíční nebo roční (7 dní zdarma) nebo nákup navždy.
+
+TachoGo pomáhá plánovat čas, ale nenahrazuje tachograf a není oficiálním záznamem. Při kontrole platí údaje z tachografu a karty řidiče.

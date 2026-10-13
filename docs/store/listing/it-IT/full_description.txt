@@ -1,0 +1,33 @@
+TachoGo calcola i tempi di guida e di riposo secondo il Regolamento UE 561/2006 e l'AETR, per autisti di camion, autobus e furgoni da 2,5 a 3,5 t. Cambia attività come sul tachigrafo e l'app mostra quanto manca alla pausa, alla fine del turno e al riposo settimanale, e avvisa in anticipo.
+
+Il tempo che resta, nella schermata principale
+• Guida continua 4:30 e pausa di 45 minuti, anche 15 + 30
+• Guida giornaliera 9 ore, 10 ore due volte a settimana
+• 56 ore a settimana e 90 in due settimane
+• Giornata lavorativa: quanto manca alle 13 e alle 15 ore
+• Riposo giornaliero 11 ore, ridotto 9, frazionato 3 + 9
+• Riposo settimanale 45 ore o ridotto 24, compensazione dovuta e scadenza
+• Equipaggio doppio, traghetto e treno
+
+Avvisa in anticipo
+15, 30 o 60 minuti prima della pausa e della fine della giornata lavorativa, quando si supera un limite, quando il riposo è completo e quando è ora di scaricare la carta del conducente. Le notifiche arrivano anche con l'app chiusa.
+
+Registro e rapporto
+Tutto lo storico per settimane e giorni: guida, lavoro, riposo, paesi di inizio e fine turno secondo il Pacchetto mobilità. Non hai cambiato attività? A fine giornata inserisci il totale di guida. Rapporto PDF o CSV per una settimana, 28 o 56 giorni, nella lingua che serve, per esempio quella del paese del controllo.
+
+Rilevamento automatico della guida
+Facoltativo. Parti: «Guida»; fermo 3 minuti: «Altre mansioni». Semafori e code non interrompono la guida. La posizione non viene salvata né inviata.
+
+Divieti di circolazione per camion
+Mappa dell'Europa: dove c'è un divieto adesso e oggi, le regole di 31 paesi (fine settimana, festivi, divieti estivi) nell'ora locale del paese. Le regole vengono controllate una volta al giorno; offline valgono le ultime scaricate.
+
+Semplice e affidabile
+• Offline, senza account, senza pubblicità
+• Pulsanti grandi, comodi anche con i guanti
+• 14 lingue: italiano, inglese, tedesco, francese, spagnolo, olandese, ceco, slovacco, polacco, rumeno, ucraino, russo, georgiano, uzbeko
+• Regole spiegate con parole semplici e verifica se valgono per il tuo furgone
+
+Gratis e Premium
+Gratis: attività, tutti i timer e gli avvisi, «Chiudi la giornata», registro, divieti di oggi. Premium: modifica del registro, rapporti PDF e CSV, trasferimento su un altro telefono, calendario dei divieti. Abbonamento mensile o annuale (7 giorni gratis) o acquisto a vita.
+
+TachoGo aiuta a pianificare il tempo, ma non sostituisce il tachigrafo e non è una registrazione ufficiale. Al controllo valgono i dati del tachigrafo e della carta del conducente.

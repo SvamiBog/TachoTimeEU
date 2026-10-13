@@ -1,0 +1,33 @@
+TachoGo tracks driving and rest time under EU Regulation 561/2006 and the AETR — for drivers of trucks, buses and 2.5–3.5 t vans. Switch your activity as you do on the tachograph, and the app shows how much time is left until your break, the end of your shift and your weekly rest — and warns you in advance.
+
+Time left, on the home screen
+• Continuous driving 4:30 and a 45-minute break, or 15 + 30
+• Daily driving 9 hours, 10 hours twice a week
+• 56 hours a week and 90 hours in two weeks
+• Working day: time left until 13 and 15 hours
+• Daily rest 11 hours, reduced 9, split 3 + 9
+• Weekly rest 45 hours or reduced 24, compensation owed and its deadline
+• Two-driver crew, ferry and train
+
+Warns you in advance
+15, 30 or 60 minutes before your break and the end of the working day, when a limit is exceeded, when your rest is complete and when your driver card is due for download. Notifications arrive even when the app is closed.
+
+Log and report
+Your full history by weeks and days: driving, work, rest, and the countries where each shift starts and ends under the Mobility Package. Didn't switch activities? At the end of the day, just enter your total driving time. PDF or CSV report for a week, 28 or 56 days — in the language you need, for example the language of the country where you are checked.
+
+Automatic driving detection
+Optional. You move off — "Driving"; you stand still for 3 minutes — "Other work". Traffic lights and jams don't interrupt driving. Your location is not stored or sent anywhere.
+
+Truck driving bans
+Map of Europe: where a ban applies now and today, the rules of 31 countries — weekends, public holidays, summer bans — in each country's local time. Rules are checked once a day; offline, the last downloaded rules apply.
+
+Simple and reliable
+• Works offline, no account, no ads
+• Large buttons — easy to use with gloves
+• 14 languages: English, German, French, Spanish, Italian, Dutch, Czech, Slovak, Polish, Romanian, Ukrainian, Russian, Georgian, Uzbek
+• Rules in plain words and a check whether they apply to your van
+
+Free and Premium
+Free: activities, all timers and warnings, "End day", the log, today's bans. Premium: editing the log, PDF and CSV reports, moving to another phone, the ban calendar. Monthly or yearly subscription (7 days free) or a one-time lifetime purchase.
+
+TachoGo helps you plan your time, but it does not replace the tachograph and is not an official record. At a roadside check, the tachograph and driver card data apply.

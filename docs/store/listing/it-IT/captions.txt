@@ -1,0 +1,8 @@
+Quanto manca alla pausa|e alla fine del turno, nella schermata principale
+Giornata: fino a 13 e 15 ore|Sai quando chiudere il turno
+Quanto puoi ancora guidare|Oggi, questa settimana e in due settimane
+Pausa di 45 minuti o 15 + 30|Vedi quale parte è già conteggiata
+Registro per settimane e giorni|Senza cambi? Inserisci il totale del giorno
+Rapporto PDF e CSV|Settimana, 28 o 56 giorni, nella lingua del controllo
+Divieti di circolazione per camion|31 paesi d'Europa, in ora locale
+Regole e prossimi divieti|Fine settimana, festivi, estate
