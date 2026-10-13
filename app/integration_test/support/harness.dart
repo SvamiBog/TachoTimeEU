@@ -216,6 +216,11 @@ Future<void> settleFrames(WidgetTester tester) => tester.pumpAndSettle(
 /// Ждёт, пока [condition] станет истинным, до [timeout]; экран
 /// дорисовывается между проверками. [details] — что добавить к ошибке,
 /// считается в момент ошибки.
+///
+/// Зависшее условие или кадр — ошибка через [timeout] и запас [_hangGrace],
+/// а не тишина до общего срока прогона в CI (30 мин, `run_on_emulator.sh`):
+/// так 13.10.2026 INT-03 молча ждал 17 мин. Пока ждёт — раз в
+/// [_waitReport] строка `TACHOGO_WAIT` в logcat: видно, что цикл жив.
 Future<void> waitFor(
   WidgetTester tester,
   Future<bool> Function() condition, {
@@ -225,18 +230,49 @@ Future<void> waitFor(
   String Function()? details,
 }) async {
   final watch = Stopwatch()..start();
-  while (!(await tester.runAsync(condition) ?? false)) {
-    if (watch.elapsed > timeout) {
-      final more = details == null ? '' : '; ${details()}';
-      fail(
-        'Не дождались за ${timeout.inSeconds} с: ${reason ?? condition}$more',
-      );
+  final what = reason ?? '$condition';
+  Never giveUp([String why = '']) {
+    final more = details == null ? '' : '; ${details()}';
+    fail('Не дождались за ${timeout.inSeconds} с: $what$why$more');
+  }
+
+  var reported = Duration.zero;
+  while (true) {
+    final left = timeout - watch.elapsed;
+    // null — условие не ответило в срок или упало (ошибку уже показал
+    // runAsync)
+    final met = await tester.runAsync<bool?>(
+      () => condition()
+          .then<bool?>((value) => value)
+          .timeout(
+            (left.isNegative ? Duration.zero : left) + _hangGrace,
+            onTimeout: () => null,
+          ),
+    );
+    if (met == null) giveUp(' — условие не ответило или упало');
+    if (met) break;
+    if (watch.elapsed > timeout) giveUp();
+    if (watch.elapsed - reported >= _waitReport) {
+      reported = watch.elapsed;
+      Zone.root.print('TACHOGO_WAIT ${watch.elapsed.inSeconds} с: $what');
     }
     await tester.runAsync(() => Future<void>.delayed(step));
-    await tester.pump();
+    await _pumpFrame(tester);
   }
-  await tester.pump();
+  await _pumpFrame(tester);
 }
+
+/// Запас сверх срока ожидания на одну проверку условия.
+const _hangGrace = Duration(seconds: 10);
+
+/// Как часто [waitFor] пишет в logcat, что ещё ждёт.
+const _waitReport = Duration(seconds: 15);
+
+/// Кадр, но не дольше 30 с: экран не рисуется — ошибка, а не зависание.
+Future<void> _pumpFrame(WidgetTester tester) => tester.pump().timeout(
+  const Duration(seconds: 30),
+  onTimeout: () => fail('Кадр не отрисован за 30 с'),
+);
 
 /// Строка лимита на главной с данным названием.
 Finder limitRow(String title) =>
