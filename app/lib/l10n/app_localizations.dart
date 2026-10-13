@@ -2655,18 +2655,6 @@ abstract class AppLocalizations {
   /// **'Уведомления разрешены'**
   String get notifyAllowed;
 
-  /// No description provided for @notifyExact.
-  ///
-  /// In ru, this message translates to:
-  /// **'Точное время уведомлений'**
-  String get notifyExact;
-
-  /// No description provided for @notifyExactHint.
-  ///
-  /// In ru, this message translates to:
-  /// **'Разрешите «Будильники и напоминания» — иначе телефон может задержать предупреждение'**
-  String get notifyExactHint;
-
   /// No description provided for @notifyChannelLimits.
   ///
   /// In ru, this message translates to:

@@ -1717,13 +1717,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get notifyAllowed => 'Upozornenia povolené';
 
   @override
-  String get notifyExact => 'Presný čas upozornení';
-
-  @override
-  String get notifyExactHint =>
-      'Povoľte „Budíky a pripomenutia“ — inak môže telefón upozornenie oneskoriť';
-
-  @override
   String get notifyChannelLimits => 'Limity a porušenia';
 
   @override

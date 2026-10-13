@@ -421,8 +421,6 @@
   "notifyAllow": "Permitir notificaciones",
   "notifyDenied": "Las notificaciones están bloqueadas en el teléfono",
   "notifyAllowed": "Notificaciones permitidas",
-  "notifyExact": "Hora exacta de las notificaciones",
-  "notifyExactHint": "Permita «Alarmas y recordatorios»; si no, el teléfono puede retrasar el aviso",
   "notifyChannelLimits": "Límites e infracciones",
   "notifyChannelLimitsHint": "Pausa, fin de la jornada, conducción, descanso semanal, tarjeta",
   "notifyChannelRest": "Descanso cumplido",

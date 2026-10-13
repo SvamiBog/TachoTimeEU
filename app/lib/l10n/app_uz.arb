@@ -421,8 +421,6 @@
   "notifyAllow": "Bildirishnomalarga ruxsat berish",
   "notifyDenied": "Hozir bildirishnomalar telefonda taqiqlangan",
   "notifyAllowed": "Bildirishnomalarga ruxsat berilgan",
-  "notifyExact": "Bildirishnomalarning aniq vaqti",
-  "notifyExactHint": "«Signallar va eslatmalar»ga ruxsat bering — aks holda telefon ogohlantirishni kechiktirishi mumkin",
   "notifyChannelLimits": "Limitlar va qoidabuzarliklar",
   "notifyChannelLimitsHint": "Tanaffus, ish kuni oxiri, haydash, haftalik dam olish, karta",
   "notifyChannelRest": "Dam olish toʻldi",

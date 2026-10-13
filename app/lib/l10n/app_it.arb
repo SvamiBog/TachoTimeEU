@@ -421,8 +421,6 @@
   "notifyAllow": "Consenti notifiche",
   "notifyDenied": "Le notifiche sono bloccate nel telefono",
   "notifyAllowed": "Notifiche consentite",
-  "notifyExact": "Orario esatto delle notifiche",
-  "notifyExactHint": "Consenti «Sveglie e promemoria» — altrimenti il telefono può ritardare l’avviso",
   "notifyChannelLimits": "Limiti e infrazioni",
   "notifyChannelLimitsHint": "Pausa, fine giornata lavorativa, guida, riposo settimanale, carta",
   "notifyChannelRest": "Riposo valido",

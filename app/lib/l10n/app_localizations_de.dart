@@ -1710,13 +1710,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notifyAllowed => 'Benachrichtigungen erlaubt';
 
   @override
-  String get notifyExact => 'Genaue Benachrichtigungszeit';
-
-  @override
-  String get notifyExactHint =>
-      'Erlauben Sie „Wecker und Erinnerungen“ — sonst kann das Telefon die Warnung verzögern';
-
-  @override
   String get notifyChannelLimits => 'Limits und Verstöße';
 
   @override

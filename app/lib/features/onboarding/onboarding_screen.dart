@@ -19,9 +19,7 @@ import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/settings/auto_detect.dart';
-import 'package:tachogo/features/settings/exact_alarms.dart';
 import 'package:tachogo/features/settings/language_sheet.dart';
-import 'package:tachogo/notifications/alert_providers.dart';
 
 /// Шаги онбординга. Макеты — 13 (приветствие) и 14 (настройка); режимы,
 /// главные правила и автоопределение собраны из компонентов дизайн-системы.
@@ -640,7 +638,6 @@ class _NotificationsCardState extends ConsumerState<_NotificationsCard> {
     final l = context.l10n;
     final colors = context.colors;
     final allowed = ref.watch(trackingHealthProvider).value?.notifications;
-    final exact = ref.watch(exactAlarmsProvider).value;
     return CardGroup(
       children: [
         Padding(
@@ -677,23 +674,9 @@ class _NotificationsCardState extends ConsumerState<_NotificationsCard> {
                 ],
               ),
               const SizedBox(height: 14),
-              if (allowed ?? false) ...[
-                DoneMark(l.notifyAllowed),
-                if (exact == false) ...[
-                  const SizedBox(height: 14),
-                  Text(
-                    l.notifyExactHint,
-                    style: AppTextStyles.caption.copyWith(
-                      color: colors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SecondaryButton(
-                    label: l.notifyExact,
-                    onPressed: () => unawaited(allowExactAlarms(ref)),
-                  ),
-                ],
-              ] else
+              if (allowed ?? false)
+                DoneMark(l.notifyAllowed)
+              else
                 SecondaryButton(
                   label: _asked ? l.openSystemSettings : l.notifyAllow,
                   onPressed: () => unawaited(_allow()),

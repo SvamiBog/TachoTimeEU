@@ -421,8 +421,6 @@
   "notifyAllow": "Meldingen toestaan",
   "notifyDenied": "Meldingen zijn op de telefoon geblokkeerd",
   "notifyAllowed": "Meldingen toegestaan",
-  "notifyExact": "Exacte tijd van meldingen",
-  "notifyExactHint": "Sta ‘Wekkers en herinneringen’ toe — anders kan de telefoon de waarschuwing vertragen",
   "notifyChannelLimits": "Limieten en overtredingen",
   "notifyChannelLimitsHint": "Pauze, einde van de werkdag, rijtijd, wekelijkse rust, kaart",
   "notifyChannelRest": "Rust geteld",

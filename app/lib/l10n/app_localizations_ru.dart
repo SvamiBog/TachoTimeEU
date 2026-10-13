@@ -1716,13 +1716,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notifyAllowed => 'Уведомления разрешены';
 
   @override
-  String get notifyExact => 'Точное время уведомлений';
-
-  @override
-  String get notifyExactHint =>
-      'Разрешите «Будильники и напоминания» — иначе телефон может задержать предупреждение';
-
-  @override
   String get notifyChannelLimits => 'Лимиты и нарушения';
 
   @override

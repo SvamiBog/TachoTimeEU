@@ -82,13 +82,12 @@ class NotificationPlatform {
   }
 
   /// Точные будильники разрешены (Android 12+: «Будильники и
-  /// напоминания»). Без них система может сдвинуть уведомление.
+  /// напоминания»). На Android 12–13 даны сразу, на 14+ — только если
+  /// водитель сам включил их в настройках телефона: приложение об этом не
+  /// просит (решение 2026-10-13). Без них система может сдвинуть
+  /// уведомление.
   Future<bool> canScheduleExact() async =>
       await _android?.canScheduleExactNotifications() ?? false;
-
-  /// Открывает системный экран «Будильники и напоминания». Вызывать из UI.
-  Future<bool> requestExactAlarms() async =>
-      await _android?.requestExactAlarmsPermission() ?? false;
 
   Future<void> cancelAllPending() => _plugin.cancelAllPendingNotifications();
 

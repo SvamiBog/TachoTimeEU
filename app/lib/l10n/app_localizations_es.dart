@@ -1708,13 +1708,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notifyAllowed => 'Notificaciones permitidas';
 
   @override
-  String get notifyExact => 'Hora exacta de las notificaciones';
-
-  @override
-  String get notifyExactHint =>
-      'Permita «Alarmas y recordatorios»; si no, el teléfono puede retrasar el aviso';
-
-  @override
   String get notifyChannelLimits => 'Límites e infracciones';
 
   @override

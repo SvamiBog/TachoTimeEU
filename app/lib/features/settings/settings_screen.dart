@@ -18,9 +18,7 @@ import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
 import 'package:tachogo/features/settings/auto_detect.dart';
-import 'package:tachogo/features/settings/exact_alarms.dart';
 import 'package:tachogo/features/settings/language_sheet.dart';
-import 'package:tachogo/notifications/alert_providers.dart';
 
 /// Пороги предупреждения о лимитах (экран 3).
 const warningLeads = [
@@ -207,12 +205,10 @@ class _NotificationsCard extends ConsumerWidget {
         ref.watch(notificationSettingsProvider).value ??
         const NotificationSettings();
     final allowed = ref.watch(trackingHealthProvider).value?.notifications;
-    final exact = ref.watch(exactAlarmsProvider).value;
     void save(NotificationSettings s) => unawaited(repo.setNotifications(s));
     return CardGroup(
       children: [
         if (allowed == false) const NotificationPermissionRow(),
-        if (exact == false) const ExactAlarmsRow(),
         ChoiceBlock(
           title: l.settingsWarnLead,
           subtitle: l.settingsWarnLeadHint,

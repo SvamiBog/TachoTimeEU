@@ -421,8 +421,6 @@
   "notifyAllow": "Permite notificările",
   "notifyDenied": "Acum notificările sunt blocate în telefon",
   "notifyAllowed": "Notificări permise",
-  "notifyExact": "Ora exactă a notificărilor",
-  "notifyExactHint": "Permiteți „Alarme și mementouri” — altfel telefonul poate întârzia avertizarea",
   "notifyChannelLimits": "Limite și încălcări",
   "notifyChannelLimitsHint": "Pauză, sfârșitul zilei de lucru, conducere, repaus săptămânal, card",
   "notifyChannelRest": "Repaus efectuat",

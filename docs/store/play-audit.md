@@ -152,7 +152,7 @@ Flutter 3.47.5 собирает с `compileSdk` и `targetSdk` 36 — требо
 - Нет `ACCESS_BACKGROUND_LOCATION`, `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`, `USE_EXACT_ALARM` — CI проверяет итоговый манифест (`app/tool/check_android_manifest.dart`).
 - Foreground service с типом `location`, декларация и видео расписаны.
 - Перед запросом геолокации онбординг объясняет, зачем она и что координаты не сохраняются (`onbAutoText`).
-- Точные будильники — через `SCHEDULE_EXACT_ALARM` с запросом у водителя, без `USE_EXACT_ALARM`.
+- Точные будильники — через `SCHEDULE_EXACT_ALARM` без запроса у водителя (2026-10-13): даны системой на Android 12–13, на 14+ — если водитель включил сам; `USE_EXACT_ALARM` нет.
 - Уведомления на Android 13+ запрашиваются у водителя.
 - PostHog не стартует до согласия (`AUTO_INIT` = false), рекламы и рекламного ID нет.
 - Дисклеймер «не заменяет тахограф» — в отчёте, справочнике и «Ещё».

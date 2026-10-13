@@ -1703,13 +1703,6 @@ class AppLocalizationsUz extends AppLocalizations {
   String get notifyAllowed => 'Bildirishnomalarga ruxsat berilgan';
 
   @override
-  String get notifyExact => 'Bildirishnomalarning aniq vaqti';
-
-  @override
-  String get notifyExactHint =>
-      '«Signallar va eslatmalar»ga ruxsat bering — aks holda telefon ogohlantirishni kechiktirishi mumkin';
-
-  @override
   String get notifyChannelLimits => 'Limitlar va qoidabuzarliklar';
 
   @override

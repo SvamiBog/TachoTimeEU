@@ -421,8 +421,6 @@
   "notifyAllow": "Allow notifications",
   "notifyDenied": "Notifications are currently blocked on the phone",
   "notifyAllowed": "Notifications allowed",
-  "notifyExact": "Exact notification time",
-  "notifyExactHint": "Allow “Alarms & reminders” — otherwise the phone may delay a warning",
   "notifyChannelLimits": "Limits and infringements",
   "notifyChannelLimitsHint": "Break, end of working day, driving, weekly rest, card",
   "notifyChannelRest": "Rest counted",

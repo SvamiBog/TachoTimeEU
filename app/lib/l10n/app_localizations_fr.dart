@@ -1707,13 +1707,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notifyAllowed => 'Notifications autorisées';
 
   @override
-  String get notifyExact => 'Heure exacte des notifications';
-
-  @override
-  String get notifyExactHint =>
-      'Autorisez « Alarmes et rappels » — sinon le téléphone peut retarder l’alerte';
-
-  @override
   String get notifyChannelLimits => 'Limites et infractions';
 
   @override

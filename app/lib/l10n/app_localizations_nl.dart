@@ -1705,13 +1705,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get notifyAllowed => 'Meldingen toegestaan';
 
   @override
-  String get notifyExact => 'Exacte tijd van meldingen';
-
-  @override
-  String get notifyExactHint =>
-      'Sta ‘Wekkers en herinneringen’ toe — anders kan de telefoon de waarschuwing vertragen';
-
-  @override
   String get notifyChannelLimits => 'Limieten en overtredingen';
 
   @override

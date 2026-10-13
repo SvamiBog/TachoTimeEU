@@ -1697,13 +1697,6 @@ class AppLocalizationsKa extends AppLocalizations {
   String get notifyAllowed => 'შეტყობინებები დაშვებულია';
 
   @override
-  String get notifyExact => 'შეტყობინებების ზუსტი დრო';
-
-  @override
-  String get notifyExactHint =>
-      'დაუშვით „მაღვიძარები და შეხსენებები“ — თორემ ტელეფონმა შეიძლება გაფრთხილება დააგვიანოს';
-
-  @override
   String get notifyChannelLimits => 'ლიმიტები და დარღვევები';
 
   @override

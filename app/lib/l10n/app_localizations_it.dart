@@ -1703,13 +1703,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get notifyAllowed => 'Notifiche consentite';
 
   @override
-  String get notifyExact => 'Orario esatto delle notifiche';
-
-  @override
-  String get notifyExactHint =>
-      'Consenti «Sveglie e promemoria» — altrimenti il telefono può ritardare l’avviso';
-
-  @override
   String get notifyChannelLimits => 'Limiti e infrazioni';
 
   @override

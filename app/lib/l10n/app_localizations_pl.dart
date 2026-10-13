@@ -1723,13 +1723,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get notifyAllowed => 'Powiadomienia dozwolone';
 
   @override
-  String get notifyExact => 'Dokładny czas powiadomień';
-
-  @override
-  String get notifyExactHint =>
-      'Zezwól na „Alarmy i przypomnienia” — inaczej telefon może opóźnić ostrzeżenie';
-
-  @override
   String get notifyChannelLimits => 'Limity i naruszenia';
 
   @override

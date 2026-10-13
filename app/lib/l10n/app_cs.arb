@@ -421,8 +421,6 @@
   "notifyAllow": "Povolit oznámení",
   "notifyDenied": "Oznámení jsou teď v telefonu zablokovaná",
   "notifyAllowed": "Oznámení povolena",
-  "notifyExact": "Přesný čas oznámení",
-  "notifyExactHint": "Povolte „Budíky a připomenutí“ — jinak může telefon upozornění zdržet",
   "notifyChannelLimits": "Limity a porušení",
   "notifyChannelLimitsHint": "Přestávka, konec pracovního dne, řízení, týdenní odpočinek, karta",
   "notifyChannelRest": "Odpočinek započten",

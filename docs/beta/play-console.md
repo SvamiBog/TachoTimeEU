@@ -76,7 +76,7 @@ GitHub → Settings → Branches → «Add branch ruleset» (или «Add rule»
 | Новостное приложение | Нет |
 | Приложение для здоровья, финансовые функции, государственное | Нет |
 | Разрешения foreground service | Тип `location` — текст ниже, нужно видео |
-| Точные будильники (`SCHEDULE_EXACT_ALARM`) | Отдельной декларации для `SCHEDULE_EXACT_ALARM` сейчас нет (декларация — для `USE_EXACT_ALARM`, его не используем). Если Play Console спросит — текст ниже |
+| Точные будильники (`SCHEDULE_EXACT_ALARM`) | Отдельной декларации для `SCHEDULE_EXACT_ALARM` сейчас нет (декларация — для `USE_EXACT_ALARM`, его не используем). Приложение разрешение не запрашивает (2026-10-13). Если Play Console спросит — текст ниже |
 
 ## Data safety
 
@@ -118,7 +118,7 @@ Play Console → Контент приложения → Разрешения fo
 
 **Точные будильники (если спросят):**
 
-> Scheduled notifications warn the driver 15/30/60 minutes before the mandatory break and the end of the working day, and one minute after a legal limit is exceeded. A late warning can cause a legal infringement, so the alarm must fire on time, also in Doze. The driver enables exact alarms on Android 14+ in onboarding or settings.
+> Scheduled notifications warn the driver 15/30/60 minutes before the mandatory break and the end of the working day, and one minute after a legal limit is exceeded. A late warning can cause a legal infringement, so the alarm should fire on time, also in Doze. The app does not ask for this access: exact alarms are used where the system grants them (Android 12–13, or when the driver enables "Alarms & reminders" in the phone settings); otherwise the warnings are scheduled as inexact alarms.
 
 ## Политика конфиденциальности
 

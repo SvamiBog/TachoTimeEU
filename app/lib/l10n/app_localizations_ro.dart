@@ -1713,13 +1713,6 @@ class AppLocalizationsRo extends AppLocalizations {
   String get notifyAllowed => 'Notificări permise';
 
   @override
-  String get notifyExact => 'Ora exactă a notificărilor';
-
-  @override
-  String get notifyExactHint =>
-      'Permiteți „Alarme și mementouri” — altfel telefonul poate întârzia avertizarea';
-
-  @override
   String get notifyChannelLimits => 'Limite și încălcări';
 
   @override
