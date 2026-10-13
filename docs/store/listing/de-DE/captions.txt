@@ -1,0 +1,8 @@
+Restzeit bis zur Pause|und bis Schichtende – auf dem Startbildschirm
+Arbeitstag: bis 13 und 15 Stunden|Sehen, wann die Schicht enden muss
+Wie lange Sie noch lenken dürfen|Heute, diese Woche und in zwei Wochen
+45 Minuten Pause oder 15 + 30|Sehen, welcher Teil schon zählt
+Protokoll nach Wochen und Tagen|Nicht gewechselt? Tagessumme eingeben
+Bericht als PDF und CSV|Woche, 28 oder 56 Tage, in der Kontrollsprache
+Lkw-Fahrverbote|31 Länder Europas, in Ortszeit
+Regeln und nächste Fahrverbote|Wochenenden, Feiertage, Sommer

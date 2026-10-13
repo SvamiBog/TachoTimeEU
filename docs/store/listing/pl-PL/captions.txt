@@ -1,0 +1,8 @@
+Ile zostało do przerwy|i do końca zmiany — na ekranie głównym
+Dzień pracy: do 13 i 15 godzin|Widać, kiedy kończyć zmianę
+Ile jeszcze możesz jechać|W dniu, tygodniu i dwóch tygodniach
+Przerwa 45 minut lub 15 + 30|Widać, która część jest już zaliczona
+Dziennik według tygodni i dni|Bez przełączania — wpisz sumę za dzień
+Raport PDF i CSV|Za tydzień, 28 lub 56 dni, w języku kontroli
+Zakazy ruchu ciężarówek|31 krajów Europy, według czasu lokalnego
+Przepisy i najbliższe zakazy|Weekendy, święta, zakazy wakacyjne

@@ -1,0 +1,33 @@
+TachoGo berekent rij- en rusttijden volgens EU-verordening 561/2006 en het AETR, voor chauffeurs van vrachtwagens, bussen en bestelwagens van 2,5–3,5 t. Wissel van activiteit zoals op de tachograaf en de app laat zien hoeveel tijd er over is tot de pauze, het einde van de dienst en de wekelijkse rust, en waarschuwt op tijd.
+
+Resterende tijd op het startscherm
+• Ononderbroken rijden 4:30 en 45 minuten pauze, ook 15 + 30
+• Dagelijkse rijtijd 9 uur, twee keer per week 10
+• 56 uur per week en 90 uur in twee weken
+• Werkdag: hoeveel tijd er over is tot 13 en tot 15 uur
+• Dagelijkse rust 11 uur, verkort 9, gesplitst 3 + 9
+• Wekelijkse rust 45 uur of verkort 24, openstaande compensatie en de termijn
+• Meervoudige bemanning, veerboot en trein
+
+Waarschuwt op tijd
+15, 30 of 60 minuten voor de pauze en het einde van de werkdag, bij een overschrijding, als de rust voltooid is en als de bestuurderskaart moet worden uitgelezen. Meldingen komen ook als de app gesloten is.
+
+Logboek en rapport
+De hele geschiedenis per week en per dag: rijden, werk, rust en de landen van begin en einde van de dienst volgens het mobiliteitspakket. Geen activiteiten gewisseld? Voer aan het eind van de dag gewoon de totale rijtijd in. Rapport als PDF of CSV over een week, 28 of 56 dagen, in de taal die u nodig hebt, bijvoorbeeld die van het land van de controle.
+
+Automatische rijherkenning
+Optioneel. U rijdt weg: „Rijden”; u staat 3 minuten stil: „Ander werk”. Verkeerslichten en files onderbreken het rijden niet. De locatie wordt niet opgeslagen of verstuurd.
+
+Rijverboden voor vrachtwagens
+Kaart van Europa: waar nu en vandaag een rijverbod geldt, de regels van 31 landen (weekends, feestdagen, zomerverboden) in de lokale tijd van het land. De regels worden één keer per dag gecontroleerd; offline gelden de laatst gedownloade.
+
+Eenvoudig en betrouwbaar
+• Offline, zonder account, zonder advertenties
+• Grote knoppen, handig met handschoenen
+• 14 talen: Nederlands, Engels, Duits, Frans, Spaans, Italiaans, Tsjechisch, Slowaaks, Pools, Roemeens, Oekraïens, Russisch, Georgisch, Oezbeeks
+• Regels in eenvoudige woorden en een check of ze voor uw bestelwagen gelden
+
+Gratis en Premium
+Gratis: activiteiten, alle timers en waarschuwingen, „Dag beëindigen”, het logboek, de verboden van vandaag. Premium: het logboek bewerken, rapporten als PDF en CSV, overzetten naar een andere telefoon, de verbodskalender. Abonnement per maand of per jaar (7 dagen gratis) of eenmalige aankoop voor altijd.
+
+TachoGo helpt u uw tijd te plannen, maar vervangt de tachograaf niet en is geen officiële registratie. Bij een controle gelden de gegevens van de tachograaf en de bestuurderskaart.

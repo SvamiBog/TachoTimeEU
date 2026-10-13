@@ -1,0 +1,8 @@
+Koľko zostáva do prestávky|a do konca zmeny – na hlavnej obrazovke
+Pracovný deň: do 13 a 15 hodín|Vidíte, kedy ukončiť zmenu
+Ako dlho ešte smiete jazdiť|Dnes, tento týždeň a za dva týždne
+Prestávka 45 minút alebo 15 + 30|Vidíte, ktorá časť sa už počíta
+Denník po týždňoch a dňoch|Bez prepínania? Zadajte súčet za deň
+Výkaz PDF a CSV|Týždeň, 28 alebo 56 dní, v jazyku kontroly
+Zákazy jazdy nákladných áut|31 krajín Európy, v miestnom čase
+Pravidlá a najbližšie zákazy|Víkendy, sviatky, leto

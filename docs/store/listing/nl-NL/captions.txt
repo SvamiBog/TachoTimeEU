@@ -1,0 +1,8 @@
+Tijd tot de pauze|en tot het einde van de dienst, op het startscherm
+Werkdag: tot 13 en 15 uur|Zie wanneer de dienst moet stoppen
+Hoe lang u nog mag rijden|Vandaag, deze week en in twee weken
+45 minuten pauze of 15 + 30|Zie welk deel al meetelt
+Logboek per week en per dag|Niet gewisseld? Vul het dagtotaal in
+Rapport als PDF en CSV|Week, 28 of 56 dagen, in de taal van de controle
+Rijverboden voor vrachtwagens|31 Europese landen, in lokale tijd
+Regels en komende verboden|Weekends, feestdagen, zomer

@@ -1,0 +1,8 @@
+Cât a rămas până la pauză|și până la sfârșitul turei — pe ecranul principal
+Ziua de lucru: până la 13 și 15 ore|Vedeți când trebuie încheiată tura
+Cât mai puteți conduce|Pe zi, săptămână și două săptămâni
+Pauză de 45 de minute sau 15 + 30|Vedeți ce parte e deja luată în calcul
+Jurnal pe săptămâni și zile|Fără comutări — introduceți totalul zilei
+Raport PDF și CSV|Săptămână, 28 sau 56 de zile, în limba controlului
+Restricții de circulație pentru camioane|31 de țări din Europa, la ora locală
+Reguli și restricții apropiate|Weekenduri, sărbători, restricții de vară

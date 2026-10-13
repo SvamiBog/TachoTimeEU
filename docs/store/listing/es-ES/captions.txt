@@ -1,0 +1,8 @@
+Cuánto falta para la pausa|y para el final de la jornada, en la pantalla principal
+Jornada: hasta 13 y 15 horas|Sepa cuándo terminar la jornada
+Cuánto puede conducir aún|Hoy, esta semana y en dos semanas
+Pausa de 45 minutos o 15 + 30|Vea qué parte ya cuenta
+Registro por semanas y días|¿Sin cambios? Introduzca el total del día
+Informe PDF y CSV|Semana, 28 o 56 días, en el idioma del control
+Prohibiciones para camiones|31 países de Europa, en hora local
+Normas y próximas prohibiciones|Fines de semana, festivos, verano

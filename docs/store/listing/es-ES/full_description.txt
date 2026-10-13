@@ -1,0 +1,33 @@
+TachoGo calcula los tiempos de conducción y descanso según el Reglamento UE 561/2006 y el AETR, para conductores de camiones, autobuses y furgonetas de 2,5 a 3,5 t. Cambie de actividad como en el tacógrafo y la aplicación le muestra cuánto falta para la pausa, el final de la jornada y el descanso semanal, y le avisa con antelación.
+
+Lo que queda, en la pantalla principal
+• Conducción continua 4:30 y pausa de 45 minutos, o 15 + 30
+• Conducción diaria 9 horas, 10 horas dos veces por semana
+• 56 horas por semana y 90 en dos semanas
+• Jornada: cuánto falta para las 13 y las 15 horas
+• Descanso diario 11 horas, reducido 9, fraccionado 3 + 9
+• Descanso semanal 45 horas o reducido 24, compensación pendiente y su plazo
+• Conducción en equipo, ferry y tren
+
+Avisa con antelación
+15, 30 o 60 minutos antes de la pausa y del final de la jornada, al superar un límite, cuando se completa el descanso y cuando toca descargar la tarjeta del conductor. Los avisos llegan aunque la aplicación esté cerrada.
+
+Registro e informe
+Todo el historial por semanas y días: conducción, trabajo, descanso, países de inicio y fin de jornada según el Paquete de Movilidad. ¿No cambió de actividad? Al final del día, introduzca el total de conducción. Informe PDF o CSV de una semana, 28 o 56 días, en el idioma que necesite, por ejemplo el del país del control.
+
+Detección automática de la conducción
+Opcional. Arranca: «Conducción»; parado 3 minutos: «Otros trabajos». Los semáforos y los atascos no interrumpen la conducción. La ubicación no se guarda ni se envía.
+
+Prohibiciones de circulación para camiones
+Mapa de Europa: dónde hay prohibición ahora y hoy, las normas de 31 países (fines de semana, festivos, prohibiciones de verano) en la hora local de cada país. Las normas se comprueban una vez al día; sin internet se usan las últimas descargadas.
+
+Sencillo y fiable
+• Sin internet, sin cuenta, sin anuncios
+• Botones grandes, cómodos con guantes
+• 14 idiomas: español, inglés, alemán, francés, italiano, neerlandés, checo, eslovaco, polaco, rumano, ucraniano, ruso, georgiano, uzbeko
+• Normas explicadas con sencillez y comprobación de si afectan a su furgoneta
+
+Gratis y Premium
+Gratis: actividades, todos los temporizadores y avisos, «Terminar el día», el registro, las prohibiciones de hoy. Premium: edición del registro, informes PDF y CSV, paso a otro teléfono, calendario de prohibiciones. Suscripción mensual o anual (7 días gratis) o compra para siempre.
+
+TachoGo le ayuda a planificar su tiempo, pero no sustituye al tacógrafo ni es un registro oficial. En un control valen los datos del tacógrafo y de la tarjeta del conductor.

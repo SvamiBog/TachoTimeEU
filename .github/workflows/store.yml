@@ -1,0 +1,84 @@
+# Страница TachoGo в Google Play: тексты из docs/store/listing и скриншоты
+# настоящего приложения на 13 языках страницы (docs/store/listing/README.md).
+# Каждый запуск — артефакт store-listing в раскладке fastlane. В Play — только
+# ручной запуск с галочкой «Загрузить»: страница меняется у всех, кто её
+# открывает.
+name: Страница в Google Play
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/store/listing/**
+      - docs/brand/**
+      - app/lib/**
+      - app/test/store/**
+      - .github/workflows/store.yml
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: Загрузить тексты и картинки в Google Play
+        type: boolean
+        default: false
+
+concurrency:
+  group: store-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  listing:
+    name: Тексты и скриншоты
+    # Как в ci.yml: версия Ubuntu закреплена
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          # Как FLUTTER_VERSION в ci.yml
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      # Время на экранах — местное: Польша, как у водителей беты
+      - name: Скриншоты и картинка страницы
+        env:
+          TZ: Europe/Warsaw
+        run: >-
+          flutter test test/store/store_screenshots_test.dart
+          --dart-define=STORE_OUT=$RUNNER_TEMP/store/metadata/android
+      # en-GB — копия en-US: водитель с британским английским не увидит
+      # русскую страницу по умолчанию.
+      - name: Тексты и значок
+        run: |
+          out=$RUNNER_TEMP/store/metadata/android
+          for dir in ../docs/store/listing/*/; do
+            locale=$(basename "$dir")
+            for f in title short_description full_description; do
+              cp "$dir$f.txt" "$out/$locale/"
+            done
+            cp ../docs/brand/icons/play-store-512.png "$out/$locale/images/icon.png"
+          done
+          cp -r "$out/en-US" "$out/en-GB"
+      - uses: actions/upload-artifact@v6
+        with:
+          name: store-listing
+          path: ${{ runner.temp }}/store
+      - name: Загрузка в Google Play
+        if: ${{ inputs.upload }}
+        env:
+          PLAY_KEY: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -z "$PLAY_KEY" ]; then
+            echo "::error::Нет секрета PLAY_SERVICE_ACCOUNT_JSON (docs/beta/play-console.md, шаг 5)"
+            exit 1
+          fi
+          sudo gem install fastlane --no-document
+          fastlane supply --package_name eu.tachogo.app \
+            --json_key_data "$PLAY_KEY" \
+            --metadata_path "$RUNNER_TEMP/store/metadata/android" \
+            --skip_upload_apk true --skip_upload_aab true \
+            --skip_upload_changelogs true \
+            --sync_image_upload true

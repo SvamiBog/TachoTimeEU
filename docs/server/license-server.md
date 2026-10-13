@@ -47,8 +47,8 @@ openssl pkey -in license_prod_k1.pem -pubout -outform DER | tail -c 32 | base64
 
 ## 3. RevenueCat
 
-1. Добавить приложения Google Play и App Store, продукты €5/мес и €30/год.
-2. Entitlement `premium`, привязать к нему оба продукта → `REVENUECAT_ENTITLEMENT_ID=premium`.
+1. Добавить приложения Google Play и App Store, продукты: `premium_monthly` €2,99/мес, `premium_yearly` €19,99/год, `premium_lifetime` €39,99 навсегда (разовая покупка).
+2. Entitlement `premium`, привязать к нему все три продукта → `REVENUECAT_ENTITLEMENT_ID=premium`.
 3. Project settings → Restore behavior: **Transfer to new App User ID**. Тогда восстановление покупки на новом телефоне снимает Premium со старого, и одну подписку нельзя держать на нескольких устройствах.
 4. API keys:
    - публичные SDK-ключи (`goog_…`, `appl_…`) → в приложение, `REVENUECAT_ANDROID_KEY` и `REVENUECAT_IOS_KEY`;

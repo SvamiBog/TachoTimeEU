@@ -1,0 +1,8 @@
+Temps restant avant la pause|et la fin du service, sur l'écran d'accueil
+Journée : avant 13 et 15 heures|Savoir quand finir le service
+Combien de temps conduire encore|Aujourd'hui, cette semaine, sur deux semaines
+Pause de 45 minutes ou 15 + 30|Voyez quelle partie compte déjà
+Journal par semaines et jours|Sans changer d'activité : saisissez le total
+Rapport PDF et CSV|Semaine, 28 ou 56 jours, dans la langue du contrôle
+Interdictions poids lourds|31 pays d'Europe, à l'heure locale
+Règles et prochaines interdictions|Week-ends, jours fériés, été

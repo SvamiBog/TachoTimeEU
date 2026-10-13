@@ -42,6 +42,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
+  path_parsing: ^1.1.0
   very_good_analysis: ^11.0.0
   yaml: ^3.1.4
 

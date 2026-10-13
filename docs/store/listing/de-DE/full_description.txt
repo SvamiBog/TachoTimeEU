@@ -1,0 +1,33 @@
+TachoGo berechnet Lenk- und Ruhezeiten nach der EU-Verordnung 561/2006 und dem AETR – für Fahrer von Lkw, Bussen und Transportern von 2,5–3,5 t. Wechseln Sie die Tätigkeit wie am Fahrtenschreiber, und die App zeigt, wie viel Zeit bis zur Pause, zum Schichtende und zur wöchentlichen Ruhezeit bleibt – und warnt rechtzeitig.
+
+Restzeiten auf dem Startbildschirm
+• Ununterbrochene Lenkzeit 4:30 und 45 Minuten Pause, auch 15 + 30
+• Tageslenkzeit 9 Stunden, zweimal pro Woche 10
+• 56 Stunden pro Woche und 90 in zwei Wochen
+• Arbeitstag: Restzeit bis 13 und bis 15 Stunden
+• Tägliche Ruhezeit 11 Stunden, verkürzt 9, aufgeteilt 3 + 9
+• Wöchentliche Ruhezeit 45 Stunden oder verkürzt 24, offener Ausgleich und Frist
+• Doppelbesatzung, Fähre und Zug
+
+Warnt rechtzeitig
+15, 30 oder 60 Minuten vor der Pause und dem Ende des Arbeitstags, bei Überschreitungen, wenn die Ruhezeit erreicht ist und wenn die Fahrerkarte ausgelesen werden muss. Benachrichtigungen kommen auch bei geschlossener App.
+
+Protokoll und Bericht
+Der ganze Verlauf nach Wochen und Tagen: Lenken, Arbeit, Ruhe, Länder bei Schichtbeginn und -ende nach dem Mobilitätspaket. Keine Tätigkeiten gewechselt? Am Ende des Tages einfach die Lenkzeit des Tages eingeben. Bericht als PDF oder CSV für eine Woche, 28 oder 56 Tage – in der gewünschten Sprache, zum Beispiel in der Sprache des Kontrolllands.
+
+Automatische Lenkerkennung
+Optional. Sie fahren los – „Lenken“, Sie stehen 3 Minuten – „Andere Arbeit“. Ampel und Stau unterbrechen das Lenken nicht. Der Standort wird weder gespeichert noch gesendet.
+
+Lkw-Fahrverbote
+Europakarte: wo jetzt und heute ein Fahrverbot gilt, die Regeln von 31 Ländern – Wochenenden, Feiertage, Sommerfahrverbote – in der Ortszeit des Landes. Die Regeln werden einmal täglich geprüft, offline gelten die zuletzt geladenen.
+
+Einfach und zuverlässig
+• Offline, ohne Konto, ohne Werbung
+• Große Tasten – bequem auch mit Handschuhen
+• 14 Sprachen: Deutsch, Englisch, Französisch, Spanisch, Italienisch, Niederländisch, Tschechisch, Slowakisch, Polnisch, Rumänisch, Ukrainisch, Russisch, Georgisch, Usbekisch
+• Regeln in einfachen Worten und Prüfung, ob sie für Ihren Transporter gelten
+
+Kostenlos und Premium
+Kostenlos: Tätigkeiten, alle Timer und Warnungen, „Tag beenden“, Protokoll, Fahrverbote für heute. Premium: Protokoll bearbeiten, Berichte als PDF und CSV, Übertragung auf ein anderes Handy, Fahrverbotskalender. Abo monatlich oder jährlich (7 Tage kostenlos) oder einmaliger Kauf für immer.
+
+TachoGo hilft bei der Zeitplanung, ersetzt aber nicht den Fahrtenschreiber und ist keine amtliche Aufzeichnung. Bei einer Kontrolle gelten die Daten von Fahrtenschreiber und Fahrerkarte.

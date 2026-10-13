@@ -1,0 +1,33 @@
+TachoGo calcule les temps de conduite et de repos selon le règlement UE 561/2006 et l'AETR, pour les conducteurs de poids lourds, d'autocars et d'utilitaires de 2,5 à 3,5 t. Changez d'activité comme sur le chronotachygraphe : l'application indique le temps restant avant la pause, la fin du service et le repos hebdomadaire, et vous prévient à l'avance.
+
+Le temps restant sur l'écran d'accueil
+• Conduite continue 4 h 30 et pause de 45 minutes, ou 15 + 30
+• Conduite journalière 9 heures, 10 heures deux fois par semaine
+• 56 heures par semaine et 90 heures sur deux semaines
+• Journée de travail : temps restant avant 13 et 15 heures
+• Repos journalier 11 heures, réduit 9, fractionné 3 + 9
+• Repos hebdomadaire 45 heures ou réduit 24, compensation due et son échéance
+• Équipage double, ferry et train
+
+Prévient à l'avance
+15, 30 ou 60 minutes avant la pause et la fin de la journée de travail, en cas de dépassement, quand le repos est atteint et quand il faut décharger la carte conducteur. Les notifications arrivent même application fermée.
+
+Journal et rapport
+Tout l'historique par semaines et par jours : conduite, travail, repos, pays de début et de fin de service selon le Paquet mobilité. Vous n'avez pas changé d'activité ? En fin de journée, saisissez simplement le total de conduite. Rapport PDF ou CSV sur une semaine, 28 ou 56 jours, dans la langue voulue, par exemple celle du pays du contrôle.
+
+Détection automatique de la conduite
+En option. Vous démarrez : « Conduite » ; vous êtes à l'arrêt 3 minutes : « Autre travail ». Feux et bouchons n'interrompent pas la conduite. La position n'est ni enregistrée ni envoyée.
+
+Interdictions de circulation des poids lourds
+Carte de l'Europe : où une interdiction s'applique maintenant et aujourd'hui, les règles de 31 pays (week-ends, jours fériés, interdictions d'été) à l'heure locale du pays. Les règles sont vérifiées une fois par jour ; hors ligne, les dernières téléchargées s'appliquent.
+
+Simple et fiable
+• Hors ligne, sans compte, sans publicité
+• Gros boutons, faciles à utiliser avec des gants
+• 14 langues : français, anglais, allemand, espagnol, italien, néerlandais, tchèque, slovaque, polonais, roumain, ukrainien, russe, géorgien, ouzbek
+• Les règles en mots simples et une vérification : s'appliquent-elles à votre utilitaire ?
+
+Gratuit et Premium
+Gratuit : activités, tous les minuteurs et alertes, « Terminer la journée », journal, interdictions du jour. Premium : modification du journal, rapports PDF et CSV, transfert vers un autre téléphone, calendrier des interdictions. Abonnement mensuel ou annuel (7 jours gratuits) ou achat à vie.
+
+TachoGo vous aide à planifier votre temps, mais ne remplace pas le chronotachygraphe et n'est pas un enregistrement officiel. Lors d'un contrôle, ce sont les données du chronotachygraphe et de la carte conducteur qui font foi.
