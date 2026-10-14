@@ -1,5 +1,5 @@
 // Ссылка на политику конфиденциальности и страница, которую публикует
-// GitHub Pages (`site/`, workflow «Сайт»), ссылка на официальный текст
+// сайт (`site/`, workflow «Сайт»), ссылка на официальный текст
 // правил. План тестов: UI-21, UI-26 в docs/testing.md.
 import 'dart:io';
 
@@ -8,10 +8,7 @@ import 'package:tachogo/core/config/app_links.dart';
 
 void main() {
   test('русский интерфейс — русский текст, остальные — английский', () {
-    expect(
-      privacyPolicyUri('ru').toString(),
-      'https://svamibog.github.io/TachoTimeEU/privacy/#ru',
-    );
+    expect(privacyPolicyUri('ru').toString(), 'https://tachogo.eu/privacy/#ru');
     for (final code in ['uk', 'pl', 'ro', 'ka', 'uz', 'en', 'de']) {
       expect(privacyPolicyUri(code).fragment, 'en', reason: code);
     }

@@ -1,0 +1,39 @@
+# Сайт TachoGo на Railway (docs/site/README.md): отдаёт готовую папку site/ —
+# лендинг, политику конфиденциальности и подписанный файл правил запретов.
+# HTTPS и сертификат — у Railway, сюда приходит HTTP на порт $PORT.
+# Журналов посещений нет (директивы log нет) — так сказано в политике.
+{
+	admin off
+	auto_https off
+	persist_config off
+}
+
+:{$PORT:8080} {
+	root * /srv
+	encode zstd gzip
+
+	# Один адрес сайта: www — переадресация на tachogo.eu
+	@www host www.tachogo.eu
+	redir @www https://tachogo.eu{uri} permanent
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "geolocation=(), camera=(), microphone=()"
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'"
+		-Server
+	}
+
+	# Шрифты меняются редко, правила запретов приложение проверяет раз в сутки
+	@fonts path /fonts/*
+	header @fonts Cache-Control "public, max-age=604800"
+	@bans path /bans/*
+	header @bans Cache-Control "public, max-age=300"
+
+	file_server
+
+	handle_errors {
+		respond "{err.status_code} {err.status_text}"
+	}
+}

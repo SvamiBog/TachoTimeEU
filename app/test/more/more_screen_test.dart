@@ -142,9 +142,7 @@ void main() {
       final links = _FakeLinks();
       await pump(tester, links: links);
       await openPolicy(tester, 'Политика конфиденциальности');
-      expect(links.opened, [
-        Uri.parse('https://svamibog.github.io/TachoTimeEU/privacy/#ru'),
-      ]);
+      expect(links.opened, [Uri.parse('https://tachogo.eu/privacy/#ru')]);
     });
 
     testWidgets('у остальных языков — английский текст', (tester) async {
@@ -161,7 +159,7 @@ void main() {
       expect(
         find.text(
           'Не удалось открыть браузер. Адрес страницы: '
-          'https://svamibog.github.io/TachoTimeEU/privacy/',
+          'https://tachogo.eu/privacy/',
         ),
         findsOneWidget,
       );

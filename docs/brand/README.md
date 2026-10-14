@@ -53,6 +53,6 @@
 | Значок уведомлений | `drawable/ic_stat_tachogo.xml` | Белый знак 22 dp на холсте 24 dp: Android рисует значок по альфа-каналу. Уведомления о лимитах (`NotificationPlatform.smallIcon`) и сервиса автоопределения (`TrackingPlatform.notificationIcon`, meta-data в `AndroidManifest.xml`) |
 | Сплэш | `drawable/launch_background.xml`, `values-v31/styles.xml` | Знак на Navy, в светлой и тёмной теме одинаково; до Android 12 — окно запуска, с 12 — SplashScreen API |
 | Google Play | `icons/play-store-512.png` | Загружается в Play Console (`docs/beta/play-console.md`) |
-| Сайт | `site/favicon.svg`, `site/favicon-32.png`, `site/logo.svg`, `site/logo-dark.svg` | Значок вкладки на всех страницах, логотип на главной — по теме браузера |
+| Сайт | `site/favicon.svg`, `site/favicon-32.png`, `site/icon-512.png` | Значок вкладки на всех страницах; `icon-512.png` — копия `icons/play-store-512.png` для соцсетей и закладок. Знак в шапке лендинга встроен в страницу (`app/tool/site_build.dart`), надпись — Unbounded Bold из `site/fonts/` |
 
 Иконки и сплэш проверяет тест CI-11 (`app/test/config/platform_config_test.dart`), значок уведомлений в итоговом манифесте — CI-06 (`app/tool/check_android_manifest.dart`). В `app/ios/` пока иконки шаблона Flutter: iOS приостановлен до релиза.
