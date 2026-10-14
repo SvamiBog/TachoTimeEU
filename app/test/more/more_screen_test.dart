@@ -142,9 +142,7 @@ void main() {
       final links = _FakeLinks();
       await pump(tester, links: links);
       await openPolicy(tester, 'Политика конфиденциальности');
-      expect(links.opened, [
-        Uri.parse('https://tachogo.eu/privacy/#ru'),
-      ]);
+      expect(links.opened, [Uri.parse('https://tachogo.eu/privacy/#ru')]);
     });
 
     testWidgets('у остальных языков — английский текст', (tester) async {

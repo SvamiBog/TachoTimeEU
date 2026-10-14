@@ -8,10 +8,7 @@ import 'package:tachogo/core/config/app_links.dart';
 
 void main() {
   test('русский интерфейс — русский текст, остальные — английский', () {
-    expect(
-      privacyPolicyUri('ru').toString(),
-      'https://tachogo.eu/privacy/#ru',
-    );
+    expect(privacyPolicyUri('ru').toString(), 'https://tachogo.eu/privacy/#ru');
     for (final code in ['uk', 'pl', 'ro', 'ka', 'uz', 'en', 'de']) {
       expect(privacyPolicyUri(code).fragment, 'en', reason: code);
     }
