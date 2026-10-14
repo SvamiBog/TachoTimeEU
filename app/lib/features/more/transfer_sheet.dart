@@ -1,3 +1,7 @@
+/// "Move to another phone" sheet: saving the journal to a file and loading it
+/// from one.
+library;
+
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -15,12 +19,13 @@ import 'package:tachogo/data/backup/journal_backup.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/export/report_exporter.dart';
 
-/// Выбор файла переноса: системный выбор документов. В тестах подменяется.
+/// Picks the transfer file with the system document picker. Replaced in tests.
 abstract interface class BackupFilePicker {
   /// Содержимое выбранного файла; null — водитель ничего не выбрал.
   Future<Uint8List?> pick();
 }
 
+/// [BackupFilePicker] backed by the system document picker.
 class SystemBackupFilePicker implements BackupFilePicker {
   const new();
 
@@ -49,6 +54,10 @@ Future<void> showTransferSheet(BuildContext context) =>
       builder: (_) => const TransferSheet(),
     );
 
+/// "Move to another phone" (More): on the old phone the journal is saved to a
+/// file and goes to the system "Share" menu — to one's own messenger, e-mail,
+/// cloud; on the new one it is loaded from the file and replaces the journal.
+/// There is no mockup; built from the design system components.
 class TransferSheet extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -56,6 +65,7 @@ class TransferSheet extends ConsumerStatefulWidget {
   ConsumerState<TransferSheet> createState() => _TransferSheetState();
 }
 
+/// Whether an export or import is in progress.
 class _TransferSheetState extends ConsumerState<TransferSheet> {
   bool _busy = false;
 

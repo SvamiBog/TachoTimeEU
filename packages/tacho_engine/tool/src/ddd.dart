@@ -1,43 +1,43 @@
-// Чтение файла карты водителя (.DDD, выгрузка карты) — только журнал
-// режимов, без имени, номера карты и прочих персональных данных. Для
-// фикстур с реальных тахографов (ENG-20) и сверки журнала приложения с
-// картой (DEV-03), docs/testing.md. В приложение не входит: импорт .DDD —
-// открытый вопрос 10 PRD.
-//
-// Формат — Регламент (ЕС) 2016/799, прил. 1C:
-// - файл выгрузки карты (доп. 7, «Card downloading»): подряд блоки
-//   «FID (2 байта) + приложение (1 байт) + длина (2 байта) + данные».
-//   Приложение: 00 — данные первого поколения, 01 — подпись к ним,
-//   02 и 03 — то же для второго поколения;
-// - EF Driver_Activity_Data (FID 0504, доп. 1, CardDriverActivity):
-//   указатели на самую старую и самую новую запись и кольцевой буфер
-//   суточных записей (CardActivityDailyRecord);
-// - суточная запись: длина предыдущей и этой записи, дата (TimeReal —
-//   секунды с 1970 г. UTC), счётчик присутствия, пробег за день и
-//   изменения режима по 2 байта (ActivityChangeInfo, 'scpaattttttttttt'B):
-//   s — слот (водитель / второй водитель), c — экипаж (карта вставлена)
-//   или «режим известен, введён вручную» (карта не вставлена), p — карта не
-//   вставлена, aa — режим (00 отдых, 01 готовность, 10 работа, 11
-//   вождение), t — минута суток UTC;
-// - EF Specific_Conditions (FID 0522): вне сферы действия (OUT) и
-//   паром / поезд.
-// Все числа — старшим байтом вперёд.
-//
-// Проверено на файлах, собранных по спецификации (test/tool/ddd_test.dart).
-// На первом настоящем файле сверить с программой анализа.
+/// Reads a driver card download file (.DDD) — the activity log only, without
+/// the name, card number or other personal data. Used for fixtures from real
+/// tachographs (ENG-20) and to compare the app's log with the card (DEV-03),
+/// `docs/testing.md`. Not part of the app: importing .DDD is open question 10
+/// of the PRD.
+///
+/// Format — Regulation (EU) 2016/799, Annex 1C:
+/// - card download file (Appendix 7, "Card downloading"): consecutive blocks
+///   "FID (2 bytes) + appendix (1 byte) + length (2 bytes) + data". Appendix
+///   00 is first generation data, 01 its signature, 02 and 03 the same for the
+///   second generation;
+/// - EF Driver_Activity_Data (FID 0504, Appendix 1, CardDriverActivity):
+///   pointers to the oldest and the newest record and a ring buffer of daily
+///   records (CardActivityDailyRecord);
+/// - daily record: length of the previous and of this record, date (TimeReal,
+///   seconds since 1970 UTC), presence counter, distance of the day and
+///   activity changes of 2 bytes each (ActivityChangeInfo,
+///   'scpaattttttttttt'B): s — slot (driver / co-driver), c — crew (card
+///   inserted) or "activity known, entered manually" (card not inserted), p —
+///   card not inserted, aa — activity (00 rest, 01 availability, 10 work,
+///   11 driving), t — minute of the day UTC;
+/// - EF Specific_Conditions (FID 0522): out of scope (OUT) and ferry / train.
+///
+/// All numbers are big-endian. Checked on files built to the specification
+/// (`test/tool/ddd_test.dart`); verify against analysis software on the first
+/// real file.
+library;
 
 import 'dart:typed_data';
 
 import 'package:tacho_engine/tacho_engine.dart';
 
-/// FID элементарных файлов карты водителя, которые нужны.
+/// FIDs of the driver card elementary files the tool needs.
 abstract final class CardFile {
   static const driverActivity = 0x0504;
   static const cardDownload = 0x050E;
   static const specificConditions = 0x0522;
 }
 
-/// Блок файла выгрузки: элементарный файл карты или подпись к нему.
+/// A block of the download file: a card elementary file or its signature.
 typedef DddBlock = ({int fid, int appendix, Uint8List data});
 
 /// Блоки файла выгрузки по порядку.
@@ -73,10 +73,10 @@ List<DddBlock> readBlocks(Uint8List bytes) {
 
 String _hex(int fid) => fid.toRadixString(16).padLeft(4, '0').toUpperCase();
 
-/// Слот, в котором стояла карта.
+/// The tachograph slot the card was in.
 enum CardSlot { driver, coDriver }
 
-/// Изменение режима в суточной записи карты.
+/// An activity change in a daily record of the card.
 class ActivityChange {
   const new({
     required this.minute,
@@ -121,7 +121,7 @@ class ActivityChange {
   final DriverMode mode;
 }
 
-/// Суточная запись карты.
+/// A daily record of the card.
 class CardDay {
   const new({
     required this.date,
@@ -137,13 +137,14 @@ class CardDay {
   final List<ActivityChange> changes;
 }
 
-/// Особое условие: вне сферы действия регламента или паром / поезд.
+/// A specific condition: out of the regulation's scope, or ferry / train.
 enum SpecificCondition { outOfScopeBegin, outOfScopeEnd, ferryBegin, ferryEnd }
 
+/// A specific condition and when it was recorded.
 typedef SpecificConditionRecord = ({DateTime at, SpecificCondition type});
 
-/// Карта водителя из файла выгрузки: суточные записи режимов и особые
-/// условия. Второе поколение берётся, если в файле есть оба.
+/// A driver card from a download file: daily activity records and specific
+/// conditions. The second generation is used when the file has both.
 class DriverCard {
   const new({
     required this.generation,
@@ -275,8 +276,8 @@ List<SpecificConditionRecord> readConditions(
   return records..sort((a, b) => a.at.compareTo(b.at));
 }
 
-/// Отрезок журнала карты: режим или «неизвестно» (карты не было, вручную
-/// не введено).
+/// A stretch of the card's log: an activity or "unknown" (no card, nothing
+/// entered manually).
 typedef CardPeriod = ({
   DateTime start,
   DateTime end,

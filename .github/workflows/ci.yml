@@ -300,6 +300,12 @@ jobs:
       - name: Итоговый манифест с плагинами
         run: dart run tool/check_android_manifest.dart
 
+      # Google Play не принимает сборки под Android 15+ с 64-битными .so,
+      # выровненными по 4 КБ (CI-12): обновление плагина или SDK с такой
+      # библиотекой ловим здесь, а не при загрузке в Play.
+      - name: Нативные библиотеки — страницы 16 КБ
+        run: dart run tool/check_page_size.dart build/app/outputs/flutter-apk/app-debug.apk
+
       - uses: actions/upload-artifact@v6
         with:
           name: android-${{ github.sha }}
@@ -447,6 +453,10 @@ jobs:
       - name: Итоговый манифест с плагинами
         run: dart run tool/check_android_manifest.dart
 
+      # В AAB — ещё и код Dart (libapp.so), которого нет в debug APK.
+      - name: Нативные библиотеки — страницы 16 КБ
+        run: dart run tool/check_page_size.dart build/app/outputs/bundle/release/app-release.aab
+
       # До загрузки в Play: первую сборку Play Console принимает только
       # вручную — её берут отсюда.
       - uses: actions/upload-artifact@v6
@@ -485,6 +495,18 @@ jobs:
             echo "WHATS_NEW=$dir" >> "$GITHUB_ENV"
           fi
 
+      # Карта R8 — читаемые стеки Java/Kotlin в Android vitals; без неё Play
+      # Console предупреждает о каждой загрузке. Нет файла — без карты.
+      - name: Карта R8
+        if: ${{ needs.release-plan.outputs.track != '' }}
+        run: |
+          mapping=build/app/outputs/mapping/release/mapping.txt
+          if [ -f "$mapping" ]; then
+            echo "MAPPING_FILE=app/$mapping" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Нет $mapping — сборка без карты R8"
+          fi
+
       # Пока приложение в Play — черновик (ни одного выпуска), API принимает
       # только PLAY_RELEASE_STATUS=draft.
       - name: Google Play (${{ needs.release-plan.outputs.track }})
@@ -498,6 +520,7 @@ jobs:
           track: ${{ needs.release-plan.outputs.track }}
           status: ${{ vars.PLAY_RELEASE_STATUS || 'completed' }}
           whatsNewDirectory: ${{ env.WHATS_NEW }}
+          mappingFile: ${{ env.MAPPING_FILE }}
 
   # INT-01…05 и PERF-03 на эмуляторе Android: настоящие плагины, SQLite
   # устройства, foreground service. Маршрут GPS и смену пояса выполняет

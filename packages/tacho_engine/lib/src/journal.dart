@@ -1,3 +1,8 @@
+/// The driver's journal: shifts from records and manual shifts grouped into
+/// weeks, with the totals and highlights the journal screen and the report
+/// show.
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/compliance.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
@@ -7,10 +12,10 @@ import 'package:tacho_engine/src/manual_shift.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
 
-/// Подсветка значения в журнале по дизайну.
+/// Highlight of a journal value, as in the design: fine, warning, bad.
 enum JournalLevel { ok, warn, bad }
 
-/// Отдых после смены в журнале.
+/// The rest after a shift, as the journal shows it.
 @immutable
 class JournalRest {
   const new({
@@ -32,7 +37,7 @@ class JournalRest {
   final RestStatus? status;
 }
 
-/// Смена в журнале: из записей режимов или внесённая вручную.
+/// A shift in the journal: worked out from records or entered by hand.
 @immutable
 class JournalShift {
   const new({
@@ -88,7 +93,7 @@ class JournalShift {
   final JournalLevel restLevel;
 }
 
-/// Неделя журнала: с понедельника 00:00 UTC.
+/// A journal week, starting Monday 00:00 UTC.
 @immutable
 class JournalWeek {
   const new({

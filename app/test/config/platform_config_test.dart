@@ -21,12 +21,19 @@ void main() {
     });
 
     test('проверка ловит фоновую геолокацию, запрос про батарею, '
-        'USE_EXACT_ALARM и рекламный ID', () {
+        'USE_EXACT_ALARM, рекламный ID и ограниченные Play разрешения', () {
       for (final permission in [
         'android.permission.ACCESS_BACKGROUND_LOCATION',
         'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
         'android.permission.USE_EXACT_ALARM',
         'com.google.android.gms.permission.AD_ID',
+        'android.permission.READ_MEDIA_IMAGES',
+        'android.permission.READ_MEDIA_VIDEO',
+        'android.permission.MANAGE_EXTERNAL_STORAGE',
+        'android.permission.QUERY_ALL_PACKAGES',
+        'android.permission.READ_CONTACTS',
+        'android.permission.READ_SMS',
+        'android.permission.READ_CALL_LOG',
       ]) {
         final bad = source.replaceFirst(
           '<application',

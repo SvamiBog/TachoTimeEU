@@ -1,3 +1,7 @@
+/// Start and end countries of the shift (Mobility Package): the chip in the
+/// home header, the country sheet and the picker shared with the shift form.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -13,7 +17,7 @@ import 'package:tachogo/data/countries/country_repository.dart';
 import 'package:tachogo/data/countries/tacho_countries.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 
-/// Чип стран в шапке главной: «PL → —».
+/// Countries chip in the home header: "PL → —".
 class CountryChip extends ConsumerWidget {
   const new({super.key});
 
@@ -84,7 +88,8 @@ Future<void> showCountrySheet(BuildContext context) =>
       ),
     );
 
-/// Шторка с поиском поднимается над клавиатурой: список не уходит под неё.
+/// Lifts the searchable sheet above the keyboard so the list does not go under
+/// it.
 class _AboveKeyboard extends StatelessWidget {
   const new({required this.child});
 
@@ -97,8 +102,8 @@ class _AboveKeyboard extends StatelessWidget {
   );
 }
 
-/// Страны смены на главной: выбор сразу пишется в смену (бесплатно, как
-/// переключение режима).
+/// Shift countries on the home screen: a choice is written to the shift at once
+/// (free, like switching activity).
 class CountrySheet extends ConsumerWidget {
   const new({super.key});
 
@@ -167,6 +172,8 @@ Future<({String? start, String? end})?> showCountryPicker(
   ),
 );
 
+/// Country picker that keeps its choice locally and returns it to the caller,
+/// for forms that save later.
 class _LocalCountries extends StatefulWidget {
   const new({required this.start, required this.end, required this.target});
 
@@ -178,6 +185,7 @@ class _LocalCountries extends StatefulWidget {
   State<_LocalCountries> createState() => _LocalCountriesState();
 }
 
+/// The start and end countries picked so far.
 class _LocalCountriesState extends State<_LocalCountries> {
   late String? _start = widget.start;
   late String? _end = widget.end;
@@ -201,13 +209,12 @@ class _LocalCountriesState extends State<_LocalCountries> {
   );
 }
 
-/// Какую страну смены выбирают.
+/// Which country of the shift is being picked.
 enum CountryTarget { start, end }
 
-/// Выбор страны тахографа: вкладки «Начало / Конец», поиск, недавние,
-/// список кодов. [onPick] получает выбор — код или null («Не указывать»
-/// конечную) — и возвращает вкладку, которую показать дальше; null —
-/// закрыть шторку.
+/// Tachograph country picker: "Start / End" tabs, search, recent countries, the
+/// list of codes. [onPick] gets the choice — a code, or null ("Not set" for the
+/// end country) — and returns the tab to show next; null closes the sheet.
 class CountryPicker extends ConsumerStatefulWidget {
   const new({
     required this.start,
@@ -235,6 +242,7 @@ class CountryPicker extends ConsumerStatefulWidget {
   ConsumerState<CountryPicker> createState() => _CountryPickerState();
 }
 
+/// The open tab and the search query.
 class _CountryPickerState extends ConsumerState<CountryPicker> {
   late CountryTarget _target = widget.initialTarget;
   String _query = '';
@@ -403,6 +411,7 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
   }
 }
 
+/// A country row: code, name and a check mark when selected.
 class _CountryRow extends StatelessWidget {
   const new(this.code, {required this.selected, required this.onTap});
 

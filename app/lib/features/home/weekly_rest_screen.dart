@@ -1,3 +1,6 @@
+/// Screen 9 "Weekly rest".
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -17,6 +20,7 @@ import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
 
+/// The last weekly rest, in whole minutes.
 typedef _Last = ({
   DateTime start,
   DateTime? end,
@@ -24,6 +28,7 @@ typedef _Last = ({
   RestStatus status,
 });
 
+/// Everything the weekly rest screen shows, in whole minutes.
 typedef _Weekly = ({
   DateTime? deadline,
   int left,
@@ -64,8 +69,8 @@ _Weekly _weekly(ComplianceSnapshot s) {
 void openWeeklyRestScreen(BuildContext context) => Navigator.of(context)
     .push(MaterialPageRoute<void>(builder: (_) => const WeeklyRestScreen()));
 
-/// Экран 9 «Недельный отдых»: срок по 144 ч, полный 45 ч и сокращённый
-/// 24 ч, прошлый отдых, долг по компенсации, пакет мобильности.
+/// Screen 9 "Weekly rest": the 144 h deadline, regular 45 h and reduced 24 h,
+/// the previous rest, the compensation debt, the Mobility Package.
 class WeeklyRestScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -122,6 +127,7 @@ class WeeklyRestScreen extends ConsumerWidget {
   }
 }
 
+/// Until when the weekly rest must start, or how long it has been going.
 class _Deadline extends StatelessWidget {
   const new(this.s);
 
@@ -205,6 +211,8 @@ class _Deadline extends StatelessWidget {
   }
 }
 
+/// The two options side by side: regular 45 h and reduced 24 h, the latter
+/// greyed out when not allowed.
 class _Options extends StatelessWidget {
   const new({required this.reducedAvailable});
 
@@ -243,6 +251,7 @@ class _Options extends StatelessWidget {
   }
 }
 
+/// One weekly rest option: title, hours and hint.
 class _Option extends StatelessWidget {
   const new({
     required this.title,
@@ -303,6 +312,7 @@ class _Option extends StatelessWidget {
   }
 }
 
+/// The previous weekly rests and the compensation debt.
 class _History extends StatelessWidget {
   const new(this.s);
 
@@ -401,6 +411,7 @@ class _History extends StatelessWidget {
   }
 }
 
+/// Explanation of the rules, with or without the Mobility Package.
 class _Info extends StatelessWidget {
   const new({required this.mobility});
 

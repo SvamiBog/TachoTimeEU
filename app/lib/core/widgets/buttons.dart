@@ -1,3 +1,7 @@
+/// The three full-width 56 dp buttons of the design: primary, secondary and
+/// danger.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
@@ -7,8 +11,8 @@ final _shape = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(AppRadius.button),
 );
 
-/// Основная кнопка 56 dp: заливка цветом режима (по умолчанию —
-/// вождения), подпись тёмная.
+/// Primary 56 dp button: filled with an activity colour (driving by default),
+/// dark label.
 class PrimaryButton extends StatelessWidget {
   const new({
     required this.label,
@@ -46,7 +50,7 @@ class PrimaryButton extends StatelessWidget {
   }
 }
 
-/// Вторичная кнопка 56 dp с обводкой.
+/// Secondary 56 dp button with an outline.
 class SecondaryButton extends StatelessWidget {
   const new({required this.label, required this.onPressed, super.key});
 
@@ -70,7 +74,8 @@ class SecondaryButton extends StatelessWidget {
   }
 }
 
-/// Опасное действие 56 dp: «Удалить смену» — обводка и текст цвета ошибки.
+/// Destructive action, 56 dp: "Delete shift" — outline and text in the error
+/// colour.
 class DangerButton extends StatelessWidget {
   const new({
     required this.label,

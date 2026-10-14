@@ -30,4 +30,7 @@ Einfach und zuverlässig
 Kostenlos und Premium
 Kostenlos: Tätigkeiten, alle Timer und Warnungen, „Tag beenden“, Protokoll, Fahrverbote für heute. Premium: Protokoll bearbeiten, Berichte als PDF und CSV, Übertragung auf ein anderes Handy, Fahrverbotskalender. Abo monatlich oder jährlich (7 Tage kostenlos) oder einmaliger Kauf für immer.
 
+Quellen
+TachoGo ist eine unabhängige App: Sie steht in keiner Verbindung zu Behörden der EU oder europäischer Staaten und vertritt diese nicht. Die Grenzen folgen der Verordnung (EG) Nr. 561/2006 (amtlicher Text: https://eur-lex.europa.eu/eli/reg/2006/561/oj) und dem AETR-Übereinkommen. Fahrverbote folgen den offiziellen Websites der Länder, die Links stehen in der App.
+
 TachoGo hilft bei der Zeitplanung, ersetzt aber nicht den Fahrtenschreiber und ist keine amtliche Aufzeichnung. Bei einer Kontrolle gelten die Daten von Fahrtenschreiber und Fahrerkarte.

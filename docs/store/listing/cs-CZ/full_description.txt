@@ -30,4 +30,7 @@ Jednoduše a spolehlivě
 Zdarma a Premium
 Zdarma: činnosti, všechny časovače a upozornění, „Ukončit den“, deník, dnešní zákazy. Premium: úpravy deníku, výkazy PDF a CSV, přenos do jiného telefonu, kalendář zákazů. Předplatné měsíční nebo roční (7 dní zdarma) nebo nákup navždy.
 
+Zdroje
+TachoGo je nezávislá aplikace: není spojena s orgány EU ani evropských států a nezastupuje je. Limity se řídí nařízením (ES) č. 561/2006 (úřední text: https://eur-lex.europa.eu/eli/reg/2006/561/oj) a dohodou AETR. Zákazy jízdy se řídí oficiálními stránkami států, odkazy na ně najdete v aplikaci.
+
 TachoGo pomáhá plánovat čas, ale nenahrazuje tachograf a není oficiálním záznamem. Při kontrole platí údaje z tachografu a karty řidiče.

@@ -1,3 +1,6 @@
+/// Providers of the notification plugin seam and the limit alert scheduler.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,14 +26,4 @@ final alertSchedulerProvider = Provider<AlertScheduler>((ref) {
   );
   ref.onDispose(() => unawaited(scheduler.dispose()));
   return scheduler;
-});
-
-/// Точные будильники разрешены или не нужны (не Android) — для подсказки
-/// в настройках. Экран обновляет его, когда водитель вернулся из настроек
-/// телефона.
-final FutureProvider<bool> exactAlarmsProvider = FutureProvider.autoDispose((
-  ref,
-) async {
-  final platform = ref.watch(notificationPlatformProvider);
-  return !platform.isAndroid || await platform.canScheduleExact();
 });

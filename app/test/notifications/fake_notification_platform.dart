@@ -14,9 +14,6 @@ class FakeNotificationPlatform implements NotificationPlatform {
   /// «Будильники и напоминания» разрешены.
   bool exactAllowed = true;
 
-  /// Ответ водителя на системном экране точных будильников.
-  bool exactAnswer = true;
-
   final pending = <int, PendingAlert>{};
 
   /// id уведомлений в шторке.
@@ -45,12 +42,6 @@ class FakeNotificationPlatform implements NotificationPlatform {
 
   @override
   Future<bool> canScheduleExact() async => exactAllowed;
-
-  @override
-  Future<bool> requestExactAlarms() async {
-    calls.add('requestExactAlarms');
-    return exactAllowed = exactAnswer;
-  }
 
   @override
   Future<void> cancelAllPending() async {

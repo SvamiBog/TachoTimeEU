@@ -1,3 +1,6 @@
+/// Lists of shifts on the limit screens.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
@@ -10,8 +13,8 @@ import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/features/journal/journal_parts.dart';
 import 'package:tachogo/features/journal/shift_day_screen.dart';
 
-/// Смены списком на экранах лимитов: день, время, вождение; касание —
-/// детали дня. Смен нет — [empty] текстом.
+/// Shifts as a list on the limit screens: day, time, driving; a tap opens the
+/// day details. No shifts — [empty] as text.
 class ShiftRows extends StatelessWidget {
   const new(this.shifts, {required this.empty, super.key});
 

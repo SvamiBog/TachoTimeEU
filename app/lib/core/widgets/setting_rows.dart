@@ -1,9 +1,13 @@
+/// Rows of settings and menu screens: switches, navigation rows, choice blocks
+/// with pills.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 
-/// Подпись строки: название и, при необходимости, пояснение под ним.
+/// Row label: a title and, if needed, a hint under it.
 class _Titles extends StatelessWidget {
   const new({required this.title, this.subtitle, this.strong = true});
 
@@ -41,8 +45,8 @@ class _Titles extends StatelessWidget {
   }
 }
 
-/// Строка с переключателем (экраны 3, 14): касание всей строки меняет
-/// значение, диктор читает название, пояснение и состояние вместе.
+/// A row with a switch (screens 3, 14): tapping anywhere on the row toggles the
+/// value; the screen reader reads the title, the hint and the state together.
 class SwitchRow extends StatelessWidget {
   const new({
     required this.title,
@@ -94,7 +98,8 @@ class SwitchRow extends StatelessWidget {
   }
 }
 
-/// Строка-переход 56 dp: «Язык · Русский ›», «Экспорт отчёта · PDF · CSV ›».
+/// A 56 dp navigation row: "Language · English ›", "Export report · PDF · CSV
+/// ›".
 class NavRow extends StatelessWidget {
   const new({
     required this.title,
@@ -188,8 +193,8 @@ class NavRow extends StatelessWidget {
   }
 }
 
-/// Настройка с вариантами под названием: «Оформление» с переключателем,
-/// «Предупреждать о лимитах» с пилюлями 15 / 30 / 60 мин.
+/// A setting with options under its title: "Appearance" with a switch, "Warn
+/// before limits" with 15 / 30 / 60 min pills.
 class ChoiceBlock extends StatelessWidget {
   const new({
     required this.title,
@@ -223,7 +228,7 @@ class ChoiceBlock extends StatelessWidget {
   );
 }
 
-/// Пилюли вариантов в ряд с переносом: «15 мин · 30 мин · 1 час».
+/// Option pills in a wrapping row: "15 min · 30 min · 1 hour".
 class PillWrap extends StatelessWidget {
   const new({required this.children, super.key});
 

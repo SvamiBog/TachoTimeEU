@@ -1,3 +1,11 @@
+/// "Report a problem" (Phase 4, closed beta): the driver describes what
+/// happened and the app attaches the diagnostics — version, phone, settings,
+/// permissions, notification schedule and two days of the log. It is sent
+/// through the system "Share" menu: e-mail or the messenger testers already
+/// use. In the release it gives way to feedback with the support address (Phase
+/// 7).
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
@@ -6,23 +14,17 @@ import 'package:tachogo/core/diagnostics/diagnostics.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/widgets/confirm_sheet.dart';
 
-// «Сообщить о проблеме» (Фаза 4, закрытая бета): водитель описывает, что
-// случилось, а приложение прикладывает диагностику — версию, телефон,
-// настройки, разрешения, расписание уведомлений и журнал за двое суток.
-// Отправка — через системное «Поделиться»: почта или мессенджер, куда
-// тестировщики уже пишут. В релизе вместо неё — обратная связь с адресом
-// поддержки (Фаза 7).
-
 /// Строка есть в бете и в сборке разработчика, в релизе — нет.
 final problemReportEnabledProvider = Provider<bool>(
   (ref) => !AppEnv.current.isProd,
 );
 
-/// Отдаёт текст в системное «Поделиться». В тестах подменяется.
+/// Hands text to the system "Share" menu. Replaced in tests.
 abstract interface class TextSharer {
   Future<void> share({required String text, required String subject});
 }
 
+/// [TextSharer] backed by the system share sheet.
 class SystemTextSharer implements TextSharer {
   const new();
 

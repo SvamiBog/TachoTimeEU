@@ -1,7 +1,11 @@
-/// Лимиты Регламента (ЕС) 561/2006 и ЕСТР.
+/// Numeric limits of Regulation (EC) No 561/2006 and the AETR.
+library;
+
+/// Limits of Regulation (EC) No 561/2006 and the AETR in one place.
 ///
-/// Источник: docs/domain/eu-561-rules.md. Перед реализацией каждого таймера
-/// значение сверяется с официальным текстом регламента.
+/// Source: `docs/domain/eu-561-rules.md`; every value was checked against the
+/// official text of the regulation before its timer was written. `docs_test`
+/// keeps the table in the docs in sync with these constants.
 abstract final class EuLimits {
   // Непрерывное вождение и перерыв (ст. 7).
   static const continuousDriving = Duration(hours: 4, minutes: 30);

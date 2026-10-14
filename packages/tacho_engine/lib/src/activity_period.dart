@@ -1,11 +1,15 @@
+/// One record of the activity log: a continuous stretch of time in one
+/// activity.
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
 
-/// Непрерывный отрезок времени в одном режиме — запись журнала.
+/// A continuous stretch of time in one activity — one record of the log.
 ///
-/// Время хранится в UTC. Открытый период (текущий режим) имеет [end] == null.
-/// Инварианты проверяются всегда, а не через assert: в release-сборке
-/// Flutter assert вырезаются, а ошибка во времени ломает все лимиты.
+/// Times are UTC. An open period (the current activity) has [end] == null.
+/// Invariants are checked always, not with `assert`: Flutter strips asserts
+/// from release builds, and a wrong time would break every limit.
 @immutable
 class ActivityPeriod {
   new({

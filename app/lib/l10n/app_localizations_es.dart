@@ -1708,13 +1708,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notifyAllowed => 'Notificaciones permitidas';
 
   @override
-  String get notifyExact => 'Hora exacta de las notificaciones';
-
-  @override
-  String get notifyExactHint =>
-      'Permita «Alarmas y recordatorios»; si no, el teléfono puede retrasar el aviso';
-
-  @override
   String get notifyChannelLimits => 'Límites e infracciones';
 
   @override
@@ -2231,7 +2224,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo ayuda a planificar el tiempo, pero no sustituye al tacógrafo ni es asesoramiento jurídico. Texto oficial de las normas: Reglamento (CE) n.º 561/2006 y Acuerdo AETR.';
+      'TachoGo ayuda a planificar el tiempo, pero no sustituye al tacógrafo ni es asesoramiento jurídico. La aplicación no está vinculada a las autoridades de la UE ni de los países europeos. Texto oficial de las normas: Reglamento (CE) n.º 561/2006 y Acuerdo AETR.';
+
+  @override
+  String get guideSources => 'Dónde comprobar';
+
+  @override
+  String get guideOfficialText => 'Texto oficial del Reglamento 561/2006';
 
   @override
   String get moreAbout => 'Acerca de la aplicación';
@@ -2245,7 +2244,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo ayuda a planificar los tiempos de conducción y descanso, pero no sustituye al tacógrafo ni es asesoramiento jurídico.';
+      'TachoGo ayuda a planificar los tiempos de conducción y descanso, pero no sustituye al tacógrafo ni es asesoramiento jurídico. La aplicación no está vinculada a las autoridades de la UE ni de los países europeos.';
 
   @override
   String get morePrivacy => 'Política de privacidad';

@@ -1,7 +1,11 @@
-/// Часовой пояс страны для запретов движения. Запреты задаются по местному
-/// времени страны («воскресенье 00:00–22:00»), а приложение и движок живут
-/// в UTC. Все страны с запретами — в поясах WET, CET и EET и переводят часы
-/// по правилу ЕС (Директива 2000/84/ЕС), Швейцария и Лихтенштейн — так же.
+/// Local time of the countries with driving bans: their time zones and the EU
+/// summer time rule.
+library;
+
+/// Time zone of a country for driving bans. Bans are set in the country's local
+/// time ("Sunday 00:00–22:00"), while the app and the engine live in UTC. Every
+/// country with bans is in WET, CET or EET and changes clocks by the EU rule
+/// (Directive 2000/84/EC); Switzerland and Liechtenstein do the same.
 enum BanZone {
   wet(0),
   cet(1),

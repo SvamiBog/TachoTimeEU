@@ -1,14 +1,17 @@
+/// Segmented switch between a few options.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 
-/// Вариант в переключателе: подпись и, при необходимости, вторая строка
-/// цифрами — «Начало / 22.09 · 06:30».
+/// An option of the switch: a label and, if needed, a second line in digits —
+/// "Start / 22.09 · 06:30".
 typedef SegmentOption<T> = ({T value, String label, String? detail});
 
-/// Переключатель из нескольких вариантов (экраны 10, 11, 12, 16):
-/// выбранный — на плашке `surface2`, касание ≥ 44 dp.
+/// A switch between a few options (screens 10, 11, 12, 16): the selected one
+/// sits on a `surface2` pad, touch targets are ≥ 44 dp.
 class SegmentedTabs<T> extends StatelessWidget {
   const new({
     required this.options,

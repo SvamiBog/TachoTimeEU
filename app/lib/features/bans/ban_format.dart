@@ -1,12 +1,13 @@
+/// Texts and colours of driving bans. Times are the country's local time, as in
+/// its rules and on road signs, not the phone's time.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tacho_engine/driving_bans.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
-
-// Тексты и цвета запретов движения. Время — местное время страны, как в
-// её правилах и на дорожных знаках, а не время телефона.
 
 /// Запреты считаются для грузовика больше 12 т: под него попадают все
 /// правила стран. Выбора массы нет (решение владельца 2026-10-02).

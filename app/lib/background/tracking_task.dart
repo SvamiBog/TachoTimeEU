@@ -1,3 +1,8 @@
+/// The foreground service task (Android): automatic detection in the
+/// background, the persistent notification and the limit alert schedule while
+/// the app is closed.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -33,10 +38,10 @@ const screenOnMessage = 'screen_on';
 void startTrackingTask() =>
     FlutterForegroundTask.setTaskHandler(TrackingTaskHandler());
 
-/// Автоопределение вождения в фоне и постоянное уведомление с текущим
-/// режимом и главным таймером. Журнал, который пишет сервис, меняет и
-/// расписание уведомлений о лимитах — его пересчитывает свой
-/// `AlertScheduler`: приложение может быть закрыто.
+/// Automatic driving detection in the background and the persistent
+/// notification with the current activity and the main timer. The log the
+/// service writes also changes the limit alert schedule, so the task runs its
+/// own `AlertScheduler`: the app may be closed.
 class TrackingTaskHandler extends TaskHandler {
   /// Параметры — для тестов: платформы, база и отчёты о падениях.
   new({

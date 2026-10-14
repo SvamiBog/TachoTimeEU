@@ -1,31 +1,38 @@
-// Фикстура ENG-20: обезличенный журнал с настоящего тахографа и нарушения
-// из отчёта программы анализа (docs/testing.md, test/fixtures/real/README.md).
-//
-// {
-//   "name": "driver-a-2026-09",
-//   "source": "карта водителя, 2-е поколение; TachoScan 2.5",
-//   "synthetic": false,
-//   "settings": {"crew": false, "mobilityPackage": true},
-//   "periods": [{"mode": "driving", "start": "…Z", "end": "…Z"}],
-//   "expected": [{"type": "dailyDriveExceeded", "date": "2026-09-03",
-//                 "note": "10:12 при лимите 10 ч"}],
-//   "knownDifferences": [{"type": "…", "date": "…", "reason": "…"}]
-// }
-//
-// Время — UTC, до минуты. Дата нарушения — сутки UTC, когда оно появилось;
-// сверка допускает ±1 сутки: программы анализа датируют по-разному.
+/// ENG-20 fixture: an anonymised log from a real tachograph and the
+/// infringements from the analysis software report (`docs/testing.md`,
+/// `test/fixtures/real/README.md`).
+///
+/// ```json
+/// {
+///   "name": "driver-a-2026-09",
+///   "source": "driver card, 2nd generation; TachoScan 2.5",
+///   "synthetic": false,
+///   "settings": {"crew": false, "mobilityPackage": true},
+///   "periods": [{"mode": "driving", "start": "…Z", "end": "…Z"}],
+///   "expected": [{"type": "dailyDriveExceeded", "date": "2026-09-03",
+///                 "note": "10:12 with a 10 h limit"}],
+///   "knownDifferences": [{"type": "…", "date": "…", "reason": "…"}]
+/// }
+/// ```
+///
+/// Times are UTC, to the minute. The date of an infringement is the UTC day it
+/// appeared; the check allows ±1 day, since analysis programs date them
+/// differently.
+library;
 
 import 'dart:convert';
 
 import 'package:tacho_engine/tacho_engine.dart';
 
-/// Нарушение из отчёта программы анализа или известное расхождение.
+/// An infringement from the analysis software report, or a known difference.
 typedef ExpectedViolation = ({
   InfringementType type,
   DateTime date,
   String note,
 });
 
+/// A real-journal fixture: the log, its settings, the infringements the
+/// analysis software found and the known differences.
 class RealJournalFixture {
   const new({
     required this.name,

@@ -2655,18 +2655,6 @@ abstract class AppLocalizations {
   /// **'Уведомления разрешены'**
   String get notifyAllowed;
 
-  /// No description provided for @notifyExact.
-  ///
-  /// In ru, this message translates to:
-  /// **'Точное время уведомлений'**
-  String get notifyExact;
-
-  /// No description provided for @notifyExactHint.
-  ///
-  /// In ru, this message translates to:
-  /// **'Разрешите «Будильники и напоминания» — иначе телефон может задержать предупреждение'**
-  String get notifyExactHint;
-
   /// No description provided for @notifyChannelLimits.
   ///
   /// In ru, this message translates to:
@@ -3492,8 +3480,20 @@ abstract class AppLocalizations {
   /// No description provided for @guideDisclaimer.
   ///
   /// In ru, this message translates to:
-  /// **'TachoGo помогает планировать время, но не заменяет тахограф и не является юридической консультацией. Официальный текст правил — Регламент (ЕС) 561/2006 и Соглашение ЕСТР.'**
+  /// **'TachoGo помогает планировать время, но не заменяет тахограф и не является юридической консультацией. Приложение не связано с органами власти ЕС и стран Европы. Официальный текст правил — Регламент (ЕС) 561/2006 и Соглашение ЕСТР.'**
   String get guideDisclaimer;
+
+  /// Инструкция: заголовок раздела со ссылкой на официальный текст правил
+  ///
+  /// In ru, this message translates to:
+  /// **'Где проверить'**
+  String get guideSources;
+
+  /// Инструкция: строка-ссылка на Регламент 561/2006 на EUR-Lex, открывается в браузере
+  ///
+  /// In ru, this message translates to:
+  /// **'Официальный текст Регламента 561/2006'**
+  String get guideOfficialText;
 
   /// No description provided for @moreAbout.
   ///
@@ -3516,7 +3516,7 @@ abstract class AppLocalizations {
   /// No description provided for @moreDisclaimer.
   ///
   /// In ru, this message translates to:
-  /// **'TachoGo помогает планировать время за рулём и отдых, но не заменяет тахограф и не является юридической консультацией.'**
+  /// **'TachoGo помогает планировать время за рулём и отдых, но не заменяет тахограф и не является юридической консультацией. Приложение не связано с органами власти ЕС и стран Европы.'**
   String get moreDisclaimer;
 
   /// Строка «Ещё»: политика конфиденциальности, открывается в браузере

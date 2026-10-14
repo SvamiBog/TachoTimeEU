@@ -1,12 +1,15 @@
+/// Rest periods after manual shifts, measured from the log around them.
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/manual_shift.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
 
-/// Отдых после ручной смены. Водитель отмечает только вид отдыха, а
-/// длительность считается по журналу: отдых длится от конца смены до начала
-/// следующей смены — ручной или из записей режимов.
+/// The rest after a manual shift. The driver only marks the kind of rest; its
+/// length comes from the log: from the end of the shift to the start of the
+/// next one, manual or recorded.
 @immutable
 class ManualRest {
   const new({

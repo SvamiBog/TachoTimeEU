@@ -1,4 +1,8 @@
-/// Окружение сборки. Задаётся через `--dart-define-from-file=env/<name>.json`.
+/// Build environment (dev, staging, prod) and the service keys passed to the
+/// build with `--dart-define`.
+library;
+
+/// Build environment, set with `--dart-define-from-file=env/<name>.json`.
 enum AppEnv {
   dev,
   staging,
@@ -11,8 +15,8 @@ enum AppEnv {
   bool get isProd => this == prod;
 }
 
-/// Конфигурация, зависящая от окружения. Ключи сервисов сюда не попадают —
-/// только в CI-секреты и локальные файлы вне git.
+/// Environment-dependent configuration. Service keys never live in the
+/// repository — only in CI secrets and local files outside git.
 abstract final class AppConfig {
   /// DSN проекта Sentry; пустая строка — отчёты только в лог.
   static const crashReportingDsn = String.fromEnvironment('CRASH_DSN');

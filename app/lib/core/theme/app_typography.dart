@@ -1,16 +1,19 @@
-// Типографика из docs/design/tokens.json.
-// Цвет не задаётся: берётся из темы (DefaultTextStyle / context.colors).
+/// Typography from `docs/design/tokens.json`. Styles set no colour: it comes
+/// from the theme (`DefaultTextStyle`, `context.colors`).
+library;
 
 import 'package:flutter/painting.dart';
 
-/// Шрифты: Onest — интерфейс, JetBrains Mono — время и цифры.
-/// Грузинских букв нет ни в одном — их рисует Noto Sans Georgian.
+/// Font families: Onest for the interface, JetBrains Mono for times and digits.
+/// Neither has Georgian letters — Noto Sans Georgian draws them.
 abstract final class AppFonts {
   static const ui = 'Onest';
   static const numeric = 'JetBrains Mono';
   static const fallback = 'Noto Sans Georgian';
 }
 
+/// Text styles of the design. Digits are tabular, so a ticking timer does not
+/// jump.
 abstract final class AppTextStyles {
   // Цифры одинаковой ширины, чтобы тикающий таймер не «прыгал».
   static const _tabular = [FontFeature.tabularFigures()];

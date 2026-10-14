@@ -8,7 +8,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <!-- Уведомления о лимитах — системные будильники (flutter_local_notifications).
          После перезагрузки расписание восстанавливается. Точные будильники
-         водитель разрешает сам («Будильники и напоминания», Android 14+);
+         приложение не запрашивает (решение 2026-10-13): на Android 12–13 они
+         даны сразу, на 14+ — если водитель сам включил «Будильники и
+         напоминания», иначе уведомления — неточными будильниками.
          USE_EXACT_ALARM Google Play даёт только будильникам и календарям. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />

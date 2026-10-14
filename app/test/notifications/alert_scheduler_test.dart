@@ -298,16 +298,6 @@ void main() {
     test('планировщик — из репозиториев и платформы', () {
       expect(container().read(alertSchedulerProvider), isA<AlertScheduler>());
     });
-
-    test('точные будильники: Android — как разрешил водитель', () async {
-      platform.exactAllowed = false;
-      expect(await container().read(exactAlarmsProvider.future), isFalse);
-    });
-
-    test('точные будильники: не Android — не нужны', () async {
-      platform = FakeNotificationPlatform(isAndroid: false);
-      expect(await container().read(exactAlarmsProvider.future), isTrue);
-    });
   });
 
   test('ошибка — в отчёт о падениях, следующий пересчёт работает', () async {

@@ -1,3 +1,7 @@
+/// The hero card at the top of the home screen: the ring, the break banner and
+/// the current activity.
+library;
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -18,7 +22,7 @@ import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
 
-/// Главная карточка: кольцо, плашка о перерыве, текущий режим.
+/// The main card: the ring, the break banner, the current activity.
 class HeroCard extends StatelessWidget {
   const new({super.key});
 
@@ -50,10 +54,12 @@ class HeroCard extends StatelessWidget {
   );
 }
 
-/// [resting] — отдых внутри смены, когда перерыв уже засчитан (или
-/// вождения ещё не было): кольцо копит его к суточному отдыху 11 ч.
+/// What the ring shows. [resting] is a rest inside the shift after the break
+/// already counted (or before any driving): the ring accumulates it towards the
+/// 11 h daily rest.
 enum _RingKind { untilBreak, onBreak, resting, dailyRest, weeklyRest }
 
+/// The ring state in whole minutes.
 typedef _Ring = ({
   _RingKind kind,
   int big,
@@ -100,9 +106,9 @@ _Ring _ring(ComplianceSnapshot s) {
   );
 }
 
-/// Кольцо: до перерыва, идущий перерыв, отдых в смене или после неё.
-/// Касание — экран того, что показывает кольцо: перерыв, суточный или
-/// недельный отдых.
+/// The ring: until the break, the break in progress, rest in the shift or after
+/// it. A tap opens the screen of what the ring shows: break, daily or weekly
+/// rest.
 class HeroRing extends ConsumerWidget {
   const new({super.key});
 
@@ -183,6 +189,7 @@ class HeroRing extends ConsumerWidget {
   }
 }
 
+/// Paints the ring track and its filled arc.
 class _RingPainter extends CustomPainter {
   new({required this.fraction, required this.track, required this.color});
 
@@ -219,8 +226,10 @@ class _RingPainter extends CustomPainter {
       old.fraction != fraction || old.track != track || old.color != color;
 }
 
+/// Message of the banner under the ring.
 enum _Banner { breakCounted, onBreak, exceeded, need30, need45, offDuty }
 
+/// The banner message with the minutes it shows.
 typedef _BannerState = ({_Banner? kind, int breakMinutes, int required});
 
 _BannerState _banner(ComplianceSnapshot s) {
@@ -253,7 +262,7 @@ _BannerState _banner(ComplianceSnapshot s) {
   return none;
 }
 
-/// Плашка под кольцом — только когда есть что сказать.
+/// The banner under the ring — only when there is something to say.
 class HeroBanner extends ConsumerWidget {
   const new({super.key});
 
@@ -287,6 +296,7 @@ class HeroBanner extends ConsumerWidget {
   }
 }
 
+/// The current activity, since when and for how long, in whole minutes.
 typedef _Mode = ({DriverMode? mode, DateTime? since, int duration, bool ferry});
 
 _Mode _mode(ComplianceSnapshot s) {
@@ -299,9 +309,9 @@ _Mode _mode(ComplianceSnapshot s) {
   );
 }
 
-/// Текущий режим: «● Отдых с 11:37      0:00». Касание — подробности
-/// того, что сейчас важно в этом режиме: за рулём — перерыв, на отдыхе —
-/// суточный отдых, на работе и в готовности — рабочий день.
+/// The current activity: "● Rest since 11:37      0:00". A tap opens what
+/// matters now in this activity: driving — the break, rest — the daily rest,
+/// work and availability — the workday.
 class CurrentModeRow extends ConsumerWidget {
   const new({super.key});
 

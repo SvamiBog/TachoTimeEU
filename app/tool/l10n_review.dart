@@ -1,21 +1,27 @@
-// Вычитка переводов носителями языка (Фаза 4, docs/beta/translation-review.md).
-//
-//   dart run tool/l10n_review.dart export [--out build/l10n_review] [uk pl …]
-//   dart run tool/l10n_review.dart import <tachogo-uk.csv> [--lang uk]
-//
-// export — таблица CSV на каждый перевод: ключ, раздел, пояснение, русский
-// текст, перевод и пустые колонки «Исправление» и «Комментарий». Плюрали и
-// select разложены по вариантам: водителю не нужно читать ICU. Фраза вокруг
-// числа — отдельной строкой с меткой [[имя]] на месте числа.
-//
-// import — исправления из заполненной таблицы в app_<lang>.arb. Строка без
-// исправления не меняется. Исправление с другими подстановками ({time}) или
-// без метки [[имя]] не применяется — об этом пишется в отчёте. Комментарии
-// печатаются списком. После импорта: `flutter gen-l10n` и тесты L10N.
-//
-// CSV — как у отчёта приложения: UTF-8 с BOM, CRLF, каждое значение в
-// кавычках. Читается и с запятой, и с точкой с запятой (Excel в польской и
-// русской локали сохраняет через «;»).
+/// Translation review by native speakers (Phase 4,
+/// `docs/beta/translation-review.md`).
+///
+/// ```sh
+/// dart run tool/l10n_review.dart export [--out build/l10n_review] [uk pl …]
+/// dart run tool/l10n_review.dart import <tachogo-uk.csv> [--lang uk]
+/// ```
+///
+/// export — a CSV table per translation: key, section, context, Russian text,
+/// translation and empty "Correction" and "Comment" columns. Plurals and
+/// selects are split into variants, so reviewers never read ICU. The phrase
+/// around a number is a separate row with a `[[name]]` marker in place of the
+/// number.
+///
+/// import — corrections from the filled table into `app_<lang>.arb`. A row
+/// without a correction is not changed. A correction with different
+/// placeholders (`{time}`) or without the `[[name]]` marker is not applied —
+/// the report says so. Comments are printed as a list. After import: `flutter
+/// gen-l10n` and the L10N tests.
+///
+/// The CSV is like the app's report: UTF-8 with BOM, CRLF, every value in
+/// quotes. It is read with commas or semicolons (Excel in Polish and Russian
+/// locales saves with ";").
+library;
 
 import 'dart:convert';
 import 'dart:io';
@@ -112,8 +118,9 @@ List<String> translations({String dir = arbDir}) {
 
 // ───────────────────────── ICU ─────────────────────────
 
-/// Сообщение с одним plural или select: текст до, сама конструкция и текст
-/// после. Сообщения без них и с несколькими — целиком одной строкой.
+/// A message with a single plural or select: the text before, the construct
+/// itself and the text after. Messages without one, or with several, are a
+/// single row.
 class IcuMessage {
   const new({
     required this.prefix,
@@ -224,7 +231,7 @@ bool bracesBalanced(String text) {
 
 // ───────────────────────── Строки таблицы ─────────────────────────
 
-/// Строка таблицы вычитки.
+/// A row of the review table.
 typedef ReviewRow = ({
   String id,
   String section,
@@ -429,7 +436,7 @@ Future<void> exportAll(Directory out, List<String>? langs) async {
 
 // ───────────────────────── Загрузка ─────────────────────────
 
-/// Итог загрузки правок.
+/// Result of importing corrections.
 class ImportReport {
   final applied = <String>[];
   final rejected = <(String id, String reason)>[];

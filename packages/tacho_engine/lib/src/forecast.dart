@@ -1,3 +1,8 @@
+/// Forecast of upcoming alerts: when warnings and infringements will appear and
+/// when a rest will be complete if the driver keeps the current activity. The
+/// app schedules its notifications from it.
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/activity_period.dart';
 import 'package:tacho_engine/src/compliance.dart';
@@ -7,7 +12,7 @@ import 'package:tacho_engine/src/infringement.dart';
 import 'package:tacho_engine/src/manual_shift.dart';
 import 'package:tacho_engine/src/time.dart';
 
-/// Отдых, набранный целиком: водителю можно ехать дальше.
+/// A rest taken in full: the driver may drive on.
 enum RestMilestone {
   /// Перерыв по ст. 7 засчитан: 45 мин или 30 после первой части.
   breakTaken,
@@ -22,8 +27,7 @@ enum RestMilestone {
   compensationTaken,
 }
 
-/// Событие прогноза: предупреждение или нарушение движка либо набранный
-/// отдых.
+/// A forecast event: an engine warning or infringement, or a completed rest.
 @immutable
 sealed class UpcomingAlert {
   const new(this.at);
@@ -35,7 +39,7 @@ sealed class UpcomingAlert {
   Enum get kind;
 }
 
-/// Предупреждение или нарушение с параметрами на момент [at].
+/// A warning or infringement with its values at [at].
 final class LimitAlert extends UpcomingAlert {
   const new(super.at, this.infringement);
 
@@ -57,9 +61,9 @@ final class LimitAlert extends UpcomingAlert {
   String toString() => 'LimitAlert($at, $infringement)';
 }
 
-/// Отдых набран: [taken] — сколько отдыха засчитано (45 или 30 мин, 11 ч,
-/// 45 ч, погашенный долг компенсации), [drivingUntilBreak] — сколько можно
-/// ехать до следующего перерыва.
+/// A rest is complete: [taken] is how much rest counts (45 or 30 min, 11 h, 45
+/// h, a repaid compensation debt), [drivingUntilBreak] is how long the driver
+/// may drive until the next break.
 final class RestAlert extends UpcomingAlert {
   const new(
     super.at,

@@ -1,10 +1,14 @@
+/// Ban windows in UTC for a country and vehicle, and the country's state "now"
+/// for the bans screen and map.
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/bans/ban_rule.dart';
 import 'package:tacho_engine/src/bans/vehicle_mass.dart';
 
-/// Запрет движения во времени, UTC. Соседние и пересекающиеся запреты
-/// одной силы склеены: «с 22:00 субботы до 22:00 воскресенья» у
-/// праздника в понедельник продолжается до 22:00 понедельника.
+/// A driving ban in time, UTC. Adjacent and overlapping bans of the same
+/// strength are merged: "22:00 Saturday to 22:00 Sunday" before a Monday
+/// holiday goes on until 22:00 Monday.
 @immutable
 class BanWindow {
   const new({
@@ -126,7 +130,7 @@ List<BanWindow> banWindows(
   });
 }
 
-/// Что с запретом сейчас.
+/// The state of bans right now.
 enum BanLevel {
   /// Запрет по всей сети дорог идёт.
   active,
@@ -147,7 +151,7 @@ enum BanLevel {
   none,
 }
 
-/// Состояние запретов страны в момент расчёта ([banStatus]).
+/// A country's bans at the moment of calculation ([banStatus]).
 @immutable
 class BanStatus {
   const new({required this.level, this.current, this.partial, this.next});
@@ -224,6 +228,7 @@ const _days2 = Duration(days: 2);
 DateTime _dateOf(DateTime local) =>
     DateTime.utc(local.year, local.month, local.day);
 
+/// One rule's ban window before merging.
 class _Raw {
   new(this.start, this.end, this.kind, this.scope, {required this.provisional});
 

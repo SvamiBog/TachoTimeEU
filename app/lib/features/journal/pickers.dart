@@ -1,3 +1,8 @@
+/// Picker sheets for journal edits: shift date and time (screen 12), duration
+/// (screen 7). The driver types times and durations on the keyboard, sees local
+/// time, and UTC goes out.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tachogo/core/l10n/format.dart';
@@ -10,10 +15,6 @@ import 'package:tachogo/core/widgets/hm_field.dart';
 import 'package:tachogo/core/widgets/segmented_tabs.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 
-// Шторки выбора для правок журнала: дата и время смены (экран 12),
-// длительность (экран 7). Время и длительность водитель вводит с
-// клавиатуры. Водитель видит местное время, наружу уходит UTC.
-
 const _sheetPadding = EdgeInsets.fromLTRB(
   AppSpacing.screenPadding + 4,
   0,
@@ -21,7 +22,7 @@ const _sheetPadding = EdgeInsets.fromLTRB(
   24,
 );
 
-/// Кнопки «Отмена» и основное действие внизу шторки.
+/// "Cancel" and the main action at the bottom of a sheet.
 class _SheetButtons extends StatelessWidget {
   const new({required this.label, required this.onPressed});
 
@@ -64,7 +65,7 @@ Future<T?> _showSheet<T>(BuildContext context, Widget child) =>
 
 // ───────────────────────── Дата и время ─────────────────────────
 
-/// Начало и конец смены после выбора.
+/// Start and end of a shift after picking.
 typedef ShiftTimes = ({DateTime start, DateTime? end});
 
 /// Шторка «Дата и время» (экран 12): начало и, если смена закончилась,
@@ -81,6 +82,7 @@ Future<ShiftTimes?> showDateTimeSheet(
   _DateTimeSheet(start: start, end: end, max: max, editEnd: editEnd),
 );
 
+/// Sheet with "Start / End" tabs, each a calendar and a time field.
 class _DateTimeSheet extends StatefulWidget {
   const new({
     required this.start,
@@ -98,6 +100,7 @@ class _DateTimeSheet extends StatefulWidget {
   State<_DateTimeSheet> createState() => _DateTimeSheetState();
 }
 
+/// The start and end picked so far and the open tab.
 class _DateTimeSheetState extends State<_DateTimeSheet> {
   late DateTime _start = widget.start;
   late DateTime? _end = widget.end;
@@ -165,9 +168,9 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
   }
 }
 
-/// Календарь месяца и время с клавиатуры. [value] и [max] — UTC, на
-/// экране — местное время. [max] — обычно «сейчас»: его день отмечен как
-/// сегодня, дни позже недоступны.
+/// A month calendar and a time typed on the keyboard. [value] and [max] are
+/// UTC, the screen shows local time. [max] is usually "now": its day is marked
+/// as today and later days are disabled.
 class DateTimeField extends StatefulWidget {
   const new({
     required this.value,
@@ -192,6 +195,7 @@ class DateTimeField extends StatefulWidget {
   State<DateTimeField> createState() => _DateTimeFieldState();
 }
 
+/// The month on screen.
 class _DateTimeFieldState extends State<DateTimeField> {
   late DateTime _month = _monthOf(widget.value.toLocal());
 
@@ -373,6 +377,7 @@ Future<DateTime?> showDaySheet(
   required DateTime max,
 }) => _showSheet(context, _DaySheet(title: title, initial: initial, max: max));
 
+/// Sheet to pick one day of the calendar.
 class _DaySheet extends StatefulWidget {
   const new({required this.title, required this.initial, required this.max});
 
@@ -384,6 +389,7 @@ class _DaySheet extends StatefulWidget {
   State<_DaySheet> createState() => _DaySheetState();
 }
 
+/// The day picked so far.
 class _DaySheetState extends State<_DaySheet> {
   late DateTime _value = widget.initial.toUtc();
 
@@ -455,6 +461,7 @@ Future<Duration?> showDurationSheet(
   ),
 );
 
+/// Sheet to type a duration "H:MM" within bounds.
 class _DurationSheet extends StatefulWidget {
   const new({
     required this.title,
@@ -482,6 +489,7 @@ class _DurationSheet extends StatefulWidget {
   State<_DurationSheet> createState() => _DurationSheetState();
 }
 
+/// The duration typed so far, kept within the bounds.
 class _DurationSheetState extends State<_DurationSheet> {
   late Duration? _value = _clamped(widget.initial);
 

@@ -1,3 +1,12 @@
+/// Edits of whole shifts from the journal (screen 11): moving the start and end
+/// of the live shift, correcting its driving, turning it into a manual shift,
+/// declaring the rest after it, checking and placing manual shifts.
+///
+/// As in `journal_edits.dart`, the functions are pure: new records are created
+/// with `id == null`, deleted ones disappear from the list — the store saves
+/// the difference.
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/activity_period.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
@@ -9,19 +18,16 @@ import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
 import 'package:tacho_engine/src/timeline.dart';
 
-// Правки смен из журнала (экран 11). Как и в journal_edits.dart, функции
-// чистые: новые записи создаются с id == null, удалённые пропадают из
-// списка — хранилище сохраняет разницу.
-
 const _minute = Duration(minutes: 1);
 
 /// Смена, внесённая вручную, не длиннее 30 ч: дольше — почти наверняка
 /// ошибка в дате.
 const maxManualShiftSpan = Duration(hours: 30);
 
-/// Правка «живой» смены: той, что идёт сейчас, или после которой идёт
-/// отдых. Такая смена считается по записям режимов, поэтому правка сдвигает
-/// сами записи, и таймеры главной дальше считаются по ним.
+/// An edit of the "live" shift: the one in progress, or the one followed by the
+/// rest in progress. Such a shift is worked out from the activity records, so
+/// the edit moves the records themselves and the home screen timers keep
+/// following them.
 @immutable
 class LiveShiftEdit {
   const new({
@@ -411,7 +417,7 @@ bool sameShift(JournalShift a, JournalShift b) {
   return a.start == b.start;
 }
 
-/// Отрезок времени [start, end).
+/// A span of time [start, end).
 typedef TimeRange = ({DateTime start, DateTime end});
 
 /// Смена журнала, с которой пересекается [range]; null — пересечений
@@ -433,7 +439,7 @@ JournalShift? findOverlap(
   return null;
 }
 
-/// Почему ручную смену нельзя сохранить.
+/// Why a manual shift cannot be saved.
 enum ShiftEditError {
   /// Конец смены не позже начала.
   endBeforeStart,
@@ -457,7 +463,7 @@ enum ShiftEditError {
   notLast,
 }
 
-/// Ошибка ручной смены и смена, с которой она конфликтует.
+/// The error of a manual shift and the shift it conflicts with.
 @immutable
 class ShiftEditProblem {
   const new(this.error, {this.conflict});

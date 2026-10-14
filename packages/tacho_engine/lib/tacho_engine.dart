@@ -1,4 +1,12 @@
-/// Регуляторный движок TachoGo (ЕС 561/2006, ЕСТР).
+/// TachoGo regulatory engine: EU Regulation 561/2006 and AETR driving and rest
+/// time rules in pure Dart, without Flutter.
+///
+/// Feed it the driver's activity log (`ActivityPeriod`s in UTC) and it returns
+/// what is left of every limit, the infringements and the warnings
+/// (`ComplianceSnapshot`), the journal by weeks and shifts (`Journal`), the
+/// forecast of when limits run out (`forecastAlerts`), automatic driving
+/// detection from GPS speed (`MotionDetector`) and the edits a driver may make
+/// to the log. Rules and sources: `docs/domain/eu-561-rules.md`.
 library;
 
 export 'src/activity_period.dart';

@@ -1,3 +1,7 @@
+/// Starting and stopping automatic driving detection from the app, and the
+/// messages between the app and the background service.
+library;
+
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:tachogo/background/auto_tracker.dart';
@@ -7,7 +11,7 @@ import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 
-/// Почему автоопределение не включилось.
+/// Why automatic detection could not be turned on.
 enum TrackingBlocker {
   /// Геолокация выключена в системе.
   locationServiceDisabled,
@@ -19,21 +23,21 @@ enum TrackingBlocker {
   locationDeniedForever,
 }
 
-/// Разрешения и ограничения ОС, от которых зависит автоопределение, — для
-/// подсказок в онбординге и настройках. `battery` — приложение не в списке
-/// экономии батареи (на iOS такого списка нет — всегда true).
+/// OS permissions and restrictions automatic detection depends on, for the
+/// hints in onboarding and settings. `battery` means the app is excluded from
+/// battery optimisation (iOS has no such list — always true).
 typedef TrackingHealth = ({bool location, bool notifications, bool battery});
 
-/// Запуск и остановка автоопределения вождения из приложения.
+/// Starts and stops automatic driving detection from the app.
 ///
-/// - Android: foreground service с типом location в своём движке
-///   ([startTrackingTask]); работает и при закрытом приложении, после
-///   перезагрузки поднимается сам. На Android 14+ без фонового доступа к
-///   геолокации система не даёт поднять его после перезагрузки — тогда он
-///   запустится, когда водитель откроет приложение.
-/// - iOS: трекер в основном изоляте с фоновым режимом location. Если
-///   приложение смахнули, автоопределение ждёт следующего запуска; таймеры
-///   при этом не теряются — они считаются по журналу.
+/// - Android: a foreground service of type location with its own Flutter
+///   engine ([startTrackingTask]); it keeps working with the app closed and
+///   restarts itself after a reboot. On Android 14+ without background
+///   location access the system does not let it restart after a reboot — it
+///   starts again when the driver opens the app.
+/// - iOS: the tracker runs in the main isolate with the location background
+///   mode. If the app is swiped away, detection waits for the next launch;
+///   the timers are not lost — they are computed from the log.
 class TrackingService {
   new({
     required this._journal,
@@ -256,9 +260,9 @@ class TrackingService {
   }
 }
 
-/// Сообщения между приложением и задачей фонового сервиса (Android): у них
-/// разные Flutter-движки и соединения с БД, поэтому об изменениях журнала
-/// они сообщают друг другу сами.
+/// Messages between the app and the background service task (Android): they
+/// have separate Flutter engines and database connections, so each tells the
+/// other when the log has changed.
 abstract final class TrackingMessages {
   /// Подписка на сообщения задачи: [onJournalChanged] — журнал изменён
   /// в фоне. Возвращает функцию отписки.

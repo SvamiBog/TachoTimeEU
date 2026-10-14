@@ -1,3 +1,6 @@
+/// A limit row of the home screen: title, chip, value and bar.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
@@ -6,12 +9,12 @@ import 'package:tachogo/core/widgets/limit_bar.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 
-/// Значение справа в строке лимита: длительность или текст состояния.
+/// The value on the right of a limit row: a duration or a state text.
 sealed class RowValue {
   const new();
 }
 
-/// «3:55» — JetBrains Mono, читается как «3 часа 55 минут».
+/// "3:55" in JetBrains Mono, read aloud as "3 hours 55 minutes".
 class DurationValue extends RowValue {
   const new(this.text, {required this.spoken, this.color});
 
@@ -20,14 +23,14 @@ class DurationValue extends RowValue {
   final Color? color;
 }
 
-/// «не начат», «идёт 2:15».
+/// "not started", "in progress 2:15".
 class StatusValue extends RowValue {
   const new(this.text);
 
   final String text;
 }
 
-/// Строка лимита: название, чип и значение, полоса, подписи под ней.
+/// A limit row: title, chip and value, bar, captions under it.
 class LimitRow extends StatelessWidget {
   const new({
     required this.title,

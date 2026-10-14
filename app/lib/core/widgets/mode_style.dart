@@ -1,10 +1,13 @@
+/// How the four activities look: their colours, names and tachograph symbols.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 
-/// Цвет = режим: вождение — янтарный, отдых — зелёный, работа —
-/// оранжевый, готовность — голубой.
+/// Colour = activity: driving amber, rest green, work orange, availability
+/// blue.
 extension ModeColors on AppColors {
   Color mode(DriverMode mode) => switch (mode) {
     DriverMode.driving => drive,
@@ -14,6 +17,7 @@ extension ModeColors on AppColors {
   };
 }
 
+/// Localized names of the activities.
 extension ModeNames on AppLocalizations {
   /// Полное название режима: «Другая работа».
   String modeName(DriverMode mode) => switch (mode) {
@@ -28,8 +32,9 @@ extension ModeNames on AppLocalizations {
       mode == DriverMode.otherWork ? modeWork : modeName(mode);
 }
 
-/// Символ режима, как на тахографе: руль, кровать, молотки, квадрат с
-/// диагональю. Рисуется по сетке 24 × 24, цвет — из [IconTheme].
+/// The activity symbol as on a tachograph: steering wheel, bed, crossed
+/// hammers, square with a diagonal. Drawn on a 24 × 24 grid in the [IconTheme]
+/// colour.
 class ModeIcon extends StatelessWidget {
   const new(this.mode, {super.key, this.size = 28});
 
@@ -45,6 +50,7 @@ class ModeIcon extends StatelessWidget {
   );
 }
 
+/// Paints one tachograph symbol.
 class _ModeIconPainter extends CustomPainter {
   new(this.mode, this.color);
 

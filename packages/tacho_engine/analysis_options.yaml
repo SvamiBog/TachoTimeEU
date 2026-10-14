@@ -2,5 +2,6 @@ include: package:very_good_analysis/analysis_options.yaml
 
 linter:
   rules:
-    # Комментарии в проекте на русском, публичный API документируем по мере стабилизации.
+    # Описания модулей и классов — на английском (DOC-07), комментарии к
+    # полям и функциям — на русском; публичный API целиком не документируем.
     public_member_api_docs: false

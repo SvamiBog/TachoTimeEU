@@ -1,3 +1,7 @@
+/// Warning and infringement cards on the home screen, each opening the screen
+/// of its limit.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -72,6 +76,9 @@ void openAlertDetails(BuildContext context, InfringementType type) =>
       InfringementType.cardSoon => unawaited(showCardSheet(context)),
     };
 
+/// Warnings and infringements from the engine: infringements above warnings,
+/// durations to the minute so the one-second tick does not rebuild the list.
+/// "Break soon" is not repeated — the banner under the ring says it.
 class AlertsSection extends ConsumerWidget {
   const new({super.key});
 
@@ -101,8 +108,8 @@ class AlertsSection extends ConsumerWidget {
   }
 }
 
-/// Плашка нарушения: заголовок, текст и статья — её видит инспектор.
-/// Касание — экран лимита ([openAlertDetails]).
+/// An infringement card: title, text and the article an inspector sees. A tap
+/// opens the screen of the limit ([openAlertDetails]).
 class AlertCard extends StatelessWidget {
   const new(this.infringement, {this.onTap, super.key});
 

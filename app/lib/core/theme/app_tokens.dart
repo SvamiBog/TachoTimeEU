@@ -1,6 +1,7 @@
-// Радиусы, размеры и отступы из docs/design/tokens.json.
+/// Radii, sizes and spacing from `docs/design/tokens.json`.
+library;
 
-/// Радиусы, dp.
+/// Corner radii, dp.
 abstract final class AppRadius {
   static const heroCard = 28.0;
   static const card = 24.0;
@@ -11,7 +12,7 @@ abstract final class AppRadius {
   static const chip = 8.0;
 }
 
-/// Отступы, dp.
+/// Spacing, dp.
 abstract final class AppSpacing {
   static const screenPadding = 16.0;
   static const cardPadding = 16.0;
@@ -21,7 +22,7 @@ abstract final class AppSpacing {
   static const beforeSectionMax = 28.0;
 }
 
-/// Размеры, dp. Кнопки режимов крупные — водитель может быть в перчатках.
+/// Sizes, dp. Activity buttons are large because the driver may wear gloves.
 abstract final class AppSize {
   static const minTouch = 44.0;
   static const listRow = 56.0;

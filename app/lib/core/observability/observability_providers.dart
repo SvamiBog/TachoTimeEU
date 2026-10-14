@@ -1,3 +1,7 @@
+/// Providers that pick the crash reporter and analytics for the build: real
+/// services when keys are passed, log-only and no-op otherwise.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/core/config/app_env.dart';
 import 'package:tachogo/core/observability/analytics.dart';
@@ -12,7 +16,8 @@ final crashReporterProvider = Provider<CrashReporter>((ref) {
   return SentryCrashReporter(dsn, environment: AppEnv.current.name);
 });
 
-/// PostHog, если сборке передан ключ. Согласие водителя передаёт `main.dart`.
+/// PostHog, если сборке передан ключ. Согласие водителя передаёт
+/// `bootstrap.dart`.
 final analyticsProvider = Provider<Analytics>((ref) {
   const key = AppConfig.analyticsKey;
   if (key.isEmpty) return NoopAnalytics();

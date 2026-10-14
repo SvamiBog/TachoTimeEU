@@ -30,4 +30,7 @@ Simple et fiable
 Gratuit et Premium
 Gratuit : activités, tous les minuteurs et alertes, « Terminer la journée », journal, interdictions du jour. Premium : modification du journal, rapports PDF et CSV, transfert vers un autre téléphone, calendrier des interdictions. Abonnement mensuel ou annuel (7 jours gratuits) ou achat à vie.
 
+Sources
+TachoGo est une application indépendante : elle n'est liée à aucune autorité de l'UE ou des pays européens et ne les représente pas. Les limites suivent le règlement (CE) n° 561/2006 (texte officiel : https://eur-lex.europa.eu/eli/reg/2006/561/oj) et l'accord AETR. Les interdictions de circulation suivent les sites officiels des pays, les liens sont dans l'application.
+
 TachoGo vous aide à planifier votre temps, mais ne remplace pas le chronotachygraphe et n'est pas un enregistrement officiel. Lors d'un contrôle, ce sont les données du chronotachygraphe et de la carte conducteur qui font foi.

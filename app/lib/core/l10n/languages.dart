@@ -1,3 +1,7 @@
+/// Names of the interface languages, written in the languages themselves, and
+/// their order in the language picker.
+library;
+
 import 'package:flutter/widgets.dart';
 
 /// Названия языков на них самих: водитель ищет свой язык, даже если

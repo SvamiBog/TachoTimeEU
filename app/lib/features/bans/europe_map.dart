@@ -1,3 +1,7 @@
+/// Map of Europe for driving bans: the country outlines asset and the widget
+/// that paints countries by their ban state.
+library;
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -8,9 +12,10 @@ import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/features/bans/ban_format.dart';
 
-/// Схема Европы: границы стран по отличительным знакам, координаты —
-/// в сетке шириной [width]. Собирается `tool/europe_map.dart` из Natural
-/// Earth; фон без знака (Северная Африка, Ближний Восток) — под ключом "~".
+/// Outline map of Europe: country borders by distinguishing sign, coordinates
+/// on a grid [width] wide. Built by `tool/europe_map.dart` from Natural Earth;
+/// the background without a sign (North Africa, Middle East) is under the key
+/// "~".
 class EuropeMap {
   new({required this.width, required this.height, required this.countries});
 
@@ -67,9 +72,9 @@ final europeMapProvider = FutureProvider<EuropeMap>(
   ),
 );
 
-/// Карта запретов: страны закрашены по состоянию запрета сейчас, страна
-/// смены обведена. Касание страны с данными — [onCountry]. Масштаб —
-/// двумя пальцами, мелкие страны есть и в списке под картой.
+/// Bans map: countries are filled by their ban state now and the shift country
+/// is outlined. A tap on a country with data calls [onCountry]. Pinch to zoom;
+/// small countries are also in the list under the map.
 class BansMap extends ConsumerWidget {
   const new({
     required this.levels,
@@ -132,6 +137,7 @@ class BansMap extends ConsumerWidget {
   }
 }
 
+/// Paints the country outlines with their fills and the highlight.
 class _MapPainter extends CustomPainter {
   new({
     required this.map,

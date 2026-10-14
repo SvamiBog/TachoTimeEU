@@ -1,6 +1,14 @@
+/// "Guide and rules" (screen 17): how to use the app, the 561/2006 limits,
+/// explanations for newcomers, the van check, the activity colours and the
+/// official source of the rules.
+library;
+
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/config/app_links.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
@@ -18,9 +26,9 @@ void openGuide(BuildContext context) =>
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const GuideScreen()));
 
-/// Инструкция и правила (экран 17): как пользоваться, лимиты 561/2006 из
-/// `EuLimits`, объяснения для тех, кто впервые с тахографом, правила для
-/// фургонов 2,5–3,5 т, цвета режимов.
+/// Guide and rules (screen 17): how to use the app, the 561/2006 limits from
+/// `EuLimits`, explanations for those new to the tachograph, the rules for
+/// 2.5–3.5 t vans, the activity colours and the source of the rules.
 class GuideScreen extends StatelessWidget {
   const new({super.key});
 
@@ -40,6 +48,8 @@ class GuideScreen extends StatelessWidget {
         const VanRulesCheck(),
         SectionTitle(l.guideModes),
         const _ModesLegend(),
+        SectionTitle(l.guideSources),
+        const _OfficialText(),
         Padding(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.screenPadding + 4,
@@ -60,7 +70,30 @@ class GuideScreen extends StatelessWidget {
   }
 }
 
-/// «Как пользоваться»: три шага с номерами.
+/// Link to the official text of Regulation 561/2006 on EUR-Lex: Google Play
+/// asks apps that relay government rules to name a source the driver can
+/// check them against.
+class _OfficialText extends ConsumerWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final uri = regulationUri(Localizations.localeOf(context).languageCode);
+    return CardGroup(
+      children: [
+        NavRow(
+          icon: Icons.open_in_new,
+          title: context.l10n.guideOfficialText,
+          subtitle: uri.host,
+          onTap: () =>
+              unawaited(openLink(context, ref, uri, address: regulationPage)),
+        ),
+      ],
+    );
+  }
+}
+
+/// "How to use": three numbered steps.
 class _HowTo extends StatelessWidget {
   const new();
 
@@ -125,8 +158,8 @@ class _HowTo extends StatelessWidget {
   }
 }
 
-/// Лимит на экране правил и в онбординге: значение, название, пояснение.
-/// Значения — из `EuLimits`, тексты — из словаря.
+/// A limit on the rules screen and in onboarding: value, title, explanation.
+/// Values come from `EuLimits`, texts from the dictionary.
 enum GuideRule {
   continuous,
   dailyDriving,
@@ -138,6 +171,8 @@ enum GuideRule {
   card,
 }
 
+/// What a [GuideRule] shows: the value as written and as spoken, its colour,
+/// title and text.
 typedef _RuleText = ({
   String value,
   String spoken,
@@ -146,6 +181,7 @@ typedef _RuleText = ({
   String text,
 });
 
+/// Texts and colours of each [GuideRule].
 extension on GuideRule {
   _RuleText describe(AppLocalizations l, AppColors colors) {
     String h(Duration d) => formatLimit(l, d);
@@ -242,9 +278,8 @@ extension on GuideRule {
   }
 }
 
-/// Строка лимита: «4:30 · Непрерывное вождение · Затем перерыв 45 мин…».
-/// Значение в колонке 76 dp; с крупным шрифтом оно сжимается, а не
-/// переносится.
+/// A limit row: "4:30 · Continuous driving · Then a 45 min break…". The value
+/// sits in a 76 dp column; with a large font it shrinks rather than wraps.
 class RuleRow extends StatelessWidget {
   const new(this.rule, {super.key});
 
@@ -298,8 +333,8 @@ class RuleRow extends StatelessWidget {
   }
 }
 
-/// «Впервые с тахографом»: карта, тахограф и приложение, перерыв, где
-/// отдыхать, страны.
+/// "New to the tachograph": the card, the tachograph and the app, the break,
+/// where to rest, countries.
 class _Newbie extends StatelessWidget {
   const new();
 
@@ -340,7 +375,7 @@ class _Newbie extends StatelessWidget {
   }
 }
 
-/// «Цвета и значки»: символ режима на его цвете, два в ряд.
+/// "Colours and symbols": each activity symbol on its colour, two per row.
 class _ModesLegend extends StatelessWidget {
   const new();
 
@@ -407,9 +442,9 @@ class _ModesLegend extends StatelessWidget {
   }
 }
 
-/// «Касаются ли правила вашего рейса» для фургона 2,5–3,5 т: три вопроса,
-/// ответ — `vanRules` движка со статьёй регламента. Ответы не сохраняются:
-/// у одного водителя рейсы бывают разные.
+/// "Do the rules apply to your trip" for a 2.5–3.5 t van: three questions, the
+/// answer is the engine's `vanRules` with the article of the regulation.
+/// Answers are not saved: one driver has different trips.
 class VanRulesCheck extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -417,6 +452,7 @@ class VanRulesCheck extends ConsumerStatefulWidget {
   ConsumerState<VanRulesCheck> createState() => _VanRulesCheckState();
 }
 
+/// The three answers of the van check.
 class _VanRulesCheckState extends ConsumerState<VanRulesCheck> {
   bool _crossBorder = true;
   VanCarriage _carriage = VanCarriage.hireOrReward;
@@ -546,7 +582,7 @@ class _VanRulesCheckState extends ConsumerState<VanRulesCheck> {
   }
 }
 
-/// Ответ проверки: действуют ли правила, почему, статья.
+/// The answer of the check: whether the rules apply, why, the article.
 class _VanResult extends StatelessWidget {
   const new(this.result, {required this.date});
 

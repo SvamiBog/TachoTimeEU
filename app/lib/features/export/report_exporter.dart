@@ -1,3 +1,7 @@
+/// Builds the report file in the chosen format and hands it to the system
+/// "Share" menu.
+library;
+
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart' show AssetBundle, rootBundle;
@@ -9,8 +13,8 @@ import 'package:tachogo/data/report/report.dart';
 import 'package:tachogo/features/export/pdf_report.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 
-/// Отдаёт файл водителю: системное меню «Поделиться» — почта, мессенджер,
-/// сохранение в файлы. В тестах подменяется.
+/// Hands a file to the driver: the system "Share" menu — e-mail, messenger,
+/// saving to files. Replaced in tests.
 abstract interface class ReportSharer {
   Future<void> share({
     required String fileName,
@@ -19,6 +23,7 @@ abstract interface class ReportSharer {
   });
 }
 
+/// [ReportSharer] backed by the system share sheet.
 class SystemReportSharer implements ReportSharer {
   const new();
 
@@ -41,11 +46,12 @@ final reportSharerProvider = Provider<ReportSharer>(
   (ref) => const SystemReportSharer(),
 );
 
-/// Формат отчёта.
+/// Report format.
 enum ReportFormat { pdf, csv }
 
-/// Выгрузка отчёта — Premium-операция (docs/premium.md, закрытие — Фаза 5):
-/// здесь будет вторая проверка `EntitlementService`, кроме замка на экране.
+/// Builds the report and shares it. Export is a Premium operation
+/// (`docs/premium.md`, locked in Phase 5): there will be a second
+/// `EntitlementService` check here besides the lock on the screen.
 class ReportExporter {
   new(this._sharer, {AssetBundle? bundle}) : _bundle = bundle ?? rootBundle;
 

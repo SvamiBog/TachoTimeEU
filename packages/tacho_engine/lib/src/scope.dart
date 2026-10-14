@@ -1,4 +1,9 @@
-/// Кто и зачем везёт груз на фургоне — от этого зависят исключения ст. 3.
+/// Whether Regulation 561/2006 applies to a 2.5–3.5 t van trip (Art. 2(1)(aa)
+/// as amended by Regulation 2020/1054) and which article decides it.
+library;
+
+/// Who carries the goods in the van and why; the Art. 3 exemptions depend on
+/// it.
 enum VanCarriage {
   /// По найму или за вознаграждение: курьер, перевозчик.
   hireOrReward,
@@ -12,7 +17,8 @@ enum VanCarriage {
   nonCommercial,
 }
 
-/// Действуют ли правила 561/2006 в рейсе фургона и по какой статье.
+/// Whether the 561/2006 rules apply to a van trip, with the article that
+/// decides it.
 enum VanRules {
   /// Действуют: тахограф, карта водителя и все лимиты — как у грузовика.
   applies('2(1)(aa)'),

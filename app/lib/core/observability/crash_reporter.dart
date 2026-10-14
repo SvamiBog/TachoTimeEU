@@ -1,13 +1,17 @@
+/// Crash reporting interface and its log-only fallback.
+library;
+
 import 'dart:developer' as developer;
 
-/// Отчёты о падениях. Провайдер (Sentry / Crashlytics) подключается позже;
-/// до этого ошибки только пишутся в лог.
+/// Crash reports. Sentry implements it when the build has a DSN
+/// (`SentryCrashReporter`); otherwise errors only go to the log.
 abstract interface class CrashReporter {
   Future<void> init();
 
   void recordError(Object error, StackTrace stack, {bool fatal = false});
 }
 
+/// Crash reporter that writes errors to the developer log only.
 class LogCrashReporter implements CrashReporter {
   @override
   Future<void> init() async {}

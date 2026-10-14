@@ -1,3 +1,6 @@
+/// "Driving bans": the map of Europe and the list of countries.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -36,12 +39,12 @@ final banCountryProvider = Provider<String?>((ref) {
   return countries?.end ?? countries?.start;
 });
 
-/// «Запреты движения» для грузовика больше 12 т: схема Европы — где запрет
-/// сейчас, скоро, частичный, — и страны списком: касание — экран страны.
-/// Сегодня и сейчас — бесплатно; календарь на будущие дни — Premium
-/// (Фаза 5, docs/premium.md). Макета нет — из компонентов дизайн-системы.
-/// Открытый экран проверяет, нет ли на сайте новых правил: приложение
-/// может жить в памяти неделями без нового запуска.
+/// "Driving bans" for a truck over 12 t: the map of Europe — where a ban is on
+/// now, soon, partial — and the countries as a list; a tap opens the country.
+/// Today and now are free; the calendar of future days is Premium (Phase 5,
+/// `docs/premium.md`). There is no mockup — built from the design system
+/// components. The open screen checks the site for new rules: the app may stay
+/// in memory for weeks without a new launch.
 class DrivingBansScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -49,6 +52,7 @@ class DrivingBansScreen extends ConsumerStatefulWidget {
   ConsumerState<DrivingBansScreen> createState() => _DrivingBansScreenState();
 }
 
+/// Refreshes the rules from the site when the screen opens.
 class _DrivingBansScreenState extends ConsumerState<DrivingBansScreen> {
   @override
   void initState() {
@@ -88,6 +92,7 @@ class _DrivingBansScreenState extends ConsumerState<DrivingBansScreen> {
   }
 }
 
+/// The bans map in a card with its legend.
 class _MapCard extends StatelessWidget {
   const new({required this.statuses, required this.current});
 
@@ -152,6 +157,7 @@ class _MapCard extends StatelessWidget {
   }
 }
 
+/// Countries with their state now; the shift country comes first.
 class _CountryList extends StatelessWidget {
   const new({
     required this.countries,
@@ -200,6 +206,7 @@ class _CountryList extends StatelessWidget {
   }
 }
 
+/// A country row: name, state text and colour dot; opens the country.
 class _CountryRow extends StatelessWidget {
   const new({
     required this.code,
@@ -263,6 +270,7 @@ class _CountryRow extends StatelessWidget {
   }
 }
 
+/// A colour dot of a ban state.
 class _Dot extends StatelessWidget {
   const new(this.color, {this.size = 10});
 

@@ -58,7 +58,7 @@ GitHub → Settings → Branches → «Add branch ruleset» (или «Add rule»
 ### 7. Закрытое тестирование
 
 1. «Контент приложения» (App content) — все разделы ниже. Для закрытого теста нужны Data safety и политика конфиденциальности (раздел ниже): у приложения есть геолокация и отправка отчётов о падениях. Внутреннее тестирование (internal) от Data safety освобождено — там можно работать, пока формы на проверке.
-2. Страница в магазине: название, краткое и полное описание, значок 512 × 512, картинка 1024 × 500 и 8 скриншотов на 13 языках — артефакт `store-listing` workflow «Страница в Google Play» или его загрузка в Play с галочкой «Загрузить» (`docs/store/listing/README.md`). Категория — «Автомобили и транспорт», «Карты и навигация» или «Бизнес» (сравнение — `docs/store/play-audit.md`, раздел 11), адрес почты для связи.
+2. Страница в магазине: название, краткое и полное описание, значок 512 × 512, картинка 1024 × 500 и 8 скриншотов на 13 языках — артефакт `store-listing` workflow «Страница в Google Play» или его загрузка в Play с галочкой «Загрузить» (`docs/store/listing/README.md`). Категория — «Автомобили и транспорт» (решение 2026-10-13, `docs/store/play-audit.md`, раздел 11), адрес почты для связи.
 3. «Тестирование» → «Закрытое тестирование» → трек Alpha: страны (ЕС и страны ЕСТР, где работают тестировщики); тестировщики — группа Google (водитель вступает сам по ссылке на группу, адреса собирать не нужно) или список адресов; канал обратной связи — адрес или ссылка на чат беты.
 4. Первый выпуск в Alpha — тег `v0.2.0-beta.1` (`README.md`, «Как выпустить бету») или «Продвинуть выпуск» из внутреннего теста в Play Console. Первая проверка Google может занять несколько дней.
 5. Ссылку-приглашение со вкладки «Тестировщики» — водителям вместе с [инструкцией](tester-guide.md). С этого дня идут 14 дней.
@@ -74,9 +74,9 @@ GitHub → Settings → Branches → «Add branch ruleset» (или «Add rule»
 | Возрастной рейтинг | Анкета IARC: утилита / навигация и транспорт, без насилия, без покупок в бете (покупки — Фаза 5, анкету обновить) |
 | Целевая аудитория | 18+ (водители), приложение не для детей |
 | Новостное приложение | Нет |
-| Приложение для здоровья, финансовые функции, государственное | Нет |
+| Приложение для здоровья, финансовые функции, государственное | Нет. Правила ЕС и запреты — государственная информация: источник и оговорка «не связано с властями» — в описании и в приложении (`docs/store/play-audit.md`, п. 12) |
 | Разрешения foreground service | Тип `location` — текст ниже, нужно видео |
-| Точные будильники (`SCHEDULE_EXACT_ALARM`) | Отдельной декларации для `SCHEDULE_EXACT_ALARM` сейчас нет (декларация — для `USE_EXACT_ALARM`, его не используем). Если Play Console спросит — текст ниже |
+| Точные будильники (`SCHEDULE_EXACT_ALARM`) | Отдельной декларации для `SCHEDULE_EXACT_ALARM` сейчас нет (декларация — для `USE_EXACT_ALARM`, его не используем). Приложение разрешение не запрашивает (2026-10-13). Если Play Console спросит — текст ниже |
 
 ## Data safety
 
@@ -118,14 +118,14 @@ Play Console → Контент приложения → Разрешения fo
 
 **Точные будильники (если спросят):**
 
-> Scheduled notifications warn the driver 15/30/60 minutes before the mandatory break and the end of the working day, and one minute after a legal limit is exceeded. A late warning can cause a legal infringement, so the alarm must fire on time, also in Doze. The driver enables exact alarms on Android 14+ in onboarding or settings.
+> Scheduled notifications warn the driver 15/30/60 minutes before the mandatory break and the end of the working day, and one minute after a legal limit is exceeded. A late warning can cause a legal infringement, so the alarm should fire on time, also in Doze. The app does not ask for this access: exact alarms are used where the system grants them (Android 12–13, or when the driver enables "Alarms & reminders" in the phone settings); otherwise the warnings are scheduled as inexact alarms.
 
 ## Политика конфиденциальности
 
 Текст — `site/privacy/index.html`, на одной странице русский и английский. Адрес — `https://svamibog.github.io/TachoTimeEU/privacy/`: его вписать в Play Console, тот же адрес открывает приложение («Ещё» → «Политика конфиденциальности», `app/lib/core/config/app_links.dart`; русский интерфейс — русский текст, остальные — английский). Публикует workflow «Сайт» (`.github/workflows/pages.yml`) после зелёного CI на `main`, вместе с файлом правил запретов `bans/v1.json` (`docs/domain/driving-bans.md`, «Обновление по сети»). Не юридический текст — в Фазе 7 его проверяет юрист.
 
 До отправки в Play Console:
-1. Вписать ответственного за данные (имя или название, адрес) и почту для связи вместо `[TODO: …]` — в обеих частях страницы. Пока заглушки есть, workflow «Сайт» предупреждает.
+1. ~~Вписать ответственного за данные и почту для связи~~ — 14.10.2026: Maksim Rubanets, maruba.app@gmail.com, в обеих частях страницы. Заглушек `TODO` в политике быть не должно — проверяет тест (`app/test/config/app_links_test.dart`), workflow «Сайт» ещё и предупреждает. Тот же адрес — почта для связи на странице в Play Console.
 2. Sentry → проект → Settings → Security & Privacy → «Prevent Storing of IP Addresses»; PostHog → Project settings → «Discard client IP data». Политика обещает, что IP-адрес не хранится.
 3. GitHub → Settings → Pages → Build and deployment → Source: «GitHub Actions», затем Actions → «Сайт» → «Run workflow». Проверить, что страница открывается без входа. Без этого «Сайт» падает на шаге `configure-pages` («Get Pages site failed … Not Found») — нет ни политики, ни файла правил запретов.
 

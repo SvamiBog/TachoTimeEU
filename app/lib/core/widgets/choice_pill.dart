@@ -1,10 +1,13 @@
+/// A 44 dp "pill" option used in rows of choices.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 
-/// Вариант-«пилюля» 44 dp: недавние страны (экран 10), период отчёта
-/// (экран 16). Выбранный — цветом вождения.
+/// A 44 dp "pill" option: recent countries (screen 10), report period (screen
+/// 16). The selected one is in the driving colour.
 class ChoicePill extends StatelessWidget {
   const new(
     this.text, {

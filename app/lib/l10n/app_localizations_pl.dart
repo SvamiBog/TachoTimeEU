@@ -1723,13 +1723,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get notifyAllowed => 'Powiadomienia dozwolone';
 
   @override
-  String get notifyExact => 'Dokładny czas powiadomień';
-
-  @override
-  String get notifyExactHint =>
-      'Zezwól na „Alarmy i przypomnienia” — inaczej telefon może opóźnić ostrzeżenie';
-
-  @override
   String get notifyChannelLimits => 'Limity i naruszenia';
 
   @override
@@ -2248,7 +2241,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo pomaga planować czas, ale nie zastępuje tachografu i nie jest poradą prawną. Oficjalny tekst przepisów — rozporządzenie (WE) nr 561/2006 i umowa AETR.';
+      'TachoGo pomaga planować czas, ale nie zastępuje tachografu i nie jest poradą prawną. Aplikacja nie jest powiązana z organami władzy UE ani państw Europy. Oficjalny tekst przepisów — rozporządzenie (WE) nr 561/2006 i umowa AETR.';
+
+  @override
+  String get guideSources => 'Gdzie sprawdzić';
+
+  @override
+  String get guideOfficialText => 'Oficjalny tekst rozporządzenia 561/2006';
 
   @override
   String get moreAbout => 'O aplikacji';
@@ -2262,7 +2261,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo pomaga planować czas jazdy i odpoczynek, ale nie zastępuje tachografu i nie jest poradą prawną.';
+      'TachoGo pomaga planować czas jazdy i odpoczynek, ale nie zastępuje tachografu i nie jest poradą prawną. Aplikacja nie jest powiązana z organami władzy UE ani państw Europy.';
 
   @override
   String get morePrivacy => 'Polityka prywatności';

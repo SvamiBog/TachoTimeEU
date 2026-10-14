@@ -1,13 +1,17 @@
-// Нарушения за весь журнал — то, что водитель видел бы на главной, пока
-// журнал шёл. Движок считает снимок на момент `now`; здесь снимки берутся
-// в контрольных точках — за минуту до конца каждой записи и в её конец — по
-// журналу, каким он был в тот момент: записи позже отброшены, текущая
-// открыта. Нарушение засчитывается с первой точки, где появилось, до
-// исчезновения. Для сверки с отчётом программы анализа тахографа (ENG-20).
+/// Infringements over a whole log — what the driver would have seen on the home
+/// screen while the log was being written.
+///
+/// The engine computes a snapshot at `now`; here snapshots are taken at
+/// checkpoints — a minute before the end of each record and at its end — on the
+/// log as it was at that moment: later records dropped, the current one open.
+/// An infringement counts from the first checkpoint where it appears until it
+/// disappears. Used to compare with the tachograph analysis software report
+/// (ENG-20).
+library;
 
 import 'package:tacho_engine/tacho_engine.dart';
 
-/// Нарушение в журнале: вид, когда появилось и статья.
+/// An infringement in the log: its kind, when it appeared and the article.
 typedef JournalViolation = ({
   InfringementType type,
   DateTime at,

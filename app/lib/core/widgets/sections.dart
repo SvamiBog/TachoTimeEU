@@ -1,9 +1,13 @@
+/// Building blocks of list screens: section titles, grouped cards and durations
+/// that screen readers read in words.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 
-/// Заголовок раздела: «СЕГОДНЯ».
+/// A section title: "TODAY".
 class SectionTitle extends StatelessWidget {
   const new(this.text, {this.top = AppSpacing.beforeSectionMax, super.key});
 
@@ -32,8 +36,8 @@ class SectionTitle extends StatelessWidget {
   );
 }
 
-/// Карточка со строками через линию. Строки — во всю ширину карточки:
-/// строка из одного текста иначе сжимается до него и встаёт по центру.
+/// A card with rows separated by lines. Rows take the full card width:
+/// otherwise a text-only row shrinks to its text and centres itself.
 class CardGroup extends StatelessWidget {
   const new({required this.children, super.key});
 
@@ -63,8 +67,7 @@ class CardGroup extends StatelessWidget {
   }
 }
 
-/// Длительность «4:30», которую экранный диктор читает как «4 часа
-/// 30 минут».
+/// A duration "4:30" that the screen reader reads as "4 hours 30 minutes".
 class DurationText extends StatelessWidget {
   const new(this.text, {required this.spoken, this.style, super.key});
 

@@ -1,3 +1,7 @@
+/// "Daily rest" screen: the rest in progress and its milestones, or when to
+/// start the rest while the driver works.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -19,8 +23,8 @@ import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 
-/// Отдых, который идёт сейчас, и смена — по минутам: секундный тик экран
-/// не перестраивает.
+/// The rest in progress and the shift, in whole minutes: the one-second tick
+/// does not rebuild the screen.
 typedef DailyRestState = ({
   DateTime now,
 
@@ -70,10 +74,10 @@ void openDailyRestScreen(BuildContext context) =>
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const DailyRestScreen()));
 
-/// «Суточный отдых»: идущий отдых — сколько отдыхать до 3, 9 и 11 ч и в
-/// котором часу они наберутся; пока водитель работает — до какого времени
-/// начать полный и сокращённый отдых. Макета нет: собран из компонентов
-/// экранов «Рабочий день» и «Недельный отдых».
+/// "Daily rest": during a rest — how long until 3, 9 and 11 h and at what time
+/// each is reached; while the driver works — until when to start a regular and
+/// a reduced rest. There is no mockup: built from the components of the
+/// "Workday" and "Weekly rest" screens.
 class DailyRestScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -127,6 +131,7 @@ class DailyRestScreen extends ConsumerWidget {
   }
 }
 
+/// The ring with the rest so far, or the time left in the shift.
 class _Summary extends StatelessWidget {
   const new(this.s);
 
@@ -248,9 +253,9 @@ class _Summary extends StatelessWidget {
   }
 }
 
-/// Вехи отдыха: 3 ч — первая часть раздельного (пока смена идёт), 9 ч —
-/// сокращённый, 11 ч — полный. Отдых идёт — когда наберётся каждая; не
-/// начат — до какого времени начать.
+/// Rest milestones: 3 h — the first part of a split rest (while the shift is
+/// on), 9 h — reduced, 11 h — regular. During a rest — when each is reached;
+/// before it — until when to start.
 class _Milestones extends StatelessWidget {
   const new(this.s);
 

@@ -1,11 +1,14 @@
 // STORE-01 (docs/testing.md): тексты страницы в Google Play — все языки
 // страницы, лимиты Play, без запрещённых политикой о метаданных слов
-// в названии и кратком описании, дисклеймер «не заменяет тахограф»
-// (вопрос 8 PRD), восемь подписей скриншотов.
+// в названии и кратком описании, перед концом — источники правил и что
+// приложение не связано с властями (политика Play о госинформации), в
+// конце — дисклеймер «не заменяет тахограф» (вопрос 8 PRD), восемь подписей
+// скриншотов.
 
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tachogo/core/config/app_links.dart';
 
 import 'store_listing.dart';
 
@@ -121,6 +124,14 @@ void main() {
             expect(text, isNot(contains(name)));
           }
         }
+      });
+
+      test('перед концом — источники и независимость от властей '
+          '(политика Play о госинформации)', () {
+        final paragraphs = listing.full.split('\n\n');
+        final sources = paragraphs[paragraphs.length - 2];
+        expect(sources, contains(regulationPage));
+        expect(sources, contains('TachoGo'));
       });
 
       test('в конце — не заменяет тахограф (вопрос 8 PRD)', () {

@@ -1,10 +1,14 @@
+/// Layout of detail screens: back arrow with title, scrolling content, buttons
+/// at the bottom.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 
-/// Экран деталей: «← Заголовок», прокручиваемое содержимое, кнопки снизу.
+/// A detail screen: "← Title", scrolling content, buttons at the bottom.
 class DetailScaffold extends StatelessWidget {
   const new({
     required this.title,

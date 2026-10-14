@@ -1,8 +1,12 @@
-// Порог покрытия строк по отчёту lcov (CI-02 в docs/testing.md).
-//
-//   dart tool/check_coverage.dart <lcov.info> <мин. %> [часть пути]
-//
-// Сгенерированный код (*.g.dart, *.steps.dart) не считается.
+/// Line coverage threshold from an lcov report (CI-02 in `docs/testing.md`).
+///
+/// ```sh
+/// dart tool/check_coverage.dart <lcov.info> <min %> [path part]
+/// ```
+///
+/// Generated code (`*.g.dart`, `*.steps.dart`) is not counted.
+library;
+
 import 'dart:io';
 
 void main(List<String> args) {

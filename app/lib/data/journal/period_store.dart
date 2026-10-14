@@ -1,11 +1,12 @@
+/// Activity records in the database — shared by live recording
+/// (`ActivityRepository`) and manual edits (`JournalEditRepository`). The
+/// engine returns a new list of records; the difference is saved here.
+library;
+
 import 'package:drift/drift.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/tables.dart';
-
-// Записи журнала в БД: общее для «живой» записи (ActivityRepository) и
-// слоя ручных правок (JournalEditRepository). Движок возвращает новый
-// список записей, здесь сохраняется разница.
 
 /// Все записи журнала по возрастанию начала.
 SimpleSelectStatement<$ActivityPeriodsTable, ActivityPeriodRow> orderedPeriods(

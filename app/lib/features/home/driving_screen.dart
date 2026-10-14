@@ -1,3 +1,7 @@
+/// "Driving" screen: every driving limit in one place, opened from the driving
+/// rows of the home screen.
+library;
+
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -21,12 +25,14 @@ import 'package:tachogo/features/home/detail_rows.dart';
 import 'package:tachogo/features/home/shift_rows.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
-/// Раздел экрана «Вождение» — по строке главной, с которой его открыли.
+/// Section of the "Driving" screen — from the home row that opened it.
 enum DrivingSection { continuous, daily, week }
 
-/// Что раньше всего остановит вождение.
+/// What will stop driving first.
 enum DrivingStop { breakDue, workday, daily, weekly, fortnight }
 
+/// Driving limits for the screen in whole minutes: the one-second tick does not
+/// rebuild it.
 typedef _Driving = ({
   DateTime now,
   DateTime? shiftStart,
@@ -118,13 +124,13 @@ void openDrivingScreen(
   MaterialPageRoute<void>(builder: (_) => DrivingScreen(section: section)),
 );
 
-/// «Вождение» — все лимиты вождения на одном экране (отзыв водителя
-/// 02.10.2026): сколько ещё можно ехать и что остановит, непрерывное
-/// (4:30, переход к перерыву), суточное (9 / 10 ч, удлинения на неделе),
-/// недельное и двухнедельное (56 / 90 ч), смены недели и правила; внизу —
-/// правка вождения за день (экран 7). Открывается со строк вождения главной
-/// и прокручивается к разделу строки. Макета нет — из компонентов экранов
-/// лимитов.
+/// "Driving" — every driving limit on one screen (driver feedback 02.10.2026):
+/// how much longer one may drive and what stops it, continuous (4:30, link to
+/// the break), daily (9 / 10 h, extensions in the week), weekly and fortnightly
+/// (56 / 90 h), the shifts of the week and the rules; at the bottom —
+/// correcting the day's driving (screen 7). Opened from the driving rows of the
+/// home screen and scrolled to the row's section. There is no mockup — built
+/// from the limit screen components.
 class DrivingScreen extends ConsumerStatefulWidget {
   const new({this.section = DrivingSection.continuous, super.key});
 
@@ -134,6 +140,7 @@ class DrivingScreen extends ConsumerStatefulWidget {
   ConsumerState<DrivingScreen> createState() => _DrivingScreenState();
 }
 
+/// Scrolls once to the section the screen was opened for.
 class _DrivingScreenState extends ConsumerState<DrivingScreen> {
   final Map<DrivingSection, GlobalKey> _sections = {
     for (final s in DrivingSection.values) s: GlobalKey(),
@@ -208,7 +215,7 @@ class _DrivingScreenState extends ConsumerState<DrivingScreen> {
   }
 }
 
-/// «Можно ехать ещё 2:40 — до перерыва → 14:20».
+/// "You may drive 2:40 more — until the break → 14:20".
 class _Summary extends StatelessWidget {
   const new(this.s);
 
@@ -316,7 +323,7 @@ MilestoneRow _ahead(
   );
 }
 
-/// 4:30 без перерыва и переход к экрану перерыва.
+/// 4:30 without a break and the link to the break screen.
 class _Continuous extends StatelessWidget {
   const new(this.s);
 
@@ -346,7 +353,7 @@ class _Continuous extends StatelessWidget {
   }
 }
 
-/// Вождение смены: 9 ч, дважды в неделю — 10 ч.
+/// Driving in the shift: 9 h, twice a week 10 h.
 class _Daily extends StatelessWidget {
   const new(this.s);
 
@@ -392,7 +399,7 @@ class _Daily extends StatelessWidget {
   }
 }
 
-/// Неделя с понедельника: 56 ч и 90 ч вместе с прошлой неделей.
+/// The week from Monday: 56 h, and 90 h together with the previous week.
 class _Week extends StatelessWidget {
   const new(this.s);
 

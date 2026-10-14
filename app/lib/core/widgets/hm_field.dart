@@ -1,3 +1,6 @@
+/// Text field for a time or duration "H:MM" typed on the numeric keypad.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
@@ -30,11 +33,10 @@ String formatHmInput(Duration value, {required bool clock}) {
   return '${clock ? h.toString().padLeft(2, '0') : h}:$m';
 }
 
-/// Только цифры, двоеточие — перед последними двумя: «0630» → «06:30».
-/// Лишняя цифра вытесняет самую старую, как на табло: четыре цифры,
-/// набранные подряд, и есть значение — «8:20», затем «0945» → «09:45».
-/// Иначе в полном поле новые цифры пропадали бы и поле казалось бы
-/// замершим.
+/// Formats digits as "H:MM". An extra digit pushes out the oldest one, as on a
+/// scoreboard: four digits typed in a row are the value — "8:20", then "0945" →
+/// "09:45". Otherwise new digits would vanish in a full field and it would seem
+/// frozen.
 class _HmFormatter extends TextInputFormatter {
   const new(this.maxDigits);
 
@@ -60,9 +62,9 @@ class _HmFormatter extends TextInputFormatter {
   }
 }
 
-/// Время или длительность «Ч:ММ» с цифровой клавиатуры — водитель вводит
-/// любое значение сам (решение по отзывам водителей, 28.09.2026: колёсики
-/// неудобны). [onChanged] получает null, пока введено не время.
+/// A time or duration "H:MM" typed on the numeric keypad — the driver enters
+/// any value (decision from drivers' feedback, 28.09.2026: wheels are awkward).
+/// [onChanged] gets null while the text is not a valid time.
 class HmField extends StatefulWidget {
   const new({
     required this.value,
@@ -91,6 +93,7 @@ class HmField extends StatefulWidget {
   State<HmField> createState() => _HmFieldState();
 }
 
+/// Keeps the text controller in sync with the value from outside.
 class _HmFieldState extends State<HmField> {
   late final _controller = TextEditingController(text: _text(widget.value));
   final _focus = FocusNode();

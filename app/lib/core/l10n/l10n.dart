@@ -1,3 +1,7 @@
+/// Access to the interface strings: `context.l10n` on screens and [appStrings]
+/// outside them (notifications, the background service).
+library;
+
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/widgets.dart';
@@ -5,6 +9,7 @@ import 'package:tachogo/l10n/app_localizations.dart';
 
 export 'package:tachogo/l10n/app_localizations.dart';
 
+/// Interface strings and the locale tag from a [BuildContext].
 extension L10nX on BuildContext {
   /// Строки интерфейса: `context.l10n.navHome`.
   AppLocalizations get l10n => AppLocalizations.of(this);

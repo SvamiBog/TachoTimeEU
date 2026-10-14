@@ -1,3 +1,7 @@
+/// Providers of shift countries: the countries of each shift, the frequent
+/// ones, the default one and the automatic fill of the current shift.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

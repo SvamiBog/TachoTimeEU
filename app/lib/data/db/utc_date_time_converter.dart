@@ -1,12 +1,15 @@
+/// Drift converter that keeps every stored date in UTC.
+library;
+
 import 'package:drift/drift.dart';
 
-/// Приводит даты к UTC при записи и чтении.
+/// Converts dates to UTC on write and read.
 ///
-/// Даты хранятся ISO-текстом (`store_date_time_values_as_text`), и SQL
-/// сравнивает их как строки: локальное «09:30+02:00» оказалось бы позже
-/// «08:00Z», хотя это 07:30Z. Конвертер гарантирует, что в колонку попадает
-/// только UTC. Он не действует на значения в `where` (`isBiggerThanValue`
-/// и т.п.) — туда передавать `.toUtc()`.
+/// Dates are stored as ISO text (`store_date_time_values_as_text`), and SQL
+/// compares them as strings: a local "09:30+02:00" would sort after "08:00Z",
+/// although it is 07:30Z. The converter guarantees only UTC reaches the column.
+/// It does not apply to values in `where` (`isBiggerThanValue` and the like) —
+/// pass `.toUtc()` there.
 class UtcDateTimeConverter extends TypeConverter<DateTime, DateTime> {
   const new();
 

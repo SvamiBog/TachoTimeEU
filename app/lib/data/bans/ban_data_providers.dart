@@ -1,3 +1,7 @@
+/// Providers of the driving ban rules shown on screens: built-in or downloaded,
+/// whichever is newer.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:tacho_engine/driving_bans.dart';
@@ -33,6 +37,8 @@ final banDataProvider =
       BanDataNotifier.new,
     );
 
+/// Holds the ban rules for the screens: the built-in ones at once, the
+/// downloaded ones after [refresh] if they were checked no earlier.
 class BanDataNotifier extends Notifier<Map<String, CountryBans>> {
   Future<void>? _refreshing;
   var _storedRead = false;

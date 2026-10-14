@@ -30,4 +30,7 @@ Semplice e affidabile
 Gratis e Premium
 Gratis: attività, tutti i timer e gli avvisi, «Chiudi la giornata», registro, divieti di oggi. Premium: modifica del registro, rapporti PDF e CSV, trasferimento su un altro telefono, calendario dei divieti. Abbonamento mensile o annuale (7 giorni gratis) o acquisto a vita.
 
+Fonti
+TachoGo è un'app indipendente: non è affiliata alle autorità dell'UE o dei paesi europei e non le rappresenta. I limiti seguono il Regolamento (CE) n. 561/2006 (testo ufficiale: https://eur-lex.europa.eu/eli/reg/2006/561/oj) e l'Accordo AETR. I divieti di circolazione seguono i siti ufficiali dei paesi, i link sono nell'app.
+
 TachoGo aiuta a pianificare il tempo, ma non sostituisce il tachigrafo e non è una registrazione ufficiale. Al controllo valgono i dati del tachigrafo e della carta del conducente.

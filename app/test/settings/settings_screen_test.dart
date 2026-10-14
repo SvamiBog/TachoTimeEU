@@ -388,25 +388,17 @@ void main() {
       ),
     );
 
-    testWidgets('будильники запрещены — строка; после разрешения пропадает, '
-        'расписание — точными будильниками', (tester) async {
+    // Решение 2026-10-13: приложение не просит «Будильники и напоминания»,
+    // даже когда они запрещены. Точными будильниками ставить или нет —
+    // решает расписание (NTF, alert_scheduler_test.dart).
+    testWidgets('будильники запрещены — строки «Точное время» нет', (
+      tester,
+    ) async {
       alerts.exactAllowed = false;
-      await seedJournal(tester);
-      await pumpWithAlerts(tester);
-      await show(tester, 'Точное время уведомлений');
-      expect(find.textContaining('Будильники и напоминания'), findsOne);
-      await tapText(tester, 'Точное время уведомлений');
-      expect(alerts.calls, contains('requestExactAlarms'));
-      expect(find.text('Точное время уведомлений'), findsNothing);
-      expect(alerts.pending, isNotEmpty);
-      expect(alerts.pending.values.every((p) => p.exact), isTrue);
-      await unmount(tester);
-    });
-
-    testWidgets('будильники разрешены — строки нет', (tester) async {
       await pumpWithAlerts(tester);
       await show(tester, 'Перерыв');
-      expect(find.text('Точное время уведомлений'), findsNothing);
+      expect(find.textContaining('Будильники'), findsNothing);
+      expect(find.textContaining('Точное время'), findsNothing);
       await unmount(tester);
     });
 

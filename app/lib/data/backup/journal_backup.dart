@@ -1,3 +1,7 @@
+/// Moving the journal to another phone as a file: export, validation and
+/// restore in one transaction.
+library;
+
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
@@ -6,7 +10,7 @@ import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/tables.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 
-/// Почему файл переноса не загрузить.
+/// Why a transfer file cannot be loaded.
 enum BackupError {
   /// Не файл переноса TachoGo: другой файл или не JSON.
   notBackup,
@@ -18,6 +22,7 @@ enum BackupError {
   damaged,
 }
 
+/// A transfer file that cannot be loaded, with the reason.
 class BackupException implements Exception {
   const new(this.error, [this.detail]);
 
@@ -32,7 +37,7 @@ class BackupException implements Exception {
       'BackupException(${error.name}${detail == null ? '' : ': $detail'})';
 }
 
-/// Журнал из файла переноса: проверен и готов к записи.
+/// The journal from a transfer file, validated and ready to be written.
 class BackupContents {
   const new({
     required this.periods,
@@ -73,20 +78,21 @@ class BackupContents {
   static DateTime _max(DateTime a, DateTime b) => a.isAfter(b) ? a : b;
 }
 
-/// Перенос журнала на другой телефон файлом (Ещё → «Перенос на другой
-/// телефон»). На старом телефоне [export] собирает файл со всем журналом:
-/// записи режимов, смены со странами и заметками, смены итогами,
-/// считывания карты и переносимые настройки
-/// (`SettingsRepository.transferableSettings`). На новом [parse] проверяет
-/// файл, [restore] заменяет журнал одной транзакцией.
+/// Moves the journal to another phone as a file (More → "Move to another
+/// phone"). On the old phone [export] builds a file with the whole journal:
+/// activity records, shifts with countries and notes, manual shifts, card
+/// downloads and the transferable settings
+/// (`SettingsRepository.transferableSettings`). On the new phone [parse]
+/// validates the file and [restore] replaces the journal in one transaction.
 ///
-/// Формат — JSON, время — ISO-8601 в UTC, длительности — в минутах.
-/// [formatVersion] растёт, когда старое приложение не сможет прочитать
-/// новый файл; поля читаются по именам, а не по колонкам БД, поэтому смена
-/// схемы БД формат не ломает.
+/// The format is JSON, times are ISO-8601 UTC, durations are minutes.
+/// [formatVersion] grows when an older app could not read a new file; fields
+/// are read by name, not by database column, so a schema change does not break
+/// the format.
 ///
-/// Перенос — Premium-операция (docs/premium.md, закрытие — Фаза 5): здесь
-/// будет вторая проверка `EntitlementService`, кроме замка на экране.
+/// Transfer is a Premium operation (`docs/premium.md`, locked in Phase 5):
+/// there will be a second `EntitlementService` check here besides the lock on
+/// the screen.
 class JournalBackup {
   new(this._db, {DateTime Function()? clock, this._onChanged})
     : _clock = clock ?? DateTime.now;
@@ -331,7 +337,8 @@ class JournalBackup {
   static String? _optTime(DateTime? t) => t == null ? null : _time(t);
 }
 
-/// Поля объекта из файла: неверное поле — [BackupError.damaged] с путём.
+/// Fields of an object in the file: a bad field throws [BackupError.damaged]
+/// with its path.
 class _Fields {
   const new(this._map, this._path);
 

@@ -1,12 +1,13 @@
+/// What to show the driver and when, from the engine forecast: categories from
+/// settings, texts from ARB, one notification id per kind of event.
+library;
+
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/infringement_text.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 import 'package:tachogo/notifications/notification_platform.dart';
-
-// Что и когда показать водителю по прогнозу движка: категории из
-// настроек, тексты из ARB, id уведомления на вид события.
 
 /// id уведомлений о лимитах: по одному на вид. Сервис автоопределения
 /// занимает 561 — диапазоны не пересекаются.

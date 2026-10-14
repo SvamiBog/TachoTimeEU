@@ -1,9 +1,12 @@
+/// "Clear all data" in settings.
+library;
+
 import 'package:tachogo/data/db/app_database.dart';
 
-/// «Очистить все данные» (экран 3): журнал режимов, ручные смены, страны
-/// и заметки смен, считывания карты — одной транзакцией. Настройки
-/// остаются: тема, язык, правила расчёта, автоопределение, согласие на
-/// аналитику. Бесплатно, как и сам учёт режимов.
+/// "Clear all data" (screen 3): activity records, manual shifts, shift
+/// countries and notes, card downloads — in one transaction. Settings stay:
+/// theme, language, calculation rules, automatic detection, analytics consent.
+/// Free, like recording activities itself.
 class JournalCleaner {
   new(this._db, {this._onChanged});
 

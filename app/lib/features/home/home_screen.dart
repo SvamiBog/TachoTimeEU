@@ -1,3 +1,7 @@
+/// Home screen (screen 1): the driver's state, the activity buttons and what is
+/// left of every limit.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/core/l10n/format.dart';
@@ -15,11 +19,12 @@ import 'package:tachogo/features/home/limit_sections.dart';
 import 'package:tachogo/features/home/mode_buttons.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
+/// Whether the calculation is loading, ready or failed.
 enum _Load { loading, ready, failed }
 
-/// Главная (экран 1): состояние водителя, кнопки режимов и остатки по
-/// всем лимитам. Каждый блок подписан на свою часть расчёта, поэтому тик
-/// часов перестраивает только таймеры, у которых сменилась минута.
+/// Home (screen 1): the driver's state, the activity buttons and what is left
+/// of every limit. Each block watches its own part of the calculation, so the
+/// clock tick only rebuilds the timers whose minute has changed.
 class HomeScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -59,7 +64,7 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-/// «TachoGo / Ср, 23 сентября · смена с 06:49».
+/// "TachoGo / Wed, 23 September · shift since 06:49".
 class HomeHeader extends ConsumerWidget {
   const new({super.key});
 
@@ -115,6 +120,7 @@ class HomeHeader extends ConsumerWidget {
   }
 }
 
+/// Shown when the journal could not be read.
 class _LoadError extends StatelessWidget {
   const new();
 

@@ -1,3 +1,7 @@
+/// Manual edits of the journal (a Premium feature from Phase 5): live shift
+/// edits, manual shifts, corrections from the limit screens.
+library;
+
 import 'package:drift/drift.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/countries/tacho_countries.dart';
@@ -7,15 +11,15 @@ import 'package:tachogo/data/journal/period_store.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 
-/// Слой ручных правок журнала: смены из журнала, ручные смены,
-/// корректировки с экранов лимитов. Всё это — Premium (docs/premium.md,
-/// закрытие — Фаза 5): здесь будет вторая проверка `EntitlementService`.
-/// Переключение режима сюда не ходит — оно пишется через
-/// `ActivityRepository`, и проверка подписки его не задевает.
+/// The layer of manual journal edits: shifts from the journal, manual shifts,
+/// corrections from the limit screens. All of it is Premium (`docs/premium.md`,
+/// locked in Phase 5): there will be a second `EntitlementService` check here.
+/// Switching activity does not come here — it is written by
+/// `ActivityRepository`, so the subscription check never touches it.
 ///
-/// Логику правок задаёт движок (`shift_edits.dart`, `journal_edits.dart`),
-/// репозиторий сохраняет разницу: одна правка — одна транзакция, новые
-/// записи — с источником `manual`.
+/// The engine defines the edits (`shift_edits.dart`, `journal_edits.dart`); the
+/// repository saves the difference: one edit is one transaction, new records
+/// get the `manual` source.
 class JournalEditRepository {
   new(this._db, this._settings, {DateTime Function()? clock, this._onChanged})
     : _clock = clock ?? DateTime.now;

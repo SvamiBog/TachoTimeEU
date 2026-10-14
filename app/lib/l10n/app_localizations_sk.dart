@@ -1717,13 +1717,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get notifyAllowed => 'Upozornenia povolené';
 
   @override
-  String get notifyExact => 'Presný čas upozornení';
-
-  @override
-  String get notifyExactHint =>
-      'Povoľte „Budíky a pripomenutia“ — inak môže telefón upozornenie oneskoriť';
-
-  @override
   String get notifyChannelLimits => 'Limity a porušenia';
 
   @override
@@ -2242,7 +2235,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo pomáha plánovať čas, ale nenahrádza tachograf a nie je právnou radou. Úradný text pravidiel — nariadenie (ES) č. 561/2006 a dohoda AETR.';
+      'TachoGo pomáha plánovať čas, ale nenahrádza tachograf a nie je právnou radou. Aplikácia nie je spojená s orgánmi EÚ ani európskych štátov. Úradný text pravidiel — nariadenie (ES) č. 561/2006 a dohoda AETR.';
+
+  @override
+  String get guideSources => 'Kde overiť';
+
+  @override
+  String get guideOfficialText => 'Úradný text nariadenia 561/2006';
 
   @override
   String get moreAbout => 'O aplikácii';
@@ -2256,7 +2255,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo pomáha plánovať čas jazdy a odpočinku, ale nenahrádza tachograf a nie je právnou radou.';
+      'TachoGo pomáha plánovať čas jazdy a odpočinku, ale nenahrádza tachograf a nie je právnou radou. Aplikácia nie je spojená s orgánmi EÚ ani európskych štátov.';
 
   @override
   String get morePrivacy => 'Zásady ochrany osobných údajov';

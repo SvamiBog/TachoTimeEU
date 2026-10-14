@@ -1,14 +1,21 @@
-// Итоговый манифест Android вместе с манифестами плагинов (CI-06 в
-// docs/testing.md): без фонового доступа к геолокации, прямого запроса на
-// исключение из экономии батареи, USE_EXACT_ALARM и рекламного ID, сервис
-// автоопределения с типом location, при включении экрана его уведомление
-// обновляется (`TachoGoApplication`), уведомления о лимитах по расписанию
-// переживают перезагрузку, есть доступ в интернет для правил запретов,
-// у уведомлений белый значок, PostHog не стартует до согласия.
-//
-//   dart tool/check_android_manifest.dart [AndroidManifest.xml …]
-//
-// Без аргументов проверяет итоговые манифесты сборки в build/app.
+/// Checks the final Android manifest merged with the plugin manifests (CI-06 in
+/// `docs/testing.md`): no background location, no direct request to ignore
+/// battery optimisation, no USE_EXACT_ALARM, no advertising ID and none of the
+/// permissions Google Play restricts (media, all files, all packages, contacts,
+/// SMS, call log); the detection service has the location type; when the screen
+/// turns on its notification is refreshed (`TachoGoApplication`); scheduled
+/// limit notifications survive a reboot; there is internet access for the ban
+/// rules; notifications have the white icon; PostHog does not start before
+/// consent.
+///
+/// ```sh
+/// dart tool/check_android_manifest.dart [AndroidManifest.xml …]
+/// ```
+///
+/// Without arguments it checks the merged manifests of the build in
+/// `build/app`.
+library;
+
 import 'dart:io';
 
 /// meta-data со значком уведомлений: по этому имени его берёт уведомление
@@ -35,6 +42,18 @@ List<String> manifestProblems(String xml) {
     'android.permission.USE_EXACT_ALARM',
     // Рекламного ID нет — так в Play Console («Рекламный идентификатор»).
     'com.google.android.gms.permission.AD_ID',
+    // Разрешения, которые Google Play даёт только по декларации или
+    // заменяет системными выборами (фото, файлы, контакты): приложению они
+    // не нужны — файл переноса берётся через системный выбор документов.
+    'android.permission.READ_MEDIA_IMAGES',
+    'android.permission.READ_MEDIA_VIDEO',
+    'android.permission.MANAGE_EXTERNAL_STORAGE',
+    'android.permission.QUERY_ALL_PACKAGES',
+    'android.permission.READ_CONTACTS',
+    'android.permission.READ_SMS',
+    'android.permission.RECEIVE_SMS',
+    'android.permission.SEND_SMS',
+    'android.permission.READ_CALL_LOG',
   ]) {
     if (tags('uses-permission').any((t) => named(t, permission))) {
       problems.add('Запрещённое разрешение $permission');

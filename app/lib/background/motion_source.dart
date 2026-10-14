@@ -1,3 +1,7 @@
+/// GPS fixes for automatic driving detection, from the geolocator plugin, with
+/// the speed worked out when the platform does not report it.
+library;
+
 import 'dart:io' show Platform;
 
 import 'package:geolocator/geolocator.dart';

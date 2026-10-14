@@ -1,3 +1,7 @@
+/// Driving bans of one country: the state now, the rules, the upcoming bans and
+/// the official sources.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -38,9 +42,9 @@ String? sourcePage(List<String> sources, String source) {
   return page.isEmpty ? null : Uri.decodeComponent(page);
 }
 
-/// Запреты страны для грузовика больше 12 т: что сейчас, правила,
-/// ближайшие запреты на две недели (календарь — Premium, Фаза 5), где
-/// проверить, дата сверки.
+/// Bans of a country for a truck over 12 t: what applies now, the rules, the
+/// bans of the next two weeks (the calendar is Premium, Phase 5), where to
+/// check, the date the data was checked.
 class CountryBansScreen extends ConsumerWidget {
   const new(this.code, {super.key});
 
@@ -130,6 +134,8 @@ class CountryBansScreen extends ConsumerWidget {
   }
 }
 
+/// The country's state now: active, soon, partial or clear, with the ban
+/// window.
 class _Now extends StatelessWidget {
   const new({required this.country, required this.status, required this.now});
 
@@ -196,7 +202,7 @@ class _Now extends StatelessWidget {
   }
 }
 
-/// Строка правила или запрета: текст и подпись.
+/// A rule or ban line: text and caption.
 class _Line extends StatelessWidget {
   const new({required this.title, this.subtitle, this.warn = false});
 

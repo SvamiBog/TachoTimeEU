@@ -1,3 +1,7 @@
+/// Text of the foreground service's persistent notification: the current
+/// activity and the most important timer, or a pending switch suggestion.
+library;
+
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';

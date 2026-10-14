@@ -1,3 +1,7 @@
+/// Facts about the app build: its version and the licenses of the bundled
+/// fonts.
+library;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';

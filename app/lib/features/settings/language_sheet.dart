@@ -1,3 +1,6 @@
+/// The "Language" sheet (screens 3 and 13).
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -24,6 +27,8 @@ Future<void> showLanguageSheet(BuildContext context) =>
 String currentLanguageName(BuildContext context) =>
     languageName(Localizations.localeOf(context));
 
+/// "Language" (screens 3 and 13): "As on the phone" and the translations from
+/// ARB. A choice changes the interface language at once.
 class LanguageSheet extends ConsumerWidget {
   const new({super.key});
 
@@ -143,6 +148,7 @@ Future<String?> showReportLanguageSheet(
   },
 );
 
+/// A language row with a check mark when selected.
 class _LanguageRow extends StatelessWidget {
   const new({required this.title, required this.selected, required this.onTap});
 

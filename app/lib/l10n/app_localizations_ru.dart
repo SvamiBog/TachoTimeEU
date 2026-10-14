@@ -1716,13 +1716,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notifyAllowed => 'Уведомления разрешены';
 
   @override
-  String get notifyExact => 'Точное время уведомлений';
-
-  @override
-  String get notifyExactHint =>
-      'Разрешите «Будильники и напоминания» — иначе телефон может задержать предупреждение';
-
-  @override
   String get notifyChannelLimits => 'Лимиты и нарушения';
 
   @override
@@ -2241,7 +2234,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo помогает планировать время, но не заменяет тахограф и не является юридической консультацией. Официальный текст правил — Регламент (ЕС) 561/2006 и Соглашение ЕСТР.';
+      'TachoGo помогает планировать время, но не заменяет тахограф и не является юридической консультацией. Приложение не связано с органами власти ЕС и стран Европы. Официальный текст правил — Регламент (ЕС) 561/2006 и Соглашение ЕСТР.';
+
+  @override
+  String get guideSources => 'Где проверить';
+
+  @override
+  String get guideOfficialText => 'Официальный текст Регламента 561/2006';
 
   @override
   String get moreAbout => 'О приложении';
@@ -2255,7 +2254,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo помогает планировать время за рулём и отдых, но не заменяет тахограф и не является юридической консультацией.';
+      'TachoGo помогает планировать время за рулём и отдых, но не заменяет тахограф и не является юридической консультацией. Приложение не связано с органами власти ЕС и стран Европы.';
 
   @override
   String get morePrivacy => 'Политика конфиденциальности';

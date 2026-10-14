@@ -1,8 +1,11 @@
+/// Database tables. Every date is UTC ([UtcDateTimeConverter]).
+library;
+
 import 'package:drift/drift.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/utc_date_time_converter.dart';
 
-/// Откуда взялась запись журнала.
+/// Where a log record came from.
 enum EntrySource {
   /// Водитель переключил режим в приложении.
   live,
@@ -11,8 +14,8 @@ enum EntrySource {
   manual,
 }
 
-/// Отрезки времени в одном режиме — основа журнала и расчётов движка.
-/// Все даты — UTC (приводятся [UtcDateTimeConverter]).
+/// Stretches of time in one activity — the basis of the journal and of every
+/// engine calculation. All dates are UTC ([UtcDateTimeConverter]).
 @DataClassName('ActivityPeriodRow')
 class ActivityPeriods extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -44,7 +47,7 @@ class ActivityPeriods extends Table {
       dateTime().map(const UtcDateTimeConverter())();
 }
 
-/// Смены: начало/конец и страны по кодам тахографа (PL, D, …).
+/// Shifts: start and end, and countries by tachograph codes (PL, D, …).
 @DataClassName('ShiftRow')
 class Shifts extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -59,9 +62,9 @@ class Shifts extends Table {
   TextColumn get note => text().nullable()();
 }
 
-/// Смены, внесённые вручную итогами — например, за дни до установки
-/// приложения (`ManualShift` движка). Записей режимов у них нет, только
-/// суммы; страны и заметка — здесь же. Длительности — в минутах.
+/// Shifts entered by hand as totals — for example for the days before the app
+/// was installed (the engine's `ManualShift`). They have no activity records,
+/// only sums; countries and a note live here too. Durations are in minutes.
 @DataClassName('ManualShiftRow')
 class ManualShifts extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -92,7 +95,7 @@ class ManualShifts extends Table {
       dateTime().map(const UtcDateTimeConverter())();
 }
 
-/// Считывания карты водителя (лимит 28 дней).
+/// Driver card downloads (28-day limit).
 @DataClassName('CardDownloadRow')
 class CardDownloads extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -100,7 +103,7 @@ class CardDownloads extends Table {
       dateTime().map(const UtcDateTimeConverter())();
 }
 
-/// Настройки «ключ — значение» (язык, тема, пакет мобильности, пороги…).
+/// Key–value settings (language, theme, Mobility Package, thresholds…).
 @DataClassName('SettingRow')
 class Settings extends Table {
   TextColumn get key => text()();

@@ -1,3 +1,6 @@
+/// Screen 6 "Workday".
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -19,6 +22,7 @@ import 'package:tachogo/features/home/detail_rows.dart';
 import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
+/// The workday for the screen, in whole minutes.
 typedef _Workday = ({
   DateTime? start,
   DateTime today,
@@ -54,8 +58,8 @@ void openWorkdayScreen(BuildContext context) =>
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const WorkdayScreen()));
 
-/// Экран 6 «Рабочий день»: 13 / 15 ч (экипаж — 19 / 21 ч) от начала смены
-/// и «Завершить день».
+/// Screen 6 "Workday": 13 / 15 h (crew 19 / 21 h) from the start of the shift,
+/// and "End day".
 class WorkdayScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -130,6 +134,7 @@ class WorkdayScreen extends ConsumerWidget {
   }
 }
 
+/// The workday so far against its limit, with the time it ends.
 class _Summary extends StatelessWidget {
   const new(this.s);
 
@@ -207,6 +212,7 @@ class _Summary extends StatelessWidget {
   }
 }
 
+/// Shift start with its country, 13 h and 15 h milestones.
 class _Milestones extends StatelessWidget {
   const new(this.s, this.start, {this.country});
 

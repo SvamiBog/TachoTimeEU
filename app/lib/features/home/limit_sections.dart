@@ -1,3 +1,8 @@
+/// Limit sections of the home screen — "Today", "Rest" and "Week" — and their
+/// rows. Each row selects only its part of the engine snapshot, in whole
+/// minutes, so the clock tick rebuilds only what changed.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -59,6 +64,7 @@ void _openWeeklyRest(BuildContext context) => openWeeklyRestScreen(context);
 
 // ───────────────────────── Сегодня ─────────────────────────
 
+/// Continuous driving for its row, in whole minutes.
 typedef _Continuous = ({int value, bool driving, DateTime breakAt, Tone tone});
 
 _Continuous _continuous(ComplianceSnapshot s) => (
@@ -72,6 +78,8 @@ _Continuous _continuous(ComplianceSnapshot s) => (
   ),
 );
 
+/// "Continuous driving": driving since the last break out of 4:30, and when the
+/// break is due. Opens the driving screen.
 class ContinuousRow extends ConsumerWidget {
   const new({super.key});
 
@@ -106,6 +114,7 @@ class ContinuousRow extends ConsumerWidget {
   }
 }
 
+/// The workday for its row, in whole minutes.
 typedef _Workday = ({
   DateTime? start,
   int value,
@@ -130,10 +139,9 @@ _Workday _workday(ComplianceSnapshot s) => (
   ),
 );
 
-/// Рабочий день: крупно — сколько осталось до 13 и до 15 ч и во сколько
-/// они наступят, прошедшее время — мелко. Водитель планирует день по
-/// остатку, а не по тому, сколько уже отработал (отзыв водителя
-/// 12.10.2026).
+/// Workday: large — what is left until 13 and 15 h and at what time they come;
+/// the time worked — small. Drivers plan the day by what is left, not by what
+/// they have worked (driver feedback 12.10.2026).
 class WorkdayRow extends ConsumerWidget {
   const new({super.key});
 
@@ -188,8 +196,8 @@ class WorkdayRow extends ConsumerWidget {
   }
 }
 
-/// Остаток рабочего дня до лимита [limit]: «осталось до 13 ч», «10:40 →
-/// 21:00». Прошёл — «0:00», серым; лимит смены — в цвете предупреждения.
+/// What is left of the workday until [limit]: "left until 13 h", "10:40 →
+/// 21:00". Past it — "0:00" in grey; the shift limit is in the warning colour.
 class _WorkdayLeft extends StatelessWidget {
   const new({
     required this.limit,
@@ -236,6 +244,7 @@ class _WorkdayLeft extends StatelessWidget {
   }
 }
 
+/// Daily driving for its row, in whole minutes.
 typedef _Daily = ({int value, int extensionsLeft, Tone tone});
 
 _Daily _daily(ComplianceSnapshot s) => (
@@ -248,6 +257,7 @@ _Daily _daily(ComplianceSnapshot s) => (
   ),
 );
 
+/// "Daily driving": 9 h, 10 h with an extension; opens the driving screen.
 class DailyDrivingRow extends ConsumerWidget {
   const new({super.key});
 
@@ -290,6 +300,7 @@ class DailyDrivingRow extends ConsumerWidget {
   }
 }
 
+/// The break for its row, in whole minutes.
 typedef _Break = ({
   int taken,
   bool split,
@@ -322,6 +333,7 @@ _Break _break(ComplianceSnapshot s) {
   );
 }
 
+/// "Break": what is taken of 45 min or 15 + 30; opens the break screen.
 class BreakRow extends ConsumerWidget {
   const new({super.key});
 
@@ -359,6 +371,8 @@ class BreakRow extends ConsumerWidget {
   }
 }
 
+/// "Today": continuous driving, workday, daily driving, break and the "End day"
+/// button.
 class TodaySection extends StatelessWidget {
   const new({super.key});
 
@@ -383,6 +397,7 @@ class TodaySection extends StatelessWidget {
 
 // ───────────────────────── Отдых ─────────────────────────
 
+/// Daily and weekly rest for the "Rest" section, in whole minutes.
 typedef _Rest = ({
   int? daily,
   DateTime? dailyStart,
@@ -437,6 +452,8 @@ _Rest _rest(ComplianceSnapshot s) {
   return (l.dailyRestCaption, null);
 }
 
+/// "Rest": daily rest with the reduced rests left, weekly rest, compensation
+/// and the ferry / train mark.
 class RestSection extends ConsumerWidget {
   const new({super.key});
 
@@ -514,6 +531,7 @@ class RestSection extends ConsumerWidget {
   }
 }
 
+/// Whether the ferry / train mark is on and can be toggled.
 typedef _Ferry = ({bool on, bool canToggle});
 
 _Ferry _ferry(ComplianceSnapshot s) {
@@ -524,8 +542,8 @@ _Ferry _ferry(ComplianceSnapshot s) {
   );
 }
 
-/// «Паром / поезд» (ст. 9): отметка текущей записи и следующих, пока
-/// водитель не выключит.
+/// "Ferry / train" (Art. 9): marks the current record and the next ones until
+/// the driver turns it off.
 class FerryRow extends ConsumerWidget {
   const new({super.key});
 
@@ -577,6 +595,7 @@ class FerryRow extends ConsumerWidget {
 
 // ───────────────────────── Неделя ─────────────────────────
 
+/// Weekly and fortnightly driving for their rows, in whole minutes.
 typedef _Week = ({
   int weekly,
   int fortnight,
@@ -601,6 +620,7 @@ _Week _week(ComplianceSnapshot s) => (
   ),
 );
 
+/// The work week (144 h) for its row, in whole minutes.
 typedef _WorkWeek = ({
   DateTime? since,
   DateTime? deadline,
@@ -621,6 +641,7 @@ _WorkWeek _workWeek(ComplianceSnapshot s) => (
   ),
 );
 
+/// "Week": weekly driving, two-week driving and the work week.
 class WeekSection extends ConsumerWidget {
   const new({super.key});
 
@@ -639,6 +660,7 @@ class WeekSection extends ConsumerWidget {
   }
 }
 
+/// "Weekly driving" out of 56 h; opens the driving screen.
 class WeeklyDrivingRow extends ConsumerWidget {
   const new({super.key});
 
@@ -665,6 +687,7 @@ class WeeklyDrivingRow extends ConsumerWidget {
   }
 }
 
+/// "Two-week driving" out of 90 h; opens the driving screen.
 class FortnightRow extends ConsumerWidget {
   const new({super.key});
 
@@ -694,6 +717,8 @@ class FortnightRow extends ConsumerWidget {
   }
 }
 
+/// "Work week": time since the end of the last weekly rest out of 144 h; opens
+/// the work week screen.
 class WorkWeekRow extends ConsumerWidget {
   const new({super.key});
 

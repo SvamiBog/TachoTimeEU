@@ -1,3 +1,7 @@
+/// Schedules the limit notifications from the engine forecast and keeps the
+/// schedule in sync with the log and settings.
+library;
+
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui' show PlatformDispatcher;
@@ -14,7 +18,8 @@ import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/notifications/alert_notifications.dart';
 import 'package:tachogo/notifications/notification_platform.dart';
 
-/// Всё, что нужно прогнозу: журнал, настройки расчёта, считывание карты.
+/// Everything the forecast needs: the log, the calculation settings, the card
+/// download.
 typedef AlertInputs = ({
   List<ActivityPeriod> periods,
   List<ManualShift> manualShifts,
@@ -23,11 +28,11 @@ typedef AlertInputs = ({
   DateTime now,
 });
 
-/// Прогноз и виды событий, которые есть уже сейчас.
+/// The forecast and the kinds of events already present now.
 typedef AlertForecast = ({List<UpcomingAlert> upcoming, Set<Enum> current});
 
-/// Считает прогноз. В приложении — в отдельном изоляте: на журнале за
-/// годы это десятки миллисекунд, кадр бы подвисал.
+/// Computes the forecast. In the app it runs in a separate isolate: on years of
+/// log it takes tens of milliseconds and the frame would stutter.
 typedef AlertForecaster = Future<AlertForecast> Function(AlertInputs inputs);
 
 AlertForecast computeAlertForecast(AlertInputs i) => (
@@ -52,19 +57,19 @@ AlertForecast computeAlertForecast(AlertInputs i) => (
 Future<AlertForecast> _inIsolate(AlertInputs inputs) =>
     Isolate.run(() => computeAlertForecast(inputs));
 
-/// Расписание уведомлений о лимитах (Android): приближение лимита за
-/// 15 / 30 / 60 мин, нарушение, обязательный и набранный отдых, карта.
+/// Schedule of limit notifications (Android): approaching limits 15 / 30 / 60
+/// min ahead, infringements, required and completed rest, the card.
 ///
-/// Уведомления ставятся системными будильниками по прогнозу движка
-/// (`forecastAlerts`), поэтому приходят и при закрытом приложении, и без
-/// сервиса автоопределения. Любое изменение журнала или настроек строит
-/// расписание заново: прежнее отменяется целиком, дублей нет. Показанное
-/// уведомление, которое уже неверно (водитель ушёл на перерыв), убирается
-/// из шторки; верное — остаётся, повторно не приходит.
+/// Notifications are system alarms set from the engine forecast
+/// (`forecastAlerts`), so they arrive with the app closed and without the
+/// detection service. Any change to the log or the settings rebuilds the
+/// schedule: the old one is cancelled as a whole, so there are no duplicates. A
+/// shown notification that is no longer true (the driver went on a break) is
+/// removed from the shade; a true one stays and does not come again.
 ///
-/// У приложения и фонового сервиса свои Flutter-движки и свои
-/// планировщики: каждый пересчитывает расписание после изменений, которые
-/// видит. Прогноз по одному журналу одинаков, поэтому порядок не важен.
+/// The app and the background service have their own Flutter engines and their
+/// own schedulers: each rebuilds the schedule after the changes it sees. The
+/// forecast from the same log is the same, so the order does not matter.
 class AlertScheduler {
   new({
     required this._journal,

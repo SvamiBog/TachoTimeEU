@@ -1705,13 +1705,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get notifyAllowed => 'Meldingen toegestaan';
 
   @override
-  String get notifyExact => 'Exacte tijd van meldingen';
-
-  @override
-  String get notifyExactHint =>
-      'Sta ‘Wekkers en herinneringen’ toe — anders kan de telefoon de waarschuwing vertragen';
-
-  @override
   String get notifyChannelLimits => 'Limieten en overtredingen';
 
   @override
@@ -2227,7 +2220,13 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo helpt de tijd te plannen, maar vervangt de tachograaf niet en is geen juridisch advies. Officiële tekst van de regels — Verordening (EG) nr. 561/2006 en AETR-overeenkomst.';
+      'TachoGo helpt de tijd te plannen, maar vervangt de tachograaf niet en is geen juridisch advies. De app is niet verbonden met de overheden van de EU of van Europese landen. Officiële tekst van de regels — Verordening (EG) nr. 561/2006 en AETR-overeenkomst.';
+
+  @override
+  String get guideSources => 'Waar controleren';
+
+  @override
+  String get guideOfficialText => 'Officiële tekst van Verordening 561/2006';
 
   @override
   String get moreAbout => 'Over de app';
@@ -2241,7 +2240,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo helpt rij- en rusttijden te plannen, maar vervangt de tachograaf niet en is geen juridisch advies.';
+      'TachoGo helpt rij- en rusttijden te plannen, maar vervangt de tachograaf niet en is geen juridisch advies. De app is niet verbonden met de overheden van de EU of van Europese landen.';
 
   @override
   String get morePrivacy => 'Privacybeleid';

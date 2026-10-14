@@ -1,10 +1,13 @@
+/// Infringements of the report period, worked out from the journal.
+library;
+
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/report/report.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 
-/// Нарушение за период со статьёй регламента.
+/// An infringement in the period with the article of the regulation.
 typedef ReportViolation = ({String text, String regulation, String article});
 
 /// Нарушения по оценке журнала: больше 10 ч вождения, больше 15 ч (экипаж —

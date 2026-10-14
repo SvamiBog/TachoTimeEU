@@ -1,3 +1,6 @@
+/// Settings (screen 3).
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -18,9 +21,7 @@ import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
 import 'package:tachogo/features/settings/auto_detect.dart';
-import 'package:tachogo/features/settings/exact_alarms.dart';
 import 'package:tachogo/features/settings/language_sheet.dart';
-import 'package:tachogo/notifications/alert_providers.dart';
 
 /// Пороги предупреждения о лимитах (экран 3).
 const warningLeads = [
@@ -37,8 +38,9 @@ String leadLabel(AppLocalizations l, Duration lead) => lead.inMinutes % 60 == 0
     ? l.leadHours(lead.inHours)
     : l.leadMinutes(lead.inMinutes);
 
-/// Настройки (экран 3). Каждое изменение сразу пишется в БД: расчёт, тема
-/// и язык перестраиваются по потокам настроек, кнопки «Сохранить» нет.
+/// Settings (screen 3). Each change is written to the database at once: the
+/// calculation, theme and language rebuild from the settings streams; there is
+/// no "Save" button.
 class SettingsScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -86,7 +88,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
-/// Язык и оформление.
+/// Language and appearance.
 class _GeneralCard extends ConsumerWidget {
   const new();
 
@@ -120,8 +122,9 @@ class _GeneralCard extends ConsumerWidget {
   }
 }
 
-/// Тахограф, пакет мобильности, экипаж — от последних двух зависит расчёт.
-/// Типа транспорта нет: лимиты одинаковы для всех (`AppPreferences`).
+/// Tachograph, Mobility Package, crew — the last two change the calculation.
+/// There is no vehicle type: the limits are the same for all
+/// (`AppPreferences`).
 class _RulesCard extends ConsumerWidget {
   const new();
 
@@ -165,7 +168,7 @@ class _RulesCard extends ConsumerWidget {
   }
 }
 
-/// «Цифровой / Аналоговый» — в настройках и онбординге.
+/// "Digital / Analogue" — in settings and onboarding.
 class TachographTabs extends StatelessWidget {
   const new({required this.value, required this.onChanged, super.key});
 
@@ -190,9 +193,9 @@ class TachographTabs extends StatelessWidget {
   }
 }
 
-/// Порог предупреждений и категории уведомлений. Порог сразу меняет
-/// плашки «скоро» на экранах и момент уведомлений; расписание
-/// пересчитывается само (`AlertScheduler`).
+/// Warning threshold and notification categories. The threshold changes the
+/// "soon" badges on screens and the notification moments at once; the schedule
+/// rebuilds itself (`AlertScheduler`).
 class _NotificationsCard extends ConsumerWidget {
   const new();
 
@@ -207,12 +210,10 @@ class _NotificationsCard extends ConsumerWidget {
         ref.watch(notificationSettingsProvider).value ??
         const NotificationSettings();
     final allowed = ref.watch(trackingHealthProvider).value?.notifications;
-    final exact = ref.watch(exactAlarmsProvider).value;
     void save(NotificationSettings s) => unawaited(repo.setNotifications(s));
     return CardGroup(
       children: [
         if (allowed == false) const NotificationPermissionRow(),
-        if (exact == false) const ExactAlarmsRow(),
         ChoiceBlock(
           title: l.settingsWarnLead,
           subtitle: l.settingsWarnLeadHint,
@@ -307,9 +308,9 @@ class _NotificationsCard extends ConsumerWidget {
   }
 }
 
-/// «Разрешить уведомления», пока они запрещены в телефоне. Первый раз —
-/// системный запрос; если телефон больше не спрашивает (отказ навсегда), —
-/// настройки приложения в системе.
+/// "Allow notifications" while they are blocked on the phone. The first time —
+/// the system request; if the phone no longer asks (permanent refusal) — the
+/// app's system settings.
 class NotificationPermissionRow extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -318,6 +319,7 @@ class NotificationPermissionRow extends ConsumerStatefulWidget {
       _NotificationPermissionRowState();
 }
 
+/// Whether the system request was already shown.
 class _NotificationPermissionRowState
     extends ConsumerState<NotificationPermissionRow> {
   bool _asked = false;
@@ -345,7 +347,7 @@ class _NotificationPermissionRowState
   }
 }
 
-/// Экспорт, согласие на аналитику, очистка данных.
+/// Export, analytics consent, clearing data.
 class _DataCard extends ConsumerWidget {
   const new();
 
@@ -376,7 +378,7 @@ class _DataCard extends ConsumerWidget {
   }
 }
 
-/// «Очистить все данные» — только после подтверждения (UI-16).
+/// "Clear all data" — only after confirmation (UI-16).
 class _ClearDataRow extends ConsumerWidget {
   const new();
 

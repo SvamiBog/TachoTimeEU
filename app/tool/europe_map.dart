@@ -1,13 +1,17 @@
-// Схема Европы для экрана запретов движения: границы стран из Natural Earth
-// (общественное достояние, https://www.naturalearthdata.com) → проекция
-// Ламберта, упрощение, компактный JSON по отличительным знакам стран.
-//
-//   curl -sSLO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson
-//   dart run tool/europe_map.dart ne_50m_admin_0_countries.geojson
-//
-// Пишет assets/maps/europe.json: {"w":…, "h":…, "c": {"D": [[x, y, x, y…],
-// …], …}}, координаты — целые в сетке шириной 10 000. Страны без знака
-// тахографа (Северная Африка, Ближний Восток, Косово) — фон под ключом "~".
+/// Map of Europe for the driving bans screen: country borders from Natural
+/// Earth (public domain, https://www.naturalearthdata.com) → Lambert
+/// projection, simplification, compact JSON by country distinguishing sign.
+///
+/// ```sh
+/// curl -sSLO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson
+/// dart run tool/europe_map.dart ne_50m_admin_0_countries.geojson
+/// ```
+///
+/// Writes `assets/maps/europe.json`: `{"w":…, "h":…, "c": {"D": [[x, y, x, y…],
+/// …], …}}`, coordinates are integers on a grid 10 000 wide. Countries without
+/// a tachograph sign (North Africa, Middle East, Kosovo) are the background
+/// under the key "~".
+library;
 
 import 'dart:convert';
 import 'dart:io';

@@ -1,14 +1,18 @@
-// DEV-03 (docs/testing.md): журнал приложения против карты того же
-// водителя. Журнал приложения — CSV экспорта (экран 16, время UTC), карта —
-// файл выгрузки .DDD. Сравнение поминутно, по середине минуты: тахограф
-// пишет режим целыми минутами, приложение — с точностью до секунды, поэтому
-// сдвиг границы внутри минуты даёт расхождение не больше минуты.
+/// DEV-03 (`docs/testing.md`): the app's log against the card of the same
+/// driver. The app's log is the export CSV (screen 16, UTC times), the card is
+/// a .DDD download file.
+///
+/// The comparison goes minute by minute, at the middle of each minute: the
+/// tachograph records activities in whole minutes and the app to the second, so
+/// a boundary shifted inside a minute differs by at most a minute.
+library;
 
 import 'package:tacho_engine/tacho_engine.dart';
 
 import 'ddd.dart';
 
-/// Запись журнала из CSV приложения; `end` null — запись идёт (ACTIVE).
+/// A log record from the app's CSV; `end` is null while the record is in
+/// progress (ACTIVE).
 typedef AppRecord = ({DriverMode mode, DateTime start, DateTime? end});
 
 const Map<String, DriverMode> _modes = {
@@ -86,8 +90,8 @@ List<List<String>> _parseCsv(String text) {
   ];
 }
 
-/// Отрезок, где журналы не совпали. `card` null — на карте «неизвестно»
-/// (карта не вставлена, вручную не введено).
+/// A stretch where the two logs differ. `card` is null where the card says
+/// "unknown" (card not inserted, nothing entered manually).
 typedef Mismatch = ({
   DateTime start,
   DateTime end,
@@ -95,6 +99,7 @@ typedef Mismatch = ({
   DriverMode? card,
 });
 
+/// Result of comparing the app's log with the card over [from, to).
 class JournalComparison {
   const new({required this.from, required this.to, required this.mismatches});
 

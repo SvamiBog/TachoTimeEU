@@ -1,17 +1,20 @@
-// Файл карты водителя (.DDD) для проверок Фазы 4 — docs/testing.md,
-// ENG-20 и DEV-03, как собрать фикстуру — test/fixtures/real/README.md.
-//
-//   dart run tool/ddd.dart summary <карта.ddd>
-//       сутки, режимы по суткам, особые условия, нарушения по движку
-//   dart run tool/ddd.dart fixture <карта.ddd> --name <имя>
-//       [--from 2026-09-01] [--to 2026-09-29] [--unknown rest|gap] [--crew]
-//       фикстура ENG-20 в stdout: журнал без персональных данных, пустой
-//       список expected — заполнить по отчёту программы анализа
-//   dart run tool/ddd.dart compare <карта.ddd> <tachogo.csv>
-//       [--from …] [--to …]
-//       DEV-03: журнал приложения против карты, расхождения больше минуты
-//
-// Даты --from / --to — сутки UTC, --to не включается.
+/// Driver card file (.DDD) tool for the Phase 4 checks — ENG-20 and DEV-03 in
+/// `docs/testing.md`; how to build a fixture: `test/fixtures/real/README.md`.
+///
+/// ```text
+/// dart run tool/ddd.dart summary <card.ddd>
+///     days, activities per day, specific conditions, engine infringements
+/// dart run tool/ddd.dart fixture <card.ddd> --name <name>
+///     [--from 2026-09-01] [--to 2026-09-29] [--unknown rest|gap] [--crew]
+///     ENG-20 fixture to stdout: the log without personal data and an empty
+///     expected list to fill in from the analysis software report
+/// dart run tool/ddd.dart compare <card.ddd> <tachogo.csv>
+///     [--from …] [--to …]
+///     DEV-03: the app's log against the card, differences over a minute
+/// ```
+///
+/// `--from` / `--to` are UTC days; `--to` is exclusive.
+library;
 
 import 'dart:io';
 

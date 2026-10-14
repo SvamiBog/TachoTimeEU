@@ -1,3 +1,7 @@
+/// Driver card download: the tile on the home screen and the sheet to mark a
+/// download.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -12,6 +16,7 @@ import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 
+/// Days left until the card download and their tone.
 typedef _Card = ({int? daysLeft, Tone tone});
 
 _Card _card(ComplianceSnapshot s) => (
@@ -23,7 +28,7 @@ _Card _card(ComplianceSnapshot s) => (
   ),
 );
 
-/// Считывание карты водителя: раз в 28 дней (Регламент 581/2010).
+/// Driver card download: every 28 days (Regulation 581/2010).
 class CardReadingTile extends ConsumerWidget {
   const new({super.key});
 
@@ -136,6 +141,8 @@ Future<void> showCardSheet(BuildContext context) => showModalBottomSheet<void>(
   builder: (_) => const CardSheet(),
 );
 
+/// Sheet with the last download, the due date and the button to mark a download
+/// now.
 class CardSheet extends ConsumerWidget {
   const new({super.key});
 

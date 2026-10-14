@@ -1716,13 +1716,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get notifyAllowed => 'Сповіщення дозволено';
 
   @override
-  String get notifyExact => 'Точний час сповіщень';
-
-  @override
-  String get notifyExactHint =>
-      'Дозвольте «Будильники й нагадування» — інакше телефон може затримати попередження';
-
-  @override
   String get notifyChannelLimits => 'Ліміти й порушення';
 
   @override
@@ -2242,7 +2235,13 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo допомагає планувати час, але не замінює тахограф і не є юридичною консультацією. Офіційний текст правил — Регламент (ЄС) 561/2006 і Угода ЄУТР.';
+      'TachoGo допомагає планувати час, але не замінює тахограф і не є юридичною консультацією. Застосунок не пов’язаний з органами влади ЄС і країн Європи. Офіційний текст правил — Регламент (ЄС) 561/2006 і Угода ЄУТР.';
+
+  @override
+  String get guideSources => 'Де перевірити';
+
+  @override
+  String get guideOfficialText => 'Офіційний текст Регламенту 561/2006';
 
   @override
   String get moreAbout => 'Про застосунок';
@@ -2256,7 +2255,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo допомагає планувати час за кермом і відпочинок, але не замінює тахограф і не є юридичною консультацією.';
+      'TachoGo допомагає планувати час за кермом і відпочинок, але не замінює тахограф і не є юридичною консультацією. Застосунок не пов’язаний з органами влади ЄС і країн Європи.';
 
   @override
   String get morePrivacy => 'Політика конфіденційності';

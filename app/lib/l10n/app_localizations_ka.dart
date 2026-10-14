@@ -1697,13 +1697,6 @@ class AppLocalizationsKa extends AppLocalizations {
   String get notifyAllowed => 'შეტყობინებები დაშვებულია';
 
   @override
-  String get notifyExact => 'შეტყობინებების ზუსტი დრო';
-
-  @override
-  String get notifyExactHint =>
-      'დაუშვით „მაღვიძარები და შეხსენებები“ — თორემ ტელეფონმა შეიძლება გაფრთხილება დააგვიანოს';
-
-  @override
   String get notifyChannelLimits => 'ლიმიტები და დარღვევები';
 
   @override
@@ -2220,7 +2213,13 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo გეხმარებათ დროის დაგეგმვაში, მაგრამ არ ცვლის ტაქოგრაფს და არ არის იურიდიული კონსულტაცია. წესების ოფიციალური ტექსტი — რეგულაცია (EC) 561/2006 და AETR შეთანხმება.';
+      'TachoGo გეხმარებათ დროის დაგეგმვაში, მაგრამ არ ცვლის ტაქოგრაფს და არ არის იურიდიული კონსულტაცია. აპი არ არის დაკავშირებული ევროკავშირისა და ევროპის ქვეყნების ხელისუფლების ორგანოებთან. წესების ოფიციალური ტექსტი — რეგულაცია (EC) 561/2006 და AETR შეთანხმება.';
+
+  @override
+  String get guideSources => 'სად შევამოწმოთ';
+
+  @override
+  String get guideOfficialText => 'რეგულაციის 561/2006 ოფიციალური ტექსტი';
 
   @override
   String get moreAbout => 'აპლიკაციის შესახებ';
@@ -2234,7 +2233,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo გეხმარებათ საჭესთან დროისა და დასვენების დაგეგმვაში, მაგრამ არ ცვლის ტაქოგრაფს და არ არის იურიდიული კონსულტაცია.';
+      'TachoGo გეხმარებათ საჭესთან დროისა და დასვენების დაგეგმვაში, მაგრამ არ ცვლის ტაქოგრაფს და არ არის იურიდიული კონსულტაცია. აპი არ არის დაკავშირებული ევროკავშირისა და ევროპის ქვეყნების ხელისუფლების ორგანოებთან.';
 
   @override
   String get morePrivacy => 'კონფიდენციალურობის პოლიტიკა';

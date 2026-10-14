@@ -1,5 +1,8 @@
-/// Разрешённая максимальная масса машины для запретов движения: запреты
-/// касаются машин тяжелее порога страны — 3,5, 7,5 или 12 т.
+/// Vehicle mass classes used by driving bans.
+library;
+
+/// Maximum permitted mass of the vehicle for driving bans: bans apply to
+/// vehicles heavier than the country's threshold — 3.5, 7.5 or 12 t.
 enum VehicleMass {
   /// До 3,5 т: фургон.
   upTo3_5(3.5),

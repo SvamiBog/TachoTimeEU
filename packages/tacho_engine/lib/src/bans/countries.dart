@@ -1,7 +1,11 @@
-// Запреты движения грузовиков в странах Европы: данные и источники.
-// Сверка — docs/domain/driving-bans.md. Время — местное, страна переводит
-// часы по правилу ЕС. Меняются правила или выходит годовой календарь
-// страны — обновить данные, checkedOn и тесты (BAN-…).
+/// Built-in truck driving ban data for European countries, with the sources
+/// each country was checked against.
+///
+/// Times are local; every country changes clocks by the EU rule. The research
+/// is in `docs/domain/driving-bans.md`. When a country changes its rules or
+/// publishes its annual calendar, update the data, `checkedOn` and the BAN-…
+/// tests.
+library;
 
 import 'package:tacho_engine/src/bans/ban_rule.dart';
 import 'package:tacho_engine/src/bans/holidays.dart';

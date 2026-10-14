@@ -1,3 +1,6 @@
+/// "End day": the driver enters the day's driving as a total.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -50,8 +53,8 @@ Future<bool> finishDay(
   return true;
 }
 
-/// Кнопка «Завершить день» на главной в разделе «Сегодня» — пока идёт
-/// смена.
+/// The "End day" button in the "Today" section of the home screen, while a
+/// shift is on.
 class EndDayButton extends ConsumerWidget {
   const new({super.key});
 

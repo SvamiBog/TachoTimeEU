@@ -1,3 +1,7 @@
+/// The app's SQLite database (Drift): tables, schema version, migrations and
+/// the connection setup shared by the app and the background service.
+library;
+
 import 'dart:io' show sleep;
 import 'dart:math' as math;
 
@@ -14,6 +18,8 @@ part 'app_database.g.dart';
 @DriftDatabase(
   tables: [ActivityPeriods, Shifts, ManualShifts, CardDownloads, Settings],
 )
+/// The local database: activity records, shifts with countries, manual shifts,
+/// card downloads and settings. All dates are UTC.
 class AppDatabase extends _$AppDatabase {
   new([QueryExecutor? executor])
     : super(

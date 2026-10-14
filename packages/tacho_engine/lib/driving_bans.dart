@@ -1,7 +1,9 @@
-/// Запреты движения грузовиков в странах Европы: правила стран, расчёт
-/// времени запретов в UTC и состояние «сейчас». Чистый Dart, данные —
-/// `src/bans/countries.dart`, файл для обновления по сети —
-/// `src/bans/ban_json.dart`, сверка — docs/domain/driving-bans.md.
+/// Truck driving bans in European countries: the rules of each country, ban
+/// windows converted to UTC and the state "now".
+///
+/// Pure Dart. The built-in data is `src/bans/countries.dart`, the signed file
+/// that updates it over the network is parsed by `src/bans/ban_json.dart`, the
+/// research behind the data is `docs/domain/driving-bans.md`.
 library;
 
 export 'src/bans/ban_calendar.dart';

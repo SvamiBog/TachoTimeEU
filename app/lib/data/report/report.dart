@@ -1,13 +1,15 @@
+/// Report for a period (screen 16): the period bounds and the CSV. The PDF is
+/// built from the same data in `features/export`. Export is Premium
+/// (`docs/premium.md`).
+library;
+
 import 'dart:convert';
 
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 
-// Отчёт за период (экран 16): границы периода и CSV. PDF собирается из тех
-// же данных в features/export. Выгрузка — Premium (docs/premium.md).
-
-/// Период отчёта.
+/// Report period.
 enum ReportPeriod { week, twoWeeks, days28, days56, custom }
 
 /// Границы отчёта [start, end). Все границы — UTC, как неделя тахографа
@@ -80,7 +82,7 @@ const Map<DriverMode, String> _activity = {
   DriverMode.rest: 'REST',
 };
 
-/// Строка CSV до сортировки.
+/// A CSV row before sorting.
 typedef _Row = ({DateTime start, List<Object> cells});
 
 /// CSV за период для таблиц и программ учёта: по строке на запись режима,

@@ -1,3 +1,8 @@
+/// Automatic driving detection, independent of the platform: GPS fixes go
+/// through the engine's motion detector and switching rules and end up as a log
+/// record or a suggestion to the driver.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart' show visibleForTesting;
@@ -5,15 +10,15 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 
-/// Поток отметок GPS. [fast] — частые отметки: машина едет или только что
-/// тронулась; иначе редкие, чтобы беречь батарею на стоянке.
+/// A stream of GPS fixes. [fast] means frequent fixes: the vehicle is moving or
+/// has just started; otherwise rare ones, to save battery while parked.
 typedef MotionSource = Stream<MotionSample> Function({required bool fast});
 
-/// Автоопределение вождения: отметки GPS → детектор движения → правила
-/// движка → запись в журнал или предложение водителю.
+/// Automatic driving detection: GPS fixes → motion detector → engine rules → a
+/// log record or a suggestion to the driver.
 ///
-/// Не зависит от платформы: на Android работает в изоляте foreground
-/// service, на iOS — в основном изоляте с фоновым режимом location.
+/// Platform-independent: on Android it runs in the foreground service isolate,
+/// on iOS in the main isolate with the location background mode.
 class AutoTracker {
   new({
     required this._journal,
