@@ -1,6 +1,6 @@
-// SITE-01 (docs/testing.md): лендинг сайта собирается на всех языках
-// приложения (`tool/site_build.dart`, тексты — `docs/site/`): в текстах все
-// строки, ссылки ведут туда же, куда приложение, файлы на месте, на странице
+// SITE-01 (docs/testing.md): лендинг сайта собирается на английском,
+// польском и немецком (`tool/site_build.dart`, тексты — `docs/site/`): в
+// текстах все строки, ссылки ведут туда же, куда приложение, файлы на месте, на странице
 // нет незаполненных подстановок, а сайт ничего не грузит с других сайтов.
 
 import 'dart:convert';
@@ -23,10 +23,13 @@ void main() {
     files = await buildSite();
   });
 
-  test('языки сайта — языки приложения, тексты с одним набором строк', () {
-    expect(siteLanguages.toSet(), {
+  test('языки сайта — английский, польский и немецкий, тексты с одним '
+      'набором строк', () {
+    expect(siteLanguages, ['en', 'pl', 'de']);
+    // У телефона на странице — строки приложения на том же языке
+    expect({
       for (final l in AppLocalizations.supportedLocales) l.languageCode,
-    });
+    }, containsAll(siteLanguages));
     expect(languageNames.keys.toSet(), siteLanguages.toSet());
     final texts = {
       for (final f in Directory('../docs/site').listSync())
@@ -36,7 +39,7 @@ void main() {
           ) as Map<String, Object?>,
     };
     expect(texts.keys.toSet(), siteLanguages.toSet());
-    final keys = texts['ru']!.keys.toSet();
+    final keys = texts['en']!.keys.toSet();
     for (final MapEntry(:key, :value) in texts.entries) {
       expect(value.keys.toSet(), keys, reason: 'docs/site/$key.json');
       for (final MapEntry(key: k, :value) in value.entries) {

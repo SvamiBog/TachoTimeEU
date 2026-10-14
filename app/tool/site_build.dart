@@ -35,67 +35,20 @@ const siteBase = 'https://svamibog.github.io/TachoTimeEU/';
 /// Почта для связи и заявок в бету — та же, что в политике.
 const contactEmail = 'maruba.app@gmail.com';
 
-/// Языки сайта — языки интерфейса приложения. Первый — корень сайта.
-const siteLanguages = [
-  'en',
-  'ru',
-  'uk',
-  'pl',
-  'ro',
-  'ka',
-  'uz',
-  'de',
-  'fr',
-  'es',
-  'it',
-  'nl',
-  'cs',
-  'sk',
-];
+/// Языки сайта — английский, польский и немецкий (решение 2026-10-14):
+/// часть языков приложения. Первый — корень сайта: туда же попадают
+/// посетители с остальными языками браузера.
+const siteLanguages = ['en', 'pl', 'de'];
 
 /// Название языка на нём самом — в переключателе.
-const languageNames = {
-  'en': 'English',
-  'ru': 'Русский',
-  'uk': 'Українська',
-  'pl': 'Polski',
-  'ro': 'Română',
-  'ka': 'ქართული',
-  'uz': 'Oʻzbekcha',
-  'de': 'Deutsch',
-  'fr': 'Français',
-  'es': 'Español',
-  'it': 'Italiano',
-  'nl': 'Nederlands',
-  'cs': 'Čeština',
-  'sk': 'Slovenčina',
-};
+const languageNames = {'en': 'English', 'pl': 'Polski', 'de': 'Deutsch'};
 
-/// Языки браузера, для которых корень сайта открывает другую страницу:
-/// белорусский, казахский и киргизский — русскую, как в приложении.
+/// Языки браузера, для которых корень сайта открывает другую страницу.
 final Map<String, String> _browserLanguages = {
   for (final l in siteLanguages.skip(1)) l: l,
-  'be': 'ru',
-  'kk': 'ru',
-  'ky': 'ru',
 };
 
-const _ogLocales = {
-  'en': 'en_GB',
-  'ru': 'ru_RU',
-  'uk': 'uk_UA',
-  'pl': 'pl_PL',
-  'ro': 'ro_RO',
-  'ka': 'ka_GE',
-  'uz': 'uz_UZ',
-  'de': 'de_DE',
-  'fr': 'fr_FR',
-  'es': 'es_ES',
-  'it': 'it_IT',
-  'nl': 'nl_NL',
-  'cs': 'cs_CZ',
-  'sk': 'sk_SK',
-};
+const _ogLocales = {'en': 'en_GB', 'pl': 'pl_PL', 'de': 'de_DE'};
 
 /// Коды EUR-Lex — как `regulationUri` в приложении (проверяет SITE-01).
 const _eurLex = {
@@ -118,7 +71,7 @@ const ({double month, double year, double forever}) premiumPrices = (
   forever: 39.99,
 );
 
-/// Папка страницы от корня сайта: «» у корня, «ru/» у остальных.
+/// Папка страницы от корня сайта: «» у корня, «pl/» у остальных.
 String pagePath(String language) =>
     language == siteLanguages.first ? '' : '$language/';
 
@@ -510,14 +463,12 @@ $features
 ''';
 }
 
-/// Кнопка режима на телефоне: длинное слово («Disponibilitate») уменьшает
+/// Кнопка режима на телефоне: длинное слово («Bereitschaft») уменьшает
 /// шрифт, чтобы не переносилось посередине — кнопка шириной около 61 px.
 String _modeButton(String label, {required bool on}) {
   final longest = label
       .split(' ')
-      .map(
-        (w) => w.length * (RegExp('[\u10A0-\u10FF]').hasMatch(w) ? .72 : .58),
-      )
+      .map((w) => w.length * .58)
       .reduce((a, b) => a > b ? a : b);
   final size = (61 / longest).clamp(6.5, 9.5).toStringAsFixed(1);
   return '<div class="pm-mode${on ? ' pm-on' : ''}" '
@@ -550,9 +501,7 @@ String _css(String root) =>
 @font-face{font-family:Onest;src:url(${root}fonts/onest-700.woff2) format("woff2");font-weight:700 900;font-display:swap}
 @font-face{font-family:"JetBrains Mono";src:url(${root}fonts/jetbrains-mono-500.woff2) format("woff2");font-weight:400 500;font-display:swap}
 @font-face{font-family:"JetBrains Mono";src:url(${root}fonts/jetbrains-mono-700.woff2) format("woff2");font-weight:600 900;font-display:swap}
-@font-face{font-family:"Noto Sans Georgian";src:url(${root}fonts/noto-sans-georgian-400.woff2) format("woff2");font-weight:400 500;unicode-range:U+10A0-10FF,U+1C90-1CBF;font-display:swap}
-@font-face{font-family:"Noto Sans Georgian";src:url(${root}fonts/noto-sans-georgian-700.woff2) format("woff2");font-weight:600 900;unicode-range:U+10A0-10FF,U+1C90-1CBF;font-display:swap}
-:root{--navy:#0F1E33;--amber:#FFB020;--paper:#F4F3EF;--brown:#8A5500;--line:2px solid var(--navy);--display:Unbounded,"Noto Sans Georgian",sans-serif;--text:Onest,"Noto Sans Georgian",system-ui,sans-serif;--mono:"JetBrains Mono","Noto Sans Georgian",ui-monospace,monospace;color-scheme:light}
+:root{--navy:#0F1E33;--amber:#FFB020;--paper:#F4F3EF;--brown:#8A5500;--line:2px solid var(--navy);--display:Unbounded,sans-serif;--text:Onest,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;color-scheme:light}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
@@ -604,7 +553,7 @@ mark{display:inline-block;background:var(--amber);color:var(--navy);line-height:
 .big-time{font:800 clamp(96px,16vw,230px)/.85 var(--mono);letter-spacing:-.06em}
 .screen h2{font:800 clamp(28px,3.4vw,44px)/1.05 var(--display);text-transform:uppercase;letter-spacing:-.02em}
 .screen-text>p:last-child{font-size:19px;max-width:520px}
-.phone{flex:0 0 auto;margin:0 auto;width:320px;background:#111315;color:#EDEBE6;border:3px solid var(--navy);border-radius:44px;box-shadow:14px 14px 0 var(--amber);padding:22px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;font-family:Onest,"Noto Sans Georgian",sans-serif}
+.phone{flex:0 0 auto;margin:0 auto;width:320px;background:#111315;color:#EDEBE6;border:3px solid var(--navy);border-radius:44px;box-shadow:14px 14px 0 var(--amber);padding:22px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;font-family:Onest,sans-serif}
 .pm-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .pm-head b{display:block;font-size:17px}
 .pm-head small{display:block;font-size:11px;color:#A3A8AE}

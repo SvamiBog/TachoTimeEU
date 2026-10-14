@@ -1,9 +1,10 @@
-# Сайт на GitHub Pages из site/: лендинг на 14 языках (собирает
-# app/tool/site_build.dart из docs/site/), политика конфиденциальности для
-# Google Play и приложения (адрес — app/lib/core/config/app_links.dart) и файл
-# с правилами запретов движения bans/v1.json, по которому приложения
-# обновляют правила без новой версии (docs/domain/driving-bans.md). Включить
-# один раз: Settings → Pages → Build and deployment → Source: GitHub Actions.
+# Сайт на GitHub Pages из site/: лендинг на английском, польском и немецком
+# (собирает app/tool/site_build.dart из docs/site/), политика
+# конфиденциальности для Google Play и приложения (адрес —
+# app/lib/core/config/app_links.dart) и файл с правилами запретов движения
+# bans/v1.json, по которому приложения обновляют правила без новой версии
+# (docs/domain/driving-bans.md). Включить один раз: Settings → Pages → Build
+# and deployment → Source: GitHub Actions.
 #
 # Публикуется после зелёного CI на main: правила из файла через сутки у всех
 # водителей — только проверенные тестами. Вручную — текущий main.
