@@ -1,7 +1,8 @@
 // SITE-01 (docs/testing.md): лендинг сайта собирается на английском,
 // польском и немецком (`tool/site_build.dart`, тексты — `docs/site/`): в
-// текстах все строки, ссылки ведут туда же, куда приложение, файлы на месте, на странице
-// нет незаполненных подстановок, а сайт ничего не грузит с других сайтов.
+// текстах все строки, ссылки ведут туда же, куда приложение, файлы на месте,
+// на странице нет незаполненных подстановок, сайт ничего не грузит с других
+// сайтов, а сервер на Railway (`deploy/site/`) не ведёт журналов посещений.
 
 import 'dart:convert';
 import 'dart:io';
@@ -71,6 +72,24 @@ void main() {
     }
     final privacy = File('../site/privacy/index.html').readAsStringSync();
     expect(privacy, contains('mailto:$contactEmail'));
+  });
+
+  test('сервер Railway: один адрес сайта, без журналов посещений', () {
+    final caddy = File('../deploy/site/Caddyfile').readAsStringSync();
+    final host = Uri.parse(siteBase).host;
+    expect(caddy, contains('@www host www.$host'));
+    expect(caddy, contains('redir @www https://$host{uri} permanent'));
+    // Политика обещает: наш сервер журналы посещений не ведёт
+    expect(caddy, isNot(matches(RegExp(r'^\s*log\b', multiLine: true))));
+    expect(
+      File('../deploy/site/Dockerfile').readAsStringSync(),
+      contains('COPY public /srv'),
+    );
+    expect(caddy, contains('root * /srv'));
+    expect(
+      File('../site/privacy/index.html').readAsStringSync(),
+      contains('журналы посещений не ведёт'),
+    );
   });
 
   test('страница на каждом языке и карта сайта', () {

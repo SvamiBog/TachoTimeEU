@@ -1,10 +1,11 @@
-# Сайт на GitHub Pages из site/: лендинг на английском, польском и немецком
-# (собирает app/tool/site_build.dart из docs/site/), политика
-# конфиденциальности для Google Play и приложения (адрес —
+# Сайт tachogo.eu на Railway (docs/site/README.md): лендинг на английском,
+# польском и немецком (собирает app/tool/site_build.dart из docs/site/),
+# политика конфиденциальности для Google Play и приложения (адрес —
 # app/lib/core/config/app_links.dart) и файл с правилами запретов движения
 # bans/v1.json, по которому приложения обновляют правила без новой версии
-# (docs/domain/driving-bans.md). Включить один раз: Settings → Pages → Build
-# and deployment → Source: GitHub Actions.
+# (docs/domain/driving-bans.md). Папку site/ отдаёт Caddy
+# (deploy/site/Dockerfile, Caddyfile) в сервисе «site» проекта Railway, регион
+# ЕС. Нужны секреты BANS_SIGNING_KEY и RAILWAY_TOKEN (токен проекта Railway).
 #
 # Публикуется после зелёного CI на main: правила из файла через сутки у всех
 # водителей — только проверенные тестами. Вручную — текущий main.
@@ -19,16 +20,14 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: site
   cancel-in-progress: false
 
 jobs:
   deploy:
-    name: Публикация на GitHub Pages
+    name: Публикация на Railway
     # Только push в main этого репозитория: в PR из форка ветка тоже может
     # называться main, а здесь доступен ключ подписи.
     if: >-
@@ -39,8 +38,8 @@ jobs:
     # Как в ci.yml: версия Ubuntu закреплена
     runs-on: ubuntu-24.04
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: railway
+      url: https://tachogo.eu/
     steps:
       - uses: actions/checkout@v5
         with:
@@ -77,9 +76,32 @@ jobs:
       - name: Лендинг
         working-directory: app
         run: dart run tool/site_build.dart ../site
-      - uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v5
-        with:
-          path: site
-      - id: deployment
-        uses: actions/deploy-pages@v5
+      # Папка для railway up — вне репозитория: в .gitignore собранные
+      # страницы и bans/, Railway их пропустил бы.
+      - name: Пакет для Railway
+        run: |
+          out="$RUNNER_TEMP/site"
+          mkdir -p "$out"
+          cp deploy/site/Dockerfile deploy/site/Caddyfile "$out/"
+          cp -r site "$out/public"
+          test -f "$out/public/bans/v1.json"
+          test -f "$out/public/index.html"
+      - name: Выкладка на Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "::error::Секрет RAILWAY_TOKEN не задан: токен проекта Railway (docs/site/README.md, «Railway»)"
+            exit 1
+          fi
+          npm install --global @railway/cli@5.63.1
+          railway up "$RUNNER_TEMP/site" --service site --ci --no-gitignore
+      # Домен мог быть ещё не подключён — тогда только предупреждение
+      - name: Сайт отвечает
+        run: |
+          sleep 20
+          for path in "" privacy/ bans/v1.json; do
+            if ! curl -fsS -o /dev/null "https://tachogo.eu/$path"; then
+              echo "::warning::https://tachogo.eu/$path не отвечает — проверить домен в Railway и DNS (docs/site/README.md)"
+            fi
+          done

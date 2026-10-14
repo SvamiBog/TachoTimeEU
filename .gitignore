@@ -6,7 +6,7 @@ Thumbs.db
 *.iml
 
 # Сайт: файл с правилами запретов и страницы лендинга собирает «Сайт»
-# (pages.yml, app/tool/site_build.dart)
+# (site.yml, app/tool/site_build.dart)
 site/bans/
 site/index.html
 site/??/

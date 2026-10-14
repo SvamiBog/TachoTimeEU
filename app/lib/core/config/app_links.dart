@@ -10,13 +10,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Политика конфиденциальности — страница `site/privacy/index.html` на
-/// GitHub Pages. Тот же адрес — в Play Console. Домен — открытый вопрос 11
-/// PRD: при переезде сменить здесь, в `banDataUri`
-/// (`data/bans/ban_data_file.dart`), в Play Console и в
-/// `docs/beta/play-console.md`, а по старому адресу оставить переадресацию —
-/// ссылку из уже установленных версий не поменять.
-const privacyPolicyPage = 'https://svamibog.github.io/TachoTimeEU/privacy/';
+/// Политика конфиденциальности — страница `site/privacy/index.html` на сайте
+/// `tachogo.eu` (Railway, `docs/site/README.md`). Тот же адрес — в Play
+/// Console и `siteBase` генератора сайта (проверяет SITE-01). При смене
+/// адреса — здесь, в `banDataUri` (`data/bans/ban_data_file.dart`), в Play
+/// Console и в `docs/beta/play-console.md`, а по старому адресу оставить
+/// переадресацию: ссылку из уже установленных версий не поменять.
+const privacyPolicyPage = 'https://tachogo.eu/privacy/';
 
 /// Политика на языке интерфейса: на странице русский и английский текст,
 /// остальным языкам — английский.

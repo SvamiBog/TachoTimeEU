@@ -11,7 +11,7 @@
 /// dart run tool/site_build.dart <site directory>
 /// ```
 ///
-/// The "Site" workflow (`pages.yml`) runs it before publishing; the pages
+/// The "Site" workflow (`site.yml`) runs it before publishing; the pages
 /// are not kept in git. English is the site root and `x-default`, other
 /// languages live in `<language>/`.
 library;
@@ -30,10 +30,10 @@ import 'package:tacho_engine/driving_bans.dart';
 /// Адрес сайта. Тот же, что у политики (`privacyPolicyPage` в
 /// `lib/core/config/app_links.dart`, проверяет SITE-01): при переезде на свой
 /// домен — сменить оба.
-const siteBase = 'https://svamibog.github.io/TachoTimeEU/';
+const siteBase = 'https://tachogo.eu/';
 
 /// Почта для связи и заявок в бету — та же, что в политике.
-const contactEmail = 'maruba.app@gmail.com';
+const contactEmail = 'support@tachogo.eu';
 
 /// Языки сайта — английский, польский и немецкий (решение 2026-10-14):
 /// часть языков приложения. Первый — корень сайта: туда же попадают

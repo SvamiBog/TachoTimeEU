@@ -10,13 +10,13 @@ import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:tacho_engine/driving_bans.dart';
 
-/// Файл с правилами запретов на сайте TachoGo (GitHub Pages, тот же сайт,
-/// что у политики конфиденциальности — `app_links.dart`). Публикует
-/// `.github/workflows/pages.yml` при каждом изменении правил на main. При
+/// Файл с правилами запретов на сайте TachoGo (`tachogo.eu` на Railway, тот
+/// же сайт, что у политики конфиденциальности — `app_links.dart`). Публикует
+/// `.github/workflows/site.yml` при каждом изменении правил на main. При
 /// переезде сайта по старому адресу оставить переадресацию: адрес из уже
 /// установленных версий не поменять.
 final Uri banDataUri = Uri.parse(
-  'https://svamibog.github.io/TachoTimeEU/bans/v$banDataFormat.json',
+  'https://tachogo.eu/bans/v$banDataFormat.json',
 );
 
 /// Открытые ключи подписи файла запретов по имени. Закрытый — секрет

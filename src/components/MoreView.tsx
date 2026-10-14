@@ -86,7 +86,7 @@ export const MoreView: React.FC<Props> = ({ settings, onOpenPaywall, onOpenExpor
           <span className="flex-1 text-[15px] font-semibold">{t.more.guide}</span>
           <ChevronRight className="w-4 h-4 text-muted" />
         </button>
-        <a href="mailto:support@tachotime.eu?subject=TachoGo" className={row}>
+        <a href="mailto:support@tachogo.eu?subject=TachoGo" className={row}>
           <MessageSquare className="w-5 h-5 shrink-0" />
           <span className="flex-1 text-[15px] font-semibold">{t.more.feedback}</span>
         </a>

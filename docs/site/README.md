@@ -1,6 +1,6 @@
 # Сайт TachoGo
 
-Лендинг в стиле «Дорожный плакат» (вариант B, выбран 2026-10-14; макеты — https://claude.ai/artifact/T8cb4mYFMJUmix7KVSVDnm). Языки — английский, польский и немецкий (решение владельца 2026-10-14). Публикует workflow «Сайт» (`.github/workflows/pages.yml`) после зелёного CI на `main`, вместе с политикой конфиденциальности и файлом правил запретов.
+Лендинг в стиле «Дорожный плакат» (вариант B, выбран 2026-10-14; макеты — https://claude.ai/artifact/T8cb4mYFMJUmix7KVSVDnm). Языки — английский, польский и немецкий (решение владельца 2026-10-14). Адрес — https://tachogo.eu (домен и почта `support@tachogo.eu` — Spaceship/Spacemail, хостинг — Railway, регион ЕС; решение владельца 2026-10-14). Публикует workflow «Сайт» (`.github/workflows/site.yml`) после зелёного CI на `main`, вместе с политикой конфиденциальности и файлом правил запретов.
 
 ## Как устроен
 
@@ -10,6 +10,7 @@
 | Генератор: шаблон, стили, карта сайта | `app/tool/site_build.dart` |
 | Шрифты (Unbounded, Onest, JetBrains Mono — латиница, подмножества в WOFF2) и их лицензии OFL | `site/fonts/` |
 | Политика конфиденциальности — пишется руками | `site/privacy/index.html` |
+| Сервер на Railway: Caddy отдаёт собранную папку, заголовки безопасности, `www` → `tachogo.eu`, без журналов посещений | `deploy/site/Dockerfile`, `deploy/site/Caddyfile` |
 | Значки, картинка для соцсетей | `site/favicon.svg`, `site/favicon-32.png`, `site/icon-512.png` |
 
 Генератор собирает при публикации, в git страниц нет:
@@ -52,9 +53,24 @@
 
 Язык сайта должен быть в приложении — надписи на телефоне берутся из его ARB. Добавить: `docs/site/<язык>.json` (тексты всех 14 языков были в коммите deb76b4 — можно взять оттуда), код в `siteLanguages`, название языка на нём самом в `languageNames`, локаль для соцсетей в `_ogLocales` генератора; код EUR-Lex — в `_eurLex`, если его там нет. Шрифты сейчас только с латиницей: для кириллицы или грузинского — пересобрать подмножества (`site/fonts/`).
 
-## Свой домен
+## Railway
 
-Адрес сайта — `siteBase` в генераторе и `privacyPolicyPage` в `app/lib/core/config/app_links.dart` (SITE-01 сверяет). При переезде на `tachogo.eu` сменить оба, `banDataUri` (`app/lib/data/bans/ban_data_file.dart`), добавить домен в Settings → Pages и в Play Console (`docs/beta/play-console.md`). Старый адрес на `github.io` GitHub сам переадресует на новый.
+Сервис `site` в проекте Railway (регион EU West). Railway сам из git ничего не собирает: workflow «Сайт» подписывает файл правил (секрет `BANS_SIGNING_KEY`), собирает лендинг, кладёт `site/` в папку `public/` рядом с `Dockerfile` и `Caddyfile` и выкладывает её командой `railway up --service site` (секрет `RAILWAY_TOKEN` — токен проекта: Railway → Project Settings → Tokens). После выкладки проверяет, что `tachogo.eu`, политика и `bans/v1.json` отвечают (если нет — предупреждение).
+
+Настроить один раз:
+
+1. Railway: в проекте — пустой сервис `site`, Settings → Region → EU West.
+2. GitHub: Settings → Secrets and variables → Actions — `RAILWAY_TOKEN` (и `BANS_SIGNING_KEY`, если ещё нет).
+3. GitHub → Actions → «Сайт» → Run workflow — первая выкладка.
+4. Railway → `site` → Settings → Networking → Custom Domain: добавить `tachogo.eu` и `www.tachogo.eu`. Railway покажет для каждого запись CNAME (куда указывать) и запись TXT для проверки.
+5. Spaceship → домен → DNS → Custom records:
+   - для `www` — CNAME на адрес, который показал Railway;
+   - для корня (`@`) — тоже CNAME на адрес Railway: на корне Spaceship сам делает из него запись ALIAS;
+   - обе записи TXT от Railway;
+   - старые записи A/AAAA/CNAME на `@` и `www` от парковки — удалить; записи почты (MX, SPF, DKIM от Spacemail) не трогать.
+6. Подождать, пока Railway покажет у доменов зелёную галочку и выпустит сертификат (минуты — до суток). Если корень так и не проверяется: Railway пишет, что ALIAS не у всех регистраторов работает — тогда перенести DNS домена в Cloudflare (бесплатно) и там завести те же записи.
+
+Адрес сайта — `siteBase` в генераторе и `privacyPolicyPage` в `app/lib/core/config/app_links.dart` (SITE-01 сверяет), файл правил — `banDataUri` (`app/lib/data/bans/ban_data_file.dart`). Тот же адрес политики — в Play Console (`docs/beta/play-console.md`). Если адрес когда-нибудь сменится — по старому оставить переадресацию: установленные версии приложения ходят по нему.
 
 ## Дальше
 
