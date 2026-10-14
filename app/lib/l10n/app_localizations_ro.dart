@@ -2229,7 +2229,13 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo ajută la planificarea timpului, dar nu înlocuiește tahograful și nu este consultanță juridică. Textul oficial al regulilor — Regulamentul (CE) nr. 561/2006 și Acordul AETR.';
+      'TachoGo ajută la planificarea timpului, dar nu înlocuiește tahograful și nu este consultanță juridică. Aplicația nu este afiliată autorităților UE sau ale statelor europene. Textul oficial al regulilor — Regulamentul (CE) nr. 561/2006 și Acordul AETR.';
+
+  @override
+  String get guideSources => 'Unde verificați';
+
+  @override
+  String get guideOfficialText => 'Textul oficial al Regulamentului 561/2006';
 
   @override
   String get moreAbout => 'Despre aplicație';
@@ -2243,7 +2249,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo ajută la planificarea timpului la volan și a repausului, dar nu înlocuiește tahograful și nu este consultanță juridică.';
+      'TachoGo ajută la planificarea timpului la volan și a repausului, dar nu înlocuiește tahograful și nu este consultanță juridică. Aplicația nu este afiliată autorităților UE sau ale statelor europene.';
 
   @override
   String get morePrivacy => 'Politica de confidențialitate';

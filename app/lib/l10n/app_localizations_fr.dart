@@ -2226,7 +2226,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo aide à planifier le temps, mais ne remplace pas le tachygraphe et n’est pas un conseil juridique. Texte officiel des règles — règlement (CE) nº 561/2006 et accord AETR.';
+      'TachoGo aide à planifier le temps, mais ne remplace pas le tachygraphe et n’est pas un conseil juridique. L’application n’est liée à aucune autorité de l’UE ou des pays européens. Texte officiel des règles — règlement (CE) nº 561/2006 et accord AETR.';
+
+  @override
+  String get guideSources => 'Où vérifier';
+
+  @override
+  String get guideOfficialText => 'Texte officiel du règlement 561/2006';
 
   @override
   String get moreAbout => 'À propos';
@@ -2240,7 +2246,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo aide à planifier les temps de conduite et de repos, mais ne remplace pas le tachygraphe et n’est pas un conseil juridique.';
+      'TachoGo aide à planifier les temps de conduite et de repos, mais ne remplace pas le tachygraphe et n’est pas un conseil juridique. L’application n’est liée à aucune autorité de l’UE ou des pays européens.';
 
   @override
   String get morePrivacy => 'Politique de confidentialité';

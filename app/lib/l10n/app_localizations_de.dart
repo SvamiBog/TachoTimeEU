@@ -2232,7 +2232,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo hilft bei der Zeitplanung, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung. Amtlicher Text der Regeln — Verordnung (EG) Nr. 561/2006 und AETR-Übereinkommen.';
+      'TachoGo hilft bei der Zeitplanung, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung. Die App steht in keiner Verbindung zu Behörden der EU oder europäischer Staaten. Amtlicher Text der Regeln — Verordnung (EG) Nr. 561/2006 und AETR-Übereinkommen.';
+
+  @override
+  String get guideSources => 'Wo prüfen';
+
+  @override
+  String get guideOfficialText => 'Amtlicher Text der Verordnung 561/2006';
 
   @override
   String get moreAbout => 'Über die App';
@@ -2246,7 +2252,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo hilft bei der Planung von Lenk- und Ruhezeiten, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung.';
+      'TachoGo hilft bei der Planung von Lenk- und Ruhezeiten, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung. Die App steht in keiner Verbindung zu Behörden der EU oder europäischer Staaten.';
 
   @override
   String get morePrivacy => 'Datenschutzerklärung';

@@ -30,4 +30,7 @@ Simple and reliable
 Free and Premium
 Free: activities, all timers and warnings, "End day", the log, today's bans. Premium: editing the log, PDF and CSV reports, moving to another phone, the ban calendar. Monthly or yearly subscription (7 days free) or a one-time lifetime purchase.
 
+Sources
+TachoGo is an independent app: it is not affiliated with and does not represent the EU or the authorities of any European country. Limits follow Regulation (EC) No 561/2006 (official text: https://eur-lex.europa.eu/eli/reg/2006/561/oj) and the AETR Agreement. Driving bans follow the official websites of the countries; the links are in the app.
+
 TachoGo helps you plan your time, but it does not replace the tachograph and is not an official record. At a roadside check, the tachograph and driver card data apply.

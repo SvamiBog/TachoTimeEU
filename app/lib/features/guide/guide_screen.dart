@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/config/app_links.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
@@ -40,6 +43,8 @@ class GuideScreen extends StatelessWidget {
         const VanRulesCheck(),
         SectionTitle(l.guideModes),
         const _ModesLegend(),
+        SectionTitle(l.guideSources),
+        const _OfficialText(),
         Padding(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.screenPadding + 4,
@@ -54,6 +59,29 @@ class GuideScreen extends StatelessWidget {
               height: 1.5,
             ),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Link to the official text of Regulation 561/2006 on EUR-Lex: Google Play
+/// asks apps that relay government rules to name a source the driver can
+/// check them against.
+class _OfficialText extends ConsumerWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final uri = regulationUri(Localizations.localeOf(context).languageCode);
+    return CardGroup(
+      children: [
+        NavRow(
+          icon: Icons.open_in_new,
+          title: context.l10n.guideOfficialText,
+          subtitle: uri.host,
+          onTap: () =>
+              unawaited(openLink(context, ref, uri, address: regulationPage)),
         ),
       ],
     );

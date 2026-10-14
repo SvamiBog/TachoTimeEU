@@ -1,10 +1,12 @@
 // Инструкция и правила (экран 17): лимиты из движка, объяснения для тех,
-// кто впервые с тахографом, проверка рейса фургона 2,5–3,5 т. План тестов:
-// UI-19, UI-20 в docs/testing.md.
+// кто впервые с тахографом, проверка рейса фургона 2,5–3,5 т, ссылка на
+// официальный текст правил. План тестов: UI-19, UI-20, UI-26 в
+// docs/testing.md.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/config/app_links.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
 
@@ -12,11 +14,31 @@ import '../support/app_harness.dart';
 
 final now = DateTime.utc(2026, 9, 23, 12);
 
+/// Браузер в памяти: какие ссылки открывались.
+class _FakeLinks implements LinkOpener {
+  final opened = <Uri>[];
+
+  @override
+  Future<bool> open(Uri uri) async {
+    opened.add(uri);
+    return true;
+  }
+}
+
 void main() {
-  Future<void> pump(WidgetTester tester, {DateTime? at}) => pumpScreen(
+  Future<void> pump(
+    WidgetTester tester, {
+    DateTime? at,
+    _FakeLinks? links,
+    Locale locale = const Locale('ru'),
+  }) => pumpScreen(
     tester,
     const GuideScreen(),
-    overrides: journalOverrides(periods: const [], now: at ?? now),
+    locale: locale,
+    overrides: [
+      ...journalOverrides(periods: const [], now: at ?? now),
+      if (links != null) linkOpenerProvider.overrideWithValue(links),
+    ],
   );
 
   Future<void> tapText(WidgetTester tester, String text) async {
@@ -120,6 +142,32 @@ void main() {
       200,
       scrollable: find.byType(Scrollable).first,
     );
+  });
+
+  group('UI-26: источник правил (политика Google Play о госинформации)', () {
+    testWidgets('ссылка на Регламент 561/2006 на EUR-Lex и оговорка, что '
+        'приложение не связано с властями', (tester) async {
+      final links = _FakeLinks();
+      await pump(tester, links: links);
+      await tapText(tester, 'Официальный текст Регламента 561/2006');
+      expect(links.opened, [
+        Uri.parse('https://eur-lex.europa.eu/eli/reg/2006/561/oj'),
+      ]);
+      expect(
+        find.textContaining('не связано с органами власти ЕС'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('язык ЕС — текст на нём', (tester) async {
+      final links = _FakeLinks();
+      await pump(tester, links: links, locale: const Locale('pl'));
+      await tapText(tester, 'Oficjalny tekst rozporządzenia 561/2006');
+      expect(
+        links.opened.single.toString(),
+        'https://eur-lex.europa.eu/eli/reg/2006/561/oj/pol',
+      );
+    });
   });
 
   group('UI-20: касаются ли правила рейса фургона', () {

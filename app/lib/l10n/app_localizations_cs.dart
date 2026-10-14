@@ -2233,7 +2233,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo pomáhá plánovat čas, ale nenahrazuje tachograf a není právní poradou. Úřední text pravidel — nařízení (ES) č. 561/2006 a dohoda AETR.';
+      'TachoGo pomáhá plánovat čas, ale nenahrazuje tachograf a není právní poradou. Aplikace není spojena s orgány EU ani evropských států. Úřední text pravidel — nařízení (ES) č. 561/2006 a dohoda AETR.';
+
+  @override
+  String get guideSources => 'Kde ověřit';
+
+  @override
+  String get guideOfficialText => 'Úřední text nařízení 561/2006';
 
   @override
   String get moreAbout => 'O aplikaci';
@@ -2247,7 +2253,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo pomáhá plánovat dobu řízení a odpočinku, ale nenahrazuje tachograf a není právní poradou.';
+      'TachoGo pomáhá plánovat dobu řízení a odpočinku, ale nenahrazuje tachograf a není právní poradou. Aplikace není spojena s orgány EU ani evropských států.';
 
   @override
   String get morePrivacy => 'Zásady ochrany osobních údajů';

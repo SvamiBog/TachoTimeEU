@@ -30,4 +30,7 @@ Sencillo y fiable
 Gratis y Premium
 Gratis: actividades, todos los temporizadores y avisos, «Terminar el día», el registro, las prohibiciones de hoy. Premium: edición del registro, informes PDF y CSV, paso a otro teléfono, calendario de prohibiciones. Suscripción mensual o anual (7 días gratis) o compra para siempre.
 
+Fuentes
+TachoGo es una aplicación independiente: no está vinculada a las autoridades de la UE ni de los países europeos y no las representa. Los límites siguen el Reglamento (CE) n.º 561/2006 (texto oficial: https://eur-lex.europa.eu/eli/reg/2006/561/oj) y el Acuerdo AETR. Las restricciones de circulación siguen las webs oficiales de los países; los enlaces están en la aplicación.
+
 TachoGo le ayuda a planificar su tiempo, pero no sustituye al tacógrafo ni es un registro oficial. En un control valen los datos del tacógrafo y de la tarjeta del conductor.

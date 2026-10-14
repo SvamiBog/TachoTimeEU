@@ -2219,7 +2219,13 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo vaqtni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas. Qoidalarning rasmiy matni — YeI 561/2006 Reglamenti va AETR Kelishuvi.';
+      'TachoGo vaqtni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas. Ilova YeI va Yevropa davlatlari hokimiyat organlari bilan bogʻliq emas. Qoidalarning rasmiy matni — YeI 561/2006 Reglamenti va AETR Kelishuvi.';
+
+  @override
+  String get guideSources => 'Qayerda tekshirish';
+
+  @override
+  String get guideOfficialText => '561/2006 Reglamentining rasmiy matni';
 
   @override
   String get moreAbout => 'Ilova haqida';
@@ -2232,7 +2238,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo rul ortidagi vaqt va dam olishni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas.';
+      'TachoGo rul ortidagi vaqt va dam olishni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas. Ilova YeI va Yevropa davlatlari hokimiyat organlari bilan bogʻliq emas.';
 
   @override
   String get morePrivacy => 'Maxfiylik siyosati';

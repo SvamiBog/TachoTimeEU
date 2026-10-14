@@ -2214,7 +2214,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideDisclaimer =>
-      'TachoGo helps plan your time but does not replace the tachograph and is not legal advice. The official text of the rules is Regulation (EC) No 561/2006 and the AETR Agreement.';
+      'TachoGo helps plan your time but does not replace the tachograph and is not legal advice. The app is not affiliated with the EU or the authorities of any European country. The official text of the rules is Regulation (EC) No 561/2006 and the AETR Agreement.';
+
+  @override
+  String get guideSources => 'Where to check';
+
+  @override
+  String get guideOfficialText => 'Official text of Regulation 561/2006';
 
   @override
   String get moreAbout => 'About the app';
@@ -2227,7 +2233,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moreDisclaimer =>
-      'TachoGo helps plan driving and rest times but does not replace the tachograph and is not legal advice.';
+      'TachoGo helps plan driving and rest times but does not replace the tachograph and is not legal advice. The app is not affiliated with the EU or the authorities of any European country.';
 
   @override
   String get morePrivacy => 'Privacy policy';

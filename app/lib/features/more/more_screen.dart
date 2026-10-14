@@ -139,21 +139,9 @@ class MoreScreen extends ConsumerWidget {
 
 /// Политика конфиденциальности в браузере, на языке интерфейса. Открыть
 /// нечем — адрес страницы в плашке: водитель откроет его сам.
-Future<void> openPrivacyPolicy(BuildContext context, WidgetRef ref) async {
-  final l = context.l10n;
-  final messenger = ScaffoldMessenger.of(context);
-  final uri = privacyPolicyUri(Localizations.localeOf(context).languageCode);
-  var opened = false;
-  try {
-    opened = await ref.read(linkOpenerProvider).open(uri);
-  } on Object catch (e, st) {
-    FlutterError.reportError(
-      FlutterErrorDetails(exception: e, stack: st, library: 'privacy policy'),
-    );
-  }
-  if (!opened) {
-    messenger.showSnackBar(
-      SnackBar(content: Text(l.linkFailed(privacyPolicyPage))),
-    );
-  }
-}
+Future<void> openPrivacyPolicy(BuildContext context, WidgetRef ref) => openLink(
+  context,
+  ref,
+  privacyPolicyUri(Localizations.localeOf(context).languageCode),
+  address: privacyPolicyPage,
+);

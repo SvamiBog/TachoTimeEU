@@ -30,4 +30,7 @@ Simplu și sigur
 Gratuit și Premium
 Gratuit: activitățile, toate cronometrele și avertizările, „Încheie ziua”, jurnalul, restricțiile de azi. Premium: editarea jurnalului, rapoarte PDF și CSV, transfer pe alt telefon, calendarul restricțiilor. Abonament lunar sau anual (7 zile gratuit) ori cumpărare pe viață.
 
+Surse
+TachoGo este o aplicație independentă: nu este afiliată autorităților UE sau ale statelor europene și nu le reprezintă. Limitele urmează Regulamentul (CE) nr. 561/2006 (textul oficial: https://eur-lex.europa.eu/eli/reg/2006/561/oj) și Acordul AETR. Restricțiile de circulație urmează site-urile oficiale ale țărilor, linkurile sunt în aplicație.
+
 TachoGo vă ajută să vă planificați timpul, dar nu înlocuiește tahograful și nu este o înregistrare oficială. La control contează datele tahografului și ale cardului șoferului.

@@ -30,4 +30,7 @@ Prosto i niezawodnie
 Za darmo i Premium
 Za darmo: czynności, wszystkie liczniki i ostrzeżenia, „Zakończ dzień”, dziennik, zakazy na dziś. Premium: edycja dziennika, raporty PDF i CSV, przeniesienie na inny telefon, kalendarz zakazów. Subskrypcja miesięczna lub roczna (7 dni za darmo) albo zakup na zawsze.
 
+Źródła
+TachoGo to niezależna aplikacja: nie jest powiązana z organami władzy UE ani państw Europy i ich nie reprezentuje. Limity — według rozporządzenia (WE) nr 561/2006 (tekst urzędowy: https://eur-lex.europa.eu/eli/reg/2006/561/oj) i umowy AETR. Zakazy ruchu — według oficjalnych stron państw, linki do nich są w aplikacji.
+
 TachoGo pomaga planować czas, ale nie zastępuje tachografu i nie jest oficjalnym zapisem. Podczas kontroli liczą się dane z tachografu i karty kierowcy.
