@@ -1,3 +1,7 @@
+/// Providers of the tracking service, its settings and the state of the
+/// permissions it depends on.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/background/tracking_service.dart';
 import 'package:tachogo/core/observability/observability_providers.dart';

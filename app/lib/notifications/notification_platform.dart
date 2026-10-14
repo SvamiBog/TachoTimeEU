@@ -1,3 +1,7 @@
+/// The local notifications plugin behind one class: channels, the schedule of
+/// system alarms and the notifications on screen.
+library;
+
 import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart' show PlatformException;
@@ -5,8 +9,8 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-/// Канал уведомлений Android: водитель настраивает звук и важность по
-/// каналам в настройках телефона.
+/// Android notification channel: the driver sets sound and importance per
+/// channel in the phone settings.
 enum AlertChannel {
   /// Приближение лимитов и нарушения: всплывающие, со звуком.
   limits,
@@ -15,7 +19,7 @@ enum AlertChannel {
   rest,
 }
 
-/// Уведомление в расписании: момент и готовые строки.
+/// A notification in the schedule: the moment and the ready strings.
 typedef ScheduledAlert = ({
   int id,
   DateTime at,
@@ -25,12 +29,12 @@ typedef ScheduledAlert = ({
   String? article,
 });
 
-/// Названия каналов на языке интерфейса.
+/// Channel names in the interface language.
 typedef AlertChannelNames = Map<AlertChannel, ({String name, String hint})>;
 
-/// Всё, что уведомлениям о лимитах нужно от плагина: расписание,
-/// показанные уведомления, точные будильники. Одна точка, которую тесты
-/// подменяют целиком. До релиза — только Android (`CLAUDE.md`).
+/// Everything limit notifications need from the plugin: the schedule, the shown
+/// notifications, exact alarms. One seam that tests replace as a whole. Android
+/// only until the release (`CLAUDE.md`).
 class NotificationPlatform {
   const new();
 

@@ -1,3 +1,9 @@
+/// The PDF "for the roadside check" (screen 16): driver, period, shifts with
+/// activities, infringements with articles, countries. Onest and JetBrains Mono
+/// are embedded, so Cyrillic, Polish and German letters show on any computer.
+/// It is not an official record, and the report says so (PRD, question 8).
+library;
+
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart' show AssetBundle;
@@ -10,20 +16,15 @@ import 'package:tachogo/data/report/report.dart';
 import 'package:tachogo/features/export/report_violations.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 
-// PDF «для инспекции» (экран 16): водитель, период, смены с режимами,
-// нарушения со статьями, страны. Шрифты Onest и JetBrains Mono встроены —
-// кириллица, польские и немецкие буквы видны на любом компьютере. Это не
-// официальная запись, отчёт так и говорит (PRD, вопрос 8).
-
-/// Кегль отчёта, пункты на листе A4. Это бумага, а не экран: токены
-/// дизайна (`AppTextStyles`) здесь не действуют.
+/// Font sizes of the report, in points on an A4 sheet. This is paper, not a
+/// screen: the design tokens (`AppTextStyles`) do not apply here.
 abstract final class _Pt {
   static const body = 8.5;
   static const heading = 10.0;
   static const title = 16.0;
 }
 
-/// Шрифты отчёта из ресурсов приложения.
+/// Report fonts from the app assets.
 class ReportFonts {
   const new({
     required this.regular,

@@ -1,12 +1,13 @@
-// Форматы времени на экранах. Движок считает в UTC, водитель видит
-// местное время телефона; длительности от часового пояса не зависят.
-//
-// Цифрами — как на распечатке тахографа во всех языках: день перед
-// месяцем («23.09»), 24 часа («06:49»). Водитель сверяет их с
-// распечаткой, а формат «мм/дд» ругают в отзывах о конкурентах
-// (docs/market/competitors.md). Словами — по шаблонам локали из intl:
-// названия и порядок дня, месяца и дня недели («23 сентября»,
-// «23-sentabr», «September 23»).
+/// Time formats on screens. The engine counts in UTC, the driver sees the
+/// phone's local time; durations do not depend on the time zone.
+///
+/// In digits — as on a tachograph printout in every language: day before month
+/// ("23.09"), 24-hour clock ("06:49"). Drivers compare them with the printout,
+/// and "mm/dd" is a common complaint in competitors' reviews
+/// (`docs/market/competitors.md`). In words — by the locale patterns of `intl`:
+/// names and order of day, month and weekday ("23 September", "23-sentabr",
+/// "September 23").
+library;
 
 import 'package:intl/intl.dart';
 import 'package:tachogo/l10n/app_localizations.dart';

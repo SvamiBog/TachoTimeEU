@@ -1,3 +1,6 @@
+/// The "Export report" sheet (screen 16).
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -28,6 +31,8 @@ Future<void> showExportSheet(BuildContext context) =>
       builder: (_) => const ExportSheet(),
     );
 
+/// "Export report" (screen 16): period, PDF or CSV, PDF language, countries and
+/// notes. The finished file goes to the system "Share" menu.
 class ExportSheet extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -35,6 +40,7 @@ class ExportSheet extends ConsumerStatefulWidget {
   ConsumerState<ExportSheet> createState() => _ExportSheetState();
 }
 
+/// Keeps the chosen period, format, language and the custom days.
 class _ExportSheetState extends ConsumerState<ExportSheet> {
   ReportPeriod _period = ReportPeriod.days28;
   ReportFormat _format = ReportFormat.pdf;
@@ -284,7 +290,7 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
   }
 }
 
-/// Период: «26.08 — 23.09» с календарём.
+/// The period "26.08 — 23.09" with a calendar icon.
 class _RangeBox extends StatelessWidget {
   const new(this.range);
 
@@ -328,7 +334,7 @@ class _RangeBox extends StatelessWidget {
   }
 }
 
-/// «Язык отчёта      Deutsch ›».
+/// "Report language      Deutsch ›".
 class _LanguageButton extends StatelessWidget {
   const new({required this.language, required this.onTap});
 
@@ -382,7 +388,7 @@ class _LanguageButton extends StatelessWidget {
   }
 }
 
-/// «С 01.09» / «По 10.09» — выбор дня своего периода.
+/// "From 01.09" / "To 10.09" — picks a day of the custom period.
 class _RangeButton extends StatelessWidget {
   const new({required this.label, required this.onTap});
 

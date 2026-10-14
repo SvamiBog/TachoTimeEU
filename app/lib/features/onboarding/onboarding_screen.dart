@@ -1,3 +1,6 @@
+/// First-launch onboarding (screens 13 and 14).
+library;
+
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -21,15 +24,16 @@ import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/settings/auto_detect.dart';
 import 'package:tachogo/features/settings/language_sheet.dart';
 
-/// Шаги онбординга. Макеты — 13 (приветствие) и 14 (настройка); режимы,
-/// главные правила и автоопределение собраны из компонентов дизайн-системы.
+/// Onboarding steps. The mockups are 13 (welcome) and 14 (setup); the
+/// activities, the main rules and automatic detection are built from the design
+/// system components.
 enum OnboardingStep { welcome, modes, rules, setup, autoDetect }
 
-/// Онбординг при первом запуске (UI-13): язык, режимы, главные правила для
-/// тех, кто впервые с тахографом, тип тахографа, пакет мобильности,
-/// уведомления, согласие на аналитику, автоопределение вождения. Выбор сразу
-/// пишется в настройки; «Готово» отмечает онбординг пройденным — больше он
-/// не показывается.
+/// First-launch onboarding (UI-13): language, activities, the main rules for
+/// those new to the tachograph, tachograph type, Mobility Package,
+/// notifications, analytics consent, automatic driving detection. Each choice
+/// is written to settings at once; "Done" marks onboarding as finished and it
+/// never shows again.
 class OnboardingScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -37,6 +41,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
+/// The current step and the moves between steps.
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   OnboardingStep _step = OnboardingStep.welcome;
 
@@ -123,7 +128,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 }
 
-/// Язык в правом верхнем углу приветствия (экран 13).
+/// The language in the top right corner of the welcome step (screen 13).
 class _LanguageButton extends StatelessWidget {
   const new();
 
@@ -167,7 +172,7 @@ class _LanguageButton extends StatelessWidget {
   }
 }
 
-/// Индикатор шагов: текущий — полоска цвета вождения.
+/// Step indicator: the current step is a bar in the driving colour.
 class _StepDots extends StatelessWidget {
   const new({required this.step});
 
@@ -199,7 +204,7 @@ class _StepDots extends StatelessWidget {
   }
 }
 
-/// Заголовок и пояснение шага.
+/// Title and explanation of a step.
 class _Intro extends StatelessWidget {
   const new({required this.title, required this.text});
 
@@ -231,6 +236,7 @@ class _Intro extends StatelessWidget {
 
 // ───────────────────────── 1. Приветствие ─────────────────────────
 
+/// Welcome step: the activities ring picture, the title and what the app does.
 class _Welcome extends StatelessWidget {
   const new();
 
@@ -263,8 +269,8 @@ class _Welcome extends StatelessWidget {
   }
 }
 
-/// Кольцо из цветов режимов с «4:30 до перерыва» — картинка, а не таймер:
-/// диктору достаточно заголовка.
+/// A ring of the activity colours with "4:30 until break" — a picture, not a
+/// timer: the title is enough for the screen reader.
 class _ModesRing extends StatelessWidget {
   const new({required this.size});
 
@@ -305,6 +311,7 @@ class _ModesRing extends StatelessWidget {
   }
 }
 
+/// Paints the four activity arcs of the picture.
 class _ModesRingPainter extends CustomPainter {
   new(this.colors);
 
@@ -346,6 +353,7 @@ class _ModesRingPainter extends CustomPainter {
 
 // ───────────────────────── 2. Режимы и таймеры ─────────────────────────
 
+/// Activities step: the four activities with their symbols and what each means.
 class _Modes extends StatelessWidget {
   const new();
 
@@ -423,8 +431,8 @@ class _Modes extends StatelessWidget {
 
 // ───────────────────────── 3. Главные правила ─────────────────────────
 
-/// Четыре лимита, о которых водитель должен знать с первого дня; остальное
-/// — в «Инструкции и правилах».
+/// The four limits a driver must know from day one; the rest is in "Guide and
+/// rules".
 class _Rules extends StatelessWidget {
   const new();
 
@@ -465,6 +473,8 @@ class _Rules extends StatelessWidget {
 
 // ───────────────────────── 4. Настройка ─────────────────────────
 
+/// Setup step (screen 14): tachograph type, Mobility Package, notifications,
+/// analytics consent.
 class _Setup extends ConsumerWidget {
   const new();
 
@@ -531,6 +541,7 @@ class _Setup extends ConsumerWidget {
   }
 }
 
+/// One option card: icon, label, whether it is selected and what a tap does.
 typedef _Option = ({
   IconData icon,
   String label,
@@ -538,8 +549,7 @@ typedef _Option = ({
   VoidCallback onTap,
 });
 
-/// Варианты карточками в ряд (экран 14): «Грузовик или автобус» /
-/// «Фургон 2,5–3,5 т», «Цифровой» / «Аналоговый».
+/// Options as cards in a row (screen 14): "Digital" / "Analogue" tachograph.
 class _Options extends StatelessWidget {
   const new({required this.options});
 
@@ -562,6 +572,7 @@ class _Options extends StatelessWidget {
   );
 }
 
+/// One option card, outlined in the driving colour when selected.
 class _OptionCard extends StatelessWidget {
   const new(this.option);
 
@@ -607,8 +618,8 @@ class _OptionCard extends StatelessWidget {
   }
 }
 
-/// «Предупредим за 30 минут…», системный запрос уведомлений и точных
-/// будильников (Android 14+).
+/// "We will warn you 30 minutes before…" and the system notification permission
+/// request. Exact alarms are not requested (decision 2026-10-13).
 class _NotificationsCard extends ConsumerStatefulWidget {
   const new({required this.lead});
 
@@ -618,6 +629,8 @@ class _NotificationsCard extends ConsumerStatefulWidget {
   ConsumerState<_NotificationsCard> createState() => _NotificationsCardState();
 }
 
+/// Whether the system request was already shown: after that, the button opens
+/// the app's system settings.
 class _NotificationsCardState extends ConsumerState<_NotificationsCard> {
   bool _asked = false;
 
@@ -691,6 +704,8 @@ class _NotificationsCardState extends ConsumerState<_NotificationsCard> {
 
 // ───────────────────────── 5. Автоопределение ─────────────────────────
 
+/// Automatic detection step: what it does, the permissions it needs and the
+/// switch.
 class _AutoDetect extends ConsumerStatefulWidget {
   const new();
 
@@ -698,6 +713,7 @@ class _AutoDetect extends ConsumerStatefulWidget {
   ConsumerState<_AutoDetect> createState() => _AutoDetectState();
 }
 
+/// Turns automatic detection on through [AutoDetectEnabling].
 class _AutoDetectState extends ConsumerState<_AutoDetect>
     with AutoDetectEnabling {
   @override

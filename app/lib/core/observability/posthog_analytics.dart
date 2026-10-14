@@ -1,14 +1,18 @@
+/// Product analytics in PostHog EU Cloud, started only after the driver's
+/// consent.
+library;
+
 import 'dart:async';
 
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tachogo/core/observability/analytics.dart';
 
-/// Аналитика в PostHog EU Cloud. SDK поднимается только после согласия
-/// водителя. События анонимные: без identify и профилей, без записи сессий,
-/// опросов и автосбора ошибок (ошибки — в Sentry).
+/// Analytics in PostHog EU Cloud. The SDK starts only after the driver's
+/// consent. Events are anonymous: no identify and no person profiles, no
+/// session recording, surveys or automatic error capture (errors go to Sentry).
 ///
-/// Автоинициализация SDK выключена в AndroidManifest.xml и Info.plist
-/// (`com.posthog.posthog.AUTO_INIT`), иначе он стартовал бы до согласия.
+/// SDK auto-initialisation is off in `AndroidManifest.xml` and `Info.plist`
+/// (`com.posthog.posthog.AUTO_INIT`); otherwise it would start before consent.
 class PosthogAnalytics implements Analytics {
   /// [posthog] — для тестов; по умолчанию SDK приложения.
   new(this._projectKey, {required this._environment, Posthog? posthog})

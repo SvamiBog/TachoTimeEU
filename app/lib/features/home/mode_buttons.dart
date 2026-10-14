@@ -1,3 +1,6 @@
+/// The four activity buttons of the home screen.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -20,7 +23,7 @@ const List<DriverMode> _modes = [
   DriverMode.availability,
 ];
 
-/// Четыре кнопки режима 88 dp — нажимать можно в перчатках.
+/// Four 88 dp activity buttons — they can be pressed with gloves on.
 class ModeButtons extends ConsumerWidget {
   const new({super.key});
 
@@ -73,6 +76,7 @@ class ModeButtons extends ConsumerWidget {
   }
 }
 
+/// One activity button: symbol and name, filled with its colour when active.
 class _ModeButton extends StatelessWidget {
   const new({
     required this.mode,

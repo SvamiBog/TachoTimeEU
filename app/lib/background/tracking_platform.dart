@@ -1,3 +1,7 @@
+/// Everything automatic detection needs from the platform and plugins, behind
+/// one class that tests replace.
+library;
+
 import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
@@ -6,9 +10,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/motion_source.dart';
 
-/// Всё, что автоопределению нужно от платформы и плагинов: ОС, доступ к
-/// геолокации, foreground service (Android) и канал устройства. Одна точка,
-/// которую тесты подменяют целиком.
+/// Everything automatic detection needs from the platform and plugins: the OS,
+/// location access, the foreground service (Android) and the device channel.
+/// One seam that tests replace as a whole.
 class TrackingPlatform {
   const new();
 

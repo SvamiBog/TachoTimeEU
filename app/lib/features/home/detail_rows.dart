@@ -1,13 +1,15 @@
+/// Rows shared by the limit detail screens: milestones and rule notes.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 
-/// Точка вехи: сплошная — уже было, кольцо — впереди, приглушённая —
-/// недоступно.
+/// Milestone dot: solid — already passed, ring — ahead, muted — unavailable.
 enum MilestoneDot { solid, ring, muted }
 
-/// Веха на экранах лимитов: «13 ч — обычный день ··· 19:49».
+/// A milestone on the limit screens: "13 h — normal day ··· 19:49".
 class MilestoneRow extends StatelessWidget {
   const new({
     required this.dot,
@@ -81,7 +83,7 @@ class MilestoneRow extends StatelessWidget {
   }
 }
 
-/// Пояснение правила под карточками экрана лимита.
+/// Explanation of a rule under the cards of a limit screen.
 class InfoNote extends StatelessWidget {
   const new(this.text, {super.key});
 

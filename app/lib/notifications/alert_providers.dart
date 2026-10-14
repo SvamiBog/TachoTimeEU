@@ -1,3 +1,6 @@
+/// Providers of the notification plugin seam and the limit alert scheduler.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

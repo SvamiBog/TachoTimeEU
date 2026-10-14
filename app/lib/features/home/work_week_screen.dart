@@ -1,3 +1,6 @@
+/// "Work week" screen: the 144 h between weekly rests.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -17,6 +20,7 @@ import 'package:tachogo/features/home/shift_rows.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 
+/// The work week for the screen, in whole minutes.
 typedef _WorkWeek = ({
   DateTime? since,
   DateTime? deadline,
@@ -50,10 +54,10 @@ void openWorkWeekScreen(BuildContext context) =>
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const WorkWeekScreen()));
 
-/// «Рабочая неделя» (отзыв водителя 02.10.2026: строка открывала экран
-/// недельного отдыха): время от конца прошлого недельного отдыха из 144 ч,
-/// до какого времени начать следующий, переход к экрану 9 и смены этой
-/// рабочей недели. Макета нет — из компонентов экранов лимитов.
+/// "Work week" (driver feedback 02.10.2026: the row opened the weekly rest
+/// screen): time since the end of the last weekly rest out of 144 h, until when
+/// to start the next one, a link to screen 9 and the shifts of this work week.
+/// There is no mockup — built from the limit screen components.
 class WorkWeekScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -93,7 +97,7 @@ class WorkWeekScreen extends ConsumerWidget {
   }
 }
 
-/// «76:30 из 144 ч · с пн 28.09, 06:00» и полоса.
+/// "76:30 of 144 h · since Mon 28.09, 06:00" and a bar.
 class _Summary extends StatelessWidget {
   const new(this.s);
 
@@ -172,8 +176,8 @@ class _Summary extends StatelessWidget {
   }
 }
 
-/// Конец прошлого недельного отдыха, 144 ч — начать следующий, переход к
-/// экрану недельного отдыха.
+/// End of the last weekly rest, 144 h — start the next one, link to the weekly
+/// rest screen.
 class _Milestones extends StatelessWidget {
   const new(this.s);
 

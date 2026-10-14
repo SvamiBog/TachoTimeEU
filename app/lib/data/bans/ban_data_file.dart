@@ -1,10 +1,14 @@
+/// The signed driving ban rules file on the TachoGo site: its address, the
+/// public keys, sealing for the publish tool and verification for the app.
+///
+/// No Flutter here: `tool/bans_publish.dart`, which signs the rules for the
+/// site, imports this file too.
+library;
+
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:tacho_engine/driving_bans.dart';
-
-// Без Flutter: этот файл читает и `tool/bans_publish.dart`, который
-// подписывает правила для сайта.
 
 /// Файл с правилами запретов на сайте TachoGo (GitHub Pages, тот же сайт,
 /// что у политики конфиденциальности — `app_links.dart`). Публикует

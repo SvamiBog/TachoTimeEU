@@ -1,7 +1,10 @@
+/// Driver card downloads marked by the driver.
+library;
+
 import 'package:drift/drift.dart';
 import 'package:tachogo/data/db/app_database.dart';
 
-/// Считывания карты водителя: от последнего считается лимит 28 дней.
+/// Driver card downloads: the 28-day limit counts from the last one.
 class CardDownloadRepository {
   new(this._db, {DateTime Function()? clock}) : _clock = clock ?? DateTime.now;
 

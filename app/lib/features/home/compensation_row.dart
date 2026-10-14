@@ -1,3 +1,9 @@
+/// Compensation for a reduced weekly rest (Art. 8(6), 8(7)): the debt, the due
+/// date and how long to rest to repay it. The rules are in the engine: any rest
+/// of 9 h or more repays the debt when it lasts 9 h + debt (a weekly rest — 45
+/// h + debt).
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -9,10 +15,6 @@ import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/features/home/limit_row.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
-
-// Компенсация сокращённого недельного отдыха (ст. 8(6), 8(7)): долг, срок
-// и сколько отдыхать, чтобы его погасить. Правила — в движке: гасит долг
-// любой отдыхом от 9 ч, если длится 9 ч + долг (недельный — 45 ч + долг).
 
 /// Что отдых начала [restStart] сделал с долгами: сколько долга к нему
 /// присоединено и долг за него самого, если это сокращённый недельный.
@@ -27,7 +29,7 @@ import 'package:tachogo/features/home/weekly_rest_screen.dart';
   debt: all.where((c) => c.restStart == restStart).firstOrNull,
 );
 
-/// Состояние долга по минутам: секундный тик строку не перестраивает.
+/// Debt state in whole minutes: the one-second tick does not rebuild the row.
 typedef _Compensation = ({
   int debt,
   int progress,
@@ -88,8 +90,9 @@ _Compensation? _compensation(ComplianceSnapshot s) {
   );
 }
 
-/// «Компенсация» в разделе «Отдых» главной: только когда есть долг или
-/// идущий отдых его погасил. На отдыхе — до какого времени отдыхать.
+/// "Compensation" in the "Rest" section of the home screen: only when there is
+/// a debt or the rest in progress has repaid one. During a rest — until when to
+/// rest.
 class CompensationRow extends ConsumerWidget {
   const new({super.key});
 

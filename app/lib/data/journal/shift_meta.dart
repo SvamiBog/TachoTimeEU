@@ -1,7 +1,11 @@
+/// Countries and notes of shifts, which the engine does not need.
+library;
+
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:tacho_engine/tacho_engine.dart';
 
-/// Страны и заметка смены. Движку они не нужны — только журналу и отчёту.
+/// Countries and note of a shift. The engine does not need them — only the
+/// journal and the report do.
 @immutable
 class ShiftMeta {
   const new({this.startCountry, this.endCountry, this.note});
@@ -27,7 +31,8 @@ class ShiftMeta {
   String toString() => 'ShiftMeta($startCountry → $endCountry, $note)';
 }
 
-/// Ручная смена из БД: итоги для движка и страны с заметкой.
+/// A manual shift from the database: totals for the engine plus countries and a
+/// note.
 @immutable
 class ManualShiftRecord {
   const new(this.shift, this.meta);

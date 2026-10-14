@@ -1,3 +1,12 @@
+/// Problem report for beta testers (Phase 4, `docs/beta/README.md`).
+///
+/// It collects the version, the phone, the settings, the permissions, the
+/// notification schedule and two days of the log — what is needed to make sense
+/// of "the timer is wrong" or "the notification never came". The app stores no
+/// coordinates, so the report has none. The text is for developers: labels are
+/// in English and times are UTC, as in the log.
+library;
+
 import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
@@ -18,14 +27,7 @@ import 'package:tachogo/notifications/alert_notifications.dart';
 import 'package:tachogo/notifications/alert_providers.dart';
 import 'package:tachogo/notifications/notification_platform.dart';
 
-// Отчёт о проблеме для бета-тестировщиков (Фаза 4, docs/beta/README.md):
-// версия, телефон, настройки, разрешения, расписание уведомлений и записи
-// журнала за двое суток — то, без чего жалобу «таймер врёт» или «не пришло
-// уведомление» не разобрать. Координат приложение не хранит — их нет и
-// в отчёте. Текст — для разработчиков: служебные подписи по-английски,
-// время — UTC, как в журнале.
-
-/// Телефон: производитель, модель, версия Android.
+/// The phone: manufacturer, model, Android version.
 typedef DeviceInfo = ({
   String manufacturer,
   String model,
@@ -33,7 +35,8 @@ typedef DeviceInfo = ({
   int sdk,
 });
 
-/// Модель телефона и версия Android — из `MainActivity` (канал устройства).
+/// Reads the phone model and Android version from `MainActivity` over the
+/// device channel.
 class DeviceInfoSource {
   const new();
 
@@ -56,8 +59,8 @@ class DeviceInfoSource {
 const reportWindow = Duration(hours: 48);
 const reportMaxRecords = 80;
 
-/// Состояние приложения на момент отчёта. Поле, которое не удалось
-/// прочитать, — строка с ошибкой: отчёт уходит всё равно.
+/// The state of the app at the moment of the report. A field that could not be
+/// read holds the error text: the report goes out anyway.
 class Diagnostics {
   const new({
     required this.now,
@@ -203,8 +206,8 @@ String formatDiagnostics(Diagnostics d) {
   return lines.join('\n');
 }
 
-/// Собирает [Diagnostics]. Всё, что зависит от платформы, подменяется в
-/// тестах; ошибка одного источника не мешает остальным.
+/// Collects [Diagnostics]. Everything that depends on the platform can be
+/// replaced in tests; an error in one source does not stop the others.
 class DiagnosticsCollector {
   new({
     required this._settings,

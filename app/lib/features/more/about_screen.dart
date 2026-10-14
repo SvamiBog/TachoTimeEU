@@ -1,3 +1,6 @@
+/// "About" screen: name, version, disclaimer and the open source licenses.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/core/config/app_info.dart';
@@ -13,10 +16,10 @@ void openAbout(BuildContext context) =>
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const AboutScreen()));
 
-/// «О приложении»: название, версия и оговорка, лицензии — отдельной
-/// строкой. Список лицензий обязателен: лицензии пакетов и шрифтов (MIT,
-/// BSD, Apache, OFL) требуют показывать их тексты вместе с приложением, —
-/// но длинный, поэтому не на этом экране (решение владельца 2026-10-02).
+/// "About": name, version and the disclaimer, with the licenses behind a
+/// separate row. The license list is required — the licenses of the packages
+/// and fonts (MIT, BSD, Apache, OFL) require showing their texts with the app —
+/// but it is long, so it is not on this screen (owner's decision 2026-10-02).
 class AboutScreen extends ConsumerWidget {
   const new({super.key});
 

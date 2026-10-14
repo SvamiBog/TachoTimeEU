@@ -1,3 +1,7 @@
+/// Downloading, verifying and storing the driving ban rules from the TachoGo
+/// site.
+library;
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -6,11 +10,12 @@ import 'package:tacho_engine/driving_bans.dart';
 import 'package:tachogo/data/bans/ban_data_file.dart';
 import 'package:tachogo/data/db/app_database.dart';
 
-/// Правила запретов, скачанные с сайта ([banDataUri]). Файл хранится в БД
-/// как скачан, с подписью, и проверяется при каждом чтении; в перенос на
-/// другой телефон не входит (`SettingsRepository.transferableSettings`).
-/// Сайт спрашивается не чаще [checkEvery] после удачной проверки; нет сети
-/// или файл не прошёл проверку — в следующий раз.
+/// Ban rules downloaded from the site ([banDataUri]). The file is stored in the
+/// database as downloaded, with its signature, and verified on every read; it
+/// is not part of the transfer to another phone
+/// (`SettingsRepository.transferableSettings`). The site is asked at most once
+/// per [checkEvery] after a successful check; with no network or a file that
+/// fails verification — next time.
 class BanDataRepository {
   new(this._db, this._client, {this.keys = banSigningKeys});
 

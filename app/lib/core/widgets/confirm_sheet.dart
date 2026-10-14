@@ -1,3 +1,6 @@
+/// Bottom sheets that ask the driver to confirm an action or show a notice.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';

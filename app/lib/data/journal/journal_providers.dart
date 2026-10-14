@@ -1,3 +1,7 @@
+/// Providers of the journal data, the ticking clock and the engine results that
+/// screens watch.
+library;
+
 import 'dart:async';
 
 import 'package:clock/clock.dart';
@@ -77,6 +81,7 @@ final lastCardDownloadProvider = StreamProvider<DateTime?>(
 /// минуты, поэтому тик по минутам запаздывал бы до 59 с.
 final clockProvider = NotifierProvider<Clock, DateTime>(Clock.new);
 
+/// The current UTC time, updated every second: timers are recomputed from it.
 class Clock extends Notifier<DateTime> {
   static const tick = Duration(seconds: 1);
 
@@ -183,7 +188,7 @@ Journal _journal(
 DateTime _minuteOf(DateTime t) =>
     DateTime.utc(t.year, t.month, t.day, t.hour, t.minute);
 
-/// Журнал по неделям со странами и заметками смен.
+/// The journal by weeks with the countries and notes of the shifts.
 class Journal {
   const new({
     required this.now,

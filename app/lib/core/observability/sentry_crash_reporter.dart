@@ -1,14 +1,17 @@
+/// Crash reports in Sentry (EU region).
+library;
+
 import 'dart:async';
 
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tachogo/core/observability/crash_reporter.dart';
 
-/// Отчёты о падениях в Sentry. Организация заведена в регионе ЕС — регион
-/// задаёт DSN. Персональных данных нет: IP не передаётся, скриншоты
-/// и дерево виджетов не прикладываются (так в Sentry по умолчанию).
+/// Crash reports in Sentry. The organisation is in the EU region — the DSN sets
+/// the region. No personal data: the IP address is not sent, and screenshots
+/// and the widget tree are not attached (Sentry's defaults).
 ///
-/// Перехватчики ошибок Flutter ставит `main.dart` после [init] — они
-/// заменяют встроенные в Sentry, поэтому каждая ошибка уходит один раз.
+/// `bootstrap.dart` installs the Flutter error handlers after [init]; they
+/// replace Sentry's own, so each error is sent once.
 class SentryCrashReporter implements CrashReporter {
   new(this._dsn, {required this._environment, this._backgroundIsolate = false});
 

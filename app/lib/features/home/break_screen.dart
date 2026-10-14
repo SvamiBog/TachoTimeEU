@@ -1,3 +1,6 @@
+/// Screen 8 "Break": the Art. 7 break after 4:30 of driving.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -19,6 +22,7 @@ void openBreakScreen(BuildContext context) =>
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const BreakScreen()));
 
+/// The break state the screen shows, in whole minutes.
 typedef _Break = ({
   bool shift,
   bool resting,
@@ -53,8 +57,8 @@ _Break _break(ComplianceSnapshot s) {
   );
 }
 
-/// Экран 8 «Перерыв»: 45 мин подряд или 15 + 30 после 4:30 вождения.
-/// Корректировка длительности — правка журнала (Premium), в журнале.
+/// Screen 8 "Break": 45 min in one go, or 15 + 30, after 4:30 of driving.
+/// Correcting the duration is a journal edit (Premium).
 class BreakScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -85,6 +89,7 @@ class BreakScreen extends ConsumerWidget {
   }
 }
 
+/// The ring with the break taken so far and what is still needed.
 class _Summary extends StatelessWidget {
   const new(this.s);
 
@@ -186,7 +191,7 @@ class _Summary extends StatelessWidget {
   }
 }
 
-/// Часть перерыва: взята — заливка цветом отдыха, нет — пунктир.
+/// A part of the break: taken — filled with the rest colour, not yet — dashed.
 class _Part extends StatelessWidget {
   const new(this.text, {required this.done});
 
@@ -230,6 +235,7 @@ class _Part extends StatelessWidget {
   }
 }
 
+/// Paints the dashed outline of a part not taken yet.
 class _DashedBorder extends CustomPainter {
   new({required this.color, required this.radius});
 
@@ -264,8 +270,7 @@ class _DashedBorder extends CustomPainter {
       old.color != color || old.radius != radius;
 }
 
-/// «Корректировка» (экран 8): длительность последнего перерыва — правка
-/// журнала.
+/// "Correction" (screen 8): the duration of the last break, a journal edit.
 class _Correction extends ConsumerWidget {
   const new();
 
@@ -348,6 +353,7 @@ class _Correction extends ConsumerWidget {
   }
 }
 
+/// Explains the 15 + 30 split rule.
 class _SplitRule extends StatelessWidget {
   const new();
 

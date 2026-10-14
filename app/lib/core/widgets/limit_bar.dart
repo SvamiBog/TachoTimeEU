@@ -1,10 +1,13 @@
+/// Progress bar of a limit with threshold ticks.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 
-/// Полоса лимита 6 dp: заливка до [value] из [max], риска 2 × 14 dp на
-/// каждом пороге из [ticks]. Без подписи для чтения с экрана — значение
-/// озвучивает строка, в которой стоит полоса.
+/// A 6 dp limit bar: filled up to [value] of [max], with a 2 × 14 dp tick at
+/// each threshold in [ticks]. It has no screen reader label — the row it sits
+/// in reads the value.
 class LimitBar extends StatelessWidget {
   const new({
     required this.value,

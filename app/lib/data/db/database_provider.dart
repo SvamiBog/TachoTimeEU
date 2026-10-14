@@ -1,3 +1,6 @@
+/// Provider of the single database connection of a Flutter engine.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/data/db/app_database.dart';
 

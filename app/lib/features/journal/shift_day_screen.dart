@@ -1,3 +1,6 @@
+/// Day details of a journal shift.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -18,9 +21,9 @@ Future<void> openShiftDay(BuildContext context, ShiftKey key) => Navigator.of(
   context,
 ).push(MaterialPageRoute<void>(builder: (_) => ShiftDayScreen(shiftKey: key)));
 
-/// Детали дня: смена из журнала — только суммы и отдых после неё. Когда
-/// что было по времени, водителю не нужно (отзыв водителей, 28.09.2026).
-/// Смотреть бесплатно, «Изменить смену» — Premium.
+/// Day details: a journal shift — only totals and the rest after it. When what
+/// happened is something drivers do not need (drivers' feedback, 28.09.2026).
+/// Viewing is free, "Edit shift" is Premium.
 class ShiftDayScreen extends ConsumerWidget {
   const new({required this.shiftKey, super.key});
 
@@ -79,6 +82,7 @@ class ShiftDayScreen extends ConsumerWidget {
   }
 }
 
+/// The shift's date, route and totals cells.
 class _Summary extends StatelessWidget {
   const new({required this.shift, required this.route});
 
@@ -147,7 +151,7 @@ class _Summary extends StatelessWidget {
   }
 }
 
-/// Текст во всю ширину карточки.
+/// Text across the full width of a card.
 class _TextBlock extends StatelessWidget {
   const new(this.text, {required this.style});
 
@@ -164,7 +168,7 @@ class _TextBlock extends StatelessWidget {
   );
 }
 
-/// Итоги смены: работа, готовность, перерывы, непрерывное вождение, отдых.
+/// Shift totals: work, availability, breaks, continuous driving, rest.
 class _Totals extends StatelessWidget {
   const new(this.shift);
 
@@ -205,6 +209,7 @@ class _Totals extends StatelessWidget {
   }
 }
 
+/// A "label — value" row, with an optional caption and chip.
 class _ValueRow extends StatelessWidget {
   const new({
     required this.label,

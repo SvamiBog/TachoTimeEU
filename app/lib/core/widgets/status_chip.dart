@@ -1,12 +1,16 @@
+/// Status chips and banners in the colour of a limit's state.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 
-/// Состояние лимита: норма, скоро (меньше порога из настроек), превышен.
-/// Отдых — плашка засчитанного или идущего перерыва.
+/// State of a limit: fine, soon (less than the threshold from settings),
+/// exceeded. Rest is the pad of a counted or ongoing break.
 enum Tone { neutral, warning, violation, rest }
 
+/// Background and text colours of each [Tone].
 extension ToneColors on AppColors {
   ({Color background, Color foreground}) tone(Tone tone) => switch (tone) {
     Tone.neutral => (background: surface2, foreground: chipText),
@@ -16,7 +20,7 @@ extension ToneColors on AppColors {
   };
 }
 
-/// Чип рядом со значением: «15 ч ×3», «скоро перерыв».
+/// A chip next to a value: "15 h ×3", "break soon".
 class StatusChip extends StatelessWidget {
   const new(this.text, {this.tone = Tone.neutral, super.key});
 
@@ -44,7 +48,7 @@ class StatusChip extends StatelessWidget {
   }
 }
 
-/// Плашка с пояснением: «Нужен перерыв 45 мин…».
+/// A banner with an explanation: "Take a 45 min break…".
 class StatusBanner extends StatelessWidget {
   const new(this.text, {required this.tone, super.key});
 

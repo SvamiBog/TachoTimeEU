@@ -1,13 +1,17 @@
-// Файл с правилами запретов для сайта (docs/domain/driving-bans.md,
-// «Обновление по сети»): встроенные правила движка, подписанные ключом из
-// переменной BANS_SIGNING_KEY (закрытый ключ Ed25519, 32 байта в base64).
-// Готовый файл читается так же, как в приложении.
-//
-//   dart run tool/bans_publish.dart <каталог сайта>
-//
-// пишет <каталог>/bans/v1.json; без ключа — ошибка. Без каталога — только
-// проверка: с ключом — что он из приложения (banSigningKeys), без ключа —
-// подпись случайным ключом.
+/// Driving ban rules file for the site (`docs/domain/driving-bans.md`, "Network
+/// updates"): the engine's built-in rules signed with the key from the
+/// BANS_SIGNING_KEY variable (Ed25519 private key, 32 bytes in base64). The
+/// finished file is read back the same way the app reads it.
+///
+/// ```sh
+/// dart run tool/bans_publish.dart <site directory>
+/// ```
+///
+/// Writes `<directory>/bans/v1.json`; without the key it fails. Without a
+/// directory it only checks: with the key — that it matches the app
+/// (`banSigningKeys`), without the key — signing with a random key.
+library;
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';

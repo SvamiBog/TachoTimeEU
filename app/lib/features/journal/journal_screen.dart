@@ -1,3 +1,6 @@
+/// Journal (screen 2): the history by weeks and shifts.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -17,9 +20,10 @@ import 'package:tachogo/features/journal/journal_parts.dart';
 import 'package:tachogo/features/journal/shift_day_screen.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
 
-/// Журнал (экран 2): недели → смены, недельный отдых, подсветка 10 ч
-/// вождения, 13+ ч рабочего дня и сокращённого отдыха — по оценке движка
-/// (`buildJournal`). Вся история бесплатна; «+ Смена» и экспорт — Premium.
+/// Journal (screen 2): weeks → shifts and weekly rests, with highlights for 10
+/// h of driving, a workday over 13 h and reduced rest from the engine's rating
+/// (`buildJournal`). The whole history is free; "+ Shift" and export are
+/// Premium.
 class JournalScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -30,6 +34,7 @@ class JournalScreen extends ConsumerStatefulWidget {
   ConsumerState<JournalScreen> createState() => _JournalScreenState();
 }
 
+/// Remembers the weeks the driver collapsed or expanded.
 class _JournalScreenState extends ConsumerState<JournalScreen> {
   /// Недели, которые водитель свернул или раскрыл сам.
   final _toggled = <DateTime>{};
@@ -124,6 +129,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
   });
 }
 
+/// The title with the export button.
 class _Header extends StatelessWidget {
   const new({required this.now});
 
@@ -175,19 +181,21 @@ class _Header extends StatelessWidget {
   }
 }
 
-/// Элемент недели: смена или недельный отдых, от новых к старым.
+/// An item of a week: a shift or a weekly rest, newest first.
 sealed class _Item {
   const new(this.at);
 
   final DateTime at;
 }
 
+/// A shift in the week's list.
 class _ShiftItem extends _Item {
   new(this.shift) : super(shift.start);
 
   final JournalShift shift;
 }
 
+/// A weekly rest in the week's list, placed by its end.
 class _RestItem extends _Item {
   new(this.rest, DateTime now) : super(rest.end ?? now);
 
@@ -205,6 +213,7 @@ List<_Item> _items(JournalWeek week, DateTime now) =>
       return a is _ShiftItem ? -1 : 1;
     });
 
+/// A week card: header with totals and its shifts and weekly rests.
 class _WeekCard extends StatelessWidget {
   const new({
     required this.journal,
@@ -243,6 +252,7 @@ class _WeekCard extends StatelessWidget {
 final int _weekHours = EuLimits.weeklyDriving.inHours;
 final int _fortnightHours = EuLimits.fortnightDriving.inHours;
 
+/// Week header: dates, driving of the week and the collapse toggle.
 class _WeekHeader extends StatelessWidget {
   const new({required this.week, required this.onToggle});
 
@@ -343,6 +353,7 @@ class _WeekHeader extends StatelessWidget {
   }
 }
 
+/// A collapsed past week: dates and driving, a tap expands it.
 class _CollapsedWeek extends StatelessWidget {
   const new({required this.week, required this.onToggle});
 
@@ -420,7 +431,7 @@ class _CollapsedWeek extends StatelessWidget {
   }
 }
 
-/// Строка смены: день, страны, время, итоги. Касание — детали дня.
+/// A shift row: day, countries, time, totals. A tap opens the day details.
 class _ShiftRow extends StatelessWidget {
   const new(this.journal, this.shift);
 
@@ -523,6 +534,8 @@ class _ShiftRow extends StatelessWidget {
   }
 }
 
+/// A weekly rest row with its status and the compensation debt it created or
+/// repaid.
 class _WeeklyRestRow extends ConsumerWidget {
   const new(this.rest);
 

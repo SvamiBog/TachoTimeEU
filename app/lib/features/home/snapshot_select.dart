@@ -1,3 +1,7 @@
+/// Selecting the part of the engine snapshot a home widget needs, rounded to
+/// minutes so the one-second clock tick does not rebuild it.
+library;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -44,7 +48,7 @@ Tone toneOf(
   return Tone.neutral;
 }
 
-/// Список, который сравнивается по содержимому: для `select`.
+/// A list compared by its contents: for `select`.
 @immutable
 class ValueList<T> {
   const new(this.items);

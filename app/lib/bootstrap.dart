@@ -1,3 +1,7 @@
+/// App start-up before `runApp`, kept separate from `main()` so tests can run
+/// it.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';

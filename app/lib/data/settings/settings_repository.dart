@@ -1,9 +1,14 @@
+/// App settings in the key–value table: interface preferences, calculation
+/// rules, notifications, automatic detection, consent and the transferable
+/// subset.
+library;
+
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/countries/tacho_countries.dart';
 import 'package:tachogo/data/db/app_database.dart';
 
-/// Автоопределение вождения по GPS.
+/// Automatic driving detection by GPS.
 @immutable
 class AutoDetectSettings {
   const new({this.enabled = false, this.rules = const AutoSwitchSettings()});
@@ -24,16 +29,19 @@ class AutoDetectSettings {
       Object.hash(enabled, rules.afterStop, rules.startFromRest);
 }
 
-/// Оформление (экран 3). По умолчанию — тёмная: в кабине её видно и ночью.
+/// Appearance (screen 3). Dark by default: it is readable in the cab at night
+/// too.
 enum ThemeChoice { system, light, dark }
 
-/// Тахограф в машине (экран 14). Лимиты 561/2006 от него не зависят, на
-/// расчёт он пока не влияет — `docs/PRD.md`, открытый вопрос 5.
+/// The tachograph in the vehicle (screen 14). The 561/2006 limits do not depend
+/// on it and it does not change the calculation yet — `docs/PRD.md`, open
+/// question 5.
 enum TachographType { digital, analog }
 
-/// Настройки интерфейса: тема, язык, онбординг, тахограф. Типа транспорта
-/// нет: лимиты одинаковы для грузовика, автобуса и фургона 2,5–3,5 т, а
-/// касаются ли правила рейса фургона — проверка в «Инструкции и правилах».
+/// Interface settings: theme, language, onboarding, tachograph. There is no
+/// vehicle type: the limits are the same for a truck, a bus and a 2.5–3.5 t
+/// van, and whether the rules apply to a van trip is checked in "Guide and
+/// rules".
 @immutable
 class AppPreferences {
   const new({
@@ -72,10 +80,10 @@ class AppPreferences {
       Object.hash(theme, language, reportLanguage, onboardingDone, tachograph);
 }
 
-/// Какие уведомления о лимитах присылать (экран 3): расписание —
-/// `AlertScheduler`. Порог и срок считывания карты — в
-/// `ComplianceSettings` (`warningLead`, `cardAlertDays`): от них зависят
-/// и плашки на экране, и момент уведомления.
+/// Which limit notifications to send (screen 3); the schedule is
+/// `AlertScheduler`. The warning threshold and the card reminder live in
+/// `ComplianceSettings` (`warningLead`, `cardAlertDays`): both the on-screen
+/// badges and the notification moments depend on them.
 @immutable
 class NotificationSettings {
   const new({
@@ -122,7 +130,7 @@ class NotificationSettings {
   int get hashCode => Object.hash(breaks, shiftEnd, driving, card);
 }
 
-/// Настройки из таблицы «ключ — значение».
+/// Settings stored in the key–value table.
 class SettingsRepository {
   new(this._db);
 

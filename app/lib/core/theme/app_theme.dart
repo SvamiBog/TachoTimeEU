@@ -1,3 +1,6 @@
+/// Material theme of the app built from the design tokens.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';

@@ -1,6 +1,9 @@
-/// Отличительные знаки стран, которые водитель вводит в тахограф в начале
-/// и в конце смены (Регламент (ЕС) 165/2014, ст. 34(7); ЕС и ЕСТР).
-/// Названия — в ARB (`countryName`), по коду.
+/// Country codes a driver enters into the tachograph.
+library;
+
+/// Distinguishing signs of the countries the driver enters into the tachograph
+/// at the start and end of a shift (Regulation (EU) 165/2014, Art. 34(7); EU
+/// and AETR). Names are in ARB (`countryName`), by code.
 abstract final class TachoCountries {
   static const codes = [
     'A', 'AL', 'AND', 'ARM', 'AZ', 'B', 'BG', 'BIH', 'BY', 'CH', 'CY', //

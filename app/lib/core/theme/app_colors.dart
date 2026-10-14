@@ -1,9 +1,16 @@
-// Дизайн-токены TachoGo (вариант A «Кокпит»).
-// Источник: docs/design/tokens.json. При изменении токенов обновлять оба файла.
-// Радиусы и размеры — app_tokens.dart, типографика — app_typography.dart.
+/// TachoGo colour tokens (variant A "Cockpit") for the dark and light themes.
+///
+/// Source: `docs/design/tokens.json` — when a token changes, update both files.
+/// Radii and sizes live in `app_tokens.dart`, typography in
+/// `app_typography.dart`.
+library;
 
 import 'package:flutter/material.dart';
 
+/// The app palette as a theme extension: background and surfaces, text, the
+/// activity colours (driving amber, rest green, work orange, availability blue)
+/// and warning and error tones. Widgets read it with `context.colors` and never
+/// hard-code colours.
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
   const new({
@@ -183,6 +190,7 @@ class AppColors extends ThemeExtension<AppColors> {
   }
 }
 
+/// Access to the current theme's [AppColors].
 extension AppColorsX on BuildContext {
   /// Палитра текущей темы: `context.colors.drive`.
   AppColors get colors => Theme.of(this).extension<AppColors>()!;

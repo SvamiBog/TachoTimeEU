@@ -1,10 +1,14 @@
+/// Start and end countries of shifts (Mobility Package), stored by the shift
+/// start time, and the list of frequently used countries.
+library;
+
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:tachogo/data/countries/tacho_countries.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 
-/// Страны начала и конца смены.
+/// Start and end countries of a shift.
 @immutable
 class ShiftCountries {
   const new({required this.start, this.end});
@@ -22,8 +26,8 @@ class ShiftCountries {
   int get hashCode => Object.hash(start, end);
 }
 
-/// Страны одной смены для [frequentCountries]: начало смены, начальная и
-/// конечная страна (null — не выбрана).
+/// Countries of one shift for [frequentCountries]: the shift start, the start
+/// and end country (null — not chosen).
 typedef ShiftCountryUse = ({DateTime start, String? from, String? to});
 
 /// Окно [frequentCountries]: после смены маршрута новые страны поднимаются
@@ -63,9 +67,10 @@ List<String> frequentCountries(
   return codes.take(limit).toList();
 }
 
-/// Страны смен в таблице `shifts`. Смену движок выводит из журнала, её
-/// ключ здесь — момент начала (UTC). Выбор страны — бесплатное действие,
-/// как переключение режима: он не меняет журнал (docs/premium.md).
+/// Shift countries in the `shifts` table. The engine derives shifts from the
+/// log, so the key here is the shift start (UTC). Choosing a country is a free
+/// action, like switching activity: it does not change the log
+/// (`docs/premium.md`).
 class CountryRepository {
   new(this._db, this._settings);
 

@@ -158,7 +158,9 @@ flutter analyze --fatal-infos
 flutter test --coverage
 ```
 
-То же самое проверяет pre-commit хук (`git config core.hooksPath .githooks`) и CI (`.github/workflows/ci.yml`). CI ещё гоняет тесты в трёх часовых поясах, требует покрытия `lib/data` не ниже 80 %, сверяет снимки схемы БД и итоговый манифест APK (`tool/check_android_manifest.dart`), запускает тесты Kotlin на Robolectric (`android/app/src/test/`, `./gradlew :app:testDebugUnitTest` после сборки APK). Список тестов и что ещё предстоит ввести — `docs/testing.md`.
+То же самое проверяет pre-commit хук (`git config core.hooksPath .githooks`) и CI (`.github/workflows/ci.yml`). CI ещё гоняет тесты в трёх часовых поясах, требует покрытия `lib/data` не ниже 80 %, сверяет снимки схемы БД, итоговый манифест APK (`tool/check_android_manifest.dart`) и выравнивание нативных библиотек по 16 КБ (`tool/check_page_size.dart`), запускает тесты Kotlin на Robolectric (`android/app/src/test/`, `./gradlew :app:testDebugUnitTest` после сборки APK). Список тестов и что ещё предстоит ввести — `docs/testing.md`.
+
+Описание модуля и doc-комментарии классов — на английском, остальные комментарии — на русском (`CLAUDE.md`, «Комментарии в коде»); проверяет `test/code/source_docs_test.dart`.
 
 ## Интеграционные тесты
 

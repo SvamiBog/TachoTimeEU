@@ -1,3 +1,7 @@
+/// Providers of the settings repository and of each group of settings that
+/// screens watch.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';

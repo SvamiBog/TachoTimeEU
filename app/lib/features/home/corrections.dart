@@ -1,3 +1,10 @@
+/// Corrections of the current shift from the home and limit screens: daily
+/// driving (screen 7), break (screen 8), shift start (screen 6). These are
+/// journal edits (Premium, `docs/premium.md`): they go through the manual edits
+/// layer, time is taken from the neighbouring record (`adjustDriving`,
+/// `setLastBreakDuration`, `moveStart`), the bounds come from the engine.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -5,12 +12,6 @@ import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/journal/pickers.dart';
-
-// Корректировки текущей смены с главной и экранов лимитов: суточное
-// вождение (экран 7), перерыв (экран 8), начало смены (экран 6). Это правки
-// журнала (Premium, docs/premium.md): пишутся через слой ручных правок,
-// время берётся у соседней записи (`adjustDriving`, `setLastBreakDuration`,
-// `moveStart`), пределы — из движка.
 
 /// Текущая смена и записи для правки; null — смены нет.
 ({Shift shift, List<ActivityPeriod> periods, DateTime now, Duration daily})?

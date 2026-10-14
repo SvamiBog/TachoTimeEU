@@ -1,13 +1,17 @@
+/// Live recording of the activity log: switching activity and the ferry mark.
+library;
+
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/tables.dart';
 import 'package:tachogo/data/journal/period_store.dart';
 
-/// Журнал режимов в БД.
+/// The activity log in the database.
 ///
-/// Переключение режима — отдельный путь «живой» записи: он не проходит через
-/// слой ручных правок и проверку Premium (docs/premium.md). Логику переходов
-/// задаёт движок (`changeMode`), репозиторий только сохраняет разницу.
+/// Switching activity is a separate "live" path: it does not go through the
+/// layer of manual edits nor the Premium check (`docs/premium.md`). The engine
+/// defines the transitions (`changeMode`); the repository only saves the
+/// difference.
 class ActivityRepository {
   new(this._db, {DateTime Function()? clock, this._onChanged})
     : _clock = clock ?? DateTime.now;

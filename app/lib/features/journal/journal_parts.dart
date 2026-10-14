@@ -1,3 +1,7 @@
+/// Pieces shared by the journal, the day details and the shift form: how a
+/// shift looks in a row, the shift key, highlights by the engine's rating.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
@@ -10,11 +14,8 @@ import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/report/report.dart';
 
-// Общее для журнала, деталей дня и формы смены: как смена выглядит в
-// строке, ключ смены, подсветка по оценке движка.
-
-/// Смена в журнале между пересчётами: ручная — по id, из записей — по
-/// началу. Объект `JournalShift` каждую минуту новый.
+/// A journal shift between recalculations: a manual one by id, a recorded one
+/// by its start. The `JournalShift` object is new every minute.
 typedef ShiftKey = ({int? manualId, DateTime start});
 
 ShiftKey keyOf(JournalShift s) => (manualId: s.manual?.id, start: s.start);
@@ -68,7 +69,8 @@ String restSpokenOf(AppLocalizations l, JournalShift s) =>
 Tone restToneOf(JournalShift s) =>
     s.rest.ongoing ? Tone.rest : toneOfLevel(s.restLevel);
 
-/// Ячейка итогов смены: «Вождение / 8:55». Цвет — по оценке движка.
+/// A shift totals cell: "Driving / 8:55". The colour follows the engine's
+/// rating.
 class MetricCell extends StatelessWidget {
   const new({
     required this.label,
@@ -122,7 +124,8 @@ class MetricCell extends StatelessWidget {
   }
 }
 
-/// Узкая ячейка: при крупном шрифте текст уменьшается, а не обрезается.
+/// A narrow cell: with a large font the text scales down instead of being cut
+/// off.
 class _Fit extends StatelessWidget {
   const new(this.child);
 
@@ -136,7 +139,7 @@ class _Fit extends StatelessWidget {
   );
 }
 
-/// Три ячейки итогов: вождение, смена, отдых.
+/// Three totals cells: driving, shift, rest.
 class ShiftMetrics extends StatelessWidget {
   const new(this.shift, {super.key});
 

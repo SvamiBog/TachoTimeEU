@@ -1,3 +1,7 @@
+/// Turning automatic driving detection on from a screen, and the "Automatic
+/// detection" settings card.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -18,9 +22,9 @@ import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 
-/// Включение автоопределения с экрана (онбординг и настройки, UI-14):
-/// системные запросы доступа, причина отказа, проверка причины, когда
-/// водитель вернулся из настроек телефона.
+/// Turning automatic detection on from a screen (onboarding and settings,
+/// UI-14): the system permission requests, the reason of a refusal, and
+/// re-checking the reason when the driver comes back from the phone settings.
 mixin AutoDetectEnabling<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   /// Почему автоопределение не включилось в последний раз.
   TrackingBlocker? blocker;
@@ -73,8 +77,8 @@ mixin AutoDetectEnabling<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   }
 }
 
-/// Плашка-предупреждение и, если причину можно исправить в настройках
-/// телефона, кнопка туда.
+/// A warning banner and, if the cause can be fixed in the phone settings, a
+/// button to go there.
 class SystemSettingsNotice extends StatelessWidget {
   const new({required this.text, this.onOpen, super.key});
 
@@ -103,8 +107,8 @@ class SystemSettingsNotice extends StatelessWidget {
   }
 }
 
-/// Почему автоопределение не включилось. Отказ навсегда и выключенная
-/// геолокация исправляются только в настройках телефона — туда кнопка.
+/// Why automatic detection did not turn on. A permanent refusal and location
+/// turned off can only be fixed in the phone settings — the button goes there.
 class BlockerNotice extends ConsumerWidget {
   const new(this.blocker, {super.key});
 
@@ -158,8 +162,8 @@ List<Widget> backgroundHints(BuildContext context, WidgetRef ref) {
   ];
 }
 
-/// Раздел «Автоопределение вождения» в настройках: включение, режим после
-/// остановки, вождение сразу после отдыха, подсказки про фон.
+/// "Automatic driving detection" in settings: the switch, the activity after a
+/// stop, driving right after a rest, background hints.
 class AutoDetectCard extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -167,6 +171,7 @@ class AutoDetectCard extends ConsumerStatefulWidget {
   ConsumerState<AutoDetectCard> createState() => _AutoDetectCardState();
 }
 
+/// Turns detection on through [AutoDetectEnabling] and saves the rules.
 class _AutoDetectCardState extends ConsumerState<AutoDetectCard>
     with AutoDetectEnabling {
   /// Режимы после остановки: вождением стоянка не бывает.
@@ -240,7 +245,7 @@ class _AutoDetectCardState extends ConsumerState<AutoDetectCard>
   }
 }
 
-/// Иконка состояния «включено» / «разрешено» в онбординге.
+/// The "on" / "allowed" state icon in onboarding.
 class DoneMark extends StatelessWidget {
   const new(this.text, {super.key});
 

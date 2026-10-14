@@ -1,14 +1,19 @@
-// Итоговый манифест Android вместе с манифестами плагинов (CI-06 в
-// docs/testing.md): без фонового доступа к геолокации, прямого запроса на
-// исключение из экономии батареи, USE_EXACT_ALARM и рекламного ID, сервис
-// автоопределения с типом location, при включении экрана его уведомление
-// обновляется (`TachoGoApplication`), уведомления о лимитах по расписанию
-// переживают перезагрузку, есть доступ в интернет для правил запретов,
-// у уведомлений белый значок, PostHog не стартует до согласия.
-//
-//   dart tool/check_android_manifest.dart [AndroidManifest.xml …]
-//
-// Без аргументов проверяет итоговые манифесты сборки в build/app.
+/// Checks the final Android manifest merged with the plugin manifests (CI-06 in
+/// `docs/testing.md`): no background location, no direct request to ignore
+/// battery optimisation, no USE_EXACT_ALARM and no advertising ID; the
+/// detection service has the location type; when the screen turns on its
+/// notification is refreshed (`TachoGoApplication`); scheduled limit
+/// notifications survive a reboot; there is internet access for the ban rules;
+/// notifications have the white icon; PostHog does not start before consent.
+///
+/// ```sh
+/// dart tool/check_android_manifest.dart [AndroidManifest.xml …]
+/// ```
+///
+/// Without arguments it checks the merged manifests of the build in
+/// `build/app`.
+library;
+
 import 'dart:io';
 
 /// meta-data со значком уведомлений: по этому имени его берёт уведомление

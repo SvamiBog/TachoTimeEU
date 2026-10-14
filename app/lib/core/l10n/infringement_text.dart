@@ -1,9 +1,12 @@
+/// Localized title, text and article of every engine warning and infringement.
+library;
+
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 
-/// Заголовок, текст и статья предупреждения или нарушения. `switch` по
-/// всем видам: новый вид в движке без текста не соберётся.
+/// Title, text and article of a warning or infringement. The `switch` covers
+/// every kind: a new kind in the engine without a text does not compile.
 extension InfringementText on AppLocalizations {
   ({String title, String text, String article}) infringement(Infringement i) {
     final time = formatHm(i.time ?? Duration.zero);

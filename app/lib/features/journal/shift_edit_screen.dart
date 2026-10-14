@@ -1,3 +1,6 @@
+/// Shift form (screen 11): a new manual shift or a shift from the journal.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -40,7 +43,7 @@ Future<bool> openShiftEditor(
   return saved ?? false;
 }
 
-/// Значения формы. Время — UTC с точностью до минуты, как на экране.
+/// The form values. Times are UTC to the minute, as on screen.
 class _Form {
   new({
     required this.start,
@@ -96,7 +99,7 @@ class _Form {
       ShiftMeta(startCountry: startCountry, endCountry: endCountry, note: note);
 }
 
-/// Долги компенсации из снимка — для строк отдыха в форме.
+/// Compensation debts from the snapshot, for the rest rows of the form.
 typedef _CompensationView = ({
   ValueList<Compensation> all,
   DateTime? restStart,
@@ -117,6 +120,9 @@ _CompensationView _compensationView(ComplianceSnapshot s) {
   );
 }
 
+/// Shift form (screen 11): a new manual shift or a shift from the journal —
+/// times, countries, driving, rest after the shift, note; saving, deleting and
+/// the checks of `checkManualShift`.
 class ShiftEditScreen extends ConsumerStatefulWidget {
   const new({this.shift, this.presetRest, super.key});
 
@@ -128,6 +134,7 @@ class ShiftEditScreen extends ConsumerStatefulWidget {
   ConsumerState<ShiftEditScreen> createState() => _ShiftEditScreenState();
 }
 
+/// The form values, the saved state to compare with, errors and saving.
 class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
   _Form? _initial;
   late _Form _form;
@@ -1007,6 +1014,7 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
   }
 }
 
+/// A hint card above the form explaining how this shift is edited.
 class _Hint extends StatelessWidget {
   const new(this.text);
 
@@ -1048,7 +1056,7 @@ class _Hint extends StatelessWidget {
   }
 }
 
-/// Карточка «Смена»: начало и конец (страна, дата, время), длительность.
+/// The "Shift" card: start and end (country, date, time), duration.
 class _TimesCard extends StatelessWidget {
   const new({
     required this.form,
@@ -1139,6 +1147,8 @@ class _TimesCard extends StatelessWidget {
   }
 }
 
+/// One side of the shift — start or end: country, date and time, "now" for an
+/// ongoing shift.
 class _Side extends StatelessWidget {
   const new({
     required this.title,
@@ -1267,7 +1277,7 @@ class _Side extends StatelessWidget {
   }
 }
 
-/// Кнопка поля даты или времени: значок и значение на тёмной плашке.
+/// A date or time field button: icon and value on a dark pad.
 class _FieldButton extends StatelessWidget {
   const new({
     required this.icon,
@@ -1336,7 +1346,7 @@ class _FieldButton extends StatelessWidget {
   }
 }
 
-/// Строка «название — значение ›»: касание открывает колёсико.
+/// A "label — value ›" row: a tap opens the duration sheet.
 class _ValueRow extends StatelessWidget {
   const new({
     required this.label,
