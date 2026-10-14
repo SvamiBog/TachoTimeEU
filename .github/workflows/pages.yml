@@ -1,6 +1,7 @@
-# Сайт на GitHub Pages из site/: политика конфиденциальности для Google Play
-# и приложения (адрес — app/lib/core/config/app_links.dart) и файл с
-# правилами запретов движения bans/v1.json, по которому приложения
+# Сайт на GitHub Pages из site/: лендинг на 14 языках (собирает
+# app/tool/site_build.dart из docs/site/), политика конфиденциальности для
+# Google Play и приложения (адрес — app/lib/core/config/app_links.dart) и файл
+# с правилами запретов движения bans/v1.json, по которому приложения
 # обновляют правила без новой версии (docs/domain/driving-bans.md). Включить
 # один раз: Settings → Pages → Build and deployment → Source: GitHub Actions.
 #
@@ -71,6 +72,10 @@ jobs:
           fi
           flutter pub get
           dart run tool/bans_publish.dart ../site
+      # Страницы лендинга, карта сайта и robots.txt (docs/site/README.md)
+      - name: Лендинг
+        working-directory: app
+        run: dart run tool/site_build.dart ../site
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
