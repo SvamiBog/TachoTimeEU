@@ -1,3 +1,8 @@
+/// JSON format of the driving ban rules that the app downloads from the TachoGo
+/// site: encoding for the publish tool and strict decoding for the app. A file
+/// that fails any check is rejected as a whole.
+library;
+
 import 'dart:convert';
 
 import 'package:tacho_engine/src/bans/ban_rule.dart';
@@ -272,8 +277,8 @@ BanTime _readTime(String text) {
   return BanTime(hour, minute: minute, dayOffset: int.parse(m.group(3) ?? '0'));
 }
 
-/// Объект JSON с проверкой типов: неверный тип или нет поля —
-/// [FormatException] с названием поля.
+/// A JSON object with type checks: a wrong type or a missing field throws
+/// [FormatException] naming the field.
 extension type _Obj._(Map<String, Object?> _map) {
   factory(Object? json, String what) => json is Map<String, Object?>
       ? _Obj._(json)

@@ -1,3 +1,7 @@
+/// Time arithmetic shared by the engine: the regulation week, durations that
+/// never go negative, rounding to whole minutes. Everything is UTC.
+library;
+
 /// Неделя по ст. 4(i) Регламента 561/2006.
 const week = Duration(days: 7);
 

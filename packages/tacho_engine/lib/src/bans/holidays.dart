@@ -1,7 +1,11 @@
+/// Public holidays for driving bans: fixed dates and dates relative to Western
+/// or Orthodox Easter.
+library;
+
 import 'package:meta/meta.dart';
 
-/// Праздник для запретов движения: число месяца или сдвиг от Пасхи. Дата —
-/// местная, в `DateTime.utc` (полночь).
+/// A holiday for driving bans: a day of the month or an offset from Easter. The
+/// date is local, as `DateTime.utc` at midnight.
 @immutable
 sealed class Holiday {
   const new();
@@ -9,7 +13,7 @@ sealed class Holiday {
   DateTime dateIn(int year);
 }
 
-/// Праздник в одно и то же число каждый год.
+/// A holiday on the same date every year.
 final class FixedHoliday extends Holiday {
   const new(this.month, this.day);
 
@@ -20,9 +24,9 @@ final class FixedHoliday extends Holiday {
   DateTime dateIn(int year) => DateTime.utc(year, month, day);
 }
 
-/// Праздник от Пасхи: Страстная пятница −2, Пасхальный понедельник +1,
-/// Вознесение +39, Троица +49, Духов день +50, Тело Христово +60.
-/// [orthodox] — от православной Пасхи (Болгария, Румыния, Греция).
+/// A holiday relative to Easter: Good Friday −2, Easter Monday +1, Ascension
+/// +39, Whit Sunday +49, Whit Monday +50, Corpus Christi +60. [orthodox] counts
+/// from Orthodox Easter (Bulgaria, Romania, Greece).
 final class EasterHoliday extends Holiday {
   const new(this.offset, {this.orthodox = false});
 

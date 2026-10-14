@@ -1,15 +1,18 @@
+/// Shifts the driver adds as totals, without activity records.
+library;
+
 import 'package:meta/meta.dart';
 
-/// Какой отдых был после смены.
+/// Which rest followed a shift.
 enum RestKind { none, daily, weekly }
 
-/// Смена, добавленная вручную итогами (например, за дни до установки
-/// приложения): без записей режимов, только суммы.
+/// A shift added by hand as totals (for example for the days before the app was
+/// installed): no activity records, only sums.
 ///
-/// Водитель указывает только вид отдыха после смены, длительность движок
-/// считает сам — до начала следующей смены (`manualRests`).
+/// The driver only picks the kind of rest after the shift; the engine works out
+/// its length itself — up to the start of the next shift (`manualRests`).
 ///
-/// Страны и заметки движку не нужны — они хранятся в приложении.
+/// Countries and notes are not the engine's business; the app stores them.
 @immutable
 class ManualShift {
   new({

@@ -1,10 +1,16 @@
+/// First stage of every calculation: the raw log becomes a clean sequence of
+/// [Block]s, and rest blocks are grouped into [RestPeriod]s, including rests
+/// interrupted on a ferry or train (Art. 9).
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/activity_period.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
 import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/time.dart';
 
-/// Непрерывный отрезок одного режима: соседние записи одного режима склеены.
+/// A continuous stretch of one activity: adjacent records of the same activity
+/// are glued together.
 @immutable
 class Block {
   const new({
@@ -106,7 +112,8 @@ List<ActivityPeriod> sortedByStart(Iterable<ActivityPeriod> periods) {
   return [for (final (_, p) in indexed) p];
 }
 
-/// Период отдыха: один блок или несколько, прерванных на пароме / поезде.
+/// A rest period: one block, or several joined across ferry or train
+/// interruptions.
 @immutable
 class RestPeriod {
   const new({

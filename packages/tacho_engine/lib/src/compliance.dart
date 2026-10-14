@@ -1,3 +1,8 @@
+/// The heart of the engine: [calculateCompliance] turns the log into a
+/// [ComplianceSnapshot] — the driver's state, what is left of every limit of
+/// Regulation 561/2006 and the warnings and infringements at a given moment.
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/activity_period.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
@@ -8,7 +13,7 @@ import 'package:tacho_engine/src/manual_shift.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
 
-/// Настройки водителя, которые влияют на расчёт.
+/// Driver settings that change the calculation.
 @immutable
 class ComplianceSettings {
   const new({
@@ -31,7 +36,7 @@ class ComplianceSettings {
   final int cardAlertDays;
 }
 
-/// Недельный отдых из записей или из ручной смены.
+/// A weekly rest, from the records or after a manual shift.
 @immutable
 class WeeklyRest {
   const new({
@@ -65,7 +70,7 @@ class WeeklyRest {
       '${status.name})';
 }
 
-/// Суточный или недельный отдых после смены, который идёт сейчас.
+/// The daily or weekly rest after a shift that is in progress now.
 @immutable
 class OffDutyRest {
   const new({
@@ -82,7 +87,7 @@ class OffDutyRest {
   final bool weekly;
 }
 
-/// Перерыв, который идёт сейчас.
+/// The break in progress now.
 @immutable
 class CurrentBreak {
   const new({
@@ -99,8 +104,8 @@ class CurrentBreak {
   final Duration required;
 }
 
-/// Долг за сокращённый недельный отдых (ст. 8(6)) и отдых, к которому он
-/// присоединён (ст. 8(7)).
+/// Debt for a reduced weekly rest (Art. 8(6)) and the rest it was attached to
+/// (Art. 8(7)).
 @immutable
 class Compensation {
   const new({
@@ -141,9 +146,10 @@ class Compensation {
       '${repaidIn == null ? '' : ', погашен $repaidIn'})';
 }
 
-/// Компенсация в отдыхе, который идёт: сколько долга он уже погасил и
-/// какой долг погасит следующим. Отдых гасит долг, когда длится 9 ч + долг,
-/// недельный (от 24 ч) — 45 ч + долг, и набрал это к сроку (ст. 8(7)).
+/// Compensation inside the rest in progress: how much debt it has already
+/// repaid and which debt it repays next. A rest repays a debt when it lasts 9 h
+/// + debt (a weekly rest of 24 h or more: 45 h + debt) and reaches that by the
+/// due date (Art. 8(7)).
 @immutable
 class RestCompensation {
   const new({required this.taken, required this.next, required this.until});
@@ -179,7 +185,7 @@ class RestCompensation {
       '${next == null ? '' : ', дальше ${next!.debt.inMinutes} мин к $until'})';
 }
 
-/// Состояние водителя для главного экрана.
+/// The driver's state for the home screen.
 enum DriverStatus {
   /// Смены нет и водитель не на суточном отдыхе: журнал пуст или начат
   /// с короткого отдыха.
@@ -198,8 +204,8 @@ enum DriverStatus {
   unknown,
 }
 
-/// Результат расчёта: состояние, таймеры по лимитам и нарушения на момент
-/// [now].
+/// Result of the calculation: the state, the timers of every limit and the
+/// infringements at [now].
 @immutable
 class ComplianceSnapshot {
   const new({

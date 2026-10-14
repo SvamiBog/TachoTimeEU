@@ -1,4 +1,7 @@
-/// Режим водителя — соответствует символам тахографа.
+/// The four driver activities of a tachograph.
+library;
+
+/// Driver activity, matching the tachograph symbols.
 enum DriverMode {
   /// Вождение (руль).
   driving,

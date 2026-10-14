@@ -1,11 +1,18 @@
+/// Warnings and infringements the engine reports, each tied to an article of
+/// Regulation 561/2006.
+library;
+
 import 'package:meta/meta.dart';
 
+/// How serious a finding is: a note, a warning before a limit, or an
+/// infringement.
 enum InfringementSeverity { info, warning, violation }
 
+/// Group of related findings; the app's notification categories follow it.
 enum InfringementCategory { breaks, driving, shiftEnd, weeklyRest, card }
 
-/// Вид предупреждения или нарушения. У каждого вида фиксированы важность,
-/// категория и статья; текст берётся из словаря по [name].
+/// Kind of warning or infringement. Each kind has a fixed severity, category
+/// and article; the text comes from the dictionary by [name].
 enum InfringementType {
   /// Непрерывное вождение больше 4:30. [Infringement.time] — превышение.
   continuousExceeded(
@@ -147,7 +154,7 @@ enum InfringementType {
   final String article;
 }
 
-/// Предупреждение или нарушение с параметрами для текста.
+/// A warning or infringement with the values its text needs.
 @immutable
 class Infringement {
   const new(

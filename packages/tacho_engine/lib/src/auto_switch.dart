@@ -1,15 +1,18 @@
+/// Automatic driving detection from GPS speed, as on a tachograph: the vehicle
+/// moves — driving; it stops — the activity chosen for stops.
+///
+/// [MotionDetector] turns the stream of GPS fixes into "started" / "stopped"
+/// events; [decideAutoSwitch] decides whether to switch the activity at once or
+/// only suggest it to the driver.
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/compliance.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
 
-// Автоопределение вождения по скорости GPS, как на тахографе: машина
-// поехала — вождение, остановилась — режим после остановки. Детектор
-// превращает поток отметок GPS в события «поехали» / «остановились», правила
-// решают, переключать ли режим сразу или только предложить водителю.
-
-/// Отметка GPS.
+/// One GPS fix.
 @immutable
 class MotionSample {
   new({required this.time, required this.speedKmh, this.accuracyMeters}) {
@@ -27,7 +30,7 @@ class MotionSample {
   final double? accuracyMeters;
 }
 
-/// Пороги детектора.
+/// Detector thresholds.
 @immutable
 class MotionThresholds {
   const new({
@@ -62,10 +65,11 @@ class MotionThresholds {
   final double maxAccuracyMeters;
 }
 
+/// What the vehicle did: started moving or stopped.
 enum MotionEventType { started, stopped }
 
-/// Машина поехала или остановилась в момент [at] — по первой отметке серии,
-/// а не по моменту, когда серия подтвердилась.
+/// The vehicle started or stopped at [at] — the first fix of the series, not
+/// the moment the series was confirmed.
 @immutable
 class MotionEvent {
   const new(this.type, this.at);
@@ -84,7 +88,7 @@ class MotionEvent {
   String toString() => 'MotionEvent(${type.name}, $at)';
 }
 
-/// Превращает поток отметок GPS в события «поехали» / «остановились».
+/// Turns a stream of GPS fixes into "started" / "stopped" events.
 class MotionDetector {
   new({this.thresholds = const MotionThresholds()});
 
@@ -149,7 +153,7 @@ class MotionDetector {
   }
 }
 
-/// Настройки автопереключения.
+/// Automatic switching settings.
 @immutable
 class AutoSwitchSettings {
   const new({this.afterStop = DriverMode.otherWork, this.startFromRest = false})
@@ -169,6 +173,7 @@ class AutoSwitchSettings {
   final bool startFromRest;
 }
 
+/// What to do with a motion event.
 enum AutoSwitchKind {
   /// Ничего не делать.
   none,
@@ -180,8 +185,8 @@ enum AutoSwitchKind {
   suggest,
 }
 
-/// Решение по событию движения: переключить режим [mode] с момента [at] или
-/// предложить это водителю.
+/// Decision on a motion event: switch to [mode] from [at], or suggest it to the
+/// driver.
 @immutable
 class AutoSwitch {
   const new(this.kind, {this.mode, this.at, this.reason});
@@ -211,6 +216,7 @@ class AutoSwitch {
       'AutoSwitch(${kind.name}, ${mode?.name}, $at, ${reason?.name})';
 }
 
+/// Why the switch is only suggested, for the hint text.
 enum AutoSwitchReason {
   /// Водитель на суточном или недельном отдыхе — может ехать пассажиром.
   offDuty,

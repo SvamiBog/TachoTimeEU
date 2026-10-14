@@ -1,3 +1,8 @@
+/// Splits the timeline into shifts (from the end of one daily rest to the start
+/// of the next) and works out the Art. 7 break state and the daily rest window
+/// of Art. 8.
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/activity_period.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
@@ -5,7 +10,7 @@ import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/time.dart';
 import 'package:tacho_engine/src/timeline.dart';
 
-/// Состав экипажа: от него зависит окно суточного отдыха (ст. 8(5)).
+/// Crew size; it sets the daily rest window (Art. 8(5)).
 enum CrewMode {
   /// Один водитель: 11 ч (9 ч) отдыха в пределах 24 ч.
   solo,
@@ -14,11 +19,11 @@ enum CrewMode {
   team,
 }
 
-/// Оценка отдыха по его длительности.
+/// Rating of a rest by its length: regular, reduced or too short.
 enum RestStatus { full, reduced, insufficient }
 
-/// Смена, посчитанная по записям: от конца одного суточного отдыха до
-/// начала следующего.
+/// A shift worked out from the records: from the end of one daily rest to the
+/// start of the next.
 @immutable
 class Shift {
   const new({
@@ -58,7 +63,7 @@ class Shift {
       'вождение ${driving.inMinutes} мин)';
 }
 
-/// Журнал, разобранный на блоки, периоды отдыха и смены.
+/// The log split into blocks, rest periods and shifts.
 @immutable
 class Timeline {
   const new({
@@ -154,7 +159,7 @@ Shift? _makeShift(List<Block> segment, RestPeriod? restAfter) {
   );
 }
 
-/// Часть раздельного перерыва или идущий перерыв.
+/// One part of a split break, or the break in progress.
 @immutable
 class BreakPart {
   const new({required this.start, required this.duration});
@@ -170,7 +175,7 @@ class BreakPart {
   int get hashCode => Object.hash(start, duration);
 }
 
-/// Перерыв, который идёт сейчас.
+/// The rest the driver is taking right now.
 @immutable
 class CurrentRest {
   const new({
@@ -187,6 +192,8 @@ class CurrentRest {
   final bool firstPartBefore;
 }
 
+/// Art. 7 state since the last qualifying break: driving so far, the first part
+/// of a split break if taken, and the rest in progress.
 @immutable
 class BreakState {
   const new({

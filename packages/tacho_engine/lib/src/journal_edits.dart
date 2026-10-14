@@ -1,14 +1,18 @@
+/// Edits of the activity log from the home screen: switching activity, the
+/// ferry mark, "End day", moving the start or end of a record, correcting the
+/// day's driving and the last break.
+///
+/// All functions are pure: they take the records and return a new list. New
+/// records are created with `id == null`; deleted ones simply disappear from
+/// the list — the store saves the difference. Backdated edits take time from
+/// the neighbouring record, so records never overlap, no gaps appear and the
+/// total time of the log stays the same.
+library;
+
 import 'package:tacho_engine/src/activity_period.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
 import 'package:tacho_engine/src/time.dart';
 import 'package:tacho_engine/src/timeline.dart';
-
-// Операции над журналом. Все функции чистые: принимают записи и возвращают
-// новый список. Новые записи создаются с id == null, удалённые просто
-// пропадают из списка — хранилище сохраняет разницу.
-//
-// Правки задним числом берут время у соседней записи, поэтому записи не
-// накладываются, не появляются дыры и общее время журнала сохраняется.
 
 /// Переключает режим в момент [now]: открытая запись закрывается, начинается
 /// новая. Переходы между любыми режимами разрешены, как на тахографе.

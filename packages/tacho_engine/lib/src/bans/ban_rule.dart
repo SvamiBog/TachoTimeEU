@@ -1,12 +1,17 @@
+/// Data model of truck driving bans: when a rule applies (days, season, local
+/// time), where (roads) and to which vehicles (mass threshold), and what is
+/// known about a country's bans.
+library;
+
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/bans/holidays.dart';
 import 'package:tacho_engine/src/bans/zone_time.dart';
 
-/// Откуда запрет: выходные, праздник, канун праздника, летний период,
-/// ночь или отдельный день из годового календаря страны.
+/// Where a ban comes from: weekend, public holiday, holiday eve, summer period,
+/// night, or a single day from the country's annual calendar.
 enum BanKind { weekend, holiday, holidayEve, summer, night, calendar }
 
-/// Где действует запрет.
+/// Where a ban applies.
 enum BanScope {
   /// На всех дорогах страны.
   allRoads,
@@ -28,9 +33,9 @@ enum BanScope {
   bool get definite => this == allRoads || this == mainRoads;
 }
 
-/// Момент относительно опорного дня правила: сдвиг в днях и время суток.
-/// «С 22:00 субботы до 22:00 воскресенья» — опора суббота, конец —
-/// `BanTime(22, dayOffset: 1)`.
+/// A moment relative to the rule's reference day: an offset in days and a time
+/// of day. "From 22:00 Saturday to 22:00 Sunday" has Saturday as the reference
+/// day and ends at `BanTime(22, dayOffset: 1)`.
 @immutable
 class BanTime {
   const new(this.hour, {this.minute = 0, this.dayOffset = 0});
@@ -44,7 +49,7 @@ class BanTime {
       DateTime.utc(day.year, day.month, day.day + dayOffset, hour, minute);
 }
 
-/// Опорные дни правила.
+/// The reference days of a rule.
 @immutable
 sealed class BanDays {
   const new();
@@ -53,7 +58,7 @@ sealed class BanDays {
   bool includes(DateTime date);
 }
 
-/// Дни недели: `DateTime.saturday`, `DateTime.sunday`...
+/// Days of the week: `DateTime.saturday`, `DateTime.sunday`...
 final class Weekdays extends BanDays {
   const new(this.days);
 
@@ -63,7 +68,7 @@ final class Weekdays extends BanDays {
   bool includes(DateTime date) => days.contains(date.weekday);
 }
 
-/// Праздники из списка страны.
+/// Holidays from the country's list.
 final class HolidayDays extends BanDays {
   const new(this.holidays);
 
@@ -74,7 +79,7 @@ final class HolidayDays extends BanDays {
       holidays.any((h) => h.dateIn(date.year) == date);
 }
 
-/// Каждый день — ночные запреты.
+/// Every day — for night bans.
 final class EveryDay extends BanDays {
   const new();
 
@@ -82,7 +87,7 @@ final class EveryDay extends BanDays {
   bool includes(DateTime date) => true;
 }
 
-/// Отдельные дни из годового календаря страны.
+/// Single days from the country's annual calendar.
 final class CalendarDays extends BanDays {
   const new(this.dates);
 
@@ -92,7 +97,7 @@ final class CalendarDays extends BanDays {
   bool includes(DateTime date) => dates.any((d) => d.date == date);
 }
 
-/// Дата без времени: годовые календари и даты сверки данных.
+/// A date without time: annual calendars and data check dates.
 @immutable
 class BanDate implements Comparable<BanDate> {
   const new(this.year, this.month, this.day);
@@ -120,9 +125,9 @@ class BanDate implements Comparable<BanDate> {
   String toString() => 'BanDate($year, $month, $day)';
 }
 
-/// Часть года, когда действует правило, включая границы: «с 1 июля по
-/// 31 августа». [year] — только в этом году: даты сезона страна объявляет
-/// каждый год.
+/// Part of the year when a rule applies, bounds included: "1 July to 31
+/// August". [year] limits it to that year, since countries announce their
+/// season dates every year.
 @immutable
 class BanSeason {
   const new(
@@ -147,8 +152,8 @@ class BanSeason {
   }
 }
 
-/// Правило запрета: в какие дни, с какого по какое время (местное),
-/// где и для машин тяжелее какого порога.
+/// A ban rule: on which days, from and to which local time, where, and for
+/// vehicles above which mass.
 @immutable
 class BanRule {
   const new({
@@ -178,7 +183,7 @@ class BanRule {
       (season?.contains(date) ?? true) && days.includes(date);
 }
 
-/// Сколько известно о запретах страны.
+/// How much is known about a country's bans.
 enum BanCoverage {
   /// Правила в данных: движок считает время запретов.
   rules,
@@ -191,7 +196,7 @@ enum BanCoverage {
   none,
 }
 
-/// Запреты движения грузовиков в стране.
+/// Truck driving bans of one country.
 @immutable
 class CountryBans {
   const new({
