@@ -125,7 +125,7 @@ Play Console → Контент приложения → Разрешения fo
 Текст — `site/privacy/index.html`, на одной странице русский и английский. Адрес — `https://svamibog.github.io/TachoTimeEU/privacy/`: его вписать в Play Console, тот же адрес открывает приложение («Ещё» → «Политика конфиденциальности», `app/lib/core/config/app_links.dart`; русский интерфейс — русский текст, остальные — английский). Публикует workflow «Сайт» (`.github/workflows/pages.yml`) после зелёного CI на `main`, вместе с файлом правил запретов `bans/v1.json` (`docs/domain/driving-bans.md`, «Обновление по сети»). Не юридический текст — в Фазе 7 его проверяет юрист.
 
 До отправки в Play Console:
-1. Вписать ответственного за данные (имя или название, адрес) и почту для связи вместо `[TODO: …]` — в обеих частях страницы. Пока заглушки есть, workflow «Сайт» предупреждает.
+1. ~~Вписать ответственного за данные и почту для связи~~ — 14.10.2026: Maksim Rubanets, maruba.app@gmail.com, в обеих частях страницы. Заглушек `TODO` в политике быть не должно — проверяет тест (`app/test/config/app_links_test.dart`), workflow «Сайт» ещё и предупреждает. Тот же адрес — почта для связи на странице в Play Console.
 2. Sentry → проект → Settings → Security & Privacy → «Prevent Storing of IP Addresses»; PostHog → Project settings → «Discard client IP data». Политика обещает, что IP-адрес не хранится.
 3. GitHub → Settings → Pages → Build and deployment → Source: «GitHub Actions», затем Actions → «Сайт» → «Run workflow». Проверить, что страница открывается без входа. Без этого «Сайт» падает на шаге `configure-pages` («Get Pages site failed … Not Found») — нет ни политики, ни файла правил запретов.
 

@@ -24,6 +24,17 @@ void main() {
     expect(privacyPolicyPage, endsWith('/privacy/'));
   });
 
+  test('в политике — ответственный и почта для связи, без заглушек', () {
+    final page = File('../site/privacy/index.html').readAsStringSync();
+    expect(page, isNot(contains('TODO')));
+    // Google Play и GDPR (ст. 13) требуют контакт по вопросам данных — на
+    // обоих языках страницы
+    expect(
+      RegExp('href="mailto:[^"@]+@[^"]+"').allMatches(page),
+      hasLength(greaterThanOrEqualTo(2)),
+    );
+  });
+
   test(
     'Регламент 561/2006: языки ЕС — свой текст, остальные — выбор языка',
     () {
