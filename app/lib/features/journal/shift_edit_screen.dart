@@ -660,13 +660,20 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     final next = restStart == view.restStart ? view.next : null;
     final until = view.until;
     final repaidIn = debt?.repaidIn;
+    // Два сокращённых подряд — один долг на оба
+    final paired = debt == null ? null : pairedRest(debt, restStart);
     return [
       if (debt != null)
         _ValueRow(
           label: l.weeklyCompensation,
-          caption: repaidIn != null
-              ? l.compensationRepaidOn(formatDayMonth(repaidIn))
-              : l.compensationAttachBy(formatDayMonth(debt.dueBy)),
+          caption: [
+            if (repaidIn != null)
+              l.compensationRepaidOn(formatDayMonth(repaidIn))
+            else
+              l.compensationAttachBy(formatDayMonth(debt.dueBy)),
+            if (paired != null)
+              l.compensationTogetherWith(formatDayMonth(paired)),
+          ].join(' · '),
           value: debt.debt,
           chip: repaidIn != null
               ? StatusChip(l.chipCompensationDone, tone: Tone.rest)

@@ -883,7 +883,17 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Два сокращённых подряд: перед следующим недельным отдыхом нужна компенсация за оба — $debt. Вместе с полным недельным это $total отдыха подряд.';
+    return 'Два сокращённых подряд — один долг $debt: его берут целиком, одним блоком, после второго из них и перед следующим недельным отдыхом; по частям и между ними нельзя. Вместе с полным недельным — $total отдыха подряд.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'за отдыхи $first и $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'вместе с отдыхом $date';
   }
 
   @override

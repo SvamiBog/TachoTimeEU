@@ -884,7 +884,17 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Dva zkrácené za sebou: před dalším týdenním odpočinkem je potřeba náhrada za oba — $debt. Spolu s běžným týdenním odpočinkem je to $total odpočinku v kuse.';
+    return 'Dva zkrácené za sebou — jeden dluh $debt: bere se celý, v jednom bloku, po druhém z nich a před dalším týdenním odpočinkem; ne po částech a ne mezi nimi. Spolu s běžným týdenním odpočinkem — $total odpočinku v kuse.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'za odpočinky $first a $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'spolu s odpočinkem $date';
   }
 
   @override

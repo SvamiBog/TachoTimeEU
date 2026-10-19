@@ -886,7 +886,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Dwa skrócone z rzędu: przed następnym odpoczynkiem tygodniowym potrzebna jest rekompensata za oba — $debt. Razem z pełnym tygodniowym to $total odpoczynku bez przerwy.';
+    return 'Dwa skrócone z rzędu — jeden dług $debt: odbiera się go w całości, jednym blokiem, po drugim z nich i przed następnym odpoczynkiem tygodniowym; w częściach ani między nimi nie wolno. Razem z pełnym tygodniowym — $total odpoczynku bez przerwy.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'za odpoczynki $first i $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'razem z odpoczynkiem $date';
   }
 
   @override

@@ -870,7 +870,17 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'ზედიზედ ორი შემცირებული: შემდეგ კვირეულ დასვენებამდე საჭიროა ორივეს კომპენსაცია — $debt. სრულ კვირეულ დასვენებასთან ერთად ეს არის $total უწყვეტი დასვენება.';
+    return 'ზედიზედ ორი შემცირებული — ერთი ვალი $debt: მას იღებენ მთლიანად, ერთ ბლოკად, მეორის შემდეგ და შემდეგ კვირეულ დასვენებამდე; ნაწილ-ნაწილ და მათ შორის არ შეიძლება. სრულ კვირეულ დასვენებასთან ერთად — $total უწყვეტი დასვენება.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'დასვენებებისთვის $first და $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'დასვენებასთან ერთად $date';
   }
 
   @override

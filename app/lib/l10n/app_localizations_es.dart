@@ -873,7 +873,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Dos reducidos seguidos: antes del próximo descanso semanal hace falta la compensación de ambos — $debt. Junto con un descanso semanal normal son $total de descanso seguido.';
+    return 'Dos reducidos seguidos — una sola deuda de $debt: se toma entera, de una vez, después del segundo y antes del próximo descanso semanal; ni por partes ni entre ellos. Junto con un descanso semanal normal — $total de descanso seguido.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'por los descansos del $first y del $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'junto con el descanso del $date';
   }
 
   @override

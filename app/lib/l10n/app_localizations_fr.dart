@@ -875,7 +875,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Deux repos réduits consécutifs : le prochain repos hebdomadaire doit être précédé de la compensation des deux — $debt. Avec un repos hebdomadaire normal, cela fait $total de repos d’affilée.';
+    return 'Deux repos réduits consécutifs — une seule dette de $debt : elle se prend en entier, d’un seul bloc, après le second et avant le prochain repos hebdomadaire ; ni en plusieurs fois, ni entre les deux. Avec un repos hebdomadaire normal — $total de repos d’affilée.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'pour les repos du $first et du $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'avec le repos du $date';
   }
 
   @override

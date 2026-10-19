@@ -562,9 +562,12 @@ class _WeeklyRestRow extends ConsumerWidget {
         : repaidIn != null
         ? l.compensationRepaidOn(formatDayMonth(repaidIn))
         : l.compensationAttachBy(formatDayMonth(debt.dueBy));
+    // Два сокращённых подряд — один долг на оба: у каждого — с каким
+    final paired = debt == null ? null : pairedRest(debt, rest.start);
     final compensation = [
       if (debt != null && debtState != null)
         '${l.compensationDebt(formatHm(debt.debt))} — $debtState',
+      if (paired != null) l.compensationTogetherWith(formatDayMonth(paired)),
       if (taken > Duration.zero) l.compensationTakenValue(formatHm(taken)),
     ].join(' · ');
     return Semantics(

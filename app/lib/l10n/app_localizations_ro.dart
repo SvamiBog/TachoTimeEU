@@ -880,7 +880,17 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Două repausuri reduse consecutive: înaintea următorului repaus săptămânal e necesară compensarea ambelor — $debt. Împreună cu repausul săptămânal complet — $total de repaus fără întrerupere.';
+    return 'Două repausuri reduse consecutive — o singură datorie de $debt: se ia integral, într-un singur bloc, după al doilea și înaintea următorului repaus săptămânal; nu pe părți și nu între ele. Împreună cu repausul săptămânal complet — $total de repaus fără întrerupere.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'pentru repausurile din $first și $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'împreună cu repausul din $date';
   }
 
   @override

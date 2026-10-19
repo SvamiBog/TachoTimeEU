@@ -873,7 +873,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Zwei reduzierte hintereinander: Vor der nächsten wöchentlichen Ruhezeit ist der Ausgleich für beide nötig — $debt. Zusammen mit einer regelmäßigen wöchentlichen Ruhezeit sind das $total Ruhe am Stück.';
+    return 'Zwei reduzierte hintereinander — eine Schuld von $debt: Sie wird vollständig, am Stück, nach der zweiten und vor der nächsten wöchentlichen Ruhezeit genommen; nicht in Teilen und nicht dazwischen. Zusammen mit einer regelmäßigen wöchentlichen Ruhezeit — $total Ruhe am Stück.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'für die Ruhezeiten vom $first und $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'zusammen mit der Ruhezeit vom $date';
   }
 
   @override

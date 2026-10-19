@@ -105,29 +105,41 @@ class CurrentBreak {
 }
 
 /// Debt for a reduced weekly rest (Art. 8(6)) and the rest it was attached to
-/// (Art. 8(7)).
+/// (Art. 8(7)). Two reduced weekly rests in a row make one debt: it is repaid
+/// together, en bloc, after the second of them.
 @immutable
 class Compensation {
   const new({
     required this.debt,
     required this.dueBy,
     required this.restStart,
+    this.secondRestStart,
     this.repaidIn,
   });
 
-  /// Сколько не хватило до 45 ч.
+  /// Сколько не хватило до 45 ч; два сокращённых подряд — за оба вместе:
+  /// после двух по 24 ч — 21 + 21 = 42 ч.
   final Duration debt;
 
-  /// До какого момента долг нужно присоединить к отдыху.
+  /// До какого момента долг нужно присоединить к отдыху; два сокращённых
+  /// подряд — срок первого.
   final DateTime dueBy;
 
-  /// Начало сокращённого недельного отдыха, за который долг.
+  /// Начало сокращённого недельного отдыха, за который долг; два подряд —
+  /// первого из них.
   final DateTime restStart;
+
+  /// Начало второго из двух сокращённых подряд: долг за оба гасит один
+  /// отдых после него (ст. 8(6)); null — сокращённый один.
+  final DateTime? secondRestStart;
 
   /// Начало отдыха, к которому долг присоединён; null — не погашен.
   final DateTime? repaidIn;
 
   bool get repaid => repaidIn != null;
+
+  /// Долг — за недельный отдых, начатый в [start].
+  bool isFor(DateTime start) => restStart == start || secondRestStart == start;
 
   @override
   bool operator ==(Object other) =>
@@ -135,14 +147,17 @@ class Compensation {
       other.debt == debt &&
       other.dueBy == dueBy &&
       other.restStart == restStart &&
+      other.secondRestStart == secondRestStart &&
       other.repaidIn == repaidIn;
 
   @override
-  int get hashCode => Object.hash(debt, dueBy, restStart, repaidIn);
+  int get hashCode =>
+      Object.hash(debt, dueBy, restStart, secondRestStart, repaidIn);
 
   @override
   String toString() =>
       'Compensation(${debt.inMinutes} мин до $dueBy'
+      '${secondRestStart == null ? '' : ', два сокращённых подряд'}'
       '${repaidIn == null ? '' : ', погашен $repaidIn'})';
 }
 
@@ -172,9 +187,9 @@ class RestCompensation {
 
   /// Долги, которые отдых ещё погасит, если продлится до [untilAll]: [next]
   /// и за ним остальные, что он успевает погасить к их срокам, не становясь
-  /// из суточного недельным. После двух сокращённых по 24 ч недельный отдых
-  /// гасит оба долга при 45 ч + 21 ч + 21 ч. Пусто — к сроку не успеть ни
-  /// один.
+  /// из суточного недельным. Каждый долг — целиком: после двух сокращённых
+  /// по 24 ч долг 42 ч один, недельный отдых гасит его при 45 + 42 = 87 ч.
+  /// Пусто — к сроку не успеть ни один.
   final List<Compensation> planned;
 
   /// Когда отдых погасит все [planned]; null — [planned] пуст.
@@ -353,12 +368,13 @@ class ComplianceSnapshot {
   final Compensation? compensation;
 
   /// Все долги за сокращённые недельные отдыхи — погашенные и нет — по
-  /// началу отдыха: журнал показывает, какой отдых какой долг погасил.
+  /// началу отдыха: журнал показывает, какой отдых какой долг погасил. За
+  /// два сокращённых подряд — один долг ([Compensation.secondRestStart]).
   final List<Compensation> compensations;
 
-  /// Непогашенные долги по сроку, первый — [compensation]: после двух
-  /// сокращённых подряд их два. Просроченный долг остаётся здесь четыре
-  /// недели после срока.
+  /// Непогашенные долги по сроку, первый — [compensation]. Долги за
+  /// сокращённые отдыхи не подряд — отдельно, за два подряд — один на оба.
+  /// Просроченный долг остаётся здесь четыре недели после срока.
   final List<Compensation> unpaidCompensations;
 
   /// Компенсация в идущем отдыхе: сколько ещё отдыхать, чтобы погасить
@@ -614,13 +630,32 @@ ComplianceSnapshot calculateCompliance({
         (start: r.start, rest: r.duration),
   ];
   final hostUsed = List.filled(compensationHosts.length, Duration.zero);
+  // Два сокращённых подряд (пакет мобильности) — один долг за оба: следующему
+  // недельному отдыху предшествует отдых в компенсацию за оба (ст. 8(6)).
+  // Его берут вместе, одним блоком, после второго из них и до срока первого;
+  // отдых между ними долг не гасит, по частям — тоже.
+  final reducedGroups = <List<WeeklyRest>>[];
+  for (final (i, r) in completedWeekly.indexed) {
+    if (r.status != RestStatus.reduced) continue;
+    final group = reducedGroups.lastOrNull;
+    if (group != null &&
+        group.length == 1 &&
+        identical(group.single, completedWeekly[i - 1])) {
+      group.add(r);
+    } else {
+      reducedGroups.add([r]);
+    }
+  }
   final compensations = <Compensation>[];
   final unpaid = <Compensation>[];
-  for (final r in completedWeekly) {
-    final end = r.end;
-    if (r.status != RestStatus.reduced || end == null) continue;
-    final debt = EuLimits.weeklyRestRegular - r.duration;
-    final dueBy = weekStartUtc(r.start)
+  for (final group in reducedGroups) {
+    final end = group.last.end;
+    if (end == null) continue;
+    final debt = group.fold(
+      Duration.zero,
+      (sum, r) => sum + EuLimits.weeklyRestRegular - r.duration,
+    );
+    final dueBy = weekStartUtc(group.first.start)
         .add(week * (EuLimits.compensationWeeks + 1));
     DateTime? repaidIn;
     for (final (i, host) in compensationHosts.indexed) {
@@ -637,7 +672,8 @@ ComplianceSnapshot calculateCompliance({
     final c = Compensation(
       debt: debt,
       dueBy: dueBy,
-      restStart: r.start,
+      restStart: group.first.start,
+      secondRestStart: group.length > 1 ? group.last.start : null,
       repaidIn: repaidIn,
     );
     compensations.add(c);
@@ -660,7 +696,8 @@ ComplianceSnapshot calculateCompliance({
         if (c.repaidIn == rest.start) c.debt,
     ].fold(Duration.zero, (sum, d) => sum + d);
     bool canRepay(Compensation c) =>
-        c.restStart.isBefore(rest.start) && c.dueBy.isAfter(rest.start);
+        (c.secondRestStart ?? c.restStart).isBefore(rest.start) &&
+        c.dueBy.isAfter(rest.start);
     ({Compensation c, DateTime until})? next;
     for (final c in unpaid) {
       if (!canRepay(c)) continue;

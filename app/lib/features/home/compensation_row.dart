@@ -17,7 +17,8 @@ import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 
 /// Что отдых начала [restStart] сделал с долгами: сколько долга к нему
-/// присоединено и долг за него самого, если это сокращённый недельный.
+/// присоединено и долг за него самого, если это сокращённый недельный. Два
+/// сокращённых подряд — долг на оба, у каждого из них.
 ({Duration taken, Compensation? debt}) compensationOfRest(
   List<Compensation> all,
   DateTime restStart,
@@ -26,8 +27,16 @@ import 'package:tachogo/features/home/weekly_rest_screen.dart';
     for (final c in all)
       if (c.repaidIn == restStart) c.debt,
   ].fold(Duration.zero, (sum, d) => sum + d),
-  debt: all.where((c) => c.restStart == restStart).firstOrNull,
+  debt: all.where((c) => c.isFor(restStart)).firstOrNull,
 );
+
+/// Второй отдых пары, когда долг [c] — за два сокращённых подряд: у отдыха
+/// [restStart] — начало другого; null — сокращённый один.
+DateTime? pairedRest(Compensation c, DateTime restStart) {
+  final second = c.secondRestStart;
+  if (second == null) return null;
+  return restStart == second ? c.restStart : second;
+}
 
 /// Debt state in whole minutes: the one-second tick does not rebuild the row.
 typedef _Compensation = ({
@@ -105,8 +114,8 @@ _Compensation? _compensation(ComplianceSnapshot s) {
   }
   final c = s.compensation;
   if (c == null) return null;
-  // Сколько всего компенсации нужно взять: после двух сокращённых подряд
-  // — оба долга
+  // Сколько всего компенсации нужно взять: все долги, после двух
+  // сокращённых подряд — один на оба
   return (
     debt: minutes(s.compensationDebt),
     progress: 0,
@@ -122,8 +131,8 @@ _Compensation? _compensation(ComplianceSnapshot s) {
 
 /// "Compensation" in the "Rest" section of the home screen: only when there is
 /// a debt or the rest in progress has repaid one. The value is the whole debt
-/// (after two reduced rests in a row — both); during a rest — until when to
-/// rest to repay it.
+/// (after two reduced rests in a row — one debt for both, repaid only in
+/// full); during a rest — until when to rest to repay it.
 class CompensationRow extends ConsumerWidget {
   const new({super.key});
 

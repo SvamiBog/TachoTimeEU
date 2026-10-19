@@ -41,12 +41,12 @@ typedef _Weekly = ({
   bool reducedAvailable,
   _Last? last,
 
-  /// Непогашенные долги по сроку: после двух сокращённых подряд — два.
+  /// Непогашенные долги по сроку; за два сокращённых подряд — один на оба.
   ValueList<Compensation> debts,
 
   /// Долг за два последних недельных отдыха, если оба сокращённые: его
-  /// берут перед следующим недельным отдыхом (ст. 8(6)); null — не два
-  /// сокращённых подряд или долг за них погашен.
+  /// берут одним блоком после второго, перед следующим недельным отдыхом
+  /// (ст. 8(6)); null — не два сокращённых подряд или долг за них погашен.
   int? twoReducedDebt,
   bool restCompensation,
 });
@@ -56,19 +56,12 @@ _Weekly _weekly(ComplianceSnapshot s) {
   final rest = s.offDutyRest;
   final onWeekly = rest != null && rest.weekly ? rest : null;
   final last = s.lastWeeklyRest;
-  final previous = s.previousWeeklyRest;
-  final twoReduced =
-      last != null &&
-      previous != null &&
-      last.status == RestStatus.reduced &&
-      previous.status == RestStatus.reduced;
-  final twoReducedDebt = !twoReduced
-      ? Duration.zero
+  // Долг за пару — у второго из двух последних недельных отдыхов
+  final twoReduced = last == null
+      ? null
       : s.unpaidCompensations
-            .where(
-              (c) => c.restStart == last.start || c.restStart == previous.start,
-            )
-            .fold(Duration.zero, (sum, c) => sum + c.debt);
+            .where((c) => c.secondRestStart == last.start)
+            .firstOrNull;
   return (
     deadline: deadline,
     left: minutes(s.workWeekRemaining ?? Duration.zero),
@@ -87,9 +80,7 @@ _Weekly _weekly(ComplianceSnapshot s) {
             status: last.status,
           ),
     debts: ValueList(s.unpaidCompensations),
-    twoReducedDebt: twoReducedDebt > Duration.zero
-        ? minutes(twoReducedDebt)
-        : null,
+    twoReducedDebt: twoReduced == null ? null : minutes(twoReduced.debt),
     restCompensation: s.restCompensation != null,
   );
 }
@@ -499,16 +490,21 @@ class _History extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  switch (debts) {
-                    [] => l.weeklyCompensationNone,
-                    [final c] => debtValue(c),
-                    // Несколько долгов — сколько всего, ниже каждый
-                    _ => formatHm(debt),
-                  },
-                  style: AppTextStyles.body.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: debts.isEmpty ? colors.restText : colors.drive,
+                // «15:00 antes del 12.10» на крупном шрифте переносится, а не
+                // выталкивает название
+                Flexible(
+                  child: Text(
+                    switch (debts) {
+                      [] => l.weeklyCompensationNone,
+                      [final c] => debtValue(c),
+                      // Несколько долгов — сколько всего, ниже каждый
+                      _ => formatHm(debt),
+                    },
+                    textAlign: TextAlign.end,
+                    style: AppTextStyles.body.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: debts.isEmpty ? colors.restText : colors.drive,
+                    ),
                   ),
                 ),
               ],
@@ -525,13 +521,24 @@ class _History extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      l.weeklyCompensationFor(formatDayMonth(c.restStart)),
-                      style: caption,
-                    ),
+                    child: Text(switch (c.secondRestStart) {
+                      final second? => l.weeklyCompensationForTwo(
+                        formatDayMonth(c.restStart),
+                        formatDayMonth(second),
+                      ),
+                      null => l.weeklyCompensationFor(
+                        formatDayMonth(c.restStart),
+                      ),
+                    }, style: caption),
                   ),
                   const SizedBox(width: 8),
-                  Text(debtValue(c), style: AppTextStyles.body),
+                  Flexible(
+                    child: Text(
+                      debtValue(c),
+                      textAlign: TextAlign.end,
+                      style: AppTextStyles.body,
+                    ),
+                  ),
                 ],
               ),
             ),

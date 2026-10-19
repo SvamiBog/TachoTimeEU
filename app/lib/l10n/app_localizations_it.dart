@@ -872,7 +872,17 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Due ridotti di fila: prima del prossimo riposo settimanale serve la compensazione di entrambi — $debt. Insieme a un riposo settimanale regolare sono $total di riposo consecutivo.';
+    return 'Due ridotti di fila — un solo debito di $debt: si prende per intero, in un unico blocco, dopo il secondo e prima del prossimo riposo settimanale; non a rate né tra i due. Insieme a un riposo settimanale regolare — $total di riposo consecutivo.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'per i riposi del $first e del $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'insieme al riposo del $date';
   }
 
   @override

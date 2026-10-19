@@ -873,7 +873,17 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Ketma-ket ikkita qisqartirilgan: keyingi haftalik dam olishdan oldin ikkalasi uchun kompensatsiya kerak — $debt. Toʻliq haftalik dam olish bilan birga bu $total uzluksiz dam olish.';
+    return 'Ketma-ket ikkita qisqartirilgan — bitta qarz $debt: u toʻliq, bitta blok bilan, ikkinchisidan keyin va keyingi haftalik dam olishdan oldin olinadi; boʻlib-boʻlib va ular orasida mumkin emas. Toʻliq haftalik dam olish bilan birga — $total uzluksiz dam olish.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return '$first va $second dagi dam olishlar uchun';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return '$date dagi dam olish bilan birga';
   }
 
   @override
