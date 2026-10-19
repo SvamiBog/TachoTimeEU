@@ -588,16 +588,21 @@ jobs:
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      # Сборка идёт, когда эмулятор уже запущен, а на машине 16 ГБ: Gradle
-      # с -Xmx8G из gradle.properties и Kotlin-демон с тем же лимитом
+      # Сборка идёт, когда эмулятор уже запущен, а на машине 16 ГБ и 4 ядра:
+      # Gradle с -Xmx8G из gradle.properties и Kotlin-демон с тем же лимитом
       # вытесняли эмулятор, раннер терялся («shutdown signal», 19.10.2026).
-      # Домашний gradle.properties важнее проектного.
+      # Gradle — 4 ГБ, без демона (после сборки JVM не остаётся, а
+      # «Обновление поверх» собирает две версии подряд), Kotlin — внутри
+      # Gradle, сборке — два потока: эмулятору хватает процессора. Домашний
+      # gradle.properties важнее проектного.
       - name: Память Gradle рядом с эмулятором
         run: |
           mkdir -p ~/.gradle
           cat >> ~/.gradle/gradle.properties <<'EOF'
           org.gradle.jvmargs=-Xmx4G -XX:MaxMetaspaceSize=1G
-          kotlin.daemon.jvmargs=-Xmx2G
+          org.gradle.daemon=false
+          org.gradle.workers.max=2
+          kotlin.compiler.execution.strategy=in-process
           EOF
           free -h
       - name: Интеграционные тесты
@@ -690,7 +695,9 @@ jobs:
           mkdir -p ~/.gradle
           cat >> ~/.gradle/gradle.properties <<'EOF'
           org.gradle.jvmargs=-Xmx4G -XX:MaxMetaspaceSize=1G
-          kotlin.daemon.jvmargs=-Xmx2G
+          org.gradle.daemon=false
+          org.gradle.workers.max=2
+          kotlin.compiler.execution.strategy=in-process
           EOF
           free -h
       - name: Обновление поверх прошлой версии
