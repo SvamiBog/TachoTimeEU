@@ -588,6 +588,18 @@ jobs:
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+      # Сборка идёт, когда эмулятор уже запущен, а на машине 16 ГБ: Gradle
+      # с -Xmx8G из gradle.properties и Kotlin-демон с тем же лимитом
+      # вытесняли эмулятор, раннер терялся («shutdown signal», 19.10.2026).
+      # Домашний gradle.properties важнее проектного.
+      - name: Память Gradle рядом с эмулятором
+        run: |
+          mkdir -p ~/.gradle
+          cat >> ~/.gradle/gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx4G -XX:MaxMetaspaceSize=1G
+          kotlin.daemon.jvmargs=-Xmx2G
+          EOF
+          free -h
       - name: Интеграционные тесты
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -596,6 +608,7 @@ jobs:
           arch: x86_64
           # Pixel 6 — 412 dp, основной таргет (по умолчанию экран 320 dp)
           profile: pixel_6
+          ram-size: 2048M
           disable-animations: true
           emulator-options: >-
             -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
@@ -671,6 +684,15 @@ jobs:
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+      # Как в «Эмуляторе Android»: память Gradle рядом с эмулятором
+      - name: Память Gradle рядом с эмулятором
+        run: |
+          mkdir -p ~/.gradle
+          cat >> ~/.gradle/gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx4G -XX:MaxMetaspaceSize=1G
+          kotlin.daemon.jvmargs=-Xmx2G
+          EOF
+          free -h
       - name: Обновление поверх прошлой версии
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -678,6 +700,7 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_6
+          ram-size: 2048M
           disable-animations: true
           emulator-options: >-
             -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
