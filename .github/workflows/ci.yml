@@ -53,12 +53,16 @@ jobs:
         run: dart run coverage:test_with_coverage
       - name: Покрытие не ниже 95 %
         run: dart run tool/check_coverage.dart coverage/lcov.info 95 lib/
+      # Отчёт — только посмотреть: порог проверен выше. Нет места под
+      # артефакты (квота аккаунта) — job не краснеет.
       - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
+        continue-on-error: true
         with:
           name: coverage-engine
           path: packages/tacho_engine/coverage/lcov.info
           if-no-files-found: ignore
+          retention-days: 7
 
   app:
     name: Приложение
@@ -120,12 +124,15 @@ jobs:
         run: >-
           dart run ../packages/tacho_engine/tool/check_coverage.dart
           coverage/lcov.info 80 lib/data/
+      # Как у движка: отчёт только посмотреть, квота job не красит
       - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
+        continue-on-error: true
         with:
           name: coverage-app
           path: app/coverage/lcov.info
           if-no-files-found: ignore
+          retention-days: 7
 
   # Время в движке и базе — UTC. Прогон в других поясах ловит местное время
   # там, где его быть не должно.
@@ -306,11 +313,16 @@ jobs:
       - name: Нативные библиотеки — страницы 16 КБ
         run: dart run tool/check_page_size.dart build/app/outputs/flutter-apk/app-debug.apk
 
+      # Debug APK — поставить на телефон (docs/beta/README.md). ~100 МБ на
+      # каждый запуск: храним 3 дня, иначе кончается квота артефактов
+      # аккаунта (19.10.2026); нет места — проверки выше всё равно прошли.
       - uses: actions/upload-artifact@v6
+        continue-on-error: true
         with:
           name: android-${{ github.sha }}
           path: app/build/app/outputs/flutter-apk/*.apk
           if-no-files-found: error
+          retention-days: 3
 
   # Что и куда выпускать (docs/beta/README.md, «Как выпустить бету»):
   # - main — staging во внутреннее тестирование Google Play (PLAY_MAIN_TRACK,
@@ -464,6 +476,7 @@ jobs:
           name: android-release-${{ github.sha }}
           path: app/build/app/outputs/bundle/release/*.aab
           if-no-files-found: error
+          retention-days: 30
 
       # «Что нового» на русском (язык страницы в Play), до 500 знаков: у беты
       # — сообщение аннотированного тега, у main — заголовок PR из
