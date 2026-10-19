@@ -869,6 +869,26 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'pour le repos du $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Deux repos réduits consécutifs — une seule dette de $debt : elle se prend en entier, d’un seul bloc, après le second et avant le prochain repos hebdomadaire ; ni en plusieurs fois, ni entre les deux. Avec un repos hebdomadaire normal — $total de repos d’affilée.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'pour les repos du $first et du $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'avec le repos du $date';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Paquet mobilité activé : en transport international, deux repos réduits consécutifs sont permis s’ils sont pris hors du pays d’immatriculation. La réduction est compensée avant la fin de la troisième semaine.';
 

@@ -866,6 +866,26 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'voor de rust van $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Twee verkorte achter elkaar — één schuld van $debt: die wordt in zijn geheel, in één blok, genomen na de tweede en vóór de volgende wekelijkse rust; niet in delen en niet ertussen. Samen met een normale wekelijkse rust — $total rust aan één stuk.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'voor de rusten van $first en $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'samen met de rust van $date';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Mobiliteitspakket aan: in internationaal vervoer mogen twee verkorte rusttijden op rij, als ze buiten het land van inschrijving vallen. De verkorting wordt gecompenseerd vóór het einde van de derde week.';
 

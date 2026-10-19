@@ -880,6 +880,26 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'za odpoczynek $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Dwa skrócone z rzędu — jeden dług $debt: odbiera się go w całości, jednym blokiem, po drugim z nich i przed następnym odpoczynkiem tygodniowym; w częściach ani między nimi nie wolno. Razem z pełnym tygodniowym — $total odpoczynku bez przerwy.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'za odpoczynki $first i $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'razem z odpoczynkiem $date';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Pakiet mobilności włączony: w transporcie międzynarodowym można wziąć dwa skrócone odpoczynki z rzędu, jeśli przypadają poza krajem rejestracji. Skrócenie rekompensuje się do końca trzeciego tygodnia.';
 

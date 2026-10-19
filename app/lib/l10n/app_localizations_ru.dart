@@ -877,6 +877,26 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'за отдых $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Два сокращённых подряд — один долг $debt: его берут целиком, одним блоком, после второго из них и перед следующим недельным отдыхом; по частям и между ними нельзя. Вместе с полным недельным — $total отдыха подряд.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'за отдыхи $first и $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'вместе с отдыхом $date';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Пакет мобильности включён: при международных перевозках можно взять два сокращённых отдыха подряд, если они проходят за пределами страны регистрации. Сокращение компенсируется до конца третьей недели.';
 

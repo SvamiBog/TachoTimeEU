@@ -243,6 +243,8 @@ void main() {
         ),
       );
       expect(m.compensations, [m.compensation]);
+      expect(m.unpaidCompensations, [m.compensation]);
+      expect(m.compensationDebt, const Duration(hours: 15));
     });
 
     test('обычный суточный отдых 11 ч долг не гасит', () {
@@ -311,6 +313,8 @@ void main() {
             taken: Duration.zero,
             next: m.compensation,
             until: restStart.add(hour * 14),
+            planned: [m.compensation!],
+            untilAll: restStart.add(hour * 14),
           ),
         );
         expect(m.restCompensation?.inTime, isTrue);
@@ -362,27 +366,192 @@ void main() {
       });
     });
 
-    test('один отдых гасит два долга, только если вмещает оба', () {
-      // Два сокращённых по 30 ч (пакет мобильности), затем 45 + 15 ч:
-      // погашен только первый долг
-      final log = logFrom(start, [
+    group('сокращённые не подряд — долги отдельно', () {
+      // 30 ч с сб 19.09 (долг 15 ч до пн 12.10), полный недельный, 30 ч с
+      // сб 03.10 (долг 15 ч до пн 26.10), затем отдых [last]
+      List<ActivityPeriod> withLast(String last) => logFrom(start, [
         ...reduced,
+        ...repeat(5, cycle),
+        ...drivingDay('9:00'),
+        rest('45:00'),
         ...repeat(5, cycle),
         ...drivingDay('9:00'),
         rest('30:00'),
         ...day13,
-        rest('60:00'),
+        rest(last),
         drive('1:00'),
-      ]);
-      final m = calc(log.periods, log.now);
-      expect(
-        (m.compensation?.debt, m.compensation?.dueBy),
-        (const Duration(hours: 15), utc('2026-10-19 00:00')),
+      ]).periods;
+      final now = utc('2026-10-09 12:00');
+
+      test('у каждого свой срок', () {
+        final m = calc(withLast('11:00'), now);
+        expect(m.unpaidCompensations.map((c) => (c.debt, c.dueBy)), [
+          (hour * 15, utc('2026-10-12 00:00')),
+          (hour * 15, utc('2026-10-26 00:00')),
+        ]);
+        expect(
+          m.unpaidCompensations.map((c) => c.secondRestStart),
+          everyElement(isNull),
+        );
+      });
+
+      test('один отдых гасит оба, только если вмещает оба', () {
+        // 45 + 15 ч — только первый
+        final m = calc(withLast('60:00'), now);
+        expect(m.compensations, hasLength(2));
+        expect(m.compensations.first.repaidIn, m.lastWeeklyRest?.start);
+        expect(m.compensations.last.repaid, isFalse);
+        expect(m.compensationDebt, hour * 15);
+
+        // 45 + 15 + 15 ч — оба
+        final both = calc(withLast('75:00'), now);
+        expect(both.compensations.map((c) => c.repaidIn), [
+          both.lastWeeklyRest?.start,
+          both.lastWeeklyRest?.start,
+        ]);
+        expect(both.compensationDebt, Duration.zero);
+      });
+
+      test('суточный отдых не становится недельным ради второго долга', () {
+        // 40 ч и 30 ч: долги 5 и 15 ч. Суточный отдых гасит 5 ч к 14 ч;
+        // 9 + 20 ч — уже недельный, поэтому второй долг в план не входит.
+        final log = logFrom(start, [
+          ...drivingDay('9:00'),
+          rest('40:00'),
+          ...repeat(4, cycle),
+          ...drivingDay('9:00'),
+          rest('45:00'),
+          ...repeat(4, cycle),
+          ...drivingDay('9:00'),
+          rest('30:00'),
+          ...day13,
+          rest('2:00', dayEnd: true),
+        ]);
+        final restStart = log.now.subtract(hour * 2);
+        final m = calc(log.periods, log.now);
+        expect(m.compensationDebt, hour * 20);
+        final c = m.restCompensation!;
+        expect(c.next?.debt, hour * 5);
+        expect(c.planned.map((p) => p.debt), [hour * 5]);
+        expect(c.untilAll, restStart.add(hour * 14));
+      });
+    });
+
+    group('два сокращённых подряд — один долг, гасится целиком после '
+        'второго', () {
+      // 24 ч с сб 19.09 и 24 ч с пт 25.09: долг 21 + 21 = 42 ч, срок —
+      // первого, пн 12.10. Следующий недельный отдых — с пт 02.10 00:45.
+      final twoReduced = [
+        ...drivingDay('9:00'),
+        rest('24:00'),
+        ...repeat(5, cycle),
+        ...drivingDay('9:00'),
+        rest('24:00'),
+        ...repeat(5, cycle),
+        ...day13,
+      ];
+      final log = logFrom(start, [...twoReduced, rest('30:00')]);
+      final restStart = utc('2026-10-02 00:45');
+      final both = Compensation(
+        debt: hour * 42,
+        dueBy: utc('2026-10-12 00:00'),
+        restStart: utc('2026-09-19 02:00'),
+        secondRestStart: utc('2026-09-25 11:45'),
       );
-      // Первый долг погашен отдыхом 60 ч — он последний недельный
-      expect(m.compensations, hasLength(2));
-      expect(m.compensations.first.repaidIn, m.lastWeeklyRest?.start);
-      expect(m.compensations.last, m.compensation);
+
+      test('нужно 42 ч одним долгом, срок — первого из двух', () {
+        final m = calc(log.periods, log.now);
+        expect(m.status, DriverStatus.weeklyRest);
+        expect(m.reducedWeeklyRestAvailable, isFalse);
+        expect(m.compensations, [both]);
+        expect(m.unpaidCompensations, [both]);
+        expect(m.compensation, both);
+        expect(m.compensationDebt, hour * 42);
+        expect(both.isFor(utc('2026-09-19 02:00')), isTrue);
+        expect(both.isFor(utc('2026-09-25 11:45')), isTrue);
+      });
+
+      test('недельный отдых гасит долг при 45 + 42 = 87 ч, по частям — '
+          'нет', () {
+        final plan = RestCompensation(
+          taken: Duration.zero,
+          next: both,
+          until: restStart.add(hour * 87),
+          planned: [both],
+          untilAll: restStart.add(hour * 87),
+        );
+        expect(calc(log.periods, log.now).restCompensation, plan);
+
+        // 66 ч = 45 + 21: половину долга отдых не гасит
+        final half = calc(log.periods, restStart.add(hour * 66));
+        expect(half.compensationDebt, hour * 42);
+        expect(half.restCompensation, plan);
+
+        final done = calc(log.periods, restStart.add(hour * 87));
+        expect(done.unpaidCompensations, isEmpty);
+        expect(
+          done.restCompensation,
+          RestCompensation(taken: hour * 42, next: null, until: null),
+        );
+        expect(done.compensations.single.repaidIn, restStart);
+      });
+
+      test('отдых 66 ч закончен — долг 42 ч остаётся целиком', () {
+        final stopped = logFrom(start, [
+          ...twoReduced,
+          rest('66:00'),
+          drive('1:00'),
+        ]);
+        final m = calc(stopped.periods, stopped.now);
+        expect(m.compensations.single.repaid, isFalse);
+        expect(m.compensationDebt, hour * 42);
+      });
+
+      test('отдых между ними долг первого не гасит', () {
+        // 35 ч и 35 ч: долги по 10 ч. Суточный отдых 19 ч = 9 + 10 ч между
+        // ними гасит долг первого, пока второго сокращённого нет; со вторым
+        // — долг 20 ч на оба, гасит его только отдых после второго.
+        final segs = [
+          ...drivingDay('9:00'),
+          rest('35:00'),
+          ...day13,
+          rest('19:00'),
+          ...repeat(3, cycle),
+          ...drivingDay('9:00'),
+        ];
+        final before = logFrom(start, segs);
+        expect(calc(before.periods, before.now).compensation, isNull);
+
+        final after = logFrom(start, [...segs, rest('35:00'), drive('1:00')]);
+        final m = calc(after.periods, after.now);
+        expect(m.compensations.single.debt, hour * 20);
+        expect(m.compensations.single.repaid, isFalse);
+        expect(m.compensationDebt, hour * 20);
+      });
+
+      test('небольшой долг на оба — суточный отдых гасит его целиком', () {
+        // 42 ч и 41 ч подряд: долг 3 + 4 = 7 ч, суточный отдых 16 ч
+        final small = logFrom(start, [
+          ...drivingDay('9:00'),
+          rest('42:00'),
+          ...repeat(4, cycle),
+          ...drivingDay('9:00'),
+          rest('41:00'),
+          ...day13,
+          rest('2:00', dayEnd: true),
+        ]);
+        final restStart = small.now.subtract(hour * 2);
+        final c = calc(small.periods, small.now).restCompensation!;
+        expect(c.next?.debt, hour * 7);
+        expect(c.next?.secondRestStart, isNotNull);
+        expect(c.until, restStart.add(hour * 16));
+        expect(c.untilAll, restStart.add(hour * 16));
+
+        // 12 ч = 9 + 3: долг первого отдельно не гасится
+        final part = calc(small.periods, restStart.add(hour * 12));
+        expect(part.compensationDebt, hour * 7);
+        expect(part.restCompensation?.taken, Duration.zero);
+      });
     });
 
     group('срок — конец третьей недели', () {

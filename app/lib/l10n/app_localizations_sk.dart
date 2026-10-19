@@ -878,6 +878,26 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'za odpočinok $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Dva skrátené za sebou — jeden dlh $debt: berie sa celý, v jednom bloku, po druhom z nich a pred ďalším týždenným odpočinkom; nie po častiach a nie medzi nimi. Spolu s bežným týždenným odpočinkom — $total odpočinku v kuse.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'za odpočinky $first a $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'spolu s odpočinkom $date';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Balík mobility zapnutý: v medzinárodnej doprave možno čerpať dva skrátené odpočinky za sebou, ak sú mimo krajiny registrácie. Skrátenie sa nahrádza do konca tretieho týždňa.';
 

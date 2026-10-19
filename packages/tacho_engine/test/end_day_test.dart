@@ -92,8 +92,10 @@ void main() {
     });
 
     test('отдых после такой смены гасит долг компенсации один раз', () {
-      // Два сокращённых недельных отдыха по 40 ч — долг 5 ч у каждого
-      final a = manualShift(utc('2026-09-07 06:00'), restKind: RestKind.weekly);
+      // Два сокращённых недельных отдыха по 40 ч не подряд (между ними
+      // полный 45 ч) — долг 5 ч у каждого
+      final a = manualShift(utc('2026-09-04 23:00'), restKind: RestKind.weekly);
+      final f = manualShift(utc('2026-09-07 01:00'), restKind: RestKind.weekly);
       final b = manualShift(utc('2026-09-09 08:00'), restKind: RestKind.weekly);
       final c = manualShift(utc('2026-09-11 10:00'));
       // Смена по записям завершена с вождением — ручная, отдых 14 ч
@@ -109,10 +111,12 @@ void main() {
       final m = calc(
         next,
         utc('2026-09-13 08:00'),
-        manual: [a, b, c, r.manual!],
+        manual: [a, f, b, c, r.manual!],
       );
+      expect(m.compensations, hasLength(2));
       // Один отдых — один долг: второй не погашен
       expect(m.compensation?.debt, hour * 5);
+      expect(m.compensationDebt, hour * 5);
     });
   });
 }

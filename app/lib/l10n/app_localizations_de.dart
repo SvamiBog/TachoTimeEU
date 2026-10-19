@@ -867,6 +867,26 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'für die Ruhezeit vom $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Zwei reduzierte hintereinander — eine Schuld von $debt: Sie wird vollständig, am Stück, nach der zweiten und vor der nächsten wöchentlichen Ruhezeit genommen; nicht in Teilen und nicht dazwischen. Zusammen mit einer regelmäßigen wöchentlichen Ruhezeit — $total Ruhe am Stück.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'für die Ruhezeiten vom $first und $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'zusammen mit der Ruhezeit vom $date';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Mobilitätspaket aktiv: Im grenzüberschreitenden Verkehr dürfen zwei reduzierte Ruhezeiten nacheinander genommen werden, wenn sie außerhalb des Zulassungslandes liegen. Die Verkürzung wird bis zum Ende der dritten Woche ausgeglichen.';
 

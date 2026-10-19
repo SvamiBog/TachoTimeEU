@@ -402,6 +402,7 @@ typedef _Rest = ({
   int? daily,
   DateTime? dailyStart,
   int? weekly,
+  DateTime? weeklyStart,
   int reducedLeft,
   bool reducedWeekly,
   DateTime? deadline,
@@ -417,6 +418,7 @@ _Rest _rest(ComplianceSnapshot s) {
     daily: dailyResting ? daily.rest : null,
     dailyStart: dailyResting ? daily.restStart : null,
     weekly: daily.weekly ? daily.rest : null,
+    weeklyStart: daily.weekly ? daily.restStart : null,
     reducedLeft: s.reducedRestsLeft,
     reducedWeekly: s.reducedWeeklyRestAvailable,
     deadline: s.weeklyRestDeadline,
@@ -425,12 +427,15 @@ _Rest _rest(ComplianceSnapshot s) {
 }
 
 /// Подписи строки идущего суточного отдыха: ближайшая веха — 9 ч, затем
-/// 11 ч.
+/// 11 ч. Набрал 11 ч — когда отдых станет недельным: 24 ч (45 ч, если
+/// сокращённый недельный недоступен).
 (String, String?) _dailyRestCaptions(
   AppLocalizations l,
   int minutes,
-  DateTime start,
-) {
+  DateTime start, {
+  required bool reducedWeekly,
+  required String locale,
+}) {
   final rest = _m(minutes);
   String until(Duration hours) => l.limitLeftUntil(
     hours.inHours,
@@ -449,7 +454,41 @@ _Rest _rest(ComplianceSnapshot s) {
   if (rest < EuLimits.dailyRestRegular) {
     return (until(EuLimits.dailyRestRegular), null);
   }
-  return (l.dailyRestCaption, null);
+  final weekly = reducedWeekly
+      ? EuLimits.weeklyRestReduced
+      : EuLimits.weeklyRestRegular;
+  return (
+    l.dailyRestCaption,
+    l.limitUntil(weekly.inHours, formatWeekdayClock(start.add(weekly), locale)),
+  );
+}
+
+/// Подписи строки идущего недельного отдыха: сколько ещё до 24 ч и 45 ч и
+/// когда они наберутся. Отдых длится сутками — время с днём недели.
+/// Сокращённый недоступен — сразу 45 ч.
+(String, String?) _weeklyRestCaptions(
+  AppLocalizations l,
+  int minutes,
+  DateTime start, {
+  required bool reducedWeekly,
+  required String locale,
+}) {
+  final rest = _m(minutes);
+  String at(Duration hours) => formatWeekdayClock(start.add(hours), locale);
+  String until(Duration hours) => l.limitLeftUntil(
+    hours.inHours,
+    formatHm(atLeastZero(hours - rest)),
+    at(hours),
+  );
+  const regular = EuLimits.weeklyRestRegular;
+  if (reducedWeekly && rest < EuLimits.weeklyRestReduced) {
+    return (
+      until(EuLimits.weeklyRestReduced),
+      l.limitUntil(regular.inHours, at(regular)),
+    );
+  }
+  if (rest < regular) return (until(regular), null);
+  return (l.weeklyRestCaption, null);
 }
 
 /// "Rest": daily rest with the reduced rests left, weekly rest, compensation
@@ -469,11 +508,34 @@ class RestSection extends ConsumerWidget {
           ? l.statusNotStarted
           : l.statusInProgress(formatHm(_m(minutes))),
     );
+    final locale = context.localeTag;
     final daily = s.daily;
     final dailyStart = s.dailyStart;
     final (dailyLeft, dailyRight) = daily != null && dailyStart != null
-        ? _dailyRestCaptions(l, daily, dailyStart)
+        ? _dailyRestCaptions(
+            l,
+            daily,
+            dailyStart,
+            reducedWeekly: s.reducedWeekly,
+            locale: locale,
+          )
         : (l.dailyRestCaption, l.dailyRestSplit);
+    final weekly = s.weekly;
+    final weeklyStart = s.weeklyStart;
+    final (weeklyLeft, weeklyRight) = weekly != null && weeklyStart != null
+        ? _weeklyRestCaptions(
+            l,
+            weekly,
+            weeklyStart,
+            reducedWeekly: s.reducedWeekly,
+            locale: locale,
+          )
+        : (
+            l.weeklyRestCaption,
+            deadline == null
+                ? l.statusNoData
+                : l.statusBy(formatWeekdayClock(deadline, locale)),
+          );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -513,12 +575,8 @@ class RestSection extends ConsumerWidget {
                 ticks: const [EuLimits.weeklyRestReduced],
                 color: colors.rest,
               ),
-              left: l.weeklyRestCaption,
-              right: s.weekly != null
-                  ? null
-                  : deadline == null
-                  ? l.statusNoData
-                  : l.statusBy(formatWeekdayClock(deadline, context.localeTag)),
+              left: weeklyLeft,
+              right: weeklyRight,
               onTap: () => _openWeeklyRest(context),
             ),
             // Долг за сокращённый недельный отдых — только когда он есть

@@ -1358,6 +1358,30 @@ abstract class AppLocalizations {
   /// **'{time} до {date}'**
   String weeklyCompensationValue(String time, String date);
 
+  /// «за отдых 19.09» — долг за сокращённый недельный отдых с этого дня
+  ///
+  /// In ru, this message translates to:
+  /// **'за отдых {date}'**
+  String weeklyCompensationFor(String date);
+
+  /// После двух сокращённых недельных подряд (ст. 8(6)): один долг на оба — «42:00», с полным недельным — «87:00»
+  ///
+  /// In ru, this message translates to:
+  /// **'Два сокращённых подряд — один долг {debt}: его берут целиком, одним блоком, после второго из них и перед следующим недельным отдыхом; по частям и между ними нельзя. Вместе с полным недельным — {total} отдыха подряд.'**
+  String weeklyTwoReducedNote(String debt, String total);
+
+  /// Экран «Недельный отдых»: долг за два сокращённых подряд, «за отдыхи 19.09 и 26.09»
+  ///
+  /// In ru, this message translates to:
+  /// **'за отдыхи {first} и {second}'**
+  String weeklyCompensationForTwo(String first, String second);
+
+  /// Журнал и форма смены: долг за два сокращённых подряд — один на оба, «вместе с отдыхом 26.09»
+  ///
+  /// In ru, this message translates to:
+  /// **'вместе с отдыхом {date}'**
+  String compensationTogetherWith(String date);
+
   /// No description provided for @weeklyMobilityOn.
   ///
   /// In ru, this message translates to:

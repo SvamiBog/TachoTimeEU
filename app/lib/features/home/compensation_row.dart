@@ -17,7 +17,8 @@ import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 
 /// Что отдых начала [restStart] сделал с долгами: сколько долга к нему
-/// присоединено и долг за него самого, если это сокращённый недельный.
+/// присоединено и долг за него самого, если это сокращённый недельный. Два
+/// сокращённых подряд — долг на оба, у каждого из них.
 ({Duration taken, Compensation? debt}) compensationOfRest(
   List<Compensation> all,
   DateTime restStart,
@@ -26,14 +27,26 @@ import 'package:tachogo/features/home/weekly_rest_screen.dart';
     for (final c in all)
       if (c.repaidIn == restStart) c.debt,
   ].fold(Duration.zero, (sum, d) => sum + d),
-  debt: all.where((c) => c.restStart == restStart).firstOrNull,
+  debt: all.where((c) => c.isFor(restStart)).firstOrNull,
 );
+
+/// Второй отдых пары, когда долг [c] — за два сокращённых подряд: у отдыха
+/// [restStart] — начало другого; null — сокращённый один.
+DateTime? pairedRest(Compensation c, DateTime restStart) {
+  final second = c.secondRestStart;
+  if (second == null) return null;
+  return restStart == second ? c.restStart : second;
+}
 
 /// Debt state in whole minutes: the one-second tick does not rebuild the row.
 typedef _Compensation = ({
   int debt,
   int progress,
   DateTime? dueBy,
+
+  /// Ближайший по сроку долг, когда долгов несколько: «21:00 до 12.10»;
+  /// null — долг один или водитель на отдыхе.
+  int? first,
   DateTime? until,
   bool resting,
   bool inTime,
@@ -45,11 +58,32 @@ _Compensation? _compensation(ComplianceSnapshot s) {
   final rest = s.restCompensation;
   final next = rest?.next;
   final until = rest?.until;
+  final untilAll = rest?.untilAll;
   final tone = toneOf(
     s,
     violation: InfringementType.compensationOverdue,
     warning: InfringementType.compensationSoon,
   );
+  // Отдых успевает погасить долги: весь долг этого отдыха — уже
+  // присоединённый и тот, что он ещё погасит, — и до какого времени
+  // отдыхать. После двух сокращённых по 24 ч — 42:00 до 45 + 42 ч.
+  if (rest != null && rest.planned.isNotEmpty && untilAll != null) {
+    final total = rest.total;
+    final done = total - atLeastZero(untilAll.difference(s.now));
+    return (
+      debt: minutes(total),
+      progress: minutes(atLeastZero(done)),
+      dueBy: rest.planned
+          .map((c) => c.dueBy)
+          .reduce((a, b) => a.isBefore(b) ? a : b),
+      first: null,
+      until: minuteOf(untilAll),
+      resting: true,
+      inTime: true,
+      done: false,
+      tone: tone,
+    );
+  }
   if (rest != null && next != null && until != null) {
     final left = until.difference(s.now);
     final done = next.debt - (left.isNegative ? Duration.zero : left);
@@ -57,6 +91,7 @@ _Compensation? _compensation(ComplianceSnapshot s) {
       debt: minutes(next.debt),
       progress: minutes(done.isNegative ? Duration.zero : done),
       dueBy: next.dueBy,
+      first: null,
       until: minuteOf(until),
       resting: true,
       inTime: rest.inTime,
@@ -69,6 +104,7 @@ _Compensation? _compensation(ComplianceSnapshot s) {
       debt: minutes(rest.taken),
       progress: minutes(rest.taken),
       dueBy: null,
+      first: null,
       until: null,
       resting: true,
       inTime: true,
@@ -78,10 +114,13 @@ _Compensation? _compensation(ComplianceSnapshot s) {
   }
   final c = s.compensation;
   if (c == null) return null;
+  // Сколько всего компенсации нужно взять: все долги, после двух
+  // сокращённых подряд — один на оба
   return (
-    debt: minutes(c.debt),
+    debt: minutes(s.compensationDebt),
     progress: 0,
     dueBy: c.dueBy,
+    first: s.unpaidCompensations.length > 1 ? minutes(c.debt) : null,
     until: null,
     resting: false,
     inTime: true,
@@ -91,8 +130,9 @@ _Compensation? _compensation(ComplianceSnapshot s) {
 }
 
 /// "Compensation" in the "Rest" section of the home screen: only when there is
-/// a debt or the rest in progress has repaid one. During a rest — until when to
-/// rest.
+/// a debt or the rest in progress has repaid one. The value is the whole debt
+/// (after two reduced rests in a row — one debt for both, repaid only in
+/// full); during a rest — until when to rest to repay it.
 class CompensationRow extends ConsumerWidget {
   const new({super.key});
 
@@ -103,7 +143,7 @@ class CompensationRow extends ConsumerWidget {
     final l = context.l10n;
     final colors = context.colors;
     final debt = Duration(minutes: s.debt);
-    final (dueBy, until) = (s.dueBy, s.until);
+    final (dueBy, until, first) = (s.dueBy, s.until, s.first);
     final chip = s.done
         ? StatusChip(l.chipCompensationDone, tone: Tone.rest)
         : switch (s.tone) {
@@ -150,8 +190,16 @@ class CompensationRow extends ConsumerWidget {
         color: s.tone == Tone.violation ? colors.errorText : colors.rest,
       ),
       left: left,
-      // Срок — через недели: дата, а не день недели
-      right: dueBy == null ? null : l.statusBy(formatDayMonth(dueBy)),
+      // Срок — через недели: дата, а не день недели. Долгов несколько —
+      // ближайший и его срок.
+      right: dueBy == null
+          ? null
+          : first == null
+          ? l.statusBy(formatDayMonth(dueBy))
+          : l.weeklyCompensationValue(
+              formatHm(Duration(minutes: first)),
+              formatDayMonth(dueBy),
+            ),
     );
   }
 }

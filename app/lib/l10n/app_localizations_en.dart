@@ -862,6 +862,26 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'for the rest of $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Two reduced rests in a row — one debt of $debt: it is taken in full, en bloc, after the second of them and before the next weekly rest; not in parts and not in between. Together with a regular weekly rest — $total of rest in one go.';
+  }
+
+  @override
+  String weeklyCompensationForTwo(String first, String second) {
+    return 'for the rests of $first and $second';
+  }
+
+  @override
+  String compensationTogetherWith(String date) {
+    return 'together with the rest of $date';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Mobility package on: in international transport two reduced rests in a row are allowed if they are taken outside the country of registration. The reduction is compensated by the end of the third week.';
 
