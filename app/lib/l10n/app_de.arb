@@ -206,6 +206,8 @@
   "weeklyCompensation": "Ausgleichsschuld",
   "weeklyCompensationNone": "keine",
   "weeklyCompensationValue": "{time} bis {date}",
+  "weeklyCompensationFor": "für die Ruhezeit vom {date}",
+  "weeklyTwoReducedNote": "Zwei reduzierte hintereinander: Vor der nächsten wöchentlichen Ruhezeit ist der Ausgleich für beide nötig — {debt}. Zusammen mit einer regelmäßigen wöchentlichen Ruhezeit sind das {total} Ruhe am Stück.",
   "weeklyMobilityOn": "Mobilitätspaket aktiv: Im grenzüberschreitenden Verkehr dürfen zwei reduzierte Ruhezeiten nacheinander genommen werden, wenn sie außerhalb des Zulassungslandes liegen. Die Verkürzung wird bis zum Ende der dritten Woche ausgeglichen.",
   "weeklyMobilityOff": "Eine reduzierte wöchentliche Ruhezeit wird bis zum Ende der dritten Woche ausgeglichen: Die Schuld wird an eine Ruhezeit von mindestens 9 Std. angehängt.",
   "weeklyStartRest": "Ruhezeit beginnen",

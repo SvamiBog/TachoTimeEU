@@ -866,6 +866,16 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'per il riposo del $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Due ridotti di fila: prima del prossimo riposo settimanale serve la compensazione di entrambi — $debt. Insieme a un riposo settimanale regolare sono $total di riposo consecutivo.';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Pacchetto mobilità attivo: nel trasporto internazionale sono ammessi due riposi ridotti consecutivi se fuori dal paese di immatricolazione. La riduzione si compensa entro la fine della terza settimana.';
 

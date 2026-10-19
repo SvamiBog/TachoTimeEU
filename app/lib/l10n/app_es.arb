@@ -206,6 +206,8 @@
   "weeklyCompensation": "Compensación pendiente",
   "weeklyCompensationNone": "ninguna",
   "weeklyCompensationValue": "{time} antes del {date}",
+  "weeklyCompensationFor": "por el descanso del {date}",
+  "weeklyTwoReducedNote": "Dos reducidos seguidos: antes del próximo descanso semanal hace falta la compensación de ambos — {debt}. Junto con un descanso semanal normal son {total} de descanso seguido.",
   "weeklyMobilityOn": "Paquete de movilidad activado: en transporte internacional se permiten dos descansos reducidos seguidos si se toman fuera del país de matriculación. La reducción se compensa antes del final de la tercera semana.",
   "weeklyMobilityOff": "Un descanso semanal reducido se compensa antes del final de la tercera semana: la deuda se añade a un descanso de al menos 9 h.",
   "weeklyStartRest": "Empezar descanso",

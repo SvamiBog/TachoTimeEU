@@ -867,6 +867,16 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'por el descanso del $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Dos reducidos seguidos: antes del próximo descanso semanal hace falta la compensación de ambos — $debt. Junto con un descanso semanal normal son $total de descanso seguido.';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Paquete de movilidad activado: en transporte internacional se permiten dos descansos reducidos seguidos si se toman fuera del país de matriculación. La reducción se compensa antes del final de la tercera semana.';
 

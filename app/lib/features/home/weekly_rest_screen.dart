@@ -13,9 +13,12 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
+import 'package:tachogo/core/widgets/limit_bar.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/features/home/compensation_row.dart';
+import 'package:tachogo/features/home/detail_rows.dart';
 import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
@@ -34,24 +37,46 @@ typedef _Weekly = ({
   int left,
   int overdue,
   int? onWeekly,
+  DateTime? onWeeklyStart,
   bool reducedAvailable,
   _Last? last,
-  int? debt,
-  DateTime? debtDue,
+
+  /// Непогашенные долги по сроку: после двух сокращённых подряд — два.
+  ValueList<Compensation> debts,
+
+  /// Долг за два последних недельных отдыха, если оба сокращённые: его
+  /// берут перед следующим недельным отдыхом (ст. 8(6)); null — не два
+  /// сокращённых подряд или долг за них погашен.
+  int? twoReducedDebt,
+  bool restCompensation,
 });
 
 _Weekly _weekly(ComplianceSnapshot s) {
   final deadline = s.weeklyRestDeadline;
   final rest = s.offDutyRest;
+  final onWeekly = rest != null && rest.weekly ? rest : null;
   final last = s.lastWeeklyRest;
-  final compensation = s.compensation;
+  final previous = s.previousWeeklyRest;
+  final twoReduced =
+      last != null &&
+      previous != null &&
+      last.status == RestStatus.reduced &&
+      previous.status == RestStatus.reduced;
+  final twoReducedDebt = !twoReduced
+      ? Duration.zero
+      : s.unpaidCompensations
+            .where(
+              (c) => c.restStart == last.start || c.restStart == previous.start,
+            )
+            .fold(Duration.zero, (sum, c) => sum + c.debt);
   return (
     deadline: deadline,
     left: minutes(s.workWeekRemaining ?? Duration.zero),
     overdue: deadline == null || !s.now.isAfter(deadline)
         ? 0
         : minutes(s.now.difference(deadline)),
-    onWeekly: rest != null && rest.weekly ? minutes(rest.duration) : null,
+    onWeekly: onWeekly == null ? null : minutes(onWeekly.duration),
+    onWeeklyStart: onWeekly?.start,
     reducedAvailable: s.reducedWeeklyRestAvailable,
     last: last == null
         ? null
@@ -61,16 +86,20 @@ _Weekly _weekly(ComplianceSnapshot s) {
             duration: minutes(last.duration),
             status: last.status,
           ),
-    debt: compensation == null ? null : minutes(compensation.debt),
-    debtDue: compensation?.dueBy,
+    debts: ValueList(s.unpaidCompensations),
+    twoReducedDebt: twoReducedDebt > Duration.zero
+        ? minutes(twoReducedDebt)
+        : null,
+    restCompensation: s.restCompensation != null,
   );
 }
 
 void openWeeklyRestScreen(BuildContext context) => Navigator.of(context)
     .push(MaterialPageRoute<void>(builder: (_) => const WeeklyRestScreen()));
 
-/// Screen 9 "Weekly rest": the 144 h deadline, regular 45 h and reduced 24 h,
-/// the previous rest, the compensation debt, the Mobility Package.
+/// Screen 9 "Weekly rest": the 144 h deadline, regular 45 h and reduced 24 h
+/// (during the rest — how long until each), the previous rest, the
+/// compensation debts, the Mobility Package.
 class WeeklyRestScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -109,10 +138,30 @@ class WeeklyRestScreen extends ConsumerWidget {
           ? const []
           : [
               _Deadline(s),
-              SectionTitle(l.weeklyNext),
-              _Options(reducedAvailable: s.reducedAvailable),
+              // Отдых идёт — сколько ещё до 24 и 45 ч и во сколько
+              // наберутся; иначе — какой отдых брать
+              if (s.onWeekly != null) ...[
+                SectionTitle(l.dailyRestOptions),
+                _Milestones(s),
+                if (s.restCompensation) ...[
+                  const SizedBox(height: AppSpacing.betweenCardsMin),
+                  const CardGroup(children: [CompensationRow()]),
+                ],
+              ] else ...[
+                SectionTitle(l.weeklyNext),
+                _Options(reducedAvailable: s.reducedAvailable),
+              ],
               SectionTitle(l.weeklyHistory),
               _History(s),
+              if (s.twoReducedDebt case final debt?)
+                InfoNote(
+                  l.weeklyTwoReducedNote(
+                    formatHm(Duration(minutes: debt)),
+                    formatHm(
+                      EuLimits.weeklyRestRegular + Duration(minutes: debt),
+                    ),
+                  ),
+                ),
               if (mobility != null) _Info(mobility: mobility),
             ],
     );
@@ -147,6 +196,7 @@ class _Deadline extends StatelessWidget {
     final List<Widget> children;
     if (onWeekly != null) {
       final d = Duration(minutes: onWeekly);
+      final start = s.onWeeklyStart;
       children = [
         Text(l.weeklyOngoing.toUpperCase(), style: label),
         const SizedBox(height: 4),
@@ -158,6 +208,18 @@ class _Deadline extends StatelessWidget {
         Text(
           l.ofLimit(formatLimit(l, EuLimits.weeklyRestRegular)),
           style: caption,
+        ),
+        if (start != null)
+          Text(
+            l.modeSince(formatWeekdayClock(start, context.localeTag)),
+            style: caption,
+          ),
+        const SizedBox(height: 14),
+        LimitBar(
+          value: d,
+          max: EuLimits.weeklyRestRegular,
+          ticks: const [EuLimits.weeklyRestReduced],
+          color: colors.rest,
         ),
       ];
     } else if (deadline != null) {
@@ -207,6 +269,49 @@ class _Deadline extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Milestones of the weekly rest in progress: 24 h — reduced (greyed out when
+/// not allowed), 45 h — regular; how long until each and at what time it is
+/// reached.
+class _Milestones extends StatelessWidget {
+  const new(this.s);
+
+  final _Weekly s;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final start = s.onWeeklyStart;
+    final onWeekly = s.onWeekly;
+    if (start == null || onWeekly == null) return const SizedBox.shrink();
+    final rest = Duration(minutes: onWeekly);
+    MilestoneRow row(Duration hours, String kind, {bool allowed = true}) {
+      final reached = rest >= hours;
+      return MilestoneRow(
+        dot: !allowed
+            ? MilestoneDot.muted
+            : reached
+            ? MilestoneDot.solid
+            : MilestoneDot.ring,
+        title: l.dailyRestMilestone(hours.inHours, kind),
+        subtitle: !allowed
+            ? l.weeklyReducedNo
+            : reached
+            ? l.dailyRestReached
+            : l.left(formatHm(hours - rest)),
+        value: formatWeekdayClock(start.add(hours), context.localeTag),
+        muted: !allowed,
+      );
+    }
+
+    return CardGroup(
+      children: [
+        row(EuLimits.weeklyRestReduced, 'reduced', allowed: s.reducedAvailable),
+        row(EuLimits.weeklyRestRegular, 'regular'),
+      ],
     );
   }
 }
@@ -312,7 +417,8 @@ class _Option extends StatelessWidget {
   }
 }
 
-/// The previous weekly rests and the compensation debt.
+/// The previous weekly rests and the compensation debt: the whole debt and,
+/// when there are several, each one with its due date.
 class _History extends StatelessWidget {
   const new(this.s);
 
@@ -323,9 +429,12 @@ class _History extends StatelessWidget {
     final l = context.l10n;
     final colors = context.colors;
     final last = s.last;
-    final debt = s.debt;
-    final debtDue = s.debtDue;
+    final debts = s.debts.items;
+    final debt = debts.fold(Duration.zero, (sum, c) => sum + c.debt);
     String moment(DateTime t) => '${formatDayMonth(t)} ${formatClock(t)}';
+    String debtValue(Compensation c) =>
+        l.weeklyCompensationValue(formatHm(c.debt), formatDayMonth(c.dueBy));
+    final caption = AppTextStyles.caption.copyWith(color: colors.textSecondary);
     return CardGroup(
       children: [
         if (last == null)
@@ -391,21 +500,41 @@ class _History extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  debt == null || debtDue == null
-                      ? l.weeklyCompensationNone
-                      : l.weeklyCompensationValue(
-                          formatHm(Duration(minutes: debt)),
-                          formatDayMonth(debtDue),
-                        ),
+                  switch (debts) {
+                    [] => l.weeklyCompensationNone,
+                    [final c] => debtValue(c),
+                    // Несколько долгов — сколько всего, ниже каждый
+                    _ => formatHm(debt),
+                  },
                   style: AppTextStyles.body.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: debt == null ? colors.restText : colors.drive,
+                    color: debts.isEmpty ? colors.restText : colors.drive,
                   ),
                 ),
               ],
             ),
           ),
         ),
+        if (debts.length > 1)
+          for (final c in debts)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.cardPadding,
+                vertical: 12,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l.weeklyCompensationFor(formatDayMonth(c.restStart)),
+                      style: caption,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(debtValue(c), style: AppTextStyles.body),
+                ],
+              ),
+            ),
       ],
     );
   }

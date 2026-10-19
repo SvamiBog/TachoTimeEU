@@ -864,6 +864,16 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'დასვენებისთვის $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'ზედიზედ ორი შემცირებული: შემდეგ კვირეულ დასვენებამდე საჭიროა ორივეს კომპენსაცია — $debt. სრულ კვირეულ დასვენებასთან ერთად ეს არის $total უწყვეტი დასვენება.';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'მობილობის პაკეტი ჩართულია: საერთაშორისო გადაზიდვებისას შეიძლება ზედიზედ ორი შემცირებული დასვენება, თუ ისინი რეგისტრაციის ქვეყნის გარეთ ტარდება. შემცირება კომპენსირდება მესამე კვირის ბოლომდე.';
 

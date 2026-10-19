@@ -206,6 +206,8 @@
   "weeklyCompensation": "Te compenseren",
   "weeklyCompensationNone": "geen",
   "weeklyCompensationValue": "{time} uiterlijk {date}",
+  "weeklyCompensationFor": "voor de rust van {date}",
+  "weeklyTwoReducedNote": "Twee verkorte achter elkaar: vóór de volgende wekelijkse rust is compensatie voor beide nodig — {debt}. Samen met een normale wekelijkse rust is dat {total} rust aan één stuk.",
   "weeklyMobilityOn": "Mobiliteitspakket aan: in internationaal vervoer mogen twee verkorte rusttijden op rij, als ze buiten het land van inschrijving vallen. De verkorting wordt gecompenseerd vóór het einde van de derde week.",
   "weeklyMobilityOff": "Een verkorte wekelijkse rust wordt gecompenseerd vóór het einde van de derde week: de schuld wordt toegevoegd aan een rust van minstens 9 u.",
   "weeklyStartRest": "Rust beginnen",

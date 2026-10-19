@@ -206,6 +206,8 @@
   "weeklyCompensation": "Dluh náhrady",
   "weeklyCompensationNone": "žádný",
   "weeklyCompensationValue": "{time} do {date}",
+  "weeklyCompensationFor": "za odpočinek {date}",
+  "weeklyTwoReducedNote": "Dva zkrácené za sebou: před dalším týdenním odpočinkem je potřeba náhrada za oba — {debt}. Spolu s běžným týdenním odpočinkem je to {total} odpočinku v kuse.",
   "weeklyMobilityOn": "Balíček mobility zapnut: v mezinárodní dopravě lze čerpat dva zkrácené odpočinky za sebou, pokud jsou mimo zemi registrace. Zkrácení se nahrazuje do konce třetího týdne.",
   "weeklyMobilityOff": "Zkrácený týdenní odpočinek se nahrazuje do konce třetího týdne: dluh se připojí k odpočinku alespoň 9 h.",
   "weeklyStartRest": "Začít odpočinek",

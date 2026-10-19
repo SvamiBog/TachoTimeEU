@@ -243,6 +243,8 @@ void main() {
         ),
       );
       expect(m.compensations, [m.compensation]);
+      expect(m.unpaidCompensations, [m.compensation]);
+      expect(m.compensationDebt, const Duration(hours: 15));
     });
 
     test('обычный суточный отдых 11 ч долг не гасит', () {
@@ -311,6 +313,8 @@ void main() {
             taken: Duration.zero,
             next: m.compensation,
             until: restStart.add(hour * 14),
+            planned: [m.compensation!],
+            untilAll: restStart.add(hour * 14),
           ),
         );
         expect(m.restCompensation?.inTime, isTrue);
@@ -383,6 +387,122 @@ void main() {
       expect(m.compensations, hasLength(2));
       expect(m.compensations.first.repaidIn, m.lastWeeklyRest?.start);
       expect(m.compensations.last, m.compensation);
+    });
+
+    group('два сокращённых по 24 ч подряд (пакет мобильности)', () {
+      // 24 ч с сб 19.09 и 24 ч с пт 25.09: два долга по 21 ч, сроки — пн
+      // 12.10 и пн 19.10. Следующий недельный отдых — с пт 02.10 00:45.
+      final log = logFrom(start, [
+        ...drivingDay('9:00'),
+        rest('24:00'),
+        ...repeat(5, cycle),
+        ...drivingDay('9:00'),
+        rest('24:00'),
+        ...repeat(5, cycle),
+        ...day13,
+        rest('30:00'),
+      ]);
+      final restStart = utc('2026-10-02 00:45');
+      final first = Compensation(
+        debt: hour * 21,
+        dueBy: utc('2026-10-12 00:00'),
+        restStart: utc('2026-09-19 02:00'),
+      );
+      final second = Compensation(
+        debt: hour * 21,
+        dueBy: utc('2026-10-19 00:00'),
+        restStart: utc('2026-09-25 11:45'),
+      );
+
+      test('нужно 42 ч компенсации: два долга по 21 ч', () {
+        final m = calc(log.periods, log.now);
+        expect(m.status, DriverStatus.weeklyRest);
+        expect(m.reducedWeeklyRestAvailable, isFalse);
+        expect(m.unpaidCompensations, [first, second]);
+        expect(m.compensation, first);
+        expect(m.compensationDebt, hour * 42);
+      });
+
+      test('недельный отдых гасит оба при 45 + 21 + 21 = 87 ч', () {
+        final m = calc(log.periods, log.now);
+        expect(
+          m.restCompensation,
+          RestCompensation(
+            taken: Duration.zero,
+            next: first,
+            until: restStart.add(hour * 66),
+            planned: [first, second],
+            untilAll: restStart.add(hour * 87),
+          ),
+        );
+        expect(m.restCompensation?.total, hour * 42);
+
+        // 66 ч — первый погашен, второй — к тем же 87 ч
+        final half = calc(log.periods, restStart.add(hour * 66));
+        expect(half.compensationDebt, hour * 21);
+        expect(
+          half.restCompensation,
+          RestCompensation(
+            taken: hour * 21,
+            next: second,
+            until: restStart.add(hour * 87),
+            planned: [second],
+            untilAll: restStart.add(hour * 87),
+          ),
+        );
+
+        final done = calc(log.periods, restStart.add(hour * 87));
+        expect(done.unpaidCompensations, isEmpty);
+        expect(done.compensationDebt, Duration.zero);
+        expect(
+          done.restCompensation,
+          RestCompensation(taken: hour * 42, next: null, until: null),
+        );
+        expect(done.compensations.map((c) => c.repaidIn), [
+          restStart,
+          restStart,
+        ]);
+      });
+    });
+
+    test('суточный отдых не становится недельным ради второго долга', () {
+      // 40 ч и 30 ч: долги 5 и 15 ч. Суточный отдых гасит 5 ч к 14 ч;
+      // 9 + 20 ч — уже недельный, поэтому второй долг в план не входит.
+      final log = logFrom(start, [
+        ...drivingDay('9:00'),
+        rest('40:00'),
+        ...repeat(4, cycle),
+        ...drivingDay('9:00'),
+        rest('30:00'),
+        ...day13,
+        rest('2:00', dayEnd: true),
+      ]);
+      final restStart = log.now.subtract(hour * 2);
+      final m = calc(log.periods, log.now);
+      expect(m.compensationDebt, hour * 20);
+      final c = m.restCompensation!;
+      expect(c.next?.debt, hour * 5);
+      expect(c.planned.map((p) => p.debt), [hour * 5]);
+      expect(c.untilAll, restStart.add(hour * 14));
+    });
+
+    test('два небольших долга — один суточный отдых гасит оба', () {
+      // 42 ч и 41 ч: долги 3 и 4 ч, суточный отдых 9 + 3 + 4 = 16 ч
+      final log = logFrom(start, [
+        ...drivingDay('9:00'),
+        rest('42:00'),
+        ...repeat(4, cycle),
+        ...drivingDay('9:00'),
+        rest('41:00'),
+        ...day13,
+        rest('2:00', dayEnd: true),
+      ]);
+      final restStart = log.now.subtract(hour * 2);
+      final c = calc(log.periods, log.now).restCompensation!;
+      expect(c.until, restStart.add(hour * 12));
+      expect(c.planned.map((p) => p.debt), [hour * 3, hour * 4]);
+      expect(c.untilAll, restStart.add(hour * 16));
+      expect(c.total, hour * 7);
     });
 
     group('срок — конец третьей недели', () {

@@ -206,6 +206,8 @@
   "weeklyCompensation": "Compensazione dovuta",
   "weeklyCompensationNone": "nessuna",
   "weeklyCompensationValue": "{time} entro il {date}",
+  "weeklyCompensationFor": "per il riposo del {date}",
+  "weeklyTwoReducedNote": "Due ridotti di fila: prima del prossimo riposo settimanale serve la compensazione di entrambi — {debt}. Insieme a un riposo settimanale regolare sono {total} di riposo consecutivo.",
   "weeklyMobilityOn": "Pacchetto mobilità attivo: nel trasporto internazionale sono ammessi due riposi ridotti consecutivi se fuori dal paese di immatricolazione. La riduzione si compensa entro la fine della terza settimana.",
   "weeklyMobilityOff": "Il riposo settimanale ridotto si compensa entro la fine della terza settimana: il debito si aggiunge a un riposo di almeno 9 h.",
   "weeklyStartRest": "Inizia il riposo",

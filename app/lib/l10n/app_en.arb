@@ -206,6 +206,8 @@
   "weeklyCompensation": "Compensation debt",
   "weeklyCompensationNone": "none",
   "weeklyCompensationValue": "{time} by {date}",
+  "weeklyCompensationFor": "for the rest of {date}",
+  "weeklyTwoReducedNote": "Two reduced rests in a row: the next weekly rest must be preceded by compensation for both — {debt}. Together with a regular weekly rest that is {total} of rest in one go.",
   "weeklyMobilityOn": "Mobility package on: in international transport two reduced rests in a row are allowed if they are taken outside the country of registration. The reduction is compensated by the end of the third week.",
   "weeklyMobilityOff": "A reduced weekly rest is compensated by the end of the third week: the debt is attached to a rest of at least 9 h.",
   "weeklyStartRest": "Start rest",

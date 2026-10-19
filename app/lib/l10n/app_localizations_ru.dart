@@ -877,6 +877,16 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'за отдых $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Два сокращённых подряд: перед следующим недельным отдыхом нужна компенсация за оба — $debt. Вместе с полным недельным это $total отдыха подряд.';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Пакет мобильности включён: при международных перевозках можно взять два сокращённых отдыха подряд, если они проходят за пределами страны регистрации. Сокращение компенсируется до конца третьей недели.';
 

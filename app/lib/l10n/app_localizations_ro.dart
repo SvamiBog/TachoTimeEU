@@ -874,6 +874,16 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return 'pentru repausul din $date';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Două repausuri reduse consecutive: înaintea următorului repaus săptămânal e necesară compensarea ambelor — $debt. Împreună cu repausul săptămânal complet — $total de repaus fără întrerupere.';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Pachetul de mobilitate este activ: în transportul internațional se pot lua două repausuri reduse consecutive, dacă sunt în afara țării de înmatriculare. Reducerea se compensează până la sfârșitul celei de-a treia săptămâni.';
 

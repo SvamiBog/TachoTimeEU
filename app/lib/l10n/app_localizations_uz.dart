@@ -867,6 +867,16 @@ class AppLocalizationsUz extends AppLocalizations {
   }
 
   @override
+  String weeklyCompensationFor(String date) {
+    return '$date dagi dam olish uchun';
+  }
+
+  @override
+  String weeklyTwoReducedNote(String debt, String total) {
+    return 'Ketma-ket ikkita qisqartirilgan: keyingi haftalik dam olishdan oldin ikkalasi uchun kompensatsiya kerak — $debt. Toʻliq haftalik dam olish bilan birga bu $total uzluksiz dam olish.';
+  }
+
+  @override
   String get weeklyMobilityOn =>
       'Mobillik paketi yoqilgan: xalqaro tashuvlarda roʻyxatdan oʻtgan mamlakatdan tashqarida boʻlsa, ketma-ket ikkita qisqartirilgan dam olish olish mumkin. Qisqartirish uchinchi hafta oxirigacha kompensatsiya qilinadi.';
 

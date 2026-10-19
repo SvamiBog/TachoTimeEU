@@ -206,6 +206,8 @@
   "weeklyCompensation": "Compensation due",
   "weeklyCompensationNone": "aucune",
   "weeklyCompensationValue": "{time} avant le {date}",
+  "weeklyCompensationFor": "pour le repos du {date}",
+  "weeklyTwoReducedNote": "Deux repos réduits consécutifs : le prochain repos hebdomadaire doit être précédé de la compensation des deux — {debt}. Avec un repos hebdomadaire normal, cela fait {total} de repos d’affilée.",
   "weeklyMobilityOn": "Paquet mobilité activé : en transport international, deux repos réduits consécutifs sont permis s’ils sont pris hors du pays d’immatriculation. La réduction est compensée avant la fin de la troisième semaine.",
   "weeklyMobilityOff": "Un repos hebdomadaire réduit est compensé avant la fin de la troisième semaine : la dette s’ajoute à un repos d’au moins 9 h.",
   "weeklyStartRest": "Commencer le repos",

@@ -206,6 +206,8 @@
   "weeklyCompensation": "Kompensatsiya qarzi",
   "weeklyCompensationNone": "yoʻq",
   "weeklyCompensationValue": "{time}, muddat {date}",
+  "weeklyCompensationFor": "{date} dagi dam olish uchun",
+  "weeklyTwoReducedNote": "Ketma-ket ikkita qisqartirilgan: keyingi haftalik dam olishdan oldin ikkalasi uchun kompensatsiya kerak — {debt}. Toʻliq haftalik dam olish bilan birga bu {total} uzluksiz dam olish.",
   "weeklyMobilityOn": "Mobillik paketi yoqilgan: xalqaro tashuvlarda roʻyxatdan oʻtgan mamlakatdan tashqarida boʻlsa, ketma-ket ikkita qisqartirilgan dam olish olish mumkin. Qisqartirish uchinchi hafta oxirigacha kompensatsiya qilinadi.",
   "weeklyMobilityOff": "Qisqartirilgan haftalik dam olish uchinchi hafta oxirigacha kompensatsiya qilinadi: qarz kamida 9 soatlik dam olishga qoʻshiladi.",
   "weeklyStartRest": "Dam olishni boshlash",
