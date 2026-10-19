@@ -66,6 +66,7 @@ jobs:
         with:
           name: store-listing
           path: ${{ runner.temp }}/store
+          retention-days: 14
       - name: Загрузка в Google Play
         if: ${{ inputs.upload }}
         env:

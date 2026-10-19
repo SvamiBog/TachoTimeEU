@@ -54,7 +54,8 @@ jobs:
       - name: Покрытие не ниже 95 %
         run: dart run tool/check_coverage.dart coverage/lcov.info 95 lib/
       # Отчёт — только посмотреть: порог проверен выше. Нет места под
-      # артефакты (квота аккаунта) — job не краснеет.
+      # артефакты (квота аккаунта) — job не краснеет. Артефакты хранятся
+      # 14 дней, старше удаляет artifacts.yml.
       - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         continue-on-error: true
@@ -62,7 +63,7 @@ jobs:
           name: coverage-engine
           path: packages/tacho_engine/coverage/lcov.info
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 14
 
   app:
     name: Приложение
@@ -132,7 +133,7 @@ jobs:
           name: coverage-app
           path: app/coverage/lcov.info
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 14
 
   # Время в движке и базе — UTC. Прогон в других поясах ловит местное время
   # там, где его быть не должно.
@@ -314,7 +315,7 @@ jobs:
         run: dart run tool/check_page_size.dart build/app/outputs/flutter-apk/app-debug.apk
 
       # Debug APK — поставить на телефон (docs/beta/README.md). ~100 МБ на
-      # каждый запуск: храним 3 дня, иначе кончается квота артефактов
+      # каждый запуск: храним 14 дней, иначе кончается квота артефактов
       # аккаунта (19.10.2026); нет места — проверки выше всё равно прошли.
       - uses: actions/upload-artifact@v6
         continue-on-error: true
@@ -322,7 +323,7 @@ jobs:
           name: android-${{ github.sha }}
           path: app/build/app/outputs/flutter-apk/*.apk
           if-no-files-found: error
-          retention-days: 3
+          retention-days: 14
 
   # Что и куда выпускать (docs/beta/README.md, «Как выпустить бету»):
   # - main — staging во внутреннее тестирование Google Play (PLAY_MAIN_TRACK,
@@ -476,7 +477,7 @@ jobs:
           name: android-release-${{ github.sha }}
           path: app/build/app/outputs/bundle/release/*.aab
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 14
 
       # «Что нового» на русском (язык страницы в Play), до 500 знаков: у беты
       # — сообщение аннотированного тега, у main — заголовок PR из
