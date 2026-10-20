@@ -324,15 +324,16 @@ jobs:
         run: dart run tool/check_page_size.dart build/app/outputs/flutter-apk/app-debug.apk
 
       # Debug APK — поставить на телефон (docs/beta/README.md). ~100 МБ на
-      # каждый запуск: храним 14 дней, иначе кончается квота артефактов
-      # аккаунта (19.10.2026); нет места — проверки выше всё равно прошли.
+      # каждый запуск: храним 3 дня (решение владельца 20.10.2026), иначе
+      # кончается квота артефактов аккаунта (19.10.2026); нет места —
+      # проверки выше всё равно прошли.
       - uses: actions/upload-artifact@v6
         continue-on-error: true
         with:
           name: android-${{ github.sha }}
           path: app/build/app/outputs/flutter-apk/*.apk
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 3
 
   # Что и куда выпускать (docs/beta/README.md, «Как выпустить бету»):
   # - main — staging во внутреннее тестирование Google Play (PLAY_MAIN_TRACK,
