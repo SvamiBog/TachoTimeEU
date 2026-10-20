@@ -62,7 +62,11 @@ jobs:
             cp ../docs/brand/icons/play-store-512.png "$out/$locale/images/icon.png"
           done
           cp -r "$out/en-US" "$out/en-GB"
+      # Артефакт — посмотреть тексты и скриншоты: проверки выше прошли, а
+      # загрузка в Play берёт файлы с раннера. Нет места под артефакты
+      # (квота аккаунта) — job не краснеет и загрузку в Play не держит.
       - uses: actions/upload-artifact@v6
+        continue-on-error: true
         with:
           name: store-listing
           path: ${{ runner.temp }}/store
