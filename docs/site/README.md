@@ -55,7 +55,7 @@
 
 ## Railway
 
-Сервис `site` в проекте Railway (регион EU West). Railway сам из git ничего не собирает: workflow «Сайт» подписывает файл правил (секрет `BANS_SIGNING_KEY`), собирает лендинг, кладёт `site/` в папку `public/` рядом с `Dockerfile` и `Caddyfile` и выкладывает её командой `railway up --service site` (секрет `RAILWAY_TOKEN` — токен проекта: Railway → Project Settings → Tokens). После выкладки проверяет, что `tachogo.eu`, политика и `bans/v1.json` отвечают (если нет — предупреждение).
+Сервис `site` в проекте Railway (регион EU West). Railway сам из git ничего не собирает: workflow «Сайт» подписывает файл правил (секрет `BANS_SIGNING_KEY`), собирает лендинг, кладёт `site/` в папку `public/` рядом с `Dockerfile` и `Caddyfile` и выкладывает её командой `railway up --path-as-root --service site` (секрет `RAILWAY_TOKEN` — токен проекта: Railway → Project Settings → Tokens). После выкладки проверяет, что `tachogo.eu`, политика и `bans/v1.json` отвечают (если нет — предупреждение).
 
 Настроить один раз:
 

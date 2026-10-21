@@ -77,7 +77,9 @@ jobs:
         working-directory: app
         run: dart run tool/site_build.dart ../site
       # Папка для railway up — вне репозитория: в .gitignore собранные
-      # страницы и bans/, Railway их пропустил бы.
+      # страницы и bans/, Railway их пропустил бы. Поэтому --path-as-root:
+      # иначе CLI считает пути от текущего каталога и падает с «prefix not
+      # found».
       - name: Пакет для Railway
         run: |
           out="$RUNNER_TEMP/site"
@@ -95,7 +97,7 @@ jobs:
             exit 1
           fi
           npm install --global @railway/cli@5.63.1
-          railway up "$RUNNER_TEMP/site" --service site --ci --no-gitignore
+          railway up "$RUNNER_TEMP/site" --path-as-root --service site --ci --no-gitignore
       # Домен мог быть ещё не подключён — тогда только предупреждение
       - name: Сайт отвечает
         run: |
