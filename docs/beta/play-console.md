@@ -53,7 +53,9 @@ API Google Play не принимает сборку в приложение, к
 
 ### 6. Защита `main`
 
-GitHub → Settings → Branches → «Add branch ruleset» (или «Add rule») для `main`: «Require a pull request before merging» и «Require status checks to pass» — «Движок (tacho_engine)», «Приложение», «Часовой пояс …» (все три), «Поиск секретов», «Сборка Android», «Эмулятор Android». Тогда в `main` попадает только проверенное, а в Play — только то, что прошло проверки ещё раз после merge.
+GitHub → Settings → Branches → «Add branch ruleset» (или «Add rule») для `main`: «Require a pull request before merging» и «Require status checks to pass» — «Ступень проверок», «Движок (tacho_engine)», «Приложение», «Часовой пояс …» (все три), «Поиск секретов», «Сборка Android», «Эмулятор Android», «Обновление поверх прошлой версии». Тогда в `main` попадает только проверенное, а в Play — только то, что прошло проверки ещё раз после merge.
+
+Проверки ступенчатые (CI-13, `docs/testing.md`): у черновика PR полные job пропускаются, и GitHub засчитывает пропущенные как пройденные — но черновик и нельзя слить. «Ready for review» запускает полную проверку; слить — после того, как она закончится, а не сразу после нажатия.
 
 ### 7. Закрытое тестирование
 

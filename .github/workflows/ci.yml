@@ -4,7 +4,10 @@ on:
   push:
     branches: [main]
     tags: ['v*']
+  # ready_for_review — черновик PR отмечен готовым: полная проверка (job
+  # «Ступень проверок»).
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   # Ручной запуск: все проверки и сборка iOS (она не идёт в PR и на main).
   workflow_dispatch:
     inputs:
@@ -27,6 +30,74 @@ env:
 # версии. То же — в site.yml.
 
 jobs:
+  # Ступени (CI-13, решение владельца 22.10.2026). Быстрые — движок,
+  # приложение, поиск секретов, веб-прототип — в каждом запуске: тесты
+  # приложения читают и docs/, и site/. Полные — сборка Android, эмулятор,
+  # обновление поверх прошлой версии, тесты в трёх поясах (~80 из ~90 минут
+  # Actions) — только перед merge в main и после него: PR в main, отмеченный
+  # готовым (не черновик), push в main, тег, ручной запуск. Черновик PR и PR
+  # в другую ветку — только быстрые: правок до merge бывает много.
+  # Готовый PR и push в main без изменений в app/, packages/ и этом файле
+  # (документы, сайт, веб-прототип) — тоже только быстрые; тег и ручной
+  # запуск — всегда полные.
+  # Пропущенную job защита main засчитывает как пройденную: эта job при
+  # любой ошибке выбирает полные, а тяжёлые job без её ответа идут.
+  plan:
+    name: Ступень проверок
+    runs-on: ubuntu-24.04
+    outputs:
+      full: ${{ steps.plan.outputs.full }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Сравнить с базой PR или прошлым состоянием main
+          fetch-depth: 0
+      - id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          DRAFT: ${{ github.event.pull_request.draft }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          full='' reason='' range=''
+          case "$EVENT/$GITHUB_REF" in
+            workflow_dispatch/*) full=true reason="ручной запуск" ;;
+            push/refs/tags/*) full=true reason="тег выпуска" ;;
+            push/*) range="$BEFORE..$GITHUB_SHA" ;;
+            pull_request/*)
+              if [ "$BASE_REF" != main ]; then
+                full=false reason="PR в $BASE_REF, не в main"
+              elif [ "$DRAFT" = true ]; then
+                full=false reason="черновик PR — полные после «Ready for review»"
+              else
+                range="$PR_BASE...$PR_HEAD"
+              fi ;;
+            *) full=true reason="событие $EVENT" ;;
+          esac
+          if [ -z "$full" ]; then
+            # Нет прошлого коммита (новая ветка, force push) — полные.
+            # Переименование — оба пути (перенос из app/ — тоже app/), пути
+            # не в ASCII — без кавычек, иначе мимо ^app/.
+            if ! files=$(git -c core.quotePath=false diff --name-only \
+              --no-renames "$range"); then
+              full=true reason="не удалось сравнить $range"
+            elif echo "$files" | grep -v '\.md$' |
+              grep -qE '^(app/|packages/|\.github/workflows/ci\.yml$)'; then
+              full=true reason="изменены приложение, движок или CI"
+            else
+              full=false reason="изменены только документы, сайт или веб-прототип"
+            fi
+            echo "$files"
+          fi
+          if [ "$full" = true ]; then
+            echo "::notice::Полная проверка: $reason"
+          else
+            echo "::notice::Только быстрые проверки: $reason"
+          fi
+          echo "full=$full" >> "$GITHUB_OUTPUT"
+
   engine:
     name: Движок (tacho_engine)
     runs-on: ubuntu-24.04
@@ -137,8 +208,14 @@ jobs:
 
   # Время в движке и базе — UTC. Прогон в других поясах ловит местное время
   # там, где его быть не должно.
+  # Полная ступень. Job идёт всегда, на быстрой пропускаются шаги: у
+  # пропущенной целиком матрицы имя — «Часовой пояс ${{ matrix.tz }}», и
+  # проверки «Часовой пояс Europe/Warsaw» и т. д. в защите main ждали бы
+  # вечно.
   timezones:
     name: Часовой пояс ${{ matrix.tz }}
+    needs: [plan]
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -146,19 +223,24 @@ jobs:
         tz: [Europe/Warsaw, Asia/Kolkata, America/New_York]
     env:
       TZ: ${{ matrix.tz }}
+      FULL: ${{ needs.plan.outputs.full != 'false' }}
     steps:
       - uses: actions/checkout@v5
+        if: ${{ env.FULL == 'true' }}
       - uses: subosito/flutter-action@v2
+        if: ${{ env.FULL == 'true' }}
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
       - name: Движок
+        if: ${{ env.FULL == 'true' }}
         working-directory: packages/tacho_engine
         run: |
           dart pub get
           dart test
       - name: Приложение
+        if: ${{ env.FULL == 'true' }}
         working-directory: app
         run: |
           flutter pub get
@@ -206,9 +288,14 @@ jobs:
           docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:latest \
             git /repo --log-opts="$range" --redact --no-banner --verbose
 
+  # Полная ступень, как и «Эмулятор Android» и «Обновление поверх»: без
+  # ответа «Ступени проверок» (она упала) — тоже идёт.
   build-android:
     name: Сборка Android
-    needs: [engine, app]
+    needs: [plan, engine, app]
+    if: >-
+      ${{ !cancelled() && needs.engine.result == 'success' &&
+      needs.app.result == 'success' && needs.plan.outputs.full != 'false' }}
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -385,11 +472,13 @@ jobs:
   # Выпуск — только когда прошли все проверки приложения: движок, тесты в
   # поясах, поиск секретов, debug-сборка с Robolectric, эмулятор и
   # обновление поверх прошлой версии.
-  # Веб-прототип выпуск не держит.
+  # Веб-прототип выпуск не держит. Только после полной ступени: merge одних
+  # документов новую сборку в Play не отправляет.
   release-android:
     name: Выпуск Android
     needs:
       - release-plan
+      - plan
       - engine
       - app
       - timezones
@@ -397,7 +486,9 @@ jobs:
       - build-android
       - integration-android
       - upgrade-android
-    if: ${{ needs.release-plan.outputs.build == 'yes' }}
+    if: >-
+      ${{ needs.release-plan.outputs.build == 'yes' &&
+      needs.plan.outputs.full == 'true' }}
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -561,7 +652,10 @@ jobs:
   # помощник хоста (app/tool/integration/). docs/testing.md, раздел 14.
   integration-android:
     name: Эмулятор Android
-    needs: [engine, app]
+    needs: [plan, engine, app]
+    if: >-
+      ${{ !cancelled() && needs.engine.result == 'success' &&
+      needs.app.result == 'success' && needs.plan.outputs.full != 'false' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 50
     defaults:
@@ -631,7 +725,10 @@ jobs:
   # тега — прошлый тег.
   upgrade-android:
     name: Обновление поверх прошлой версии
-    needs: [engine, app]
+    needs: [plan, engine, app]
+    if: >-
+      ${{ !cancelled() && needs.engine.result == 'success' &&
+      needs.app.result == 'success' && needs.plan.outputs.full != 'false' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 50
     defaults:
