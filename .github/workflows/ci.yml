@@ -488,8 +488,11 @@ jobs:
         run: dart run tool/check_page_size.dart build/app/outputs/bundle/release/app-release.aab
 
       # До загрузки в Play: первую сборку Play Console принимает только
-      # вручную — её берут отсюда.
+      # вручную — её берут отсюда. Когда AAB уходит в Play сам (есть трек),
+      # кончившаяся квота артефактов (21.10.2026) выпуск не останавливает;
+      # без трека артефакт — единственный путь к AAB, и job краснеет.
       - uses: actions/upload-artifact@v6
+        continue-on-error: ${{ needs.release-plan.outputs.track != '' }}
         with:
           name: android-release-${{ github.sha }}
           path: app/build/app/outputs/bundle/release/*.aab
