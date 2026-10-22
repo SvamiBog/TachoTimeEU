@@ -37,20 +37,25 @@ jobs:
   # Actions) — только перед merge в main и после него: PR в main, отмеченный
   # готовым (не черновик), push в main, тег, ручной запуск. Черновик PR и PR
   # в другую ветку — только быстрые: правок до merge бывает много.
-  # Готовый PR и push в main без изменений в app/, packages/ и этом файле
-  # (документы, сайт, веб-прототип) — тоже только быстрые; тег и ручной
-  # запуск — всегда полные.
+  # Готовый PR (от базы PR) и push в main (от последнего успешного запуска
+  # CI на main) без изменений в app/, packages/ и этом файле (документы,
+  # сайт, веб-прототип) — тоже только быстрые; тег и ручной запуск — всегда
+  # полные.
   # Пропущенную job защита main засчитывает как пройденную: эта job при
   # любой ошибке выбирает полные, а тяжёлые job без её ответа идут.
   plan:
     name: Ступень проверок
     runs-on: ubuntu-24.04
+    # actions: read — прошлый успешный запуск CI на main (gh run list)
+    permissions:
+      contents: read
+      actions: read
     outputs:
       full: ${{ steps.plan.outputs.full }}
     steps:
       - uses: actions/checkout@v5
         with:
-          # Сравнить с базой PR или прошлым состоянием main
+          # Сравнить с базой PR или прошлым успешным запуском на main
           fetch-depth: 0
       - id: plan
         env:
@@ -59,13 +64,25 @@ jobs:
           DRAFT: ${{ github.event.pull_request.draft }}
           PR_BASE: ${{ github.event.pull_request.base.sha }}
           PR_HEAD: ${{ github.event.pull_request.head.sha }}
-          BEFORE: ${{ github.event.before }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           full='' reason='' range=''
           case "$EVENT/$GITHUB_REF" in
             workflow_dispatch/*) full=true reason="ручной запуск" ;;
             push/refs/tags/*) full=true reason="тег выпуска" ;;
-            push/*) range="$BEFORE..$GITHUB_SHA" ;;
+            # main — от последнего успешного запуска CI на main, а не от
+            # прошлого push: правка app/ из отменённого следующим merge или
+            # упавшего запуска иначе не прошла бы полные и не ушла бы в Play.
+            # Успешный быстрый запуск — тоже база: app/ в нём не менялся.
+            push/*)
+              base=$(gh run list -R "$GITHUB_REPOSITORY" -w ci.yml \
+                -b "$GITHUB_REF_NAME" -e push -s success -L 1 \
+                --json headSha -q '.[0].headSha // empty') || base=''
+              if [ -n "$base" ]; then
+                range="$base..$GITHUB_SHA"
+              else
+                full=true reason="нет успешного запуска CI на $GITHUB_REF_NAME"
+              fi ;;
             pull_request/*)
               if [ "$BASE_REF" != main ]; then
                 full=false reason="PR в $BASE_REF, не в main"

@@ -158,7 +158,7 @@ flutter analyze --fatal-infos
 flutter test --coverage
 ```
 
-То же самое проверяет pre-commit хук (`git config core.hooksPath .githooks`) и CI (`.github/workflows/ci.yml`). CI ещё гоняет тесты в трёх часовых поясах, требует покрытия `lib/data` не ниже 80 %, сверяет снимки схемы БД, итоговый манифест APK (`tool/check_android_manifest.dart`) и выравнивание нативных библиотек по 16 КБ (`tool/check_page_size.dart`), запускает тесты Kotlin на Robolectric (`android/app/src/test/`, `./gradlew :app:testDebugUnitTest` после сборки APK). Список тестов и что ещё предстоит ввести — `docs/testing.md`.
+То же самое проверяет pre-commit хук (`git config core.hooksPath .githooks`) и CI (`.github/workflows/ci.yml`). CI ещё гоняет тесты в трёх часовых поясах, требует покрытия `lib/data` не ниже 80 %, сверяет снимки схемы БД, итоговый манифест APK (`tool/check_android_manifest.dart`) и выравнивание нативных библиотек по 16 КБ (`tool/check_page_size.dart`), запускает тесты Kotlin на Robolectric (`android/app/src/test/`, `./gradlew :app:testDebugUnitTest` после сборки APK). Тесты в поясах и всё, что после сборки APK, — только в полной ступени: готовый PR в `main`, `main`, тег, ручной запуск; черновик PR — только быстрые (CI-13). Список тестов и что ещё предстоит ввести — `docs/testing.md`.
 
 Описание модуля и doc-комментарии классов — на английском, остальные комментарии — на русском (`CLAUDE.md`, «Комментарии в коде»); проверяет `test/code/source_docs_test.dart`.
 
@@ -179,7 +179,7 @@ flutter drive --profile --driver=test_driver/integration_test.dart \
 
 ## Бета
 
-Закрытое тестирование в Google Play — `docs/beta/README.md`. Выпуск — после всех проверок CI: merge в `main` — AAB со `staging` во внутреннее тестирование, тег `v1.2.3-beta.N` — в закрытое, если задан секрет `PLAY_SERVICE_ACCOUNT_JSON`; `v1.2.3` — prod, пока только в артефактах.
+Закрытое тестирование в Google Play — `docs/beta/README.md`. Выпуск — после всех проверок CI: merge в `main` с изменениями в `app/`, `packages/` или `ci.yml` (не только `.md`) — AAB со `staging` во внутреннее тестирование (CI-13), тег `v1.2.3-beta.N` — в закрытое, если задан секрет `PLAY_SERVICE_ACCOUNT_JSON`; `v1.2.3` — prod, пока только в артефактах.
 
 - **«Сообщить о проблеме»** (`features/more/problem_report.dart`) — в «Ещё», во всех сборках, кроме prod. Отчёт собирает `DiagnosticsCollector` (`core/diagnostics/`): версия, телефон (канал устройства в `MainActivity`), настройки, разрешения, расписание уведомлений, прогноз движка, журнал за 48 ч — и отдаёт в системное «Поделиться». Служебные подписи отчёта — по-английски: его читают разработчики, а не водитель.
 - **Вычитка переводов** — `tool/l10n_review.dart`: `export` — таблица CSV на язык для носителя, `import` — его исправления обратно в ARB с проверкой подстановок. Порядок — `docs/beta/translation-review.md`.
@@ -195,4 +195,4 @@ keyAlias=…
 keyPassword=…
 ```
 
-В CI release AAB собирается из `main` и по тегу `v*` (job «Выпуск Android», после всех проверок) из секретов `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Как создать ключ и куда что загружается — `docs/beta/play-console.md`, «С нуля до первой беты».
+В CI release AAB собирается из `main` и по тегу `v*` (job «Выпуск Android», после полной ступени проверок, CI-13) из секретов `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Как создать ключ и куда что загружается — `docs/beta/play-console.md`, «С нуля до первой беты».
