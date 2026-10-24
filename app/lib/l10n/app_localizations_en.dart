@@ -2559,4 +2559,95 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bansCurrentCountry => 'You are here';
+
+  @override
+  String get settingsBaseCountry => 'Company country';
+
+  @override
+  String get settingsBaseCountryHint =>
+      'Where the company is established: two reduced weekly rests in a row may not be taken there';
+
+  @override
+  String get baseCountryNotSet => 'Not chosen';
+
+  @override
+  String get baseCountryCardTitle => 'Set the company country';
+
+  @override
+  String get baseCountryCardText =>
+      'Without it the app cannot check whether two reduced weekly rests in a row are allowed, and cannot count working days';
+
+  @override
+  String get onbBaseCountryRequired => 'Choose the company country to continue';
+
+  @override
+  String get weeklyReducedNoBase => 'in the company country — regular needed';
+
+  @override
+  String get workDaysTitle => 'Working days';
+
+  @override
+  String get workDaysHint => 'Days abroad and with work — for your pay';
+
+  @override
+  String workDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'working days',
+      one: 'working day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workDaysAbroad => 'Abroad';
+
+  @override
+  String get workDaysAbroadHint =>
+      'At least part of the day outside the company country, weekends too';
+
+  @override
+  String get workDaysHome => 'Work in the company country';
+
+  @override
+  String get workDaysHomeHint =>
+      'The whole day in the company country, but with work';
+
+  @override
+  String get workDaysOff => 'Not a working day';
+
+  @override
+  String get workDaysRate => 'Daily rate';
+
+  @override
+  String get workDaysRateNotSet => 'Not set';
+
+  @override
+  String get workDaysAmount => 'Amount';
+
+  @override
+  String workDaysAmountHint(String days, String rate) {
+    return '$days × $rate';
+  }
+
+  @override
+  String get workDaysRateTitle => 'Rate per working day';
+
+  @override
+  String get workDaysCurrency => 'Currency';
+
+  @override
+  String get workDaysPrevMonth => 'Previous month';
+
+  @override
+  String get workDaysNextMonth => 'Next month';
+
+  @override
+  String get workDaysNoBase =>
+      'Set the company country: working days are counted against it.';
+
+  @override
+  String get workDaysRule =>
+      'A working day is one when you were abroad for at least part of the day (on the road or resting, weekends too) or worked in the company country. A day spent entirely resting in the company country does not count. The app knows where you were from the shift countries on the home screen.';
 }

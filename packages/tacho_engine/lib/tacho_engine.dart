@@ -22,7 +22,9 @@ export 'src/manual_rest.dart';
 export 'src/manual_shift.dart';
 export 'src/scope.dart';
 export 'src/shift_edits.dart';
+export 'src/shift_route.dart';
 export 'src/shifts.dart';
 export 'src/time.dart'
     show durationBetween, floorTimeToMinute, floorToMinute, week, weekStartUtc;
 export 'src/timeline.dart';
+export 'src/working_days.dart';

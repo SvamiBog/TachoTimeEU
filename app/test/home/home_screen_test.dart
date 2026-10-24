@@ -14,6 +14,7 @@ import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/home/alerts.dart';
 import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/hero_card.dart';
@@ -239,6 +240,7 @@ void main() {
           clock: () => t0,
         ).switchMode(DriverMode.driving),
       );
+      await tester.runAsync(() => SettingsRepository(db).setBaseCountry('PL'));
       final now = t0.add(const Duration(hours: 3));
       await pumpScreen(
         tester,
@@ -529,18 +531,21 @@ void main() {
   });
 
   group('DES-05: строка лимита', () {
-    Future<void> pumpContinuous(
-      WidgetTester tester,
-      Duration driving,
-    ) => pumpScreen(
-      tester,
-      const HomeScreen(),
-      overrides: journalOverrides(
-        periods: consecutive(t0, [(DriverMode.driving, driving)], open: true),
-        now: t0.add(driving),
-        settings: const ComplianceSettings(warningLead: Duration(minutes: 15)),
-      ),
-    );
+    Future<void> pumpContinuous(WidgetTester tester, Duration driving) =>
+        pumpScreen(
+          tester,
+          const HomeScreen(),
+          overrides: journalOverrides(
+            periods: consecutive(t0, [
+              (DriverMode.driving, driving),
+            ], open: true),
+            now: t0.add(driving),
+            settings: const ComplianceSettings(
+              warningLead: Duration(minutes: 15),
+              baseCountry: 'PL',
+            ),
+          ),
+        );
 
     Color? valueColor(WidgetTester tester, String value) => tester
         .widget<Text>(
@@ -596,6 +601,7 @@ void main() {
             now: t0.add(worked),
             settings: const ComplianceSettings(
               warningLead: Duration(minutes: 15),
+              baseCountry: 'PL',
             ),
           ),
         );

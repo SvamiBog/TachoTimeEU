@@ -2581,4 +2581,97 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get bansCurrentCountry => 'Sie sind hier';
+
+  @override
+  String get settingsBaseCountry => 'Land des Unternehmens';
+
+  @override
+  String get settingsBaseCountryHint =>
+      'Wo das Unternehmen niedergelassen ist: zwei reduzierte wöchentliche Ruhezeiten nacheinander sind dort nicht erlaubt';
+
+  @override
+  String get baseCountryNotSet => 'Nicht gewählt';
+
+  @override
+  String get baseCountryCardTitle => 'Land des Unternehmens angeben';
+
+  @override
+  String get baseCountryCardText =>
+      'Ohne es prüft die App nicht, ob zwei reduzierte wöchentliche Ruhezeiten nacheinander erlaubt sind, und zählt keine Arbeitstage';
+
+  @override
+  String get onbBaseCountryRequired =>
+      'Wählen Sie das Land des Unternehmens, um fortzufahren';
+
+  @override
+  String get weeklyReducedNoBase =>
+      'im Land des Unternehmens — regelmäßige nötig';
+
+  @override
+  String get workDaysTitle => 'Arbeitstage';
+
+  @override
+  String get workDaysHint => 'Tage im Ausland und mit Arbeit — für den Lohn';
+
+  @override
+  String workDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Arbeitstage',
+      one: 'Arbeitstag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workDaysAbroad => 'Im Ausland';
+
+  @override
+  String get workDaysAbroadHint =>
+      'Mindestens ein Teil des Tages außerhalb des Unternehmenslandes, auch am Wochenende';
+
+  @override
+  String get workDaysHome => 'Arbeit im Unternehmensland';
+
+  @override
+  String get workDaysHomeHint =>
+      'Den ganzen Tag im Unternehmensland, aber mit Arbeit';
+
+  @override
+  String get workDaysOff => 'Kein Arbeitstag';
+
+  @override
+  String get workDaysRate => 'Tagessatz';
+
+  @override
+  String get workDaysRateNotSet => 'Nicht festgelegt';
+
+  @override
+  String get workDaysAmount => 'Betrag';
+
+  @override
+  String workDaysAmountHint(String days, String rate) {
+    return '$days × $rate';
+  }
+
+  @override
+  String get workDaysRateTitle => 'Satz pro Arbeitstag';
+
+  @override
+  String get workDaysCurrency => 'Währung';
+
+  @override
+  String get workDaysPrevMonth => 'Vorheriger Monat';
+
+  @override
+  String get workDaysNextMonth => 'Nächster Monat';
+
+  @override
+  String get workDaysNoBase =>
+      'Geben Sie das Land des Unternehmens an: Arbeitstage werden danach gezählt.';
+
+  @override
+  String get workDaysRule =>
+      'Ein Arbeitstag ist ein Tag, an dem Sie mindestens zeitweise im Ausland waren (unterwegs oder in der Ruhezeit, auch am Wochenende) oder im Unternehmensland gearbeitet haben. Ein Tag ganz in der Ruhezeit im Unternehmensland zählt nicht. Wo Sie waren, weiß die App aus den Ländern der Schichten auf dem Startbildschirm.';
 }

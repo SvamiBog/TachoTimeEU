@@ -4016,6 +4016,156 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Вы здесь'**
   String get bansCurrentCountry;
+
+  /// Настройка: страна, где зарегистрирована фирма (ст. 8(6))
+  ///
+  /// In ru, this message translates to:
+  /// **'Страна фирмы'**
+  String get settingsBaseCountry;
+
+  /// Подпись под «Страна фирмы» в настройках и онбординге
+  ///
+  /// In ru, this message translates to:
+  /// **'Где зарегистрирована фирма: два сокращённых недельных отдыха подряд в ней брать нельзя'**
+  String get settingsBaseCountryHint;
+
+  /// Значение строки «Страна фирмы», пока страна не выбрана
+  ///
+  /// In ru, this message translates to:
+  /// **'Не выбрана'**
+  String get baseCountryNotSet;
+
+  /// Карточка на главной, пока страна фирмы не выбрана
+  ///
+  /// In ru, this message translates to:
+  /// **'Укажите страну фирмы'**
+  String get baseCountryCardTitle;
+
+  /// Текст карточки «Укажите страну фирмы» на главной
+  ///
+  /// In ru, this message translates to:
+  /// **'Без неё приложение не проверит, можно ли взять два сокращённых недельных отдыха подряд, и не посчитает рабочие дни'**
+  String get baseCountryCardText;
+
+  /// Онбординг, шаг настройки: «Далее» ждёт страну фирмы
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите страну фирмы, чтобы продолжить'**
+  String get onbBaseCountryRequired;
+
+  /// Сокращённый недельный недоступен: второй подряд был бы в стране фирмы (ст. 8(6))
+  ///
+  /// In ru, this message translates to:
+  /// **'в стране фирмы — нужен полный'**
+  String get weeklyReducedNoBase;
+
+  /// Экран и строка в «Ещё»: подсчёт рабочих дней для зарплаты (Premium)
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочие дни'**
+  String get workDaysTitle;
+
+  /// Подпись строки «Рабочие дни» в «Ещё»
+  ///
+  /// In ru, this message translates to:
+  /// **'Дни за границей и с работой — для расчёта зарплаты'**
+  String get workDaysHint;
+
+  /// Подпись под числом рабочих дней за месяц: «18 рабочих дней» — число стоит отдельно
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{рабочий день} few{рабочих дня} many{рабочих дней} other{рабочего дня}}'**
+  String workDaysCount(int count);
+
+  /// Дни, хотя бы часть которых водитель был вне страны фирмы
+  ///
+  /// In ru, this message translates to:
+  /// **'За границей'**
+  String get workDaysAbroad;
+
+  /// Подпись строки «За границей»
+  ///
+  /// In ru, this message translates to:
+  /// **'Хотя бы часть дня вне страны фирмы, выходные тоже'**
+  String get workDaysAbroadHint;
+
+  /// Дни целиком в стране фирмы, но с работой
+  ///
+  /// In ru, this message translates to:
+  /// **'Работа в стране фирмы'**
+  String get workDaysHome;
+
+  /// Подпись строки «Работа в стране фирмы»
+  ///
+  /// In ru, this message translates to:
+  /// **'Весь день в стране фирмы, но была работа'**
+  String get workDaysHomeHint;
+
+  /// Для экранного диктора: день календаря не считается рабочим
+  ///
+  /// In ru, this message translates to:
+  /// **'Не рабочий день'**
+  String get workDaysOff;
+
+  /// Ставка за рабочий день в калькуляторе зарплаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Ставка за день'**
+  String get workDaysRate;
+
+  /// Значение «Ставка за день», пока ставка не задана
+  ///
+  /// In ru, this message translates to:
+  /// **'Не задана'**
+  String get workDaysRateNotSet;
+
+  /// Итог калькулятора: дни × ставка
+  ///
+  /// In ru, this message translates to:
+  /// **'Сумма'**
+  String get workDaysAmount;
+
+  /// Как получена сумма: «18 × 85,00 €»
+  ///
+  /// In ru, this message translates to:
+  /// **'{days} × {rate}'**
+  String workDaysAmountHint(String days, String rate);
+
+  /// Заголовок шторки ввода ставки
+  ///
+  /// In ru, this message translates to:
+  /// **'Ставка за рабочий день'**
+  String get workDaysRateTitle;
+
+  /// Выбор валюты в шторке ставки
+  ///
+  /// In ru, this message translates to:
+  /// **'Валюта'**
+  String get workDaysCurrency;
+
+  /// Кнопка «‹» у месяца — для экранного диктора
+  ///
+  /// In ru, this message translates to:
+  /// **'Предыдущий месяц'**
+  String get workDaysPrevMonth;
+
+  /// Кнопка «›» у месяца — для экранного диктора
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующий месяц'**
+  String get workDaysNextMonth;
+
+  /// Экран «Рабочие дни» без страны фирмы
+  ///
+  /// In ru, this message translates to:
+  /// **'Укажите страну фирмы: рабочие дни считаются относительно неё.'**
+  String get workDaysNoBase;
+
+  /// Пояснение правила под календарём рабочих дней
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочий день — если хотя бы часть дня вы были за границей (в рейсе или на отдыхе, выходные тоже) или работали в стране фирмы. Не считается день целиком на отдыхе в стране фирмы. Где вы были, приложение знает по странам смен на главной.'**
+  String get workDaysRule;
 }
 
 class _AppLocalizationsDelegate

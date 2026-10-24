@@ -236,6 +236,7 @@ void main() {
       c.listen(complianceProvider, (_, _) {});
       await c.read(activityPeriodsProvider.future);
       await c.read(lastCardDownloadProvider.future);
+      await c.read(shiftMetaProvider.future);
       return c.read(complianceProvider).requireValue;
     }
 

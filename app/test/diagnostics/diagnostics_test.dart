@@ -87,7 +87,13 @@ void main() {
       expect(lines.first, 'TachoGo 0.2.0-beta.1 (20001), staging');
       expect(text, contains('Report: 2026-09-23 10:00 UTC'));
       expect(text, contains('app language: uk'));
-      expect(text, contains('crew solo, mobility package on, warning 30 min'));
+      expect(
+        text,
+        contains(
+          'crew solo, mobility package on, base country not set, '
+          'warning 30 min',
+        ),
+      );
       expect(text, contains('Auto-detect: off, after stop otherWork'));
       expect(
         text,

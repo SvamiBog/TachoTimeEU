@@ -2569,4 +2569,98 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get bansCurrentCountry => 'U bent hier';
+
+  @override
+  String get settingsBaseCountry => 'Land van het bedrijf';
+
+  @override
+  String get settingsBaseCountryHint =>
+      'Waar het bedrijf gevestigd is: twee verkorte wekelijkse rusttijden op rij zijn daar niet toegestaan';
+
+  @override
+  String get baseCountryNotSet => 'Niet gekozen';
+
+  @override
+  String get baseCountryCardTitle => 'Kies het land van het bedrijf';
+
+  @override
+  String get baseCountryCardText =>
+      'Zonder dat controleert de app niet of twee verkorte wekelijkse rusttijden op rij mogen en telt ze geen werkdagen';
+
+  @override
+  String get onbBaseCountryRequired =>
+      'Kies het land van het bedrijf om verder te gaan';
+
+  @override
+  String get weeklyReducedNoBase =>
+      'in het land van het bedrijf — normale nodig';
+
+  @override
+  String get workDaysTitle => 'Werkdagen';
+
+  @override
+  String get workDaysHint =>
+      'Dagen in het buitenland en met werk — voor het loon';
+
+  @override
+  String workDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'werkdagen',
+      one: 'werkdag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workDaysAbroad => 'In het buitenland';
+
+  @override
+  String get workDaysAbroadHint =>
+      'Minstens een deel van de dag buiten het land van het bedrijf, ook in het weekend';
+
+  @override
+  String get workDaysHome => 'Werk in het land van het bedrijf';
+
+  @override
+  String get workDaysHomeHint =>
+      'De hele dag in het land van het bedrijf, maar met werk';
+
+  @override
+  String get workDaysOff => 'Geen werkdag';
+
+  @override
+  String get workDaysRate => 'Dagtarief';
+
+  @override
+  String get workDaysRateNotSet => 'Niet ingesteld';
+
+  @override
+  String get workDaysAmount => 'Bedrag';
+
+  @override
+  String workDaysAmountHint(String days, String rate) {
+    return '$days × $rate';
+  }
+
+  @override
+  String get workDaysRateTitle => 'Tarief per werkdag';
+
+  @override
+  String get workDaysCurrency => 'Valuta';
+
+  @override
+  String get workDaysPrevMonth => 'Vorige maand';
+
+  @override
+  String get workDaysNextMonth => 'Volgende maand';
+
+  @override
+  String get workDaysNoBase =>
+      'Kies het land van het bedrijf: werkdagen worden daartegen geteld.';
+
+  @override
+  String get workDaysRule =>
+      'Een werkdag is een dag waarop u minstens een deel van de dag in het buitenland was (onderweg of in rust, ook in het weekend) of in het land van het bedrijf werkte. Een dag die volledig in rust in het land van het bedrijf is doorgebracht, telt niet. Waar u was, weet de app uit de landen van de diensten op het startscherm.';
 }

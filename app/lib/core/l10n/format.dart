@@ -129,3 +129,12 @@ String formatWeekdayFull(DateTime t, String locale) =>
 /// «18.09 11:20».
 String formatDayMonthClock(DateTime t) =>
     '${formatDayMonth(t)} ${formatClock(t)}';
+
+/// «1 530,50 €», «6 300 zł» — сумма в сотых в валюте [currency] (ISO
+/// 4217) по шаблону языка; без сотых, если их нет.
+String formatMoney(int cents, String currency, String locale) =>
+    NumberFormat.simpleCurrency(
+      locale: locale,
+      name: currency,
+      decimalDigits: cents % 100 == 0 ? 0 : 2,
+    ).format(cents / 100);

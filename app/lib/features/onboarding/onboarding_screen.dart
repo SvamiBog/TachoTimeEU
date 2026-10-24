@@ -17,11 +17,13 @@ import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/setting_rows.dart';
+import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/settings/auto_detect.dart';
+import 'package:tachogo/features/settings/base_country.dart';
 import 'package:tachogo/features/settings/language_sheet.dart';
 
 /// Onboarding steps. The mockups are 13 (welcome) and 14 (setup); the
@@ -30,10 +32,10 @@ import 'package:tachogo/features/settings/language_sheet.dart';
 enum OnboardingStep { welcome, modes, rules, setup, autoDetect }
 
 /// First-launch onboarding (UI-13): language, activities, the main rules for
-/// those new to the tachograph, tachograph type, Mobility Package,
-/// notifications, analytics consent, automatic driving detection. Each choice
-/// is written to settings at once; "Done" marks onboarding as finished and it
-/// never shows again.
+/// those new to the tachograph, tachograph type, company country (required),
+/// Mobility Package, notifications, analytics consent, automatic driving
+/// detection. Each choice is written to settings at once; "Done" marks
+/// onboarding as finished and it never shows again.
 class OnboardingScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -62,6 +64,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final first = _step == OnboardingStep.welcome;
+    // Без страны фирмы с настройки дальше не идём: от неё зависит расчёт
+    final blocked =
+        _step == OnboardingStep.setup && ref.watch(baseCountryProvider) == null;
     return PopScope(
       // Системное «назад» — на прошлый шаг, с первого — выход
       canPop: first,
@@ -104,6 +109,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
                 child: _StepDots(step: _step.index),
               ),
+              if (blocked)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+                  child: Text(
+                    l.onbBaseCountryRequired,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.caption.copyWith(
+                      color: context.colors.textSecondary,
+                    ),
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   AppSpacing.screenPadding,
@@ -117,7 +133,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     _ when _last => l.onbDone,
                     _ => l.onbNext,
                   },
-                  onPressed: _next,
+                  onPressed: blocked ? null : _next,
                 ),
               ),
             ],
@@ -473,8 +489,8 @@ class _Rules extends StatelessWidget {
 
 // ───────────────────────── 4. Настройка ─────────────────────────
 
-/// Setup step (screen 14): tachograph type, Mobility Package, notifications,
-/// analytics consent.
+/// Setup step (screen 14): tachograph type, company country (required — "Next"
+/// waits for it), Mobility Package, notifications, analytics consent.
 class _Setup extends ConsumerWidget {
   const new();
 
@@ -513,6 +529,7 @@ class _Setup extends ConsumerWidget {
         SectionTitle(l.settingsRules, top: AppSpacing.beforeSectionMin),
         CardGroup(
           children: [
+            const BaseCountryRow(),
             SwitchRow(
               title: l.settingsMobility,
               subtitle: l.onbMobilityHint,

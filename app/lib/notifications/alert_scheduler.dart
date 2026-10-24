@@ -19,12 +19,13 @@ import 'package:tachogo/notifications/alert_notifications.dart';
 import 'package:tachogo/notifications/notification_platform.dart';
 
 /// Everything the forecast needs: the log, the calculation settings, the card
-/// download.
+/// download, the shift countries.
 typedef AlertInputs = ({
   List<ActivityPeriod> periods,
   List<ManualShift> manualShifts,
   ComplianceSettings settings,
   DateTime? lastCardDownload,
+  Map<DateTime, ShiftRoute> routes,
   DateTime now,
 });
 
@@ -42,6 +43,7 @@ AlertForecast computeAlertForecast(AlertInputs i) => (
     manualShifts: i.manualShifts,
     settings: i.settings,
     lastCardDownload: i.lastCardDownload,
+    routes: i.routes,
   ),
   current: alertKinds(
     calculateCompliance(
@@ -50,6 +52,7 @@ AlertForecast computeAlertForecast(AlertInputs i) => (
       manualShifts: i.manualShifts,
       settings: i.settings,
       lastCardDownload: i.lastCardDownload,
+      routes: i.routes,
     ),
   ),
 );
@@ -100,8 +103,8 @@ class AlertScheduler {
   bool _again = false;
   StreamSubscription<void>? _watch;
 
-  /// Следит за журналом, ручными сменами, считываниями карты и
-  /// настройками в [db] и сразу строит расписание. Изменения из другого
+  /// Следит за журналом, ручными сменами, странами смен, считываниями
+  /// карты и настройками в [db] и сразу строит расписание. Изменения из другого
   /// движка приходят сюда через `markTablesUpdated`.
   void start(AppDatabase db) {
     if (!_platform.isAndroid || _watch != null) return;
@@ -110,6 +113,7 @@ class AlertScheduler {
           TableUpdateQuery.onAllTables([
             db.activityPeriods,
             db.manualShifts,
+            db.shifts,
             db.cardDownloads,
             db.settings,
           ]),
@@ -157,6 +161,7 @@ class AlertScheduler {
       manualShifts: await _edits.manualShifts(),
       settings: await _settings.complianceSettings(),
       lastCardDownload: await _cards.last(),
+      routes: await _edits.shiftRoutes(),
       now: _clock().toUtc(),
     ));
     final l = appStrings(prefs.language, _deviceLocales());

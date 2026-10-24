@@ -120,12 +120,14 @@ ComplianceSnapshot calc(
   ComplianceSettings settings = const ComplianceSettings(),
   List<ManualShift> manual = const [],
   DateTime? lastCardDownload,
+  Map<DateTime, ShiftRoute> routes = const {},
 }) => calculateCompliance(
   periods: periods,
   now: now,
   manualShifts: manual,
   settings: settings,
   lastCardDownload: lastCardDownload,
+  routes: routes,
 );
 
 List<InfringementType> keys(ComplianceSnapshot m) => [

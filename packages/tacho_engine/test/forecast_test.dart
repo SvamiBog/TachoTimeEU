@@ -186,6 +186,45 @@ void main() {
       expect(limitAlert(alerts, InfringementType.weeklyRestOverdue), isNull);
     });
 
+    test('144 ч: второй сокращённый подряд в стране фирмы — до 45 ч', () {
+      // Полный 45 ч, смена, сокращённый 24 ч после смены в стране фирмы,
+      // 140 ч работы и отдых, начатый до срока 25.09 07:00.
+      final periods = [
+        ...closedLog(utc('2026-09-12 06:00'), [rest('45:00')]),
+        ...closedLog(utc('2026-09-14 03:00'), [work('100:00')]),
+        ...closedLog(utc('2026-09-18 07:00'), [rest('24:00')]),
+        ...closedLog(utc('2026-09-19 07:00'), [work('140:00')]),
+        ActivityPeriod(
+          id: 99,
+          mode: DriverMode.rest,
+          start: utc('2026-09-25 03:00'),
+        ),
+      ];
+      final now = utc('2026-09-25 04:00');
+      List<UpcomingAlert> run(Map<DateTime, ShiftRoute> routes) =>
+          forecastAlerts(
+            periods: periods,
+            now: now,
+            settings: const ComplianceSettings(baseCountry: 'PL'),
+            routes: routes,
+          );
+      Duration keep(List<UpcomingAlert> alerts) => limitAlert(
+        alerts,
+        InfringementType.weeklyRestContinue,
+      )!.infringement.time!;
+      // В срок 07:01 отдых идёт 4:01: до 24 ч или до 45 ч
+      expect(keep(run(const {})), const Duration(hours: 19, minutes: 59));
+      expect(
+        keep(
+          run({
+            utc('2026-09-14 03:00'): const ShiftRoute(from: 'PL'),
+            utc('2026-09-19 07:00'): const ShiftRoute(from: 'D'),
+          }),
+        ),
+        const Duration(hours: 40, minutes: 59),
+      );
+    });
+
     test('карта: за cardAlertDays дней до 28 и через день после', () {
       final card = utc('2026-09-10 09:15');
       final resting = logFrom(utc('2026-09-20 11:00'), [rest('1:00')]);

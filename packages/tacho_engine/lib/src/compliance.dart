@@ -10,6 +10,7 @@ import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/infringement.dart';
 import 'package:tacho_engine/src/manual_rest.dart';
 import 'package:tacho_engine/src/manual_shift.dart';
+import 'package:tacho_engine/src/shift_route.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
 
@@ -21,13 +22,19 @@ class ComplianceSettings {
     this.mobilityPackage = true,
     this.warningLead = EuLimits.warningThreshold,
     this.cardAlertDays = 7,
+    this.baseCountry,
   });
 
   final CrewMode crew;
 
   /// Пакет мобильности (Регламент 2020/1054): международным перевозчикам
-  /// можно два сокращённых недельных отдыха подряд.
+  /// можно два сокращённых недельных отдыха подряд — оба вне страны фирмы.
   final bool mobilityPackage;
+
+  /// Страна фирмы — где зарегистрирован перевозчик, код тахографа. Два
+  /// сокращённых недельных отдыха подряд в ней нельзя (ст. 8(6)); null — не
+  /// указана, страну отдыха движок не проверяет.
+  final String? baseCountry;
 
   /// За сколько до лимита предупреждать: 15, 30 или 60 мин.
   final Duration warningLead;
@@ -284,6 +291,7 @@ class ComplianceSnapshot {
     required this.workWeekDuration,
     required this.weeklyRestDeadline,
     required this.reducedWeeklyRestAvailable,
+    required this.reducedWeeklyRestAtBase,
     required this.compensation,
     required this.compensations,
     required this.unpaidCompensations,
@@ -363,6 +371,10 @@ class ComplianceSnapshot {
   /// Недельный отдых должен начаться до этого момента (144 ч).
   final DateTime? weeklyRestDeadline;
   final bool reducedWeeklyRestAvailable;
+
+  /// Сокращённый недоступен только из-за страны фирмы: это был бы второй
+  /// подряд, а прошлый сокращённый или этот отдых — в стране фирмы.
+  final bool reducedWeeklyRestAtBase;
 
   /// Ближайший по сроку непогашенный долг компенсации.
   final Compensation? compensation;
@@ -452,13 +464,16 @@ class ComplianceSnapshot {
 /// Считает состояние, таймеры и нарушения по журналу на момент [now].
 ///
 /// [periods] — записи режимов в любом порядке; [manualShifts] — смены,
-/// внесённые итогами; [lastCardDownload] — последнее считывание карты.
+/// внесённые итогами; [lastCardDownload] — последнее считывание карты;
+/// [routes] — страны смен по их началу (UTC): по ним и стране фирмы
+/// проверяются два сокращённых отдыха подряд.
 ComplianceSnapshot calculateCompliance({
   required Iterable<ActivityPeriod> periods,
   required DateTime now,
   Iterable<ManualShift> manualShifts = const [],
   ComplianceSettings settings = const ComplianceSettings(),
   DateTime? lastCardDownload,
+  Map<DateTime, ShiftRoute> routes = const {},
 }) {
   if (!now.isUtc) throw ArgumentError.value(now, 'now', 'должно быть в UTC');
   final manual = manualShifts.toList();
@@ -604,12 +619,38 @@ ComplianceSnapshot calculateCompliance({
   final previousWeeklyRest = completedWeekly.length < 2
       ? null
       : completedWeekly[completedWeekly.length - 2];
+  // Два сокращённых подряд (пакет мобильности) — только оба вне страны
+  // фирмы (ст. 8(6)). Страна отдыха — там, где кончилась смена перед ним;
+  // страна не выбрана — не проверяем.
+  final shiftStarts = [
+    for (final s in timeline.shifts) s.start,
+    for (final m in manual) m.start,
+  ];
+  String? countryAt(DateTime t) {
+    DateTime? last;
+    for (final start in shiftStarts) {
+      if (!start.isAfter(t) && (last == null || start.isAfter(last))) {
+        last = start;
+      }
+    }
+    return last == null ? null : routes[last]?.last;
+  }
+
+  final base = settings.baseCountry;
+  bool atBase(DateTime t) => base != null && countryAt(t) == base;
+  final secondReducedAllowed =
+      settings.mobilityPackage &&
+      (previousWeeklyRest == null ||
+          previousWeeklyRest.status == RestStatus.full);
+  final reducedWeeklyRestAtBase =
+      lastWeeklyRest != null &&
+      lastWeeklyRest.status != RestStatus.full &&
+      secondReducedAllowed &&
+      (atBase(lastWeeklyRest.start) || atBase(now));
   final reducedWeeklyRestAvailable =
       lastWeeklyRest == null ||
       lastWeeklyRest.status == RestStatus.full ||
-      (settings.mobilityPackage &&
-          (previousWeeklyRest == null ||
-              previousWeeklyRest.status == RestStatus.full));
+      (secondReducedAllowed && !reducedWeeklyRestAtBase);
 
   // Компенсация сокращённого недельного отдыха (ст. 8(6), 8(7)): долг
   // берётся одним блоком, присоединённым к другому отдыху не короче 9 ч, до
@@ -1031,6 +1072,7 @@ ComplianceSnapshot calculateCompliance({
     workWeekDuration: workWeekDuration,
     weeklyRestDeadline: weeklyRestDeadline,
     reducedWeeklyRestAvailable: reducedWeeklyRestAvailable,
+    reducedWeeklyRestAtBase: reducedWeeklyRestAtBase,
     compensation: compensation,
     compensations: compensations,
     unpaidCompensations: List.unmodifiable(unpaid),

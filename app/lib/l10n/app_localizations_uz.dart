@@ -2568,4 +2568,96 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get bansCurrentCountry => 'Siz shu yerdasiz';
+
+  @override
+  String get settingsBaseCountry => 'Firma mamlakati';
+
+  @override
+  String get settingsBaseCountryHint =>
+      'Firma roʻyxatdan oʻtgan joy: u yerda ketma-ket ikkita qisqartirilgan haftalik dam olish mumkin emas';
+
+  @override
+  String get baseCountryNotSet => 'Tanlanmagan';
+
+  @override
+  String get baseCountryCardTitle => 'Firma mamlakatini koʻrsating';
+
+  @override
+  String get baseCountryCardText =>
+      'Usiz ilova ketma-ket ikkita qisqartirilgan haftalik dam olish mumkinligini tekshirmaydi va ish kunlarini hisoblamaydi';
+
+  @override
+  String get onbBaseCountryRequired =>
+      'Davom etish uchun firma mamlakatini tanlang';
+
+  @override
+  String get weeklyReducedNoBase => 'firma mamlakatida — toʻliq kerak';
+
+  @override
+  String get workDaysTitle => 'Ish kunlari';
+
+  @override
+  String get workDaysHint => 'Chet eldagi va ishli kunlar — ish haqi uchun';
+
+  @override
+  String workDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ish kuni',
+      one: 'ish kuni',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workDaysAbroad => 'Chet elda';
+
+  @override
+  String get workDaysAbroadHint =>
+      'Kunning hech boʻlmaganda bir qismi firma mamlakatidan tashqarida, dam olish kunlari ham';
+
+  @override
+  String get workDaysHome => 'Firma mamlakatida ish';
+
+  @override
+  String get workDaysHomeHint =>
+      'Butun kun firma mamlakatida, lekin ish bor edi';
+
+  @override
+  String get workDaysOff => 'Ish kuni emas';
+
+  @override
+  String get workDaysRate => 'Kunlik stavka';
+
+  @override
+  String get workDaysRateNotSet => 'Belgilanmagan';
+
+  @override
+  String get workDaysAmount => 'Summa';
+
+  @override
+  String workDaysAmountHint(String days, String rate) {
+    return '$days × $rate';
+  }
+
+  @override
+  String get workDaysRateTitle => 'Bir ish kuni uchun stavka';
+
+  @override
+  String get workDaysCurrency => 'Valyuta';
+
+  @override
+  String get workDaysPrevMonth => 'Oldingi oy';
+
+  @override
+  String get workDaysNextMonth => 'Keyingi oy';
+
+  @override
+  String get workDaysNoBase =>
+      'Firma mamlakatini koʻrsating: ish kunlari unga nisbatan hisoblanadi.';
+
+  @override
+  String get workDaysRule =>
+      'Ish kuni — kunning hech boʻlmaganda bir qismida chet elda boʻlgan (reysda yoki dam olishda, dam olish kunlari ham) yoki firma mamlakatida ishlagan kuningiz. Firma mamlakatida butunlay dam olish bilan oʻtgan kun hisoblanmaydi. Qayerda boʻlganingizni ilova bosh ekrandagi smena mamlakatlaridan biladi.';
 }

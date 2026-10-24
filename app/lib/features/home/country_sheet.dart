@@ -153,6 +153,36 @@ class CountrySheet extends ConsumerWidget {
   }
 }
 
+/// Шторка «Страна фирмы»: выбор сразу пишется в настройки расчёта.
+Future<void> showBaseCountrySheet(BuildContext context) =>
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (_) => const _AboveKeyboard(
+        child: FractionallySizedBox(heightFactor: 0.9, child: _BaseCountry()),
+      ),
+    );
+
+/// The company country picker: one country, written to settings at once.
+class _BaseCountry extends ConsumerWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => CountryPicker(
+    start: ref.watch(baseCountryProvider),
+    end: null,
+    single: true,
+    title: context.l10n.settingsBaseCountry,
+    onPick: (_, code) async {
+      if (code != null) {
+        await ref.read(settingsRepositoryProvider).setBaseCountry(code);
+      }
+      return null;
+    },
+  );
+}
+
 /// Шторка выбора стран для формы смены: страны меняются в форме, а не в
 /// БД. Возвращает выбранные страны; null — шторку закрыли.
 Future<({String? start, String? end})?> showCountryPicker(
@@ -222,6 +252,7 @@ class CountryPicker extends ConsumerStatefulWidget {
     required this.onPick,
     this.initialTarget = CountryTarget.start,
     this.single = false,
+    this.title,
     this.closeWith,
     super.key,
   });
@@ -232,6 +263,9 @@ class CountryPicker extends ConsumerStatefulWidget {
 
   /// Одна страна — следующей смены: заголовок вместо вкладок.
   final bool single;
+
+  /// Заголовок одной страны; по умолчанию — «Страна следующей смены».
+  final String? title;
   final Future<CountryTarget?> Function(CountryTarget target, String? code)
   onPick;
 
@@ -316,7 +350,10 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
                   value: _target,
                   onChanged: (t) => setState(() => _target = t),
                 )
-              : Text(l.countryNextShift, style: AppTextStyles.header),
+              : Text(
+                  widget.title ?? l.countryNextShift,
+                  style: AppTextStyles.header,
+                ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: pad),

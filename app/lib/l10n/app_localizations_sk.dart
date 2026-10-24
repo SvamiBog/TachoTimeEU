@@ -2582,4 +2582,96 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get bansCurrentCountry => 'Ste tu';
+
+  @override
+  String get settingsBaseCountry => 'Krajina firmy';
+
+  @override
+  String get settingsBaseCountryHint =>
+      'Kde je firma registrovaná: dva skrátené týždenné odpočinky za sebou v nej čerpať nemožno';
+
+  @override
+  String get baseCountryNotSet => 'Nevybraté';
+
+  @override
+  String get baseCountryCardTitle => 'Zadajte krajinu firmy';
+
+  @override
+  String get baseCountryCardText =>
+      'Bez nej aplikácia neskontroluje, či možno čerpať dva skrátené týždenné odpočinky za sebou, a nespočíta pracovné dni';
+
+  @override
+  String get onbBaseCountryRequired => 'Pre pokračovanie vyberte krajinu firmy';
+
+  @override
+  String get weeklyReducedNoBase => 'v krajine firmy — treba bežný';
+
+  @override
+  String get workDaysTitle => 'Pracovné dni';
+
+  @override
+  String get workDaysHint => 'Dni v zahraničí a s prácou — na výpočet mzdy';
+
+  @override
+  String workDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'pracovných dní',
+      many: 'pracovného dňa',
+      few: 'pracovné dni',
+      one: 'pracovný deň',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workDaysAbroad => 'V zahraničí';
+
+  @override
+  String get workDaysAbroadHint =>
+      'Aspoň časť dňa mimo krajiny firmy, aj víkendy';
+
+  @override
+  String get workDaysHome => 'Práca v krajine firmy';
+
+  @override
+  String get workDaysHomeHint => 'Celý deň v krajine firmy, ale s prácou';
+
+  @override
+  String get workDaysOff => 'Nepracovný deň';
+
+  @override
+  String get workDaysRate => 'Sadzba za deň';
+
+  @override
+  String get workDaysRateNotSet => 'Nezadaná';
+
+  @override
+  String get workDaysAmount => 'Suma';
+
+  @override
+  String workDaysAmountHint(String days, String rate) {
+    return '$days × $rate';
+  }
+
+  @override
+  String get workDaysRateTitle => 'Sadzba za pracovný deň';
+
+  @override
+  String get workDaysCurrency => 'Mena';
+
+  @override
+  String get workDaysPrevMonth => 'Predchádzajúci mesiac';
+
+  @override
+  String get workDaysNextMonth => 'Ďalší mesiac';
+
+  @override
+  String get workDaysNoBase =>
+      'Zadajte krajinu firmy: pracovné dni sa počítajú voči nej.';
+
+  @override
+  String get workDaysRule =>
+      'Pracovný deň je, keď ste aspoň časť dňa boli v zahraničí (na ceste alebo na odpočinku, aj cez víkend) alebo ste pracovali v krajine firmy. Nepočíta sa deň celý na odpočinku v krajine firmy. Kde ste boli, aplikácia vie podľa krajín zmien na hlavnej obrazovke.';
 }

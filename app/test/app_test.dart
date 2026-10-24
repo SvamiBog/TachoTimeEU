@@ -33,7 +33,21 @@ void main() {
     expect(find.byType(OnboardingScreen), findsOneWidget);
     expect(find.byType(AppShell), findsNothing);
 
-    for (final button in ['Начать', 'Далее', 'Далее', 'Далее', 'Готово']) {
+    for (final button in ['Начать', 'Далее', 'Далее']) {
+      await tester.tap(find.text(button));
+      await settle(tester);
+    }
+    // Страна фирмы обязательна: без неё «Далее» на настройке не нажать
+    await tester.ensureVisible(find.text('Страна фирмы'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Страна фирмы'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Польша');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Польша').last);
+    await settle(tester);
+    await tester.pumpAndSettle();
+    for (final button in ['Далее', 'Готово']) {
       await tester.tap(find.text(button));
       await settle(tester);
     }
