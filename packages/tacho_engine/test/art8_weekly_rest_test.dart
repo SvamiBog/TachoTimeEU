@@ -223,6 +223,148 @@ void main() {
     });
   });
 
+  group('ENG-25: два сокращённых подряд — оба вне страны фирмы', () {
+    // Смены: до полного 45 ч, перед сокращённым 24 ч, текущая. Страна
+    // отдыха — где кончилась смена перед ним; страна «сейчас» — текущей.
+    final log = logUntil(now, [
+      drive('4:00'),
+      rest('45:00'),
+      ...drivingDay('9:00'),
+      rest('24:00'),
+      drive('1:00'),
+    ]);
+    final starts = [for (final s in calc(log, now).timeline.shifts) s.start];
+    ComplianceSnapshot run(
+      List<ShiftRoute?> routes, {
+      String? base = 'PL',
+      bool mobilityPackage = true,
+    }) => calc(
+      log,
+      now,
+      settings: ComplianceSettings(
+        baseCountry: base,
+        mobilityPackage: mobilityPackage,
+      ),
+      routes: {for (final (i, r) in routes.indexed) starts[i]: ?r},
+    );
+    const pl = ShiftRoute(from: 'PL');
+    const de = ShiftRoute(from: 'D');
+
+    test('оба вне страны фирмы — второй сокращённый можно', () {
+      final m = run([pl, de, de]);
+      expect(m.lastWeeklyRest?.status, RestStatus.reduced);
+      expect(m.reducedWeeklyRestAvailable, isTrue);
+      expect(m.reducedWeeklyRestAtBase, isFalse);
+    });
+
+    test('первый сокращённый был в стране фирмы — второй нельзя', () {
+      final m = run([de, pl, de]);
+      expect(m.reducedWeeklyRestAvailable, isFalse);
+      expect(m.reducedWeeklyRestAtBase, isTrue);
+    });
+
+    test('второй был бы в стране фирмы — нельзя', () {
+      final m = run([de, de, pl]);
+      expect(m.reducedWeeklyRestAvailable, isFalse);
+      expect(m.reducedWeeklyRestAtBase, isTrue);
+    });
+
+    test('страна отдыха — конечная страна смены перед ним', () {
+      expect(
+        run([de, const ShiftRoute(from: 'PL', to: 'D'), de])
+            .reducedWeeklyRestAvailable,
+        isTrue,
+      );
+      expect(
+        run([de, const ShiftRoute(from: 'D', to: 'PL'), de])
+            .reducedWeeklyRestAvailable,
+        isFalse,
+      );
+    });
+
+    test('страна фирмы не указана или страны смен не выбраны — как раньше', () {
+      expect(run([pl, pl, pl], base: null).reducedWeeklyRestAvailable, isTrue);
+      expect(run([null, null, null]).reducedWeeklyRestAvailable, isTrue);
+    });
+
+    test('один сокращённый в стране фирмы после полного — можно', () {
+      final full = logUntil(now, [
+        drive('4:00'),
+        rest('24:00'),
+        ...drivingDay('9:00'),
+        rest('45:00'),
+        drive('1:00'),
+      ]);
+      final m = calc(
+        full,
+        now,
+        settings: const ComplianceSettings(baseCountry: 'PL'),
+        routes: {for (final s in calc(full, now).timeline.shifts) s.start: pl},
+      );
+      expect(m.previousWeeklyRest?.status, RestStatus.reduced);
+      expect(m.lastWeeklyRest?.status, RestStatus.full);
+      expect(m.reducedWeeklyRestAvailable, isTrue);
+      expect(m.reducedWeeklyRestAtBase, isFalse);
+    });
+
+    test('недоступен и без страны — страна фирмы не причина', () {
+      // Третий подряд и выключенный пакет мобильности запрещают сами
+      final third = calc(
+        logUntil(now, [
+          drive('4:00'),
+          rest('24:00'),
+          ...drivingDay('9:00'),
+          rest('24:00'),
+          drive('1:00'),
+        ]),
+        now,
+        settings: const ComplianceSettings(baseCountry: 'PL'),
+      );
+      expect(third.reducedWeeklyRestAvailable, isFalse);
+      expect(third.reducedWeeklyRestAtBase, isFalse);
+      final off = run([pl, pl, pl], mobilityPackage: false);
+      expect(off.reducedWeeklyRestAvailable, isFalse);
+      expect(off.reducedWeeklyRestAtBase, isFalse);
+    });
+
+    test('идёт второй недельный отдых в стране фирмы — нужно 45 ч', () {
+      final rest2 = logUntil(now, [
+        drive('4:00'),
+        rest('45:00'),
+        ...drivingDay('9:00'),
+        rest('24:00'),
+        ...drivingDay('9:00'),
+        rest('20:00'),
+      ]);
+      final s = calc(rest2, now).timeline.shifts;
+      final m = calc(
+        rest2,
+        now,
+        settings: const ComplianceSettings(baseCountry: 'PL'),
+        routes: {s[0].start: pl, s[1].start: de, s[2].start: pl},
+      );
+      expect(m.offDutyRest, isNotNull);
+      expect(m.reducedWeeklyRestAvailable, isFalse);
+      expect(m.reducedWeeklyRestAtBase, isTrue);
+    });
+
+    test('ручная смена перед отдыхом — страна из неё', () {
+      final manual = manualChain(utc('2026-09-18 06:00'), [
+        '24:00',
+      ], restKind: RestKind.weekly);
+      ComplianceSnapshot after(String country) => calc(
+        logUntil(now, [rest('11:00'), drive('1:00')]),
+        now,
+        manual: manual,
+        settings: const ComplianceSettings(baseCountry: 'PL'),
+        routes: {manual.first.start: ShiftRoute(from: country)},
+      );
+      expect(after('PL').lastWeeklyRest?.status, RestStatus.reduced);
+      expect(after('PL').reducedWeeklyRestAtBase, isTrue);
+      expect(after('D').reducedWeeklyRestAvailable, isTrue);
+    });
+  });
+
   group('ст. 8(6): компенсация сокращённого недельного отдыха', () {
     // Сокращённый отдых 30 ч с субботы 19.09 (неделя с пн 14.09): долг 15 ч
     final start = utc('2026-09-18 16:15');

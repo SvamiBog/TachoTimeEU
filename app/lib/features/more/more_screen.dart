@@ -19,13 +19,14 @@ import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/more/about_screen.dart';
 import 'package:tachogo/features/more/problem_report.dart';
 import 'package:tachogo/features/more/transfer_sheet.dart';
+import 'package:tachogo/features/more/working_days_screen.dart';
 
-/// "More" (screen 4): driving bans, report export, moving the journal to
-/// another phone, guide and rules, about (with the licenses), the privacy
-/// policy (Google Play requires the link inside the app too,
-/// `docs/store/play-audit.md`). In the beta — "Report a problem" (Phase 4). The
-/// Premium banner comes with purchases (Phase 5), the account with sync (Phase
-/// 6), feedback and "Share" with the release (Phase 7).
+/// "More" (screen 4): driving bans, report export, working days for pay,
+/// moving the journal to another phone, guide and rules, about (with the
+/// licenses), the privacy policy (Google Play requires the link inside the app
+/// too, `docs/store/play-audit.md`). In the beta — "Report a problem" (Phase
+/// 4). The Premium banner comes with purchases (Phase 5), the account with sync
+/// (Phase 6), feedback and "Share" with the release (Phase 7).
 class MoreScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -73,6 +74,12 @@ class MoreScreen extends ConsumerWidget {
                   icon: Icons.file_download_outlined,
                   title: l.settingsExport,
                   onTap: () => unawaited(showExportSheet(context)),
+                ),
+                NavRow(
+                  icon: Icons.calendar_month_outlined,
+                  title: l.workDaysTitle,
+                  subtitle: l.workDaysHint,
+                  onTap: () => openWorkingDays(context),
                 ),
                 NavRow(
                   icon: Icons.mobile_screen_share_outlined,

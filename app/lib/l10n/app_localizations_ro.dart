@@ -2577,4 +2577,95 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get bansCurrentCountry => 'Sunteți aici';
+
+  @override
+  String get settingsBaseCountry => 'Țara firmei';
+
+  @override
+  String get settingsBaseCountryHint =>
+      'Unde este înregistrată firma: acolo nu se pot lua două repausuri săptămânale reduse consecutive';
+
+  @override
+  String get baseCountryNotSet => 'Nealeasă';
+
+  @override
+  String get baseCountryCardTitle => 'Indicați țara firmei';
+
+  @override
+  String get baseCountryCardText =>
+      'Fără ea, aplicația nu verifică dacă se pot lua două repausuri săptămânale reduse consecutive și nu numără zilele lucrătoare';
+
+  @override
+  String get onbBaseCountryRequired => 'Alegeți țara firmei pentru a continua';
+
+  @override
+  String get weeklyReducedNoBase => 'în țara firmei — e necesar complet';
+
+  @override
+  String get workDaysTitle => 'Zile lucrătoare';
+
+  @override
+  String get workDaysHint => 'Zile în străinătate și cu muncă — pentru salariu';
+
+  @override
+  String workDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'de zile lucrătoare',
+      few: 'zile lucrătoare',
+      one: 'zi lucrătoare',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workDaysAbroad => 'În străinătate';
+
+  @override
+  String get workDaysAbroadHint =>
+      'Măcar o parte din zi în afara țării firmei, inclusiv în weekend';
+
+  @override
+  String get workDaysHome => 'Muncă în țara firmei';
+
+  @override
+  String get workDaysHomeHint => 'Toată ziua în țara firmei, dar cu muncă';
+
+  @override
+  String get workDaysOff => 'Zi nelucrătoare';
+
+  @override
+  String get workDaysRate => 'Tarif pe zi';
+
+  @override
+  String get workDaysRateNotSet => 'Nestabilit';
+
+  @override
+  String get workDaysAmount => 'Suma';
+
+  @override
+  String workDaysAmountHint(String days, String rate) {
+    return '$days × $rate';
+  }
+
+  @override
+  String get workDaysRateTitle => 'Tarif pe zi lucrătoare';
+
+  @override
+  String get workDaysCurrency => 'Monedă';
+
+  @override
+  String get workDaysPrevMonth => 'Luna anterioară';
+
+  @override
+  String get workDaysNextMonth => 'Luna următoare';
+
+  @override
+  String get workDaysNoBase =>
+      'Indicați țara firmei: zilele lucrătoare se numără față de ea.';
+
+  @override
+  String get workDaysRule =>
+      'Zi lucrătoare este ziua în care ați fost în străinătate măcar o parte din zi (în cursă sau în repaus, inclusiv în weekend) sau ați lucrat în țara firmei. Nu se numără ziua petrecută în întregime în repaus în țara firmei. Unde ați fost, aplicația știe din țările turelor de pe ecranul principal.';
 }

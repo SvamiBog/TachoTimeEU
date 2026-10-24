@@ -10,6 +10,7 @@ import 'package:tacho_engine/src/driver_mode.dart';
 import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/infringement.dart';
 import 'package:tacho_engine/src/manual_shift.dart';
+import 'package:tacho_engine/src/shift_route.dart';
 import 'package:tacho_engine/src/time.dart';
 
 /// A rest taken in full: the driver may drive on.
@@ -112,6 +113,7 @@ List<UpcomingAlert> forecastAlerts({
   Iterable<ManualShift> manualShifts = const [],
   ComplianceSettings settings = const ComplianceSettings(),
   DateTime? lastCardDownload,
+  Map<DateTime, ShiftRoute> routes = const {},
   Duration horizon = forecastHorizon,
 }) {
   if (!now.isUtc) throw ArgumentError.value(now, 'now', 'должно быть в UTC');
@@ -123,6 +125,7 @@ List<UpcomingAlert> forecastAlerts({
     manualShifts: manual,
     settings: settings,
     lastCardDownload: lastCardDownload,
+    routes: routes,
   );
 
   final end = now.add(horizon);

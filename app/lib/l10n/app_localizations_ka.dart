@@ -2559,4 +2559,94 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get bansCurrentCountry => 'თქვენ აქ ხართ';
+
+  @override
+  String get settingsBaseCountry => 'ფირმის ქვეყანა';
+
+  @override
+  String get settingsBaseCountryHint =>
+      'სადაც ფირმაა რეგისტრირებული: იქ ზედიზედ ორი შემცირებული კვირეული დასვენება დაუშვებელია';
+
+  @override
+  String get baseCountryNotSet => 'არ არის არჩეული';
+
+  @override
+  String get baseCountryCardTitle => 'მიუთითეთ ფირმის ქვეყანა';
+
+  @override
+  String get baseCountryCardText =>
+      'მის გარეშე აპი ვერ შეამოწმებს, შეიძლება თუ არა ზედიზედ ორი შემცირებული კვირეული დასვენება, და ვერ დათვლის სამუშაო დღეებს';
+
+  @override
+  String get onbBaseCountryRequired => 'გასაგრძელებლად აირჩიეთ ფირმის ქვეყანა';
+
+  @override
+  String get weeklyReducedNoBase => 'ფირმის ქვეყანაში — საჭიროა სრული';
+
+  @override
+  String get workDaysTitle => 'სამუშაო დღეები';
+
+  @override
+  String get workDaysHint => 'დღეები საზღვარგარეთ და სამუშაოთი — ხელფასისთვის';
+
+  @override
+  String workDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'სამუშაო დღე',
+      one: 'სამუშაო დღე',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workDaysAbroad => 'საზღვარგარეთ';
+
+  @override
+  String get workDaysAbroadHint =>
+      'დღის ნაწილი მაინც ფირმის ქვეყნის გარეთ, შაბათ-კვირაც';
+
+  @override
+  String get workDaysHome => 'სამუშაო ფირმის ქვეყანაში';
+
+  @override
+  String get workDaysHomeHint => 'მთელი დღე ფირმის ქვეყანაში, მაგრამ სამუშაოთი';
+
+  @override
+  String get workDaysOff => 'არასამუშაო დღე';
+
+  @override
+  String get workDaysRate => 'დღიური განაკვეთი';
+
+  @override
+  String get workDaysRateNotSet => 'არ არის მითითებული';
+
+  @override
+  String get workDaysAmount => 'თანხა';
+
+  @override
+  String workDaysAmountHint(String days, String rate) {
+    return '$days × $rate';
+  }
+
+  @override
+  String get workDaysRateTitle => 'განაკვეთი სამუშაო დღეზე';
+
+  @override
+  String get workDaysCurrency => 'ვალუტა';
+
+  @override
+  String get workDaysPrevMonth => 'წინა თვე';
+
+  @override
+  String get workDaysNextMonth => 'შემდეგი თვე';
+
+  @override
+  String get workDaysNoBase =>
+      'მიუთითეთ ფირმის ქვეყანა: სამუშაო დღეები მის მიხედვით ითვლება.';
+
+  @override
+  String get workDaysRule =>
+      'სამუშაო დღეა, თუ დღის ნაწილი მაინც საზღვარგარეთ იყავით (გზაში ან დასვენებაზე, შაბათ-კვირაც) ან ფირმის ქვეყანაში მუშაობდით. არ ითვლება დღე, რომელიც მთლიანად ფირმის ქვეყანაში დასვენებაზე გაატარეთ. სად იყავით, აპი იგებს მთავარ ეკრანზე ცვლების ქვეყნებიდან.';
 }

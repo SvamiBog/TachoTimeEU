@@ -42,19 +42,24 @@ class JournalEditRepository {
   ];
 
   /// Страны и заметки смен из записей режимов: начало смены → данные.
-  Stream<Map<DateTime, ShiftMeta>> watchShiftMeta() => _db
-      .select(_db.shifts)
-      .watch()
-      .map(
-        (rows) => {
-          for (final r in rows)
-            r.startUtc: ShiftMeta(
-              startCountry: r.startCountry,
-              endCountry: r.endCountry,
-              note: r.note,
-            ),
-        },
-      );
+  Stream<Map<DateTime, ShiftMeta>> watchShiftMeta() =>
+      _db.select(_db.shifts).watch().map(_metaByStart);
+
+  /// Страны смен для расчёта (фоновое уведомление, расписание): из
+  /// записей режимов и ручных смен.
+  Future<Map<DateTime, ShiftRoute>> shiftRoutes() async => shiftRoutesOf(
+    _metaByStart(await _db.select(_db.shifts).get()),
+    [for (final r in await _manualOrdered().get()) _manualFromRow(r)],
+  );
+
+  static Map<DateTime, ShiftMeta> _metaByStart(List<ShiftRow> rows) => {
+    for (final r in rows)
+      r.startUtc: ShiftMeta(
+        startCountry: r.startCountry,
+        endCountry: r.endCountry,
+        note: r.note,
+      ),
+  };
 
   /// Правка «живой» смены (идёт или после неё идёт отдых): сдвигает записи
   /// режимов. Страны и заметка переезжают на смену, которая получилась

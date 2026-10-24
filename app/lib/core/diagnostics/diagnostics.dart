@@ -153,6 +153,7 @@ String formatDiagnostics(Diagnostics d) {
     'tachograph ${p.tachograph.name}',
     'crew ${c.crew.name}',
     'mobility package ${_onOff(c.mobilityPackage)}',
+    'base country ${c.baseCountry ?? 'not set'}',
     'warning ${c.warningLead.inMinutes} min',
     'card alert ${c.cardAlertDays} d',
     'theme ${p.theme.name}',
@@ -252,6 +253,7 @@ class DiagnosticsCollector {
     final now = _clock().toUtc();
     final periods = await _journal.periods();
     final manual = await _edits.manualShifts();
+    final routes = await _edits.shiftRoutes();
     final compliance = await _settings.complianceSettings();
     final lastCard = await _cards.last();
     final local = now.toLocal();
@@ -288,6 +290,7 @@ class DiagnosticsCollector {
         manualShifts: manual,
         settings: compliance,
         lastCardDownload: lastCard,
+        routes: routes,
       ),
       snapshot: calculateCompliance(
         periods: periods,
@@ -295,6 +298,7 @@ class DiagnosticsCollector {
         manualShifts: manual,
         settings: compliance,
         lastCardDownload: lastCard,
+        routes: routes,
       ),
       recent: recent.length > reportMaxRecords
           ? recent.sublist(recent.length - reportMaxRecords)

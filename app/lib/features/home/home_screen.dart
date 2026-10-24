@@ -18,6 +18,7 @@ import 'package:tachogo/features/home/hero_card.dart';
 import 'package:tachogo/features/home/limit_sections.dart';
 import 'package:tachogo/features/home/mode_buttons.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
+import 'package:tachogo/features/settings/base_country.dart';
 
 /// Whether the calculation is loading, ready or failed.
 enum _Load { loading, ready, failed }
@@ -51,6 +52,7 @@ class HomeScreen extends ConsumerWidget {
               HomeHeader(),
               HeroCard(),
               ModeButtons(),
+              BaseCountryCard(),
               AlertsSection(),
               TodaySection(),
               RestSection(),

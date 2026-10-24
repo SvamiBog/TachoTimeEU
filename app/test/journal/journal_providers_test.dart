@@ -72,6 +72,7 @@ void main() {
       'настройки': (s, e, st) => s.settings.addError(e, st),
       'считывание карты': (s, e, st) => s.card.addError(e, st),
       'ручные смены': (s, e, st) => s.manual.addError(e, st),
+      'страны смен': (s, e, st) => s.meta.addError(e, st),
     };
 
     for (final MapEntry(key: name, value: fail) in sources.entries) {
@@ -81,6 +82,7 @@ void main() {
         if (name != 'настройки') s.settings.add(const ComplianceSettings());
         if (name != 'считывание карты') s.card.add(null);
         if (name != 'ручные смены') s.manual.add(const []);
+        if (name != 'страны смен') s.meta.add(const {});
         await pumpEventQueue();
         expect(s.snapshot, isA<AsyncLoading<ComplianceSnapshot>>());
       });
@@ -109,6 +111,7 @@ void main() {
       s = _Sources()
         ..container
         ..loadAll();
+      s.meta.add(const {});
       await pumpEventQueue();
     });
 
@@ -170,6 +173,36 @@ void main() {
         expect(s.snapshot.requireValue.weeklyDriving, hours(6));
       },
     );
+
+    test('по изменению стран смен (страна фирмы, ст. 8(6))', () async {
+      // Полный 45 ч, смена 13 ч, сокращённый 24 ч, вождение сейчас
+      final start = t0.subtract(hours(45 + 13 + 24 + 1));
+      s.periods.add([
+        ActivityPeriod(
+          mode: DriverMode.rest,
+          start: start,
+          end: start.add(hours(45)),
+        ),
+        ActivityPeriod(
+          mode: DriverMode.otherWork,
+          start: start.add(hours(45)),
+          end: start.add(hours(58)),
+        ),
+        ActivityPeriod(
+          mode: DriverMode.rest,
+          start: start.add(hours(58)),
+          end: start.add(hours(82)),
+        ),
+        ActivityPeriod(mode: DriverMode.driving, start: start.add(hours(82))),
+      ]);
+      s.settings.add(const ComplianceSettings(baseCountry: 'PL'));
+      await pumpEventQueue();
+      expect(s.snapshot.requireValue.reducedWeeklyRestAvailable, isTrue);
+      s.meta.add({start.add(hours(45)): const ShiftMeta(startCountry: 'PL')});
+      await pumpEventQueue();
+      expect(s.snapshot.requireValue.reducedWeeklyRestAvailable, isFalse);
+      expect(s.snapshot.requireValue.reducedWeeklyRestAtBase, isTrue);
+    });
   });
 
   group('журнал по неделям', () {

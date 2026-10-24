@@ -130,6 +130,44 @@ class NotificationSettings {
   int get hashCode => Object.hash(breaks, shiftEnd, driving, card);
 }
 
+/// Pay per working day for the pay calculator (Premium): the amount in
+/// hundredths and the currency.
+@immutable
+class DayRate {
+  const new({this.cents = 0, this.currency = 'EUR'});
+
+  /// Ставка в сотых: 8550 — 85,50. 0 — не задана.
+  final int cents;
+
+  /// Код ISO 4217 из [currencies].
+  final String currency;
+
+  /// Валюты, в которых платят водителям-международникам: евро и валюты
+  /// стран, откуда они чаще всего.
+  static const currencies = [
+    'EUR',
+    'PLN',
+    'RON',
+    'UAH',
+    'GEL',
+    'UZS',
+    'KZT',
+    'KGS',
+    'BYN',
+    'CZK',
+    'HUF',
+    'BGN',
+    'USD',
+  ];
+
+  @override
+  bool operator ==(Object other) =>
+      other is DayRate && other.cents == cents && other.currency == currency;
+
+  @override
+  int get hashCode => Object.hash(cents, currency);
+}
+
 /// Settings stored in the key–value table.
 class SettingsRepository {
   new(this._db);
@@ -143,6 +181,9 @@ class SettingsRepository {
   static const _autoAfterStop = 'auto_after_stop';
   static const _autoStartFromRest = 'auto_start_from_rest';
   static const _defaultCountry = 'default_country';
+  static const _baseCountry = 'base_country';
+  static const _dayRate = 'day_rate_cents';
+  static const _dayRateCurrency = 'day_rate_currency';
   static const _theme = 'theme';
   static const _language = 'language';
   static const _reportLanguage = 'report_language';
@@ -176,7 +217,17 @@ class SettingsRepository {
     _mobilityPackage: '${s.mobilityPackage}',
     _warningLead: '${s.warningLead.inMinutes}',
     _cardAlertDays: '${s.cardAlertDays}',
+    _baseCountry: ?s.baseCountry,
   });
+
+  /// Страна фирмы (обязательна): два сокращённых недельных отдыха подряд в
+  /// ней нельзя, рабочие дни считаются относительно неё.
+  Future<void> setBaseCountry(String code) {
+    if (!TachoCountries.isValid(code)) {
+      throw ArgumentError.value(code, 'code', 'не код страны тахографа');
+    }
+    return _put(_baseCountry, code);
+  }
 
   /// Меняет только переданные настройки расчёта — экран настроек правит
   /// по одной, не перезаписывая остальные.
@@ -233,10 +284,10 @@ class SettingsRepository {
 
   /// Настройки, которые переезжают с журналом на другой телефон
   /// (`JournalBackup`): расчёт, уведомления, правила автоопределения,
-  /// страна по умолчанию, тахограф, язык отчёта. Не переезжают: язык и тема
-  /// — выбраны на новом телефоне; согласие на аналитику — его спрашивает
-  /// каждый телефон; включение автоопределения — разрешения у нового
-  /// телефона свои; онбординг.
+  /// страна по умолчанию и страна фирмы, ставка за рабочий день, тахограф,
+  /// язык отчёта. Не переезжают: язык и тема — выбраны на новом телефоне;
+  /// согласие на аналитику — его спрашивает каждый телефон; включение
+  /// автоопределения — разрешения у нового телефона свои; онбординг.
   static const Set<String> _transferable = {
     _crew,
     _mobilityPackage,
@@ -245,6 +296,9 @@ class SettingsRepository {
     _autoAfterStop,
     _autoStartFromRest,
     _defaultCountry,
+    _baseCountry,
+    _dayRate,
+    _dayRateCurrency,
     _reportLanguage,
     _tachograph,
     _notifyBreak,
@@ -303,6 +357,26 @@ class SettingsRepository {
   static String? _country(String? code) =>
       code != null && TachoCountries.isValid(code) ? code : null;
 
+  /// Ставка за рабочий день для калькулятора зарплаты (Premium).
+  Stream<DayRate> watchDayRate() => _watchAll().map(_dayRateFrom).distinct();
+
+  Future<void> setDayRate(DayRate rate) =>
+      _putAll({_dayRate: '${rate.cents}', _dayRateCurrency: rate.currency});
+
+  static DayRate _dayRateFrom(Map<String, String> v) {
+    const d = DayRate();
+    final currency = v[_dayRateCurrency];
+    return DayRate(
+      cents: switch (int.tryParse(v[_dayRate] ?? '')) {
+        final c? when c >= 0 => c,
+        _ => d.cents,
+      },
+      currency: currency != null && DayRate.currencies.contains(currency)
+          ? currency
+          : d.currency,
+    );
+  }
+
   // Некорректное значение в БД не должно ломать расчёт — берём умолчание.
   static ComplianceSettings _complianceFrom(Map<String, String> v) {
     const d = ComplianceSettings();
@@ -317,6 +391,7 @@ class SettingsRepository {
         final days? when days > 0 => days,
         _ => d.cardAlertDays,
       },
+      baseCountry: _country(v[_baseCountry]),
     );
   }
 
@@ -324,7 +399,8 @@ class SettingsRepository {
       a.crew == b.crew &&
       a.mobilityPackage == b.mobilityPackage &&
       a.warningLead == b.warningLead &&
-      a.cardAlertDays == b.cardAlertDays;
+      a.cardAlertDays == b.cardAlertDays &&
+      a.baseCountry == b.baseCountry;
 
   static AppPreferences _preferencesFrom(Map<String, String> v) {
     const d = AppPreferences();

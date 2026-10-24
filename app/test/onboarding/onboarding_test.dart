@@ -1,5 +1,6 @@
 // Онбординг (экраны 13–14, режимы, главные правила, автоопределение) на
-// базе в памяти. План тестов: UI-12, UI-13, UI-14, UI-18 в docs/testing.md.
+// базе в памяти. План тестов: UI-12, UI-13, UI-14, UI-18, UI-28 в
+// docs/testing.md.
 // «Показывается один раз» — в app_test.dart.
 
 import 'package:flutter/material.dart';
@@ -50,6 +51,16 @@ void main() {
     await tester.ensureVisible(finder);
     await tester.pumpAndSettle();
     await tester.tap(finder);
+    await settle(tester);
+    await tester.pumpAndSettle();
+  }
+
+  /// Шаг настройки: страна фирмы обязательна — без неё «Далее» не нажать.
+  Future<void> chooseBaseCountry(WidgetTester tester) async {
+    await tap(tester, 'Страна фирмы');
+    await tester.enterText(find.byType(TextField), 'Польша');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Польша').last);
     await settle(tester);
     await tester.pumpAndSettle();
   }
@@ -107,6 +118,7 @@ void main() {
     expect(platform.calls, contains('requestNotificationPermission'));
     expect(find.text('Уведомления разрешены'), findsOneWidget);
     await tap(tester, 'Анонимная статистика');
+    await chooseBaseCountry(tester);
     await tap(tester, 'Далее');
 
     // 5. Автоопределение
@@ -121,10 +133,9 @@ void main() {
     expect(prefs.onboardingDone, isTrue);
     expect(prefs.language, isNull);
     expect(prefs.tachograph, TachographType.analog);
-    expect(
-      (await tester.runAsync(settings.complianceSettings))!.mobilityPackage,
-      isFalse,
-    );
+    final rules = (await tester.runAsync(settings.complianceSettings))!;
+    expect(rules.mobilityPackage, isFalse);
+    expect(rules.baseCountry, 'PL');
     expect(
       await tester.runAsync(() => settings.watchAnalyticsConsent().first),
       isTrue,
@@ -154,6 +165,7 @@ void main() {
       ),
     );
     expect(consent.value, isFalse);
+    await chooseBaseCountry(tester);
     await tap(tester, 'Далее');
     await tap(tester, 'Готово');
 
@@ -196,9 +208,11 @@ void main() {
       'настройки телефона', (tester) async {
     platform.permission = LocationPermission.deniedForever;
     await pump(tester);
-    for (final step in ['Начать', 'Далее', 'Далее', 'Далее']) {
+    for (final step in ['Начать', 'Далее', 'Далее']) {
       await tap(tester, step);
     }
+    await chooseBaseCountry(tester);
+    await tap(tester, 'Далее');
     await tap(tester, 'Включить автоопределение');
     expect(find.textContaining('Доступ к геолокации запрещён'), findsOne);
     await tap(tester, 'Открыть настройки');
@@ -231,6 +245,36 @@ void main() {
     expect(find.text('Аналоговый'), findsOneWidget);
     expect(find.text('Грузовик или автобус'), findsNothing);
     expect(find.text('Фургон 2,5–3,5 т'), findsNothing);
+    await unmount(tester);
+  });
+
+  testWidgets('UI-28: без страны фирмы с настройки дальше не пройти', (
+    tester,
+  ) async {
+    await pump(tester);
+    for (final step in ['Начать', 'Далее', 'Далее']) {
+      await tap(tester, step);
+    }
+    expect(find.text('Настроим под вас'), findsOneWidget);
+    expect(find.text('Выберите страну фирмы, чтобы продолжить'), findsOne);
+    FilledButton next() =>
+        tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Далее'));
+    expect(next().onPressed, isNull);
+    await tester.scrollUntilVisible(
+      find.text('Не выбрана'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Не выбрана'), findsOneWidget);
+
+    await chooseBaseCountry(tester);
+    expect(find.text('Польша'), findsOneWidget);
+    expect(find.text('Выберите страну фирмы, чтобы продолжить'), findsNothing);
+    expect(next().onPressed, isNotNull);
+    expect(
+      (await tester.runAsync(settings.complianceSettings))!.baseCountry,
+      'PL',
+    );
     await unmount(tester);
   });
 }

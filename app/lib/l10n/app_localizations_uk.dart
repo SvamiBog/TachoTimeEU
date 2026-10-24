@@ -2582,4 +2582,97 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get bansCurrentCountry => 'Ви тут';
+
+  @override
+  String get settingsBaseCountry => 'Країна фірми';
+
+  @override
+  String get settingsBaseCountryHint =>
+      'Де зареєстрована фірма: два скорочені щотижневі відпочинки поспіль у ній брати не можна';
+
+  @override
+  String get baseCountryNotSet => 'Не вибрано';
+
+  @override
+  String get baseCountryCardTitle => 'Вкажіть країну фірми';
+
+  @override
+  String get baseCountryCardText =>
+      'Без неї застосунок не перевірить, чи можна взяти два скорочені щотижневі відпочинки поспіль, і не порахує робочі дні';
+
+  @override
+  String get onbBaseCountryRequired => 'Виберіть країну фірми, щоб продовжити';
+
+  @override
+  String get weeklyReducedNoBase => 'у країні фірми — потрібен повний';
+
+  @override
+  String get workDaysTitle => 'Робочі дні';
+
+  @override
+  String get workDaysHint =>
+      'Дні за кордоном і з роботою — для розрахунку зарплати';
+
+  @override
+  String workDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'робочого дня',
+      many: 'робочих днів',
+      few: 'робочі дні',
+      one: 'робочий день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workDaysAbroad => 'За кордоном';
+
+  @override
+  String get workDaysAbroadHint =>
+      'Хоча б частина дня поза країною фірми, вихідні теж';
+
+  @override
+  String get workDaysHome => 'Робота в країні фірми';
+
+  @override
+  String get workDaysHomeHint => 'Увесь день у країні фірми, але була робота';
+
+  @override
+  String get workDaysOff => 'Неробочий день';
+
+  @override
+  String get workDaysRate => 'Ставка за день';
+
+  @override
+  String get workDaysRateNotSet => 'Не задано';
+
+  @override
+  String get workDaysAmount => 'Сума';
+
+  @override
+  String workDaysAmountHint(String days, String rate) {
+    return '$days × $rate';
+  }
+
+  @override
+  String get workDaysRateTitle => 'Ставка за робочий день';
+
+  @override
+  String get workDaysCurrency => 'Валюта';
+
+  @override
+  String get workDaysPrevMonth => 'Попередній місяць';
+
+  @override
+  String get workDaysNextMonth => 'Наступний місяць';
+
+  @override
+  String get workDaysNoBase =>
+      'Вкажіть країну фірми: робочі дні рахуються відносно неї.';
+
+  @override
+  String get workDaysRule =>
+      'Робочий день — якщо хоча б частину дня ви були за кордоном (у рейсі чи на відпочинку, вихідні теж) або працювали в країні фірми. Не рахується день повністю на відпочинку в країні фірми. Де ви були, застосунок знає з країн змін на головній.';
 }

@@ -171,6 +171,7 @@ class TrackingTaskHandler extends TaskHandler {
       lastCardDownload: await container
           .read(cardDownloadRepositoryProvider)
           .last(),
+      routes: await container.read(journalEditRepositoryProvider).shiftRoutes(),
     );
     final suggestion = _tracker?.suggestion;
     // Язык — при каждом обновлении: водитель мог сменить его в настройках.

@@ -263,4 +263,78 @@ void main() {
       );
     });
   });
+
+  group('REP-05: страна фирмы и ставка за рабочий день', () {
+    test('страны фирмы нет, пока водитель не выбрал', () async {
+      expect((await repo.complianceSettings()).baseCountry, isNull);
+    });
+
+    test(
+      'страна фирмы — в настройках расчёта, расчёт пересчитывается',
+      () async {
+        final emitted = <ComplianceSettings>[];
+        final sub = repo.watchComplianceSettings().listen(emitted.add);
+        await pumpEventQueue();
+        await repo.setBaseCountry('PL');
+        await pumpEventQueue();
+        await sub.cancel();
+        expect([for (final s in emitted) s.baseCountry], [null, 'PL']);
+        expect((await repo.complianceSettings()).baseCountry, 'PL');
+      },
+    );
+
+    test('не код тахографа не принимается, мусор в БД — не выбрана', () async {
+      expect(() => repo.setBaseCountry('XX'), throwsArgumentError);
+      await db
+          .into(db.settings)
+          .insertOnConflictUpdate(
+            SettingsCompanion.insert(key: 'base_country', value: 'XX'),
+          );
+      expect((await repo.complianceSettings()).baseCountry, isNull);
+    });
+
+    test('setComplianceSettings пишет страну фирмы и не стирает её', () async {
+      await repo.setComplianceSettings(
+        const ComplianceSettings(baseCountry: 'LT'),
+      );
+      await repo.setComplianceSettings(const ComplianceSettings());
+      expect((await repo.complianceSettings()).baseCountry, 'LT');
+    });
+
+    test('ставка: по умолчанию не задана, в евро; сохраняется', () async {
+      expect(await repo.watchDayRate().first, const DayRate());
+      const rate = DayRate(cents: 8550, currency: 'PLN');
+      await repo.setDayRate(rate);
+      expect(await repo.watchDayRate().first, rate);
+    });
+
+    test('ставка: мусор в БД — умолчания', () async {
+      for (final (key, value) in [
+        ('day_rate_cents', '-5'),
+        ('day_rate_currency', 'XYZ'),
+      ]) {
+        await db
+            .into(db.settings)
+            .insertOnConflictUpdate(
+              SettingsCompanion.insert(key: key, value: value),
+            );
+      }
+      expect(await repo.watchDayRate().first, const DayRate());
+    });
+
+    test('переезжают на другой телефон вместе с журналом', () async {
+      await repo.setBaseCountry('RO');
+      await repo.setDayRate(const DayRate(cents: 10000, currency: 'RON'));
+      final moved = await repo.transferableSettings();
+      final otherDb = AppDatabase(NativeDatabase.memory());
+      addTearDown(otherDb.close);
+      final other = SettingsRepository(otherDb);
+      await other.importTransferableSettings(moved);
+      expect((await other.complianceSettings()).baseCountry, 'RO');
+      expect(
+        await other.watchDayRate().first,
+        const DayRate(cents: 10000, currency: 'RON'),
+      );
+    });
+  });
 }

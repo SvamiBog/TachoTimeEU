@@ -96,7 +96,8 @@ class Clock extends Notifier<DateTime> {
   static DateTime _now() => clock.now().toUtc();
 }
 
-/// Настройки, от которых зависит расчёт: экипаж, пакет мобильности, пороги.
+/// Настройки, от которых зависит расчёт: экипаж, пакет мобильности, страна
+/// фирмы, пороги.
 final complianceSettingsProvider = StreamProvider<ComplianceSettings>(
   (ref) => ref.watch(settingsRepositoryProvider).watchComplianceSettings(),
 );
@@ -108,18 +109,26 @@ final complianceProvider = Provider<AsyncValue<ComplianceSnapshot>>((ref) {
   final periods = ref.watch(activityPeriodsProvider);
   final manual = ref.watch(manualShiftsProvider);
   final lastCard = ref.watch(lastCardDownloadProvider);
-  final sources = <AsyncValue<Object?>>[settings, periods, manual, lastCard];
+  final meta = ref.watch(shiftMetaProvider);
+  final sources = <AsyncValue<Object?>>[
+    settings,
+    periods,
+    manual,
+    lastCard,
+    meta,
+  ];
   for (final s in sources) {
     if (s case AsyncError(:final error, :final stackTrace)) {
       return AsyncError(error, stackTrace);
     }
   }
-  return switch ((settings, periods, manual, lastCard)) {
+  return switch ((settings, periods, manual, lastCard, meta)) {
     (
       AsyncData(value: final s),
       AsyncData(value: final p),
       AsyncData(value: final m),
       AsyncData(value: final card),
+      AsyncData(value: final meta),
     ) =>
       AsyncData(
         calculateCompliance(
@@ -128,6 +137,7 @@ final complianceProvider = Provider<AsyncValue<ComplianceSnapshot>>((ref) {
           manualShifts: [for (final r in m) r.shift],
           settings: s,
           lastCardDownload: card,
+          routes: shiftRoutesOf(meta, m),
         ),
       ),
     _ => const AsyncLoading(),
@@ -221,4 +231,9 @@ class Journal {
     if (manual != null) return manualMeta[manual.id] ?? ShiftMeta.empty;
     return recordedMeta[shift.start] ?? ShiftMeta.empty;
   }
+
+  /// Страны смен для движка по началу смены — для рабочих дней.
+  Map<DateTime, ShiftRoute> get routes => {
+    for (final s in shifts) s.start: metaOf(s).route,
+  };
 }

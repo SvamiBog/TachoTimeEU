@@ -30,6 +30,12 @@ final defaultCountryProvider = StreamProvider<String?>(
   (ref) => ref.watch(settingsRepositoryProvider).watchDefaultCountry(),
 );
 
+/// Страна фирмы из настроек расчёта; null — не выбрана или ещё грузится.
+final baseCountryProvider = Provider<String?>(
+  (ref) =>
+      ref.watch(complianceSettingsProvider.select((a) => a.value?.baseCountry)),
+);
+
 /// Смена, к которой относятся страны на главной: текущая, а во время
 /// отдыха после неё — только что закончившаяся. null — смены нет.
 final countryShiftProvider = Provider<DateTime?>(

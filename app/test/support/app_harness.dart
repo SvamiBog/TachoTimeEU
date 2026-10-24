@@ -103,13 +103,15 @@ const TrackingHealth allowed = (
 
 /// Журнал, настройки, считывание карты и страны смен — готовыми
 /// значениями, без данных в БД. Страна новой смене не записывается.
+/// Страна фирмы по умолчанию — Польша: без неё на главной карточка «Укажите
+/// страну фирмы».
 /// Разрешения — [health], платформа автоопределения — [platform]
 /// (по умолчанию Android, всё разрешено). Правила запретов — встроенные
 /// или из [bans], сайт не спрашивается.
 List<Override> journalOverrides({
   required List<ActivityPeriod> periods,
   required DateTime now,
-  ComplianceSettings settings = const ComplianceSettings(),
+  ComplianceSettings settings = const ComplianceSettings(baseCountry: 'PL'),
   DateTime? lastCard,
   Map<DateTime, ShiftCountries> countries = const {},
   List<String> frequentCountries = const [],

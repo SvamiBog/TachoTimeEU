@@ -21,6 +21,7 @@ import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
 import 'package:tachogo/features/settings/auto_detect.dart';
+import 'package:tachogo/features/settings/base_country.dart';
 import 'package:tachogo/features/settings/language_sheet.dart';
 
 /// Пороги предупреждения о лимитах (экран 3).
@@ -122,7 +123,8 @@ class _GeneralCard extends ConsumerWidget {
   }
 }
 
-/// Tachograph, Mobility Package, crew — the last two change the calculation.
+/// Tachograph, company country, Mobility Package, crew — all but the
+/// tachograph change the calculation.
 /// There is no vehicle type: the limits are the same for all
 /// (`AppPreferences`).
 class _RulesCard extends ConsumerWidget {
@@ -146,6 +148,7 @@ class _RulesCard extends ConsumerWidget {
             onChanged: (t) => unawaited(repo.setTachograph(t)),
           ),
         ),
+        const BaseCountryRow(),
         SwitchRow(
           title: l.settingsMobility,
           subtitle: l.settingsMobilityHint,

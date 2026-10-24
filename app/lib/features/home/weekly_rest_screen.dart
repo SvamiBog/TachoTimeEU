@@ -39,6 +39,10 @@ typedef _Weekly = ({
   int? onWeekly,
   DateTime? onWeeklyStart,
   bool reducedAvailable,
+
+  /// Сокращённый недоступен из-за страны фирмы: второй подряд — только вне
+  /// неё (ст. 8(6)).
+  bool reducedAtBase,
   _Last? last,
 
   /// Непогашенные долги по сроку; за два сокращённых подряд — один на оба.
@@ -71,6 +75,7 @@ _Weekly _weekly(ComplianceSnapshot s) {
     onWeekly: onWeekly == null ? null : minutes(onWeekly.duration),
     onWeeklyStart: onWeekly?.start,
     reducedAvailable: s.reducedWeeklyRestAvailable,
+    reducedAtBase: s.reducedWeeklyRestAtBase,
     last: last == null
         ? null
         : (
@@ -140,7 +145,10 @@ class WeeklyRestScreen extends ConsumerWidget {
                 ],
               ] else ...[
                 SectionTitle(l.weeklyNext),
-                _Options(reducedAvailable: s.reducedAvailable),
+                _Options(
+                  reducedAvailable: s.reducedAvailable,
+                  reducedAtBase: s.reducedAtBase,
+                ),
               ],
               SectionTitle(l.weeklyHistory),
               _History(s),
@@ -289,7 +297,7 @@ class _Milestones extends StatelessWidget {
             : MilestoneDot.ring,
         title: l.dailyRestMilestone(hours.inHours, kind),
         subtitle: !allowed
-            ? l.weeklyReducedNo
+            ? (s.reducedAtBase ? l.weeklyReducedNoBase : l.weeklyReducedNo)
             : reached
             ? l.dailyRestReached
             : l.left(formatHm(hours - rest)),
@@ -310,9 +318,12 @@ class _Milestones extends StatelessWidget {
 /// The two options side by side: regular 45 h and reduced 24 h, the latter
 /// greyed out when not allowed.
 class _Options extends StatelessWidget {
-  const new({required this.reducedAvailable});
+  const new({required this.reducedAvailable, required this.reducedAtBase});
 
   final bool reducedAvailable;
+
+  /// Недоступен из-за страны фирмы — подсказка говорит почему.
+  final bool reducedAtBase;
 
   @override
   Widget build(BuildContext context) {
@@ -336,7 +347,11 @@ class _Options extends StatelessWidget {
               child: _Option(
                 title: l.weeklyReduced,
                 hours: EuLimits.weeklyRestReduced.inHours,
-                hint: reducedAvailable ? l.weeklyReducedYes : l.weeklyReducedNo,
+                hint: reducedAvailable
+                    ? l.weeklyReducedYes
+                    : reducedAtBase
+                    ? l.weeklyReducedNoBase
+                    : l.weeklyReducedNo,
                 muted: !reducedAvailable,
               ),
             ),

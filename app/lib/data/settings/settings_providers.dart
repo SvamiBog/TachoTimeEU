@@ -23,3 +23,8 @@ final preferencesProvider = StreamProvider<AppPreferences>(
 final notificationSettingsProvider = StreamProvider<NotificationSettings>(
   (ref) => ref.watch(settingsRepositoryProvider).watchNotifications(),
 );
+
+/// Ставка за рабочий день для калькулятора зарплаты (Premium).
+final dayRateProvider = StreamProvider<DayRate>(
+  (ref) => ref.watch(settingsRepositoryProvider).watchDayRate(),
+);

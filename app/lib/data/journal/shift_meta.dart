@@ -17,6 +17,10 @@ class ShiftMeta {
 
   static const empty = ShiftMeta();
 
+  /// Страны смены для движка: по ним проверяются два сокращённых отдыха
+  /// подряд и считаются рабочие дни.
+  ShiftRoute get route => ShiftRoute(from: startCountry, to: endCountry);
+
   @override
   bool operator ==(Object other) =>
       other is ShiftMeta &&
@@ -55,3 +59,13 @@ class ManualShiftRecord {
   @override
   int get hashCode => Object.hash(shift.id, shift.start, shift.end, meta);
 }
+
+/// Страны смен для движка по началу смены: из записей режимов
+/// ([recorded]) и ручных ([manual]).
+Map<DateTime, ShiftRoute> shiftRoutesOf(
+  Map<DateTime, ShiftMeta> recorded,
+  Iterable<ManualShiftRecord> manual,
+) => {
+  for (final e in recorded.entries) e.key: e.value.route,
+  for (final r in manual) r.shift.start: r.meta.route,
+};
