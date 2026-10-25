@@ -36,4 +36,4 @@ Approve only with no CRITICAL or HIGH findings. A wrong driving, break or rest c
 1. Read the diff (`git diff`, or the PR diff).
 2. Security-sensitive and engine areas first.
 3. Run the affected tests (commands in [dart/testing.md](dart/testing.md)).
-4. For a deeper pass: the `/code-review` or `/security-review` skill.
+4. For a deeper pass: the `/code-review` or `/security-review` skill, or `/ecc-flutter-review` for Flutter and Dart specifics.
