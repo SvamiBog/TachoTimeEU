@@ -25,6 +25,9 @@
 
 Список тестов проекта и порядок их ввода — `docs/testing.md`.
 
+## Claude Code
+Правила для Claude — `.claude/rules/` (`dart/` — только для Dart-файлов), хуки — `.claude/settings.json`: `engine-purity.cjs` блокирует правки с `package:flutter` и `dart:ui` в движке, `dart-format.cjs` форматирует изменённые `.dart` (Dart — из PATH или `DART_EXE`). Плагины и личные настройки — в `.claude/settings.local.json`, он не в git.
+
 ## Дизайн
 - Спецификация: `docs/design/README.md`, скриншоты: `docs/design/screens/`.
 - Цвета, шрифты и радиусы брать только из `app/lib/core/theme/` (`context.colors`, `AppTextStyles`, `AppRadius`, `AppSize`, `AppSpacing`), не хардкодить hex в виджетах. Источник значений — `docs/design/tokens.json`, при изменении обновлять оба места.
