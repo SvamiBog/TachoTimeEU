@@ -102,7 +102,7 @@ void main() {
     });
 
     test('самая свежая сверка', () {
-      expect(latestCheck(europeBans.values), const BanDate(2026, 10, 1));
+      expect(latestCheck(europeBans.values), const BanDate(2026, 10, 25));
       expect(
         latestCheck([
           const CountryBans(

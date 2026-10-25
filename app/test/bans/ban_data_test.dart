@@ -261,7 +261,7 @@ void main() {
 
     test('сверены в тот же день — скачанные: на сайте правка без новой '
         'даты', () async {
-      final sameDay = downloadedBans(const BanDate(2026, 10, 1));
+      final sameDay = downloadedBans(latestCheck(europeBans.values));
       final c = container(FakeBanData(downloaded: sameDay));
       await c.read(banDataProvider.notifier).refresh();
       expect(c.read(banDataProvider), same(sameDay));
@@ -369,9 +369,9 @@ void main() {
         viewport: const Size(412, 2400),
         overrides: journalOverrides(periods: const [], now: noon),
       );
-      await scrollTo(find.textContaining(ru.bansNotUpdated('01.10.2026')));
+      await scrollTo(find.textContaining(ru.bansNotUpdated('25.10.2026')));
       expect(
-        find.textContaining(ru.bansNotUpdated('01.10.2026')),
+        find.textContaining(ru.bansNotUpdated('25.10.2026')),
         findsOneWidget,
       );
       await unmount(tester);

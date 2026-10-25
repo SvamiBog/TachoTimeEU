@@ -101,7 +101,8 @@ Color banColor(AppColors colors, BanLevel? level) => switch (level) {
 };
 
 /// Правило одной строкой: «Сб 22:00 – вс 22:00», «Праздники: накануне
-/// 22:00 – 22:00», «Каждую ночь 22:00–05:00».
+/// 22:00 – 22:00», «Каждую ночь 22:00–05:00», «Дни календаря 2027: пт 20.08
+/// 08:00 – вс 22.08 22:00».
 String banRuleText(AppLocalizations l, BanRule r, String locale) {
   String time(BanTime t) {
     final midnight = t.hour == 0 && t.minute == 0 && t.dayOffset > 0;
@@ -132,6 +133,16 @@ String banRuleText(AppLocalizations l, BanRule r, String locale) {
       return '${l.bansRuleNights} $from–$to';
     case CalendarDays(:final dates):
       final years = {for (final d in dates) d.year}.join(', ');
+      // Один день календаря на несколько суток — с датами начала и конца
+      if (dates.length == 1 && r.to.dayOffset > r.from.dayOffset) {
+        String at(BanTime t) {
+          final d = t.on(dates.single.date);
+          return '${_weekday(d, locale)} ${_two(d.day)}.${_two(d.month)} '
+              '${_hm(d)}';
+        }
+
+        return '${l.bansRuleCalendar(years)}: ${at(r.from)} – ${at(r.to)}';
+      }
       return '${l.bansRuleCalendar(years)}: $from–$to';
   }
 }

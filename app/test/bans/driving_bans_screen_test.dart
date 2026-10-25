@@ -59,6 +59,11 @@ void main() {
       expect(text(austria, 3), 'Каждую ночь 22:00–05:00');
       expect(text(poland, 1), 'Канун праздника: 18:00–22:00');
       expect(text(italy, 4), 'Дни календаря 2026: 08:00–14:00');
+      // День календаря на несколько суток — с датами начала и конца
+      expect(
+        text(hungary, hungary.rules.length - 1),
+        'Дни календаря 2027: пт 20.08 08:00 – вс 22.08 22:00',
+      );
       expect(
         banRuleCaption(ru, germany.rules[3], 'ru'),
         'отдельные дороги · больше 7,5 т · с 01.07 по 31.08',
@@ -206,7 +211,7 @@ void main() {
       expect(find.text('ferreisev'), findsOneWidget);
       expect(
         find.textContaining(
-          'Правила от 01.10.2026: обновятся, когда появится интернет. '
+          'Правила от 25.10.2026: обновятся, когда появится интернет. '
           'Время — местное время страны.',
         ),
         findsOneWidget,
@@ -228,7 +233,7 @@ void main() {
     });
 
     testWidgets('спорные данные — просьба сверить', (tester) async {
-      await pump(tester, const CountryBansScreen('PL'));
+      await pump(tester, const CountryBansScreen('SK'));
       expect(find.textContaining(ru.bansNeedsCheck), findsOneWidget);
       await unmount(tester);
     });
