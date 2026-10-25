@@ -12,6 +12,7 @@ import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/alerts.dart';
+import 'package:tachogo/features/home/ban_card.dart';
 import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
 import 'package:tachogo/features/home/hero_card.dart';
@@ -53,6 +54,7 @@ class HomeScreen extends ConsumerWidget {
               HeroCard(),
               ModeButtons(),
               BaseCountryCard(),
+              BanCard(),
               AlertsSection(),
               TodaySection(),
               RestSection(),
