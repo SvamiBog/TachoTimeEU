@@ -12,6 +12,8 @@ import 'package:tacho_engine/src/bans/holidays.dart';
 import 'package:tacho_engine/src/bans/zone_time.dart';
 
 const _checked = BanDate(2026, 10, 1);
+// Повторная сверка Словакии, Венгрии, Польши и Люксембурга
+const _rechecked = BanDate(2026, 10, 25);
 const _end2026 = BanDate(2026, 12, 31);
 
 // Праздники
@@ -255,21 +257,26 @@ const czechia = CountryBans(
   ],
 );
 
-/// Словакия: закон 8/2009 Z. z., § 39. Больше 7,5 т и больше 3,5 т с
-/// прицепом; автомагистрали, скоростные дороги и дороги I класса. Список
-/// выходных праздников менялся в 2025–2026 — сверить.
+/// Словакия: закон 8/2009 Z. z., § 39, в редакции закона 131/2026 Z. z.:
+/// с 1.09.2026 запрет в воскресенье и в дни отдыха — с 6:00, а не с 0:00.
+/// Больше 7,5 т и больше 3,5 т с прицепом; автомагистрали, скоростные
+/// дороги и дороги I класса. Закон называет первый и последний день отдыха
+/// подряд, но полиция давала исключения и на 24.12 и 6.01 — запрет считаем
+/// в каждый день отдыха. 8.05 и 15.09 в 2026 году не дни отдыха (закон
+/// 261/2025), с 2027 года — снова. Время летней субботы после новелы —
+/// сверить.
 const slovakia = CountryBans(
   code: 'SK',
   zone: BanZone.cet,
   coverage: BanCoverage.rules,
-  checkedOn: _checked,
+  checkedOn: _rechecked,
   needsCheck: true,
   sources: ['https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2009/8/'],
   rules: [
     BanRule(
       kind: BanKind.weekend,
       days: _sunday,
-      from: BanTime(0),
+      from: BanTime(6),
       to: BanTime(22),
       scope: BanScope.mainRoads,
     ),
@@ -281,14 +288,16 @@ const slovakia = CountryBans(
         _goodFriday,
         _easterMonday,
         _labourDay,
+        FixedHoliday(5, 8),
         FixedHoliday(7, 5),
         FixedHoliday(8, 29),
+        FixedHoliday(9, 15),
         _allSaints,
         _christmasEve,
         _christmas,
         _boxingDay,
       ]),
-      from: BanTime(0),
+      from: BanTime(6),
       to: BanTime(22),
       scope: BanScope.mainRoads,
     ),
@@ -303,21 +312,66 @@ const slovakia = CountryBans(
   ],
 );
 
-/// Венгрия: больше 7,5 т, все дороги. Летом с 15:00 субботы; зимой
-/// международные перевозки Euro 3+ освобождены — сверить.
+const _hungarianHolidays = HolidayDays([
+  _newYear,
+  FixedHoliday(3, 15),
+  _goodFriday,
+  _easterMonday,
+  _labourDay,
+  _whitMonday,
+  FixedHoliday(8, 20),
+  FixedHoliday(10, 23),
+  _allSaints,
+  _christmas,
+  _boxingDay,
+]);
+
+// Зимой, с 4 ноября по 1 марта, международные перевозки машинами Euro 3 и
+// чище освобождены — запрет не для всех машин. Сезон не переходит через
+// Новый год, поэтому зима — два сезона.
+const _hungarianWinterStart = BanSeason(11, 4, 12, 31);
+const _hungarianWinterEnd = BanSeason(1, 1, 3, 1);
+const _hungarianRestOfYear = BanSeason(3, 2, 11, 3);
+
+/// Венгрия: постановление правительства 190/2008 (VII. 29.), § 2. Больше
+/// 7,5 т, все дороги: с 22:00 субботы и кануна праздника до 22:00
+/// воскресенья и праздника, летом — с 15:00 субботы. Праздник летом в
+/// пятницу — без перерыва до 22:00 воскресенья (§ 2 (2)): 20.08.2027 —
+/// днём календаря. Сверить: даты зимнего освобождения, рабочие субботы.
 const hungary = CountryBans(
   code: 'H',
   zone: BanZone.cet,
   coverage: BanCoverage.rules,
-  checkedOn: _checked,
+  checkedOn: _rechecked,
+  calendarUntil: BanDate(2027, 12, 31),
   needsCheck: true,
-  sources: ['https://www.mkfe.hu/en'],
+  sources: [
+    'https://njt.hu/jogszabaly/2008-190-20-22',
+    'https://www.mkfe.hu/en',
+  ],
   rules: [
     BanRule(
       kind: BanKind.weekend,
       days: _saturday,
       from: BanTime(22),
       to: BanTime(22, dayOffset: 1),
+      season: _hungarianRestOfYear,
+    ),
+    BanRule(
+      kind: BanKind.weekend,
+      days: _saturday,
+      from: BanTime(22),
+      to: BanTime(22, dayOffset: 1),
+      scope: BanScope.conditional,
+      season: _hungarianWinterStart,
+    ),
+    BanRule(
+      kind: BanKind.weekend,
+      days: _saturday,
+      from: BanTime(22),
+      to: BanTime(22, dayOffset: 1),
+      scope: BanScope.conditional,
+      season: _hungarianWinterEnd,
     ),
     BanRule(
       kind: BanKind.summer,
@@ -328,21 +382,32 @@ const hungary = CountryBans(
     ),
     BanRule(
       kind: BanKind.holiday,
-      days: HolidayDays([
-        _newYear,
-        FixedHoliday(3, 15),
-        _goodFriday,
-        _easterMonday,
-        _labourDay,
-        _whitMonday,
-        FixedHoliday(8, 20),
-        FixedHoliday(10, 23),
-        _allSaints,
-        _christmas,
-        _boxingDay,
-      ]),
+      days: _hungarianHolidays,
       from: BanTime(22, dayOffset: -1),
       to: BanTime(22),
+      season: _hungarianRestOfYear,
+    ),
+    BanRule(
+      kind: BanKind.holiday,
+      days: _hungarianHolidays,
+      from: BanTime(22, dayOffset: -1),
+      to: BanTime(22),
+      scope: BanScope.conditional,
+      season: _hungarianWinterStart,
+    ),
+    BanRule(
+      kind: BanKind.holiday,
+      days: _hungarianHolidays,
+      from: BanTime(22, dayOffset: -1),
+      to: BanTime(22),
+      scope: BanScope.conditional,
+      season: _hungarianWinterEnd,
+    ),
+    BanRule(
+      kind: BanKind.calendar,
+      days: CalendarDays([BanDate(2027, 8, 20)]),
+      from: BanTime(8),
+      to: BanTime(22, dayOffset: 2),
     ),
   ],
 );
@@ -362,17 +427,18 @@ const _polishEves = HolidayDays([
 
 /// Польша: распоряжение Министра транспорта от 31.07.2007 (Dz.U. 2021
 /// poz. 783). Больше 12 т, автомагистрали, скоростные и национальные
-/// дороги. Летние даты объявляются по школьному календарю; список
-/// праздников и канунов — сверить.
+/// дороги. Летние даты объявляются по школьному календарю. Праздники и
+/// кануны — по GDDKiA и Министерству инфраструктуры: 6.01 и 24.12, хотя и
+/// выходные, в распоряжении не названы.
 const poland = CountryBans(
   code: 'PL',
   zone: BanZone.cet,
   coverage: BanCoverage.rules,
-  checkedOn: _checked,
+  checkedOn: _rechecked,
   calendarUntil: _end2026,
-  needsCheck: true,
   sources: [
     'https://www.gov.pl/web/infrastruktura/ograniczenia-w-ruchu',
+    'https://www.gov.pl/web/gddkia/c-ograniczenia-w-ruchu-dla-pojazdow-powyzej-12-ton2',
     'https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20210000783',
   ],
   rules: [
@@ -614,15 +680,20 @@ const italy = CountryBans(
   ],
 );
 
-/// Люксембург: больше 7,5 т в транзите в сторону Франции и Германии —
-/// не для всех рейсов. Сверить.
+/// Люксембург: постановление (règlement grand-ducal) от 19.07.1997. Больше
+/// 7,5 т в транзите в сторону Франции и Германии — не для всех рейсов: не
+/// внутри страны и не в сторону Бельгии. К общим праздникам добавляются
+/// праздники страны назначения: Франции — 8.05, 14.07, 11.11, Германии —
+/// Страстная пятница, Тело Христово, 3.10, 26.12. В сторону Франции — с
+/// 21:30, в сторону Германии — с 23:30; считаем по раннему.
 const luxembourg = CountryBans(
   code: 'L',
   zone: BanZone.cet,
   coverage: BanCoverage.rules,
-  checkedOn: _checked,
-  needsCheck: true,
+  checkedOn: _rechecked,
   sources: [
+    'https://police.public.lu/fr/legislation/code-de-la-route/routiers-poids-lourds1.html',
+    'https://legilux.public.lu/eli/etat/leg/rgd/1997/07/19/n2/jo',
     'https://www.bison-fute.gouv.fr/restrictions-pays-limitrophes.html',
   ],
   rules: [
@@ -637,14 +708,18 @@ const luxembourg = CountryBans(
       kind: BanKind.holiday,
       days: HolidayDays([
         _newYear,
+        _goodFriday,
         _easterMonday,
         _labourDay,
-        FixedHoliday(5, 9),
+        FixedHoliday(5, 8),
         _ascension,
         _whitMonday,
-        FixedHoliday(6, 23),
+        _corpusChristi,
+        FixedHoliday(7, 14),
         _assumption,
+        FixedHoliday(10, 3),
         _allSaints,
+        FixedHoliday(11, 11),
         _christmas,
         _boxingDay,
       ]),
