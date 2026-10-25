@@ -108,6 +108,7 @@ class NavRow extends StatelessWidget {
     this.value,
     this.numericValue = false,
     this.icon,
+    this.iconColor,
     this.chevron = true,
     super.key,
   });
@@ -123,6 +124,10 @@ class NavRow extends StatelessWidget {
 
   /// Значок слева: «Экономия батареи».
   final IconData? icon;
+
+  /// Цвет значка, если он говорит о состоянии: запрет идёт или скоро.
+  /// По умолчанию — цвет текста.
+  final Color? iconColor;
 
   /// «›» справа: строка открывает экран, шторку или настройки системы.
   final bool chevron;
@@ -150,7 +155,7 @@ class NavRow extends StatelessWidget {
               child: Row(
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, size: 22, color: colors.text),
+                    Icon(icon, size: 22, color: iconColor ?? colors.text),
                     const SizedBox(width: 12),
                   ],
                   Expanded(
