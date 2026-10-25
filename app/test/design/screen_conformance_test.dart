@@ -42,6 +42,7 @@ import 'package:tachogo/l10n/app_localizations.dart';
 
 import '../support/app_harness.dart';
 import '../support/journal_fixtures.dart';
+import 'text_contrast.dart';
 
 /// Как открыть шторку: строки — на языке, в котором отрисован экран.
 typedef _Open = Future<void> Function(WidgetTester tester, AppLocalizations l);
@@ -321,6 +322,39 @@ void main() {
     }
   });
 
+  testWidgets('контраст считается по цвету текста, а не по краю буквы', (
+    tester,
+  ) async {
+    Future<Evaluation> check(Color color) async {
+      await pumpScreen(
+        tester,
+        Material(
+          color: AppColors.dark.background,
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              // Дата в шапке: строка на полпикселя ниже сетки
+              padding: const EdgeInsets.fromLTRB(60, 36.5, 16, 0),
+              child: Text(
+                'Среда, 23 сентября',
+                style: AppTextStyles.small.copyWith(color: color),
+              ),
+            ),
+          ),
+        ),
+        overrides: const [],
+      );
+      return await deviceTextContrastGuideline.evaluate(tester);
+    }
+
+    // Вторичный текст на фоне — 8:1. textContrastGuideline на Windows
+    // находит здесь край буквы #6E7276 и 3.84:1.
+    expect((await check(AppColors.dark.textSecondary)).passed, isTrue);
+    final low = await check(const Color(0xFF6E7276));
+    expect(low.passed, isFalse);
+    expect(low.reason, contains('found 3.84'));
+  });
+
   testWidgets('по умолчанию тёмная тема из токенов', (tester) async {
     final db = memoryDatabase();
     addTearDown(db.close);
@@ -371,7 +405,10 @@ void main() {
           '$theme: контраст отрисованного текста',
           (tester) async {
             await _pump(tester, screen, brightness: brightness);
-            await expectLater(tester, meetsGuideline(textContrastGuideline));
+            await expectLater(
+              tester,
+              meetsGuideline(deviceTextContrastGuideline),
+            );
           },
           // Таймер цвета вождения на фоне светлой темы — 2.5:1,
           // см. lightDriveContrastIssue в design_test_utils.dart

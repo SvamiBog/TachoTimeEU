@@ -160,6 +160,8 @@ flutter test --coverage
 
 То же самое проверяет pre-commit хук (`git config core.hooksPath .githooks`) и CI (`.github/workflows/ci.yml`). CI ещё гоняет тесты в трёх часовых поясах, требует покрытия `lib/data` не ниже 80 %, сверяет снимки схемы БД, итоговый манифест APK (`tool/check_android_manifest.dart`) и выравнивание нативных библиотек по 16 КБ (`tool/check_page_size.dart`), запускает тесты Kotlin на Robolectric (`android/app/src/test/`, `./gradlew :app:testDebugUnitTest` после сборки APK). Тесты в поясах и всё, что после сборки APK, — только в полной ступени: готовый PR в `main`, `main`, тег, ручной запуск; черновик PR — только быстрые (CI-13). Список тестов и что ещё предстоит ввести — `docs/testing.md`.
 
+На Windows тесты проходят как в CI, если файлы в рабочей копии с концами строк LF: так велит `.gitattributes` (`* text=auto eol=lf`) при любом `core.autocrlf`. Клон, сделанный до появления `.gitattributes`, переписать один раз — на чистом дереве, свои правки сначала закоммитить: `git rm -r --cached -q .`, затем `git reset --hard`.
+
 Описание модуля и doc-комментарии классов — на английском, остальные комментарии — на русском (`CLAUDE.md`, «Комментарии в коде»); проверяет `test/code/source_docs_test.dart`.
 
 ## Интеграционные тесты

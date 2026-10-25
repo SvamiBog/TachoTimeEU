@@ -1,0 +1,21 @@
+# Концы строк: в репозитории и в рабочей копии — LF на любой ОС, как в CI
+# (Linux) и как пишут инструменты проекта (dart format, gen-l10n,
+# tool/l10n_review.dart). Без этого Git для Windows с core.autocrlf=true
+# выдаёт файлы с CRLF: тесты, которые читают исходники и документы, падают
+# только локально, а шебанг .githooks/pre-commit становится `sh\r`.
+* text=auto eol=lf
+
+# Скрипты Windows
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Двоичные файлы — без преобразований
+*.png binary
+*.jpg binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
