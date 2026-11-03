@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "{time} für die reduzierte wöchentliche Ruhezeit wurden nicht angehängt. Verspätung — {days, plural, one{{days} Tag} other{{days} Tage}}.",
   "infrReducedRestsExceededTitle": "Zu viele reduzierte Ruhezeiten",
   "infrReducedRestsExceededText": "Reduzierte seit der wöchentlichen Ruhezeit: {count}, erlaubt sind 3.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Reduzierte Ruhezeit ohne Anspruch",
+  "infrReducedWeeklyRestWithoutRightText": "Die letzte wöchentliche Ruhezeit war reduziert, ohne Anspruch darauf: Nötig war eine regelmäßige von 45 Std. Es fehlten {time}.",
+  "infrFullWeeklyRestRequiredTitle": "Regelmäßige wöchentliche Ruhezeit nötig",
+  "infrFullWeeklyRestRequiredText": "Eine reduzierte wöchentliche Ruhezeit ist jetzt nicht möglich — beenden Sie die Ruhezeit nicht vor 45 Std. Noch {time}.",
   "infrCardOverdueTitle": "Auslesen der Karte überfällig",
   "infrCardOverdueText": "Die Frist von 28 Tagen ist seit {days, plural, one{{days} Tag} other{{days} Tagen}} abgelaufen.",
   "infrCardSoonTitle": "Karte bald auslesen",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "Im Ausland",
   "workDaysAbroadHint": "Mindestens ein Teil des Tages außerhalb des Unternehmenslandes, auch am Wochenende",
   "workDaysHome": "Arbeit im Unternehmensland",
-  "workDaysHomeHint": "Den ganzen Tag im Unternehmensland, aber mit Arbeit",
+  "workDaysWeekendsAbroad": "Davon Ruhetage",
+  "workDaysWeekendsAbroadHint": "Ganzer Tag ohne Arbeit außerhalb des Unternehmenslandes",
+  "workDaysWeekendAbroad": "Ruhetag im Ausland",
   "workDaysOff": "Kein Arbeitstag",
   "workDaysRate": "Tagessatz",
   "workDaysRateNotSet": "Nicht festgelegt",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Vorheriger Monat",
   "workDaysNextMonth": "Nächster Monat",
   "workDaysNoBase": "Geben Sie das Land des Unternehmens an: Arbeitstage werden danach gezählt.",
-  "workDaysRule": "Ein Arbeitstag ist ein Tag, an dem Sie mindestens zeitweise im Ausland waren (unterwegs oder in der Ruhezeit, auch am Wochenende) oder im Unternehmensland gearbeitet haben. Ein Tag ganz in der Ruhezeit im Unternehmensland zählt nicht. Wo Sie waren, weiß die App aus den Ländern der Schichten auf dem Startbildschirm."
+  "workDaysRule": "Ein Arbeitstag ist ein Tag, an dem Sie mindestens zeitweise im Ausland waren (unterwegs oder in der Ruhezeit, auch am Wochenende) oder im Unternehmensland gearbeitet haben. Ein Tag ganz in der Ruhezeit im Unternehmensland zählt nicht. Wo Sie waren, weiß die App aus den Ländern der Schichten auf dem Startbildschirm. Im Kalender markiert ein Ring Arbeit im Unternehmensland."
 }

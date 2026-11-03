@@ -723,6 +723,24 @@ class AppLocalizationsUz extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Huquqsiz qisqartirilgan dam olish';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'Oxirgi haftalik dam olish qisqartirilgan, lekin bunga huquq yoʻq edi: toʻliq 45 soat kerak edi. $time yetmadi.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle =>
+      'Toʻliq haftalik dam olish kerak';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'Qisqartirilgan haftalik dam olish hozir mumkin emas — dam olishni 45 soatdan oldin tugatmang. $time qoldi.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Kartani oʻqish kechikdi';
 
   @override
@@ -2621,8 +2639,14 @@ class AppLocalizationsUz extends AppLocalizations {
   String get workDaysHome => 'Firma mamlakatida ish';
 
   @override
-  String get workDaysHomeHint =>
-      'Butun kun firma mamlakatida, lekin ish bor edi';
+  String get workDaysWeekendsAbroad => 'Shundan dam olish kunlari';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'Butun kun firma mamlakatidan tashqarida ishsiz';
+
+  @override
+  String get workDaysWeekendAbroad => 'Chet elda dam olish kuni';
 
   @override
   String get workDaysOff => 'Ish kuni emas';
@@ -2659,5 +2683,5 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Ish kuni — kunning hech boʻlmaganda bir qismida chet elda boʻlgan (reysda yoki dam olishda, dam olish kunlari ham) yoki firma mamlakatida ishlagan kuningiz. Firma mamlakatida butunlay dam olish bilan oʻtgan kun hisoblanmaydi. Qayerda boʻlganingizni ilova bosh ekrandagi smena mamlakatlaridan biladi.';
+      'Ish kuni — kunning hech boʻlmaganda bir qismida chet elda boʻlgan (reysda yoki dam olishda, dam olish kunlari ham) yoki firma mamlakatida ishlagan kuningiz. Firma mamlakatida butunlay dam olish bilan oʻtgan kun hisoblanmaydi. Qayerda boʻlganingizni ilova bosh ekrandagi smena mamlakatlaridan biladi. Kalendarda halqa — firma mamlakatidagi ish.';
 }

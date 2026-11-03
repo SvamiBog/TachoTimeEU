@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
+import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/setting_rows.dart';
@@ -15,7 +16,8 @@ import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
 
-/// "Company country · Poland ›" in settings and onboarding.
+/// "Company country · Poland ›" in settings and onboarding. Not chosen yet —
+/// in red, with what the app cannot do without it.
 class BaseCountryRow extends ConsumerWidget {
   const new({super.key});
 
@@ -23,10 +25,22 @@ class BaseCountryRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final code = ref.watch(baseCountryProvider);
+    if (code == null) {
+      final error = context.colors.errorText;
+      return NavRow(
+        icon: Icons.error_outline,
+        iconColor: error,
+        title: l.settingsBaseCountry,
+        subtitle: l.baseCountryCardText,
+        value: l.baseCountryNotSet,
+        valueColor: error,
+        onTap: () => unawaited(showBaseCountrySheet(context)),
+      );
+    }
     return NavRow(
       title: l.settingsBaseCountry,
       subtitle: l.settingsBaseCountryHint,
-      value: code == null ? l.baseCountryNotSet : l.countryName(code),
+      value: l.countryName(code),
       onTap: () => unawaited(showBaseCountrySheet(context)),
     );
   }

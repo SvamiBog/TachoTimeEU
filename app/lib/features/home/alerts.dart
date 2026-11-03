@@ -70,7 +70,9 @@ void openAlertDetails(BuildContext context, InfringementType type) =>
       InfringementType.weeklyRestSoon ||
       InfringementType.weeklyRestContinue ||
       InfringementType.compensationSoon ||
-      InfringementType.compensationOverdue => openWeeklyRestScreen(context),
+      InfringementType.compensationOverdue ||
+      InfringementType.reducedWeeklyRestWithoutRight ||
+      InfringementType.fullWeeklyRestRequired => openWeeklyRestScreen(context),
       InfringementType.reducedRestsExceeded => openDailyRestScreen(context),
       InfringementType.cardOverdue ||
       InfringementType.cardSoon => unawaited(showCardSheet(context)),

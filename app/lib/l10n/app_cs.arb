@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "Za zkrácený týdenní odpočinek nebylo připojeno {time}. Zpoždění — {days, plural, one{{days} den} few{{days} dny} many{{days} dne} other{{days} dní}}.",
   "infrReducedRestsExceededTitle": "Příliš mnoho zkrácených odpočinků",
   "infrReducedRestsExceededText": "Zkrácených od týdenního odpočinku: {count}, povoleny 3.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Zkrácený odpočinek bez nároku",
+  "infrReducedWeeklyRestWithoutRightText": "Poslední týdenní odpočinek byl zkrácený bez nároku: byl potřeba běžný 45 h. Chybělo {time}.",
+  "infrFullWeeklyRestRequiredTitle": "Je potřeba běžný týdenní odpočinek",
+  "infrFullWeeklyRestRequiredText": "Zkrácený týdenní odpočinek teď není možný — neukončujte odpočinek dřív než po 45 h. Zbývá {time}.",
   "infrCardOverdueTitle": "Stažení karty po termínu",
   "infrCardOverdueText": "Lhůta 28 dní uplynula před {days, plural, one{{days} dnem} few{{days} dny} many{{days} dne} other{{days} dny}}.",
   "infrCardSoonTitle": "Brzy stažení karty",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "V zahraničí",
   "workDaysAbroadHint": "Aspoň část dne mimo zemi firmy, i víkendy",
   "workDaysHome": "Práce v zemi firmy",
-  "workDaysHomeHint": "Celý den v zemi firmy, ale s prací",
+  "workDaysWeekendsAbroad": "Z toho dny volna",
+  "workDaysWeekendsAbroadHint": "Celý den bez práce mimo zemi firmy",
+  "workDaysWeekendAbroad": "Den volna v zahraničí",
   "workDaysOff": "Nepracovní den",
   "workDaysRate": "Sazba za den",
   "workDaysRateNotSet": "Nezadána",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Předchozí měsíc",
   "workDaysNextMonth": "Další měsíc",
   "workDaysNoBase": "Zadejte zemi firmy: pracovní dny se počítají vůči ní.",
-  "workDaysRule": "Pracovní den je, když jste aspoň část dne byli v zahraničí (na cestě nebo na odpočinku, i o víkendu) nebo jste pracovali v zemi firmy. Nepočítá se den celý na odpočinku v zemi firmy. Kde jste byli, aplikace ví podle zemí směn na hlavní obrazovce."
+  "workDaysRule": "Pracovní den je, když jste aspoň část dne byli v zahraničí (na cestě nebo na odpočinku, i o víkendu) nebo jste pracovali v zemi firmy. Nepočítá se den celý na odpočinku v zemi firmy. Kde jste byli, aplikace ví podle zemí směn na hlavní obrazovce. V kalendáři kroužek značí práci v zemi firmy."
 }

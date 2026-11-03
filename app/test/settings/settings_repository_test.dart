@@ -336,5 +336,21 @@ void main() {
         const DayRate(cents: 10000, currency: 'RON'),
       );
     });
+
+    test('файл без страны фирмы или с неверной её не стирает', () async {
+      // Перенос из версии, где страны фирмы ещё не было
+      await repo.setBaseCountry('PL');
+      await repo.setDayRate(const DayRate(cents: 10000, currency: 'PLN'));
+      await repo.importTransferableSettings({'mobility_package': 'false'});
+      final settings = await repo.complianceSettings();
+      expect(settings.baseCountry, 'PL');
+      expect(settings.mobilityPackage, isFalse);
+      // Остальное — как в файле: ставки в нём нет — сброшена
+      expect(await repo.watchDayRate().first, const DayRate());
+      await repo.importTransferableSettings({'base_country': 'XX'});
+      expect((await repo.complianceSettings()).baseCountry, 'PL');
+      await repo.importTransferableSettings({'base_country': 'LT'});
+      expect((await repo.complianceSettings()).baseCountry, 'LT');
+    });
   });
 }

@@ -137,6 +137,26 @@ enum InfringementType {
     InfringementCategory.card,
     '1',
     regulation: '581/2010',
+  ),
+
+  // Новые виды — в конце: номер вида — это id его уведомления.
+
+  /// Последний недельный отдых сокращён без права на него: второй подряд в
+  /// стране фирмы, второй подряд без пакета мобильности или из четырёх
+  /// недельных подряд полных меньше двух. [Infringement.time] — сколько не
+  /// хватило до 45 ч. Видно, пока не закончится следующий недельный.
+  reducedWeeklyRestWithoutRight(
+    InfringementSeverity.violation,
+    InfringementCategory.weeklyRest,
+    '8(6)',
+  ),
+
+  /// Идёт недельный отдых, а сокращённый сейчас недоступен — заканчивать
+  /// раньше 45 ч нельзя. [Infringement.time] — сколько ещё отдыхать.
+  fullWeeklyRestRequired(
+    InfringementSeverity.warning,
+    InfringementCategory.weeklyRest,
+    '8(6)',
   );
 
   new(

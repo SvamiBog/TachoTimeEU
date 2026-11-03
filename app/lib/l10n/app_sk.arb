@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "Za skrátený týždenný odpočinok nebolo pripojené {time}. Omeškanie — {days, plural, one{{days} deň} few{{days} dni} many{{days} dňa} other{{days} dní}}.",
   "infrReducedRestsExceededTitle": "Priveľa skrátených odpočinkov",
   "infrReducedRestsExceededText": "Skrátených od týždenného odpočinku: {count}, povolené 3.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Skrátený odpočinok bez nároku",
+  "infrReducedWeeklyRestWithoutRightText": "Posledný týždenný odpočinok bol skrátený bez nároku: bol potrebný bežný 45 h. Chýbalo {time}.",
+  "infrFullWeeklyRestRequiredTitle": "Treba bežný týždenný odpočinok",
+  "infrFullWeeklyRestRequiredText": "Skrátený týždenný odpočinok teraz nie je možný — neukončujte odpočinok skôr ako po 45 h. Zostáva {time}.",
   "infrCardOverdueTitle": "Stiahnutie karty po termíne",
   "infrCardOverdueText": "Lehota 28 dní uplynula pred {days, plural, one{{days} dňom} few{{days} dňami} many{{days} dňa} other{{days} dňami}}.",
   "infrCardSoonTitle": "Čoskoro stiahnutie karty",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "V zahraničí",
   "workDaysAbroadHint": "Aspoň časť dňa mimo krajiny firmy, aj víkendy",
   "workDaysHome": "Práca v krajine firmy",
-  "workDaysHomeHint": "Celý deň v krajine firmy, ale s prácou",
+  "workDaysWeekendsAbroad": "Z toho dni voľna",
+  "workDaysWeekendsAbroadHint": "Celý deň bez práce mimo krajiny firmy",
+  "workDaysWeekendAbroad": "Deň voľna v zahraničí",
   "workDaysOff": "Nepracovný deň",
   "workDaysRate": "Sadzba za deň",
   "workDaysRateNotSet": "Nezadaná",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Predchádzajúci mesiac",
   "workDaysNextMonth": "Ďalší mesiac",
   "workDaysNoBase": "Zadajte krajinu firmy: pracovné dni sa počítajú voči nej.",
-  "workDaysRule": "Pracovný deň je, keď ste aspoň časť dňa boli v zahraničí (na ceste alebo na odpočinku, aj cez víkend) alebo ste pracovali v krajine firmy. Nepočíta sa deň celý na odpočinku v krajine firmy. Kde ste boli, aplikácia vie podľa krajín zmien na hlavnej obrazovke."
+  "workDaysRule": "Pracovný deň je, keď ste aspoň časť dňa boli v zahraničí (na ceste alebo na odpočinku, aj cez víkend) alebo ste pracovali v krajine firmy. Nepočíta sa deň celý na odpočinku v krajine firmy. Kde ste boli, aplikácia vie podľa krajín zmien na hlavnej obrazovke. V kalendári krúžok označuje prácu v krajine firmy."
 }

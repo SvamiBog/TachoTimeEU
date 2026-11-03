@@ -718,6 +718,23 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Reduced rest without the right';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'The last weekly rest was reduced without the right to it: a regular 45 h rest was needed. $time short.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle => 'Regular weekly rest needed';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'A reduced weekly rest is not allowed now — do not end your rest before 45 h. $time left.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Card download overdue';
 
   @override
@@ -2611,8 +2628,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workDaysHome => 'Work in the company country';
 
   @override
-  String get workDaysHomeHint =>
-      'The whole day in the company country, but with work';
+  String get workDaysWeekendsAbroad => 'Of which rest days';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'A whole day without work outside the company country';
+
+  @override
+  String get workDaysWeekendAbroad => 'Rest day abroad';
 
   @override
   String get workDaysOff => 'Not a working day';
@@ -2649,5 +2672,5 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'A working day is one when you were abroad for at least part of the day (on the road or resting, weekends too) or worked in the company country. A day spent entirely resting in the company country does not count. The app knows where you were from the shift countries on the home screen.';
+      'A working day is one when you were abroad for at least part of the day (on the road or resting, weekends too) or worked in the company country. A day spent entirely resting in the company country does not count. The app knows where you were from the shift countries on the home screen. In the calendar, a ring marks work in the company country.';
 }

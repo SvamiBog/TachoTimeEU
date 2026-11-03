@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "Nie dołączono {time} za skrócony odpoczynek tygodniowy. Spóźnienie — {days, plural, one{{days} dzień} few{{days} dni} many{{days} dni} other{{days} dnia}}.",
   "infrReducedRestsExceededTitle": "Za dużo skróconych odpoczynków",
   "infrReducedRestsExceededText": "Od odpoczynku tygodniowego skróconych: {count}, dopuszczalne 3.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Skrócony odpoczynek bez prawa",
+  "infrReducedWeeklyRestWithoutRightText": "Ostatni odpoczynek tygodniowy był skrócony, choć nie było do tego prawa: potrzebny był pełny 45 h. Zabrakło {time}.",
+  "infrFullWeeklyRestRequiredTitle": "Potrzebny pełny odpoczynek tygodniowy",
+  "infrFullWeeklyRestRequiredText": "Skrócony odpoczynek tygodniowy jest teraz niedostępny — nie kończ odpoczynku przed 45 h. Zostało {time}.",
   "infrCardOverdueTitle": "Odczyt karty spóźniony",
   "infrCardOverdueText": "Termin 28 dni minął {days, plural, one{{days} dzień} few{{days} dni} many{{days} dni} other{{days} dnia}} temu.",
   "infrCardSoonTitle": "Wkrótce odczyt karty",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "Za granicą",
   "workDaysAbroadHint": "Przynajmniej część dnia poza krajem firmy, weekendy też",
   "workDaysHome": "Praca w kraju firmy",
-  "workDaysHomeHint": "Cały dzień w kraju firmy, ale z pracą",
+  "workDaysWeekendsAbroad": "W tym dni odpoczynku",
+  "workDaysWeekendsAbroadHint": "Cały dzień bez pracy poza krajem firmy",
+  "workDaysWeekendAbroad": "Dzień odpoczynku za granicą",
   "workDaysOff": "Dzień wolny",
   "workDaysRate": "Stawka dzienna",
   "workDaysRateNotSet": "Nie ustawiono",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Poprzedni miesiąc",
   "workDaysNextMonth": "Następny miesiąc",
   "workDaysNoBase": "Wskaż kraj firmy: dni robocze liczy się względem niego.",
-  "workDaysRule": "Dzień roboczy to dzień, w którym choć część dnia byłeś za granicą (w trasie lub na odpoczynku, weekendy też) albo pracowałeś w kraju firmy. Nie liczy się dzień w całości na odpoczynku w kraju firmy. Gdzie byłeś, aplikacja wie z krajów zmian na ekranie głównym."
+  "workDaysRule": "Dzień roboczy to dzień, w którym choć część dnia byłeś za granicą (w trasie lub na odpoczynku, weekendy też) albo pracowałeś w kraju firmy. Nie liczy się dzień w całości na odpoczynku w kraju firmy. Gdzie byłeś, aplikacja wie z krajów zmian na ekranie głównym. W kalendarzu kółkiem — praca w kraju firmy."
 }

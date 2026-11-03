@@ -724,6 +724,24 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Repos réduit sans droit';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'Le dernier repos hebdomadaire était réduit sans en avoir le droit : un repos normal de 45 h était nécessaire. Il manquait $time.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle =>
+      'Repos hebdomadaire normal nécessaire';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'Un repos hebdomadaire réduit n’est pas possible maintenant — ne terminez pas votre repos avant 45 h. Encore $time.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Téléchargement de la carte en retard';
 
   @override
@@ -2629,8 +2647,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get workDaysHome => 'Travail dans le pays de l’entreprise';
 
   @override
-  String get workDaysHomeHint =>
-      'Toute la journée dans le pays de l’entreprise, mais avec du travail';
+  String get workDaysWeekendsAbroad => 'Dont jours de repos';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'Journée entière sans travail hors du pays de l’entreprise';
+
+  @override
+  String get workDaysWeekendAbroad => 'Jour de repos à l’étranger';
 
   @override
   String get workDaysOff => 'Jour non travaillé';
@@ -2667,5 +2691,5 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Un jour de travail est un jour où vous étiez à l’étranger au moins une partie de la journée (en route ou en repos, week-ends compris) ou avez travaillé dans le pays de l’entreprise. Une journée entière de repos dans le pays de l’entreprise ne compte pas. L’appli sait où vous étiez grâce aux pays des postes sur l’écran d’accueil.';
+      'Un jour de travail est un jour où vous étiez à l’étranger au moins une partie de la journée (en route ou en repos, week-ends compris) ou avez travaillé dans le pays de l’entreprise. Une journée entière de repos dans le pays de l’entreprise ne compte pas. L’appli sait où vous étiez grâce aux pays des postes sur l’écran d’accueil. Dans le calendrier, un cercle indique le travail dans le pays de l’entreprise.';
 }

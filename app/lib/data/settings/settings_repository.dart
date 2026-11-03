@@ -317,16 +317,21 @@ class SettingsRepository {
   /// записываются, незаданные сбрасываются к умолчаниям, чтобы расчёт на
   /// новом телефоне был тем же. Чужие ключи пропускаются. Значения не
   /// проверяются: неверное читается как умолчание, как любой мусор в БД.
-  Future<void> importTransferableSettings(Map<String, String> values) =>
-      _db.transaction(() async {
-        await (_db.delete(
-          _db.settings,
-        )..where((s) => s.key.isIn(_transferable))).go();
-        await _putAll({
-          for (final e in values.entries)
-            if (_transferable.contains(e.key)) e.key: e.value,
-        });
+  /// Кроме страны фирмы: она обязательна, и файл без неё (из версии, где её
+  /// ещё не было) или с неверной не стирает выбранную.
+  Future<void> importTransferableSettings(Map<String, String> values) {
+    final base = _country(values[_baseCountry]);
+    final replaced = base == null
+        ? _transferable.difference({_baseCountry})
+        : _transferable;
+    return _db.transaction(() async {
+      await (_db.delete(_db.settings)..where((s) => s.key.isIn(replaced))).go();
+      await _putAll({
+        for (final e in values.entries)
+          if (replaced.contains(e.key)) e.key: e.value,
       });
+    });
+  }
 
   Stream<NotificationSettings> watchNotifications() =>
       _watchAll().map(_notificationsFrom).distinct();

@@ -151,6 +151,8 @@ void main() {
         m.infringement(InfringementType.weeklyRestContinue)?.time,
         const Duration(hours: 15),
       );
+      // То же «до 45 ч» вторым предупреждением не повторяется
+      expect(keys(m), isNot(contains(InfringementType.fullWeeklyRestRequired)));
     });
 
     test('до дедлайна отдых можно прервать — предупреждения нет', () {
@@ -362,6 +364,270 @@ void main() {
       expect(after('PL').lastWeeklyRest?.status, RestStatus.reduced);
       expect(after('PL').reducedWeeklyRestAtBase, isTrue);
       expect(after('D').reducedWeeklyRestAvailable, isTrue);
+    });
+  });
+
+  group('ENG-27: право на сокращённый недельный отдых', () {
+    const full = '45:00';
+    const reduced = '24:00';
+    const pl = 'PL';
+    const de = 'D';
+
+    // Недельные отдыхи [rests] по порядку, между ними — смена 9 ч вождения;
+    // после последнего — [tail]: по умолчанию идёт смена. [countries] —
+    // страны смен по порядку: перед отдыхом i — смена i, последняя — где
+    // водитель сейчас. Страна фирмы — Польша.
+    ComplianceSnapshot run(
+      List<String> rests, {
+      List<String?> countries = const [],
+      bool mobilityPackage = true,
+      List<Seg>? tail,
+    }) {
+      final periods = logUntil(now, [
+        drive('4:00'),
+        for (final (i, r) in rests.indexed) ...[
+          if (i > 0) ...drivingDay('9:00'),
+          rest(r),
+        ],
+        ...(tail ?? [drive('1:00')]),
+      ]);
+      final starts = [
+        for (final s in calc(periods, now).timeline.shifts) s.start,
+      ];
+      return calc(
+        periods,
+        now,
+        settings: ComplianceSettings(
+          baseCountry: pl,
+          mobilityPackage: mobilityPackage,
+        ),
+        routes: {
+          for (final (i, c) in countries.indexed)
+            if (c != null) starts[i]: ShiftRoute(from: c),
+        },
+      );
+    }
+
+    group('из четырёх недельных подряд — два полных', () {
+      test('после двух полных второй сокращённый подряд можно', () {
+        final m = run([full, full, reduced]);
+        expect(m.reducedWeeklyRestAvailable, isTrue);
+      });
+
+      test('сокращённый, полный, сокращённый — ещё один нельзя', () {
+        // Окно «сокр., полный, сокр., сокр.» — полный один
+        final m = run([reduced, full, reduced]);
+        expect(m.reducedWeeklyRestAvailable, isFalse);
+        expect(m.reducedWeeklyRestAtBase, isFalse);
+      });
+
+      test('после двух сокращённых — два полных подряд', () {
+        // «сокр., сокр., полный» и следующий сокращённый — полный один
+        expect(
+          run([reduced, reduced, full]).reducedWeeklyRestAvailable,
+          isFalse,
+        );
+        expect(
+          run([reduced, reduced, full, full]).reducedWeeklyRestAvailable,
+          isTrue,
+        );
+      });
+
+      test('полный и сокращённый через раз — можно всегда', () {
+        expect(
+          run([reduced, full, reduced, full]).reducedWeeklyRestAvailable,
+          isTrue,
+        );
+        expect(run([full, reduced, full]).reducedWeeklyRestAvailable, isTrue);
+      });
+
+      test('отдыхи до начала журнала считаем полными', () {
+        // Известен один сокращённый: второй подряд можно
+        expect(run([reduced]).reducedWeeklyRestAvailable, isTrue);
+      });
+
+      test('без пакета мобильности правило не действует: после полного — '
+          'можно', () {
+        final m = run([reduced, reduced, full], mobilityPackage: false);
+        expect(m.reducedWeeklyRestAvailable, isTrue);
+      });
+    });
+
+    group('сокращённый, взятый без права, — нарушение', () {
+      test('второй подряд в стране фирмы — нарушение 8(6), не хватило до '
+          '45 ч', () {
+        final m = run([full, reduced, reduced], countries: [pl, de, pl, pl]);
+        final i = m.infringement(
+          InfringementType.reducedWeeklyRestWithoutRight,
+        );
+        expect(i?.severity, InfringementSeverity.violation);
+        expect(i?.type.article, '8(6)');
+        expect(i?.time, const Duration(hours: 21));
+      });
+
+      test('первый из двух был в стране фирмы — тоже нарушение', () {
+        final m = run([full, reduced, reduced], countries: [pl, pl, de, de]);
+        expect(
+          keys(m),
+          contains(InfringementType.reducedWeeklyRestWithoutRight),
+        );
+      });
+
+      test('оба вне страны фирмы — нарушения нет', () {
+        final m = run([full, reduced, reduced], countries: [pl, de, de, pl]);
+        expect(
+          keys(m),
+          isNot(contains(InfringementType.reducedWeeklyRestWithoutRight)),
+        );
+      });
+
+      test('один сокращённый в стране фирмы после полного — нарушения нет', () {
+        final m = run([full, reduced], countries: [pl, pl, pl]);
+        expect(
+          keys(m),
+          isNot(contains(InfringementType.reducedWeeklyRestWithoutRight)),
+        );
+      });
+
+      test('третий подряд — нарушение, где бы ни был', () {
+        final m = run(
+          [full, reduced, reduced, reduced],
+          countries: [de, de, de, de, de],
+        );
+        expect(
+          m.infringement(InfringementType.reducedWeeklyRestWithoutRight)?.time,
+          const Duration(hours: 21),
+        );
+      });
+
+      test('второй подряд без пакета мобильности — нарушение', () {
+        final m = run([full, reduced, '30:00'], mobilityPackage: false);
+        expect(
+          m.infringement(InfringementType.reducedWeeklyRestWithoutRight)?.time,
+          const Duration(hours: 15),
+        );
+      });
+
+      test('из четырёх подряд полный один — нарушение', () {
+        final m = run([reduced, full, reduced, reduced]);
+        expect(
+          keys(m),
+          contains(InfringementType.reducedWeeklyRestWithoutRight),
+        );
+      });
+
+      test('после следующего недельного нарушение с главной уходит', () {
+        final m = run(
+          [full, reduced, reduced, full],
+          countries: [pl, de, pl, pl, pl],
+        );
+        expect(
+          keys(m),
+          isNot(contains(InfringementType.reducedWeeklyRestWithoutRight)),
+        );
+      });
+
+      test('страна фирмы или страны смен не выбраны — страну не проверяем', () {
+        final noCountries = run([full, reduced, reduced]);
+        expect(
+          keys(noCountries),
+          isNot(contains(InfringementType.reducedWeeklyRestWithoutRight)),
+        );
+      });
+
+      test('в журнале такой отдых — нарушение, разрешённый — сокращённый', () {
+        final periods = logUntil(now, [
+          drive('4:00'),
+          rest(full),
+          ...drivingDay('9:00'),
+          rest(reduced),
+          ...drivingDay('9:00'),
+          rest(reduced),
+          drive('1:00'),
+        ]);
+        final timeline = calc(periods, now).timeline;
+        final starts = [for (final s in timeline.shifts) s.start];
+        List<JournalLevel> levels({String? base}) {
+          final shifts = [
+            for (final w in buildJournal(
+              timeline: timeline,
+              now: now,
+              baseCountry: base,
+              routes: {
+                for (final (i, c) in [pl, de, pl, pl].indexed)
+                  starts[i]: ShiftRoute(from: c),
+              },
+            ))
+              ...w.shifts,
+          ]..sort((a, b) => a.start.compareTo(b.start));
+          return [for (final s in shifts) s.restLevel];
+        }
+
+        expect(levels(base: pl), [
+          JournalLevel.ok,
+          JournalLevel.warn,
+          JournalLevel.bad,
+          JournalLevel.ok,
+        ]);
+        expect(levels(), [
+          JournalLevel.ok,
+          JournalLevel.warn,
+          JournalLevel.warn,
+          JournalLevel.ok,
+        ]);
+      });
+    });
+
+    group('идёт недельный отдых, а сокращённый недоступен — до 45 ч', () {
+      List<Seg> resting(String d) => [...drivingDay('9:00'), rest(d)];
+
+      test('второй подряд в стране фирмы: предупреждение, сколько ещё', () {
+        final m = run(
+          [full, reduced],
+          countries: [pl, de, pl],
+          tail: resting('30:00'),
+        );
+        expect(m.offDutyRest?.weekly, isTrue);
+        final i = m.infringement(InfringementType.fullWeeklyRestRequired);
+        expect(i?.severity, InfringementSeverity.warning);
+        expect(i?.type.article, '8(6)');
+        expect(i?.time, const Duration(hours: 15));
+      });
+
+      test('появляется, когда отдых стал недельным, — в 24 ч', () {
+        for (final (d, left) in [('23:59', null), ('24:00', '21:00')]) {
+          final m = run(
+            [full, reduced],
+            countries: [pl, de, pl],
+            tail: resting(d),
+          );
+          expect(
+            m.infringement(InfringementType.fullWeeklyRestRequired)?.time,
+            left == null ? isNull : dur(left),
+            reason: d,
+          );
+        }
+      });
+
+      test('набрал 45 ч или сокращённый доступен — предупреждения нет', () {
+        for (final m in [
+          run([full, reduced], countries: [pl, de, pl], tail: resting(full)),
+          run([full, reduced], countries: [pl, de, de], tail: resting('30:00')),
+        ]) {
+          expect(
+            keys(m),
+            isNot(contains(InfringementType.fullWeeklyRestRequired)),
+          );
+        }
+      });
+
+      test('по правилу четырёх недель — тоже', () {
+        final m = run([reduced, full, reduced], tail: resting('26:00'));
+        expect(
+          m.infringement(InfringementType.fullWeeklyRestRequired)?.time,
+          const Duration(hours: 19),
+        );
+      });
     });
   });
 

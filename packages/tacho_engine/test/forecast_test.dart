@@ -225,6 +225,35 @@ void main() {
       );
     });
 
+    test('ENG-27: второй сокращённый подряд в стране фирмы — в 24 ч '
+        '«отдыхайте до 45 ч»', () {
+      // Полный 45 ч, сокращённый 24 ч после смены в Германии, смена в
+      // Польше и отдых с 21.09 19:00 — до срока 144 ч далеко.
+      final periods = [
+        ...closedLog(utc('2026-09-12 06:00'), [rest('45:00')]),
+        ...closedLog(utc('2026-09-14 03:00'), [work('100:00')]),
+        ...closedLog(utc('2026-09-18 07:00'), [rest('24:00')]),
+        ...closedLog(utc('2026-09-19 07:00'), [work('60:00')]),
+        ActivityPeriod(
+          id: 99,
+          mode: DriverMode.rest,
+          start: utc('2026-09-21 19:00'),
+        ),
+      ];
+      final alerts = forecastAlerts(
+        periods: periods,
+        now: utc('2026-09-22 05:00'),
+        settings: const ComplianceSettings(baseCountry: 'PL'),
+        routes: {
+          utc('2026-09-14 03:00'): const ShiftRoute(from: 'D'),
+          utc('2026-09-19 07:00'): const ShiftRoute(from: 'PL'),
+        },
+      );
+      final full = limitAlert(alerts, InfringementType.fullWeeklyRestRequired)!;
+      expect(full.at, utc('2026-09-22 19:00'));
+      expect(full.infringement.time, const Duration(hours: 21));
+    });
+
     test('карта: за cardAlertDays дней до 28 и через день после', () {
       final card = utc('2026-09-10 09:15');
       final resting = logFrom(utc('2026-09-20 11:00'), [rest('1:00')]);

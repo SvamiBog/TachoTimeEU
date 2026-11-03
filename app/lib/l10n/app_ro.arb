@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "Nu s-au atașat {time} pentru repausul săptămânal redus. Întârziere — {days, plural, one{{days} zi} few{{days} zile} other{{days} de zile}}.",
   "infrReducedRestsExceededTitle": "Prea multe repausuri reduse",
   "infrReducedRestsExceededText": "De la repausul săptămânal, reduse: {count}, permise 3.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Repaus redus fără drept",
+  "infrReducedWeeklyRestWithoutRightText": "Ultimul repaus săptămânal a fost redus fără drept: era necesar unul complet de 45 h. Au lipsit {time}.",
+  "infrFullWeeklyRestRequiredTitle": "E necesar repaus săptămânal complet",
+  "infrFullWeeklyRestRequiredText": "Repausul săptămânal redus nu este disponibil acum — nu încheiați repausul înainte de 45 h. Au rămas {time}.",
   "infrCardOverdueTitle": "Descărcarea cardului întârziată",
   "infrCardOverdueText": "Termenul de 28 de zile a trecut acum {days, plural, one{{days} zi} few{{days} zile} other{{days} de zile}}.",
   "infrCardSoonTitle": "Descărcarea cardului curând",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "În străinătate",
   "workDaysAbroadHint": "Măcar o parte din zi în afara țării firmei, inclusiv în weekend",
   "workDaysHome": "Muncă în țara firmei",
-  "workDaysHomeHint": "Toată ziua în țara firmei, dar cu muncă",
+  "workDaysWeekendsAbroad": "Din care zile de repaus",
+  "workDaysWeekendsAbroadHint": "Toată ziua fără muncă în afara țării firmei",
+  "workDaysWeekendAbroad": "Zi de repaus în străinătate",
   "workDaysOff": "Zi nelucrătoare",
   "workDaysRate": "Tarif pe zi",
   "workDaysRateNotSet": "Nestabilit",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Luna anterioară",
   "workDaysNextMonth": "Luna următoare",
   "workDaysNoBase": "Indicați țara firmei: zilele lucrătoare se numără față de ea.",
-  "workDaysRule": "Zi lucrătoare este ziua în care ați fost în străinătate măcar o parte din zi (în cursă sau în repaus, inclusiv în weekend) sau ați lucrat în țara firmei. Nu se numără ziua petrecută în întregime în repaus în țara firmei. Unde ați fost, aplicația știe din țările turelor de pe ecranul principal."
+  "workDaysRule": "Zi lucrătoare este ziua în care ați fost în străinătate măcar o parte din zi (în cursă sau în repaus, inclusiv în weekend) sau ați lucrat în țara firmei. Nu se numără ziua petrecută în întregime în repaus în țara firmei. Unde ați fost, aplicația știe din țările turelor de pe ecranul principal. În calendar, cu cerc — munca în țara firmei."
 }

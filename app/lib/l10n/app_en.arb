@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "{time} for the reduced weekly rest were not attached. Overdue by {days, plural, one{{days} day} other{{days} days}}.",
   "infrReducedRestsExceededTitle": "Too many reduced rests",
   "infrReducedRestsExceededText": "Reduced rests since the weekly rest: {count}, 3 allowed.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Reduced rest without the right",
+  "infrReducedWeeklyRestWithoutRightText": "The last weekly rest was reduced without the right to it: a regular 45 h rest was needed. {time} short.",
+  "infrFullWeeklyRestRequiredTitle": "Regular weekly rest needed",
+  "infrFullWeeklyRestRequiredText": "A reduced weekly rest is not allowed now — do not end your rest before 45 h. {time} left.",
   "infrCardOverdueTitle": "Card download overdue",
   "infrCardOverdueText": "The 28-day deadline passed {days, plural, one{{days} day} other{{days} days}} ago.",
   "infrCardSoonTitle": "Card download soon",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "Abroad",
   "workDaysAbroadHint": "At least part of the day outside the company country, weekends too",
   "workDaysHome": "Work in the company country",
-  "workDaysHomeHint": "The whole day in the company country, but with work",
+  "workDaysWeekendsAbroad": "Of which rest days",
+  "workDaysWeekendsAbroadHint": "A whole day without work outside the company country",
+  "workDaysWeekendAbroad": "Rest day abroad",
   "workDaysOff": "Not a working day",
   "workDaysRate": "Daily rate",
   "workDaysRateNotSet": "Not set",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Previous month",
   "workDaysNextMonth": "Next month",
   "workDaysNoBase": "Set the company country: working days are counted against it.",
-  "workDaysRule": "A working day is one when you were abroad for at least part of the day (on the road or resting, weekends too) or worked in the company country. A day spent entirely resting in the company country does not count. The app knows where you were from the shift countries on the home screen."
+  "workDaysRule": "A working day is one when you were abroad for at least part of the day (on the road or resting, weekends too) or worked in the company country. A day spent entirely resting in the company country does not count. The app knows where you were from the shift countries on the home screen. In the calendar, a ring marks work in the company country."
 }

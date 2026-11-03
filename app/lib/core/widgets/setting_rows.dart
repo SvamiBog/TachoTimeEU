@@ -109,6 +109,7 @@ class NavRow extends StatelessWidget {
     this.numericValue = false,
     this.icon,
     this.iconColor,
+    this.valueColor,
     this.chevron = true,
     super.key,
   });
@@ -128,6 +129,10 @@ class NavRow extends StatelessWidget {
   /// Цвет значка, если он говорит о состоянии: запрет идёт или скоро.
   /// По умолчанию — цвет текста.
   final Color? iconColor;
+
+  /// Цвет значения, если оно говорит о состоянии: обязательная настройка не
+  /// задана. По умолчанию — второстепенный.
+  final Color? valueColor;
 
   /// «›» справа: строка открывает экран, шторку или настройки системы.
   final bool chevron;
@@ -176,7 +181,9 @@ class NavRow extends StatelessWidget {
                             (numericValue
                                     ? AppTextStyles.numericCaption
                                     : AppTextStyles.body)
-                                .copyWith(color: colors.textSecondary),
+                                .copyWith(
+                                  color: valueColor ?? colors.textSecondary,
+                                ),
                       ),
                     ),
                   ],

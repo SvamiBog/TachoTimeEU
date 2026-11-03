@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "No se añadieron {time} por el descanso semanal reducido. Retraso: {days, plural, one{{days} día} other{{days} días}}.",
   "infrReducedRestsExceededTitle": "Demasiados descansos reducidos",
   "infrReducedRestsExceededText": "Reducidos desde el descanso semanal: {count}, se permiten 3.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Descanso reducido sin derecho",
+  "infrReducedWeeklyRestWithoutRightText": "El último descanso semanal fue reducido sin tener derecho: hacía falta uno normal de 45 h. Faltaron {time}.",
+  "infrFullWeeklyRestRequiredTitle": "Hace falta descanso semanal normal",
+  "infrFullWeeklyRestRequiredText": "Ahora no es posible un descanso semanal reducido: no termine el descanso antes de 45 h. Quedan {time}.",
   "infrCardOverdueTitle": "Descarga de la tarjeta atrasada",
   "infrCardOverdueText": "El plazo de 28 días venció hace {days, plural, one{{days} día} other{{days} días}}.",
   "infrCardSoonTitle": "Descarga de la tarjeta pronto",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "En el extranjero",
   "workDaysAbroadHint": "Al menos parte del día fuera del país de la empresa, también fines de semana",
   "workDaysHome": "Trabajo en el país de la empresa",
-  "workDaysHomeHint": "Todo el día en el país de la empresa, pero con trabajo",
+  "workDaysWeekendsAbroad": "De ellos, días de descanso",
+  "workDaysWeekendsAbroadHint": "Todo el día sin trabajo fuera del país de la empresa",
+  "workDaysWeekendAbroad": "Día de descanso en el extranjero",
   "workDaysOff": "Día no laborable",
   "workDaysRate": "Tarifa diaria",
   "workDaysRateNotSet": "Sin definir",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Mes anterior",
   "workDaysNextMonth": "Mes siguiente",
   "workDaysNoBase": "Indique el país de la empresa: los días de trabajo se cuentan respecto a él.",
-  "workDaysRule": "Un día de trabajo es aquel en que estuvo en el extranjero al menos parte del día (en ruta o descansando, también fines de semana) o trabajó en el país de la empresa. No cuenta un día entero de descanso en el país de la empresa. La app sabe dónde estuvo por los países de las jornadas en la pantalla principal."
+  "workDaysRule": "Un día de trabajo es aquel en que estuvo en el extranjero al menos parte del día (en ruta o descansando, también fines de semana) o trabajó en el país de la empresa. No cuenta un día entero de descanso en el país de la empresa. La app sabe dónde estuvo por los países de las jornadas en la pantalla principal. En el calendario, un anillo marca el trabajo en el país de la empresa."
 }

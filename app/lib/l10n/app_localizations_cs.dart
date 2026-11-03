@@ -729,6 +729,24 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Zkrácený odpočinek bez nároku';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'Poslední týdenní odpočinek byl zkrácený bez nároku: byl potřeba běžný 45 h. Chybělo $time.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle =>
+      'Je potřeba běžný týdenní odpočinek';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'Zkrácený týdenní odpočinek teď není možný — neukončujte odpočinek dřív než po 45 h. Zbývá $time.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Stažení karty po termínu';
 
   @override
@@ -2633,7 +2651,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get workDaysHome => 'Práce v zemi firmy';
 
   @override
-  String get workDaysHomeHint => 'Celý den v zemi firmy, ale s prací';
+  String get workDaysWeekendsAbroad => 'Z toho dny volna';
+
+  @override
+  String get workDaysWeekendsAbroadHint => 'Celý den bez práce mimo zemi firmy';
+
+  @override
+  String get workDaysWeekendAbroad => 'Den volna v zahraničí';
 
   @override
   String get workDaysOff => 'Nepracovní den';
@@ -2670,5 +2694,5 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Pracovní den je, když jste aspoň část dne byli v zahraničí (na cestě nebo na odpočinku, i o víkendu) nebo jste pracovali v zemi firmy. Nepočítá se den celý na odpočinku v zemi firmy. Kde jste byli, aplikace ví podle zemí směn na hlavní obrazovce.';
+      'Pracovní den je, když jste aspoň část dne byli v zahraničí (na cestě nebo na odpočinku, i o víkendu) nebo jste pracovali v zemi firmy. Nepočítá se den celý na odpočinku v zemi firmy. Kde jste byli, aplikace ví podle zemí směn na hlavní obrazovce. V kalendáři kroužek značí práci v zemi firmy.';
 }

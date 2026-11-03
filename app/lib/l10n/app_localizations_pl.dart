@@ -731,6 +731,24 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Skrócony odpoczynek bez prawa';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'Ostatni odpoczynek tygodniowy był skrócony, choć nie było do tego prawa: potrzebny był pełny 45 h. Zabrakło $time.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle =>
+      'Potrzebny pełny odpoczynek tygodniowy';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'Skrócony odpoczynek tygodniowy jest teraz niedostępny — nie kończ odpoczynku przed 45 h. Zostało $time.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Odczyt karty spóźniony';
 
   @override
@@ -2642,7 +2660,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get workDaysHome => 'Praca w kraju firmy';
 
   @override
-  String get workDaysHomeHint => 'Cały dzień w kraju firmy, ale z pracą';
+  String get workDaysWeekendsAbroad => 'W tym dni odpoczynku';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'Cały dzień bez pracy poza krajem firmy';
+
+  @override
+  String get workDaysWeekendAbroad => 'Dzień odpoczynku za granicą';
 
   @override
   String get workDaysOff => 'Dzień wolny';
@@ -2679,5 +2704,5 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Dzień roboczy to dzień, w którym choć część dnia byłeś za granicą (w trasie lub na odpoczynku, weekendy też) albo pracowałeś w kraju firmy. Nie liczy się dzień w całości na odpoczynku w kraju firmy. Gdzie byłeś, aplikacja wie z krajów zmian na ekranie głównym.';
+      'Dzień roboczy to dzień, w którym choć część dnia byłeś za granicą (w trasie lub na odpoczynku, weekendy też) albo pracowałeś w kraju firmy. Nie liczy się dzień w całości na odpoczynku w kraju firmy. Gdzie byłeś, aplikacja wie z krajów zmian na ekranie głównym. W kalendarzu kółkiem — praca w kraju firmy.';
 }

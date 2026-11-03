@@ -720,6 +720,24 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'შემცირებული დასვენება უფლების გარეშე';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'ბოლო კვირეული დასვენება შემცირებული იყო, თუმცა ამის უფლება არ გქონდათ: საჭირო იყო სრული 45 სთ. დააკლდა $time.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle =>
+      'საჭიროა სრული კვირეული დასვენება';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'შემცირებული კვირეული დასვენება ახლა მიუწვდომელია — ნუ დაასრულებთ დასვენებას 45 სთ-მდე. დარჩა $time.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'ბარათის წაკითხვა დაგვიანებულია';
 
   @override
@@ -2611,7 +2629,14 @@ class AppLocalizationsKa extends AppLocalizations {
   String get workDaysHome => 'სამუშაო ფირმის ქვეყანაში';
 
   @override
-  String get workDaysHomeHint => 'მთელი დღე ფირმის ქვეყანაში, მაგრამ სამუშაოთი';
+  String get workDaysWeekendsAbroad => 'მათ შორის დასვენების დღეები';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'მთელი დღე სამუშაოს გარეშე ფირმის ქვეყნის გარეთ';
+
+  @override
+  String get workDaysWeekendAbroad => 'დასვენების დღე საზღვარგარეთ';
 
   @override
   String get workDaysOff => 'არასამუშაო დღე';
@@ -2648,5 +2673,5 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'სამუშაო დღეა, თუ დღის ნაწილი მაინც საზღვარგარეთ იყავით (გზაში ან დასვენებაზე, შაბათ-კვირაც) ან ფირმის ქვეყანაში მუშაობდით. არ ითვლება დღე, რომელიც მთლიანად ფირმის ქვეყანაში დასვენებაზე გაატარეთ. სად იყავით, აპი იგებს მთავარ ეკრანზე ცვლების ქვეყნებიდან.';
+      'სამუშაო დღეა, თუ დღის ნაწილი მაინც საზღვარგარეთ იყავით (გზაში ან დასვენებაზე, შაბათ-კვირაც) ან ფირმის ქვეყანაში მუშაობდით. არ ითვლება დღე, რომელიც მთლიანად ფირმის ქვეყანაში დასვენებაზე გაატარეთ. სად იყავით, აპი იგებს მთავარ ეკრანზე ცვლების ქვეყნებიდან. კალენდარში რგოლით — სამუშაო ფირმის ქვეყანაში.';
 }

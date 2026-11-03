@@ -203,6 +203,33 @@ void main() {
       );
     });
 
+    test(
+      'ENG-27: третий сокращённый недельный подряд — нарушение ст. 8(6)',
+      () {
+        // Три недельных по 24 ч подряд: первые два можно, третий — нет
+        final periods = consecutive(DateTime.utc(2026, 9, 21), [
+          for (var i = 0; i < 3; i++) ...[
+            (DriverMode.driving, const Duration(hours: 4)),
+            (DriverMode.rest, const Duration(hours: 24)),
+          ],
+          (DriverMode.driving, const Duration(hours: 1)),
+        ], open: true);
+        final now = DateTime.utc(2026, 9, 24, 13);
+        final violations = reportViolations(
+          _journal(periods, now),
+          reportRange(ReportPeriod.week, now),
+          crew: CrewMode.solo,
+          l: l,
+          locale: 'ru',
+        );
+        expect(violations.single.article, '8(6)');
+        expect(
+          violations.single.text,
+          'ср 23.09: отдых после смены 24:00 — недостаточный',
+        );
+      },
+    );
+
     test('без нарушений — пустой список', () {
       final j = designJournal();
       expect(

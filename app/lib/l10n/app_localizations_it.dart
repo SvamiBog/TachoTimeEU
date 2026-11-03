@@ -722,6 +722,24 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Riposo ridotto senza diritto';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'L’ultimo riposo settimanale era ridotto senza averne diritto: serviva un riposo regolare di 45 h. Mancavano $time.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle =>
+      'Serve un riposo settimanale regolare';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'Ora non è possibile un riposo settimanale ridotto — non terminare il riposo prima di 45 h. Mancano $time.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Scarico della carta in ritardo';
 
   @override
@@ -2619,8 +2637,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workDaysHome => 'Lavoro nel paese dell’azienda';
 
   @override
-  String get workDaysHomeHint =>
-      'Tutto il giorno nel paese dell’azienda, ma con lavoro';
+  String get workDaysWeekendsAbroad => 'Di cui giorni di riposo';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'Tutto il giorno senza lavoro fuori dal paese dell’azienda';
+
+  @override
+  String get workDaysWeekendAbroad => 'Giorno di riposo all’estero';
 
   @override
   String get workDaysOff => 'Giorno non lavorativo';
@@ -2657,5 +2681,5 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Un giorno lavorativo è un giorno in cui sei stato all’estero almeno in parte (in viaggio o a riposo, anche nel fine settimana) o hai lavorato nel paese dell’azienda. Non conta un giorno interamente di riposo nel paese dell’azienda. L’app sa dove eri dai paesi dei turni nella schermata principale.';
+      'Un giorno lavorativo è un giorno in cui sei stato all’estero almeno in parte (in viaggio o a riposo, anche nel fine settimana) o hai lavorato nel paese dell’azienda. Non conta un giorno interamente di riposo nel paese dell’azienda. L’app sa dove eri dai paesi dei turni nella schermata principale. Nel calendario un cerchio indica il lavoro nel paese dell’azienda.';
 }

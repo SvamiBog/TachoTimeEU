@@ -92,6 +92,14 @@ extension InfringementText on AppLocalizations {
         infrCardOverdueText(days),
       ),
       InfringementType.cardSoon => (infrCardSoonTitle, infrCardSoonText(days)),
+      InfringementType.reducedWeeklyRestWithoutRight => (
+        infrReducedWeeklyRestWithoutRightTitle,
+        infrReducedWeeklyRestWithoutRightText(time),
+      ),
+      InfringementType.fullWeeklyRestRequired => (
+        infrFullWeeklyRestRequiredTitle,
+        infrFullWeeklyRestRequiredText(time),
+      ),
     };
     return (
       title: title,

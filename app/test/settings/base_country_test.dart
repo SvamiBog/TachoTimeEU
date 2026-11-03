@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/home/home_screen.dart';
@@ -79,11 +80,15 @@ void main() {
         200,
         scrollable: find.byType(Scrollable).first,
       );
-      expect(find.text('Не выбрана'), findsOneWidget);
+      // Обязательна: пока не выбрана — красным, и сказано, что без неё
+      final notSet = tester.widget<Text>(find.text('Не выбрана'));
+      final error = tester.element(find.text('Не выбрана')).colors.errorText;
+      expect(notSet.style?.color, error);
+      expect(find.byIcon(Icons.error_outline), findsOneWidget);
       expect(
         find.text(
-          'Где зарегистрирована фирма: два сокращённых недельных отдыха '
-          'подряд в ней брать нельзя',
+          'Без неё приложение не проверит, можно ли взять два сокращённых '
+          'недельных отдыха подряд, и не посчитает рабочие дни',
         ),
         findsOneWidget,
       );
@@ -92,6 +97,14 @@ void main() {
       await pick(tester, 'Румыния');
       expect(find.text('Румыния'), findsOneWidget);
       expect(find.text('Не выбрана'), findsNothing);
+      expect(find.byIcon(Icons.error_outline), findsNothing);
+      expect(
+        find.text(
+          'Где зарегистрирована фирма: два сокращённых недельных отдыха '
+          'подряд в ней брать нельзя',
+        ),
+        findsOneWidget,
+      );
       await unmount(tester);
     });
 
@@ -142,6 +155,39 @@ void main() {
       testWidgets('этот был бы в стране фирмы — тоже', (tester) async {
         await pumpWeekly(tester, 'D', 'PL');
         expect(find.text('в стране фирмы — нужен полный'), findsOneWidget);
+      });
+
+      testWidgets('ENG-27: взят второй подряд в стране фирмы — нарушение на '
+          'главной', (tester) async {
+        // Ещё смена в Польше и сокращённый 24 ч после неё — дома
+        final next = start.add(_h * (45 + 13 + 24 + 13 + 24));
+        final now = next.add(_h * 2);
+        await pumpScreen(
+          tester,
+          const HomeScreen(),
+          viewport: const Size(412, 2400),
+          overrides: journalOverrides(
+            periods: consecutive(start, [
+              (DriverMode.rest, _h * 45),
+              (DriverMode.otherWork, _h * 13),
+              (DriverMode.rest, _h * 24),
+              (DriverMode.otherWork, _h * 13),
+              (DriverMode.rest, _h * 24),
+              (DriverMode.driving, _h * 2),
+            ], open: true),
+            now: now,
+            shiftMeta: {
+              beforeReduced: const ShiftMeta(startCountry: 'D'),
+              current: const ShiftMeta(startCountry: 'PL'),
+              next: const ShiftMeta(startCountry: 'PL'),
+            },
+          ),
+        );
+        expect(find.text('Сокращённый отдых без права'), findsOneWidget);
+        expect(
+          find.textContaining('нужен был полный 45 ч. Не хватило 21:00'),
+          findsOneWidget,
+        );
       });
     });
   });

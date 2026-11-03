@@ -1,6 +1,7 @@
 /// "Working days" (Premium): the days of a month the driver spent at least
-/// partly abroad or worked in the company country, and their pay at a daily
-/// rate. Drivers are often paid by such days.
+/// partly abroad or worked in the company country, how many were abroad and
+/// how many of those were rest days, and their pay at a daily rate. Drivers
+/// are often paid by such days.
 library;
 
 import 'dart:async';
@@ -59,9 +60,9 @@ int? parseCents(String text) {
 }
 
 /// "Working days" (Premium, `docs/premium.md`): a month with arrows, the number
-/// of working days abroad and at home, the daily rate and the amount, the
-/// calendar of the month and the rule. Without the company country it asks for
-/// it: the days are counted against it.
+/// of working days, of them abroad and rest days abroad, the daily rate and the
+/// amount, the calendar of the month and the rule. Without the company country
+/// it asks for it: the days are counted against it.
 class WorkingDaysScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -165,7 +166,9 @@ class _MonthBar extends StatelessWidget {
   }
 }
 
-/// The number of working days, abroad and at home, the rate and the amount.
+/// The number of working days, of them abroad and rest days abroad, the rate
+/// and the amount. Work in the company country has no row of its own: it only
+/// counts in the total.
 class _Summary extends StatelessWidget {
   const new({required this.kinds, required this.rate});
 
@@ -177,9 +180,11 @@ class _Summary extends StatelessWidget {
     final l = context.l10n;
     final colors = context.colors;
     final locale = context.localeTag;
-    final abroad = kinds.where((k) => k == WorkingDayKind.abroad).length;
-    final home = kinds.where((k) => k == WorkingDayKind.home).length;
-    final total = abroad + home;
+    final total = kinds.where((k) => k.counts).length;
+    final abroad = kinds.where((k) => k.away).length;
+    final restAbroad = kinds
+        .where((k) => k == WorkingDayKind.restAbroad)
+        .length;
     final rateText = rate.cents == 0
         ? l.workDaysRateNotSet
         : formatMoney(rate.cents, rate.currency, locale);
@@ -211,10 +216,11 @@ class _Summary extends StatelessWidget {
           value: '$abroad',
         ),
         MilestoneRow(
-          dot: MilestoneDot.ring,
-          title: l.workDaysHome,
-          subtitle: l.workDaysHomeHint,
-          value: '$home',
+          dot: MilestoneDot.solid,
+          dotColor: colors.rest,
+          title: l.workDaysWeekendsAbroad,
+          subtitle: l.workDaysWeekendsAbroadHint,
+          value: '$restAbroad',
         ),
         NavRow(
           title: l.workDaysRate,
@@ -251,9 +257,9 @@ class _Summary extends StatelessWidget {
   }
 }
 
-/// The month as a calendar from Monday: a solid day — abroad, a ring — work in
-/// the company country, plain — not a working day; days after today are
-/// empty.
+/// The month as a calendar from Monday: a solid day — on the road abroad, green
+/// — a rest day abroad, a ring — work in the company country, plain — not a
+/// working day; days after today are empty.
 class _Calendar extends StatelessWidget {
   const new({required this.month, required this.kinds});
 
@@ -338,6 +344,7 @@ class _DayCell extends StatelessWidget {
     final kind = this.kind;
     final label = switch (kind) {
       WorkingDayKind.abroad => l.workDaysAbroad,
+      WorkingDayKind.restAbroad => l.workDaysWeekendAbroad,
       WorkingDayKind.home => l.workDaysHome,
       WorkingDayKind.off || null => l.workDaysOff,
     };
@@ -352,10 +359,19 @@ class _DayCell extends StatelessWidget {
           child: DecoratedBox(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: kind == WorkingDayKind.abroad ? colors.text : null,
-              border: kind == WorkingDayKind.home
-                  ? Border.all(color: colors.text, width: 2)
-                  : null,
+              color: switch (kind) {
+                WorkingDayKind.abroad => colors.text,
+                WorkingDayKind.restAbroad => colors.restBg,
+                _ => null,
+              },
+              border: switch (kind) {
+                WorkingDayKind.restAbroad => Border.all(
+                  color: colors.rest,
+                  width: 2,
+                ),
+                WorkingDayKind.home => Border.all(color: colors.text, width: 2),
+                _ => null,
+              },
             ),
             child: SizedBox.square(
               dimension: 36,
@@ -365,6 +381,7 @@ class _DayCell extends StatelessWidget {
                   style: AppTextStyles.numericCaption.copyWith(
                     color: switch (kind) {
                       WorkingDayKind.abroad => colors.background,
+                      WorkingDayKind.restAbroad => colors.restText,
                       WorkingDayKind.home => colors.text,
                       WorkingDayKind.off || null => colors.textSecondary,
                     },
