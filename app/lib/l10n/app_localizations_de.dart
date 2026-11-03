@@ -723,6 +723,24 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Reduzierte Ruhezeit ohne Anspruch';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'Die letzte wöchentliche Ruhezeit war reduziert, ohne Anspruch darauf: Nötig war eine regelmäßige von 45 Std. Es fehlten $time.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle =>
+      'Regelmäßige wöchentliche Ruhezeit nötig';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'Eine reduzierte wöchentliche Ruhezeit ist jetzt nicht möglich — beenden Sie die Ruhezeit nicht vor 45 Std. Noch $time.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Auslesen der Karte überfällig';
 
   @override
@@ -2635,8 +2653,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get workDaysHome => 'Arbeit im Unternehmensland';
 
   @override
-  String get workDaysHomeHint =>
-      'Den ganzen Tag im Unternehmensland, aber mit Arbeit';
+  String get workDaysWeekendsAbroad => 'Davon Ruhetage';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'Ganzer Tag ohne Arbeit außerhalb des Unternehmenslandes';
+
+  @override
+  String get workDaysWeekendAbroad => 'Ruhetag im Ausland';
 
   @override
   String get workDaysOff => 'Kein Arbeitstag';
@@ -2673,5 +2697,5 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Ein Arbeitstag ist ein Tag, an dem Sie mindestens zeitweise im Ausland waren (unterwegs oder in der Ruhezeit, auch am Wochenende) oder im Unternehmensland gearbeitet haben. Ein Tag ganz in der Ruhezeit im Unternehmensland zählt nicht. Wo Sie waren, weiß die App aus den Ländern der Schichten auf dem Startbildschirm.';
+      'Ein Arbeitstag ist ein Tag, an dem Sie mindestens zeitweise im Ausland waren (unterwegs oder in der Ruhezeit, auch am Wochenende) oder im Unternehmensland gearbeitet haben. Ein Tag ganz in der Ruhezeit im Unternehmensland zählt nicht. Wo Sie waren, weiß die App aus den Ländern der Schichten auf dem Startbildschirm. Im Kalender markiert ein Ring Arbeit im Unternehmensland.';
 }

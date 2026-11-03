@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "{time} du repos hebdomadaire réduit n’ont pas été ajoutées. Retard — {days, plural, one{{days} jour} other{{days} jours}}.",
   "infrReducedRestsExceededTitle": "Trop de repos réduits",
   "infrReducedRestsExceededText": "Repos réduits depuis le repos hebdomadaire : {count}, 3 autorisés.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Repos réduit sans droit",
+  "infrReducedWeeklyRestWithoutRightText": "Le dernier repos hebdomadaire était réduit sans en avoir le droit : un repos normal de 45 h était nécessaire. Il manquait {time}.",
+  "infrFullWeeklyRestRequiredTitle": "Repos hebdomadaire normal nécessaire",
+  "infrFullWeeklyRestRequiredText": "Un repos hebdomadaire réduit n’est pas possible maintenant — ne terminez pas votre repos avant 45 h. Encore {time}.",
   "infrCardOverdueTitle": "Téléchargement de la carte en retard",
   "infrCardOverdueText": "Le délai de 28 jours est dépassé depuis {days, plural, one{{days} jour} other{{days} jours}}.",
   "infrCardSoonTitle": "Téléchargement de la carte bientôt",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "À l’étranger",
   "workDaysAbroadHint": "Au moins une partie de la journée hors du pays de l’entreprise, week-ends compris",
   "workDaysHome": "Travail dans le pays de l’entreprise",
-  "workDaysHomeHint": "Toute la journée dans le pays de l’entreprise, mais avec du travail",
+  "workDaysWeekendsAbroad": "Dont jours de repos",
+  "workDaysWeekendsAbroadHint": "Journée entière sans travail hors du pays de l’entreprise",
+  "workDaysWeekendAbroad": "Jour de repos à l’étranger",
   "workDaysOff": "Jour non travaillé",
   "workDaysRate": "Tarif journalier",
   "workDaysRateNotSet": "Non défini",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Mois précédent",
   "workDaysNextMonth": "Mois suivant",
   "workDaysNoBase": "Indiquez le pays de l’entreprise : les jours de travail sont comptés par rapport à lui.",
-  "workDaysRule": "Un jour de travail est un jour où vous étiez à l’étranger au moins une partie de la journée (en route ou en repos, week-ends compris) ou avez travaillé dans le pays de l’entreprise. Une journée entière de repos dans le pays de l’entreprise ne compte pas. L’appli sait où vous étiez grâce aux pays des postes sur l’écran d’accueil."
+  "workDaysRule": "Un jour de travail est un jour où vous étiez à l’étranger au moins une partie de la journée (en route ou en repos, week-ends compris) ou avez travaillé dans le pays de l’entreprise. Une journée entière de repos dans le pays de l’entreprise ne compte pas. L’appli sait où vous étiez grâce aux pays des postes sur l’écran d’accueil. Dans le calendrier, un cercle indique le travail dans le pays de l’entreprise."
 }

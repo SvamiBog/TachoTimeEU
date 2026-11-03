@@ -729,6 +729,23 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Сокращённый отдых без права';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'Последний недельный отдых — сокращённый, а права на это не было: нужен был полный 45 ч. Не хватило $time.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle => 'Нужен полный недельный отдых';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'Сокращённый недельный отдых сейчас недоступен — не заканчивайте отдых раньше 45 ч. Осталось $time.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Считывание карты просрочено';
 
   @override
@@ -2637,7 +2654,14 @@ class AppLocalizationsRu extends AppLocalizations {
   String get workDaysHome => 'Работа в стране фирмы';
 
   @override
-  String get workDaysHomeHint => 'Весь день в стране фирмы, но была работа';
+  String get workDaysWeekendsAbroad => 'Из них выходные';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'Весь день без работы вне страны фирмы';
+
+  @override
+  String get workDaysWeekendAbroad => 'Выходной за границей';
 
   @override
   String get workDaysOff => 'Не рабочий день';
@@ -2674,5 +2698,5 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Рабочий день — если хотя бы часть дня вы были за границей (в рейсе или на отдыхе, выходные тоже) или работали в стране фирмы. Не считается день целиком на отдыхе в стране фирмы. Где вы были, приложение знает по странам смен на главной.';
+      'Рабочий день — если хотя бы часть дня вы были за границей (в рейсе или на отдыхе, выходные тоже) или работали в стране фирмы. Не считается день целиком на отдыхе в стране фирмы. Где вы были, приложение знает по странам смен на главной. В календаре кольцом — работа в стране фирмы.';
 }

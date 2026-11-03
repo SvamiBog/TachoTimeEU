@@ -1154,6 +1154,30 @@ abstract class AppLocalizations {
   /// **'С недельного отдыха сокращённых: {count}, допускается 3.'**
   String infrReducedRestsExceededText(int count);
 
+  /// No description provided for @infrReducedWeeklyRestWithoutRightTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сокращённый отдых без права'**
+  String get infrReducedWeeklyRestWithoutRightTitle;
+
+  /// No description provided for @infrReducedWeeklyRestWithoutRightText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Последний недельный отдых — сокращённый, а права на это не было: нужен был полный 45 ч. Не хватило {time}.'**
+  String infrReducedWeeklyRestWithoutRightText(String time);
+
+  /// No description provided for @infrFullWeeklyRestRequiredTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нужен полный недельный отдых'**
+  String get infrFullWeeklyRestRequiredTitle;
+
+  /// No description provided for @infrFullWeeklyRestRequiredText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сокращённый недельный отдых сейчас недоступен — не заканчивайте отдых раньше 45 ч. Осталось {time}.'**
+  String infrFullWeeklyRestRequiredText(String time);
+
   /// No description provided for @infrCardOverdueTitle.
   ///
   /// In ru, this message translates to:
@@ -4089,17 +4113,29 @@ abstract class AppLocalizations {
   /// **'Хотя бы часть дня вне страны фирмы, выходные тоже'**
   String get workDaysAbroadHint;
 
-  /// Дни целиком в стране фирмы, но с работой
+  /// Для экранного диктора: день календаря целиком в стране фирмы, но с работой (кольцо)
   ///
   /// In ru, this message translates to:
   /// **'Работа в стране фирмы'**
   String get workDaysHome;
 
-  /// Подпись строки «Работа в стране фирмы»
+  /// Сколько из дней за границей — выходные: весь день без работы вне страны фирмы
   ///
   /// In ru, this message translates to:
-  /// **'Весь день в стране фирмы, но была работа'**
-  String get workDaysHomeHint;
+  /// **'Из них выходные'**
+  String get workDaysWeekendsAbroad;
+
+  /// Подпись строки «Из них выходные»
+  ///
+  /// In ru, this message translates to:
+  /// **'Весь день без работы вне страны фирмы'**
+  String get workDaysWeekendsAbroadHint;
+
+  /// Для экранного диктора: день календаря — выходной вне страны фирмы
+  ///
+  /// In ru, this message translates to:
+  /// **'Выходной за границей'**
+  String get workDaysWeekendAbroad;
 
   /// Для экранного диктора: день календаря не считается рабочим
   ///
@@ -4164,7 +4200,7 @@ abstract class AppLocalizations {
   /// Пояснение правила под календарём рабочих дней
   ///
   /// In ru, this message translates to:
-  /// **'Рабочий день — если хотя бы часть дня вы были за границей (в рейсе или на отдыхе, выходные тоже) или работали в стране фирмы. Не считается день целиком на отдыхе в стране фирмы. Где вы были, приложение знает по странам смен на главной.'**
+  /// **'Рабочий день — если хотя бы часть дня вы были за границей (в рейсе или на отдыхе, выходные тоже) или работали в стране фирмы. Не считается день целиком на отдыхе в стране фирмы. Где вы были, приложение знает по странам смен на главной. В календаре кольцом — работа в стране фирмы.'**
   String get workDaysRule;
 }
 

@@ -18,6 +18,7 @@ class MilestoneRow extends StatelessWidget {
     this.subtitle,
     this.muted = false,
     this.valueColor,
+    this.dotColor,
     super.key,
   });
 
@@ -28,12 +29,15 @@ class MilestoneRow extends StatelessWidget {
   final bool muted;
   final Color? valueColor;
 
+  /// Цвет точки, если она — легенда цвета: зелёный — выходной за границей.
+  final Color? dotColor;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final dotColor = dot == MilestoneDot.muted
-        ? colors.textSecondary
-        : colors.text;
+    final dotColor =
+        this.dotColor ??
+        (dot == MilestoneDot.muted ? colors.textSecondary : colors.text);
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 64),
       child: Padding(

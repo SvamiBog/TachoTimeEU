@@ -1,6 +1,7 @@
 // «Рабочие дни» (Premium): день считается, если водитель хоть часть дня был
-// вне страны фирмы или работал в ней; ставка за день и сумма. Правило — в
-// движке (working_days_test). План тестов: UI-29 в docs/testing.md.
+// вне страны фирмы или работал в ней; из них за границей и выходные за
+// границей; ставка за день и сумма. Правило — в движке (working_days_test).
+// План тестов: UI-29 в docs/testing.md.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -91,14 +92,16 @@ Finder valueOf(String title, String value) => find.descendant(
 
 void main() {
   group('UI-29: рабочие дни', () {
-    testWidgets('месяц: всего, за границей и в стране фирмы, календарь', (
+    testWidgets('месяц: всего, за границей и выходные там, календарь', (
       tester,
     ) async {
       await pumpDays(tester);
       expect(find.text('Октябрь 2026'), findsWidgets);
       expect(valueOf('рабочих дней', '5'), findsOneWidget);
       expect(valueOf('За границей', '4'), findsOneWidget);
-      expect(valueOf('Работа в стране фирмы', '1'), findsOneWidget);
+      expect(valueOf('Из них выходные', '0'), findsOneWidget);
+      // Работа в стране фирмы — только в итоге, своей строки нет
+      expect(find.text('Работа в стране фирмы'), findsNothing);
       // Календарь: пятница — за границей, суббота — дома, среда — рейс по
       // стране, после сегодняшнего — ещё не наступили
       expect(
@@ -118,8 +121,52 @@ void main() {
         findsOneWidget,
       );
       expect(find.textContaining('Рабочий день — если хотя бы'), findsOne);
+      expect(find.textContaining('В календаре кольцом'), findsOne);
       expect(find.text('Не задана'), findsOneWidget);
       expect(find.text('Сумма'), findsNothing);
+    });
+
+    testWidgets('выходные за границей — отдельной строкой и в календаре', (
+      tester,
+    ) async {
+      // Пт 09.10 — в Германию к 16:45, сб–вс — отдых там, пн — работа
+      final monday = DateTime(2026, 10, 12, 0, 45).toUtc();
+      await pumpScreen(
+        tester,
+        const WorkingDaysScreen(),
+        viewport: const Size(412, 2400),
+        overrides: journalOverrides(
+          periods: consecutive(_local(9, 7), [
+            (_drive, _h(4, 30)),
+            (_rest, _h(0, 45)),
+            (_drive, _h(4, 30)),
+            (_rest, _h(56)),
+            (_drive, _h(3)),
+          ], open: true),
+          now: _local(12, 4),
+          shiftMeta: {
+            _local(9, 7): const ShiftMeta(startCountry: 'PL', endCountry: 'D'),
+            monday: const ShiftMeta(startCountry: 'D'),
+          },
+        ),
+      );
+      expect(valueOf('рабочих дня', '4'), findsOneWidget);
+      expect(valueOf('За границей', '4'), findsOneWidget);
+      expect(valueOf('Из них выходные', '2'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Пятница, 9 октября: За границей'),
+        findsOneWidget,
+      );
+      for (final day in ['Суббота, 10 октября', 'Воскресенье, 11 октября']) {
+        expect(
+          find.bySemanticsLabel('$day: Выходной за границей'),
+          findsOneWidget,
+        );
+      }
+      expect(
+        find.bySemanticsLabel('Понедельник, 12 октября: За границей'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('прошлый месяц — по своим дням, следующий — только до '

@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "{time} voor de verkorte wekelijkse rust is niet toegevoegd. Te laat — {days, plural, one{{days} dag} other{{days} dagen}}.",
   "infrReducedRestsExceededTitle": "Te veel verkorte rusttijden",
   "infrReducedRestsExceededText": "Verkort sinds de wekelijkse rust: {count}, toegestaan 3.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Verkorte rust zonder recht",
+  "infrReducedWeeklyRestWithoutRightText": "De laatste wekelijkse rust was verkort zonder recht daarop: een normale rust van 45 u was nodig. Er ontbrak {time}.",
+  "infrFullWeeklyRestRequiredTitle": "Normale wekelijkse rust nodig",
+  "infrFullWeeklyRestRequiredText": "Een verkorte wekelijkse rust is nu niet mogelijk — beëindig uw rust niet vóór 45 u. Nog {time}.",
   "infrCardOverdueTitle": "Kaart uitlezen te laat",
   "infrCardOverdueText": "De termijn van 28 dagen is {days, plural, one{{days} dag} other{{days} dagen}} geleden verstreken.",
   "infrCardSoonTitle": "Kaart binnenkort uitlezen",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "In het buitenland",
   "workDaysAbroadHint": "Minstens een deel van de dag buiten het land van het bedrijf, ook in het weekend",
   "workDaysHome": "Werk in het land van het bedrijf",
-  "workDaysHomeHint": "De hele dag in het land van het bedrijf, maar met werk",
+  "workDaysWeekendsAbroad": "Waarvan rustdagen",
+  "workDaysWeekendsAbroadHint": "De hele dag zonder werk buiten het land van het bedrijf",
+  "workDaysWeekendAbroad": "Rustdag in het buitenland",
   "workDaysOff": "Geen werkdag",
   "workDaysRate": "Dagtarief",
   "workDaysRateNotSet": "Niet ingesteld",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Vorige maand",
   "workDaysNextMonth": "Volgende maand",
   "workDaysNoBase": "Kies het land van het bedrijf: werkdagen worden daartegen geteld.",
-  "workDaysRule": "Een werkdag is een dag waarop u minstens een deel van de dag in het buitenland was (onderweg of in rust, ook in het weekend) of in het land van het bedrijf werkte. Een dag die volledig in rust in het land van het bedrijf is doorgebracht, telt niet. Waar u was, weet de app uit de landen van de diensten op het startscherm."
+  "workDaysRule": "Een werkdag is een dag waarop u minstens een deel van de dag in het buitenland was (onderweg of in rust, ook in het weekend) of in het land van het bedrijf werkte. Een dag die volledig in rust in het land van het bedrijf is doorgebracht, telt niet. Waar u was, weet de app uit de landen van de diensten op het startscherm. In de kalender geeft een ring werk in het land van het bedrijf aan."
 }

@@ -835,6 +835,24 @@
       }
     }
   },
+  "infrReducedWeeklyRestWithoutRightTitle": "Сокращённый отдых без права",
+  "infrReducedWeeklyRestWithoutRightText": "Последний недельный отдых — сокращённый, а права на это не было: нужен был полный 45 ч. Не хватило {time}.",
+  "@infrReducedWeeklyRestWithoutRightText": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "infrFullWeeklyRestRequiredTitle": "Нужен полный недельный отдых",
+  "infrFullWeeklyRestRequiredText": "Сокращённый недельный отдых сейчас недоступен — не заканчивайте отдых раньше 45 ч. Осталось {time}.",
+  "@infrFullWeeklyRestRequiredText": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "infrCardOverdueTitle": "Считывание карты просрочено",
   "infrCardOverdueText": "Срок 28 дней прошёл {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}} назад.",
   "@infrCardOverdueText": {
@@ -2450,11 +2468,19 @@
   },
   "workDaysHome": "Работа в стране фирмы",
   "@workDaysHome": {
-    "description": "Дни целиком в стране фирмы, но с работой"
+    "description": "Для экранного диктора: день календаря целиком в стране фирмы, но с работой (кольцо)"
   },
-  "workDaysHomeHint": "Весь день в стране фирмы, но была работа",
-  "@workDaysHomeHint": {
-    "description": "Подпись строки «Работа в стране фирмы»"
+  "workDaysWeekendsAbroad": "Из них выходные",
+  "@workDaysWeekendsAbroad": {
+    "description": "Сколько из дней за границей — выходные: весь день без работы вне страны фирмы"
+  },
+  "workDaysWeekendsAbroadHint": "Весь день без работы вне страны фирмы",
+  "@workDaysWeekendsAbroadHint": {
+    "description": "Подпись строки «Из них выходные»"
+  },
+  "workDaysWeekendAbroad": "Выходной за границей",
+  "@workDaysWeekendAbroad": {
+    "description": "Для экранного диктора: день календаря — выходной вне страны фирмы"
   },
   "workDaysOff": "Не рабочий день",
   "@workDaysOff": {
@@ -2504,7 +2530,7 @@
   "@workDaysNoBase": {
     "description": "Экран «Рабочие дни» без страны фирмы"
   },
-  "workDaysRule": "Рабочий день — если хотя бы часть дня вы были за границей (в рейсе или на отдыхе, выходные тоже) или работали в стране фирмы. Не считается день целиком на отдыхе в стране фирмы. Где вы были, приложение знает по странам смен на главной.",
+  "workDaysRule": "Рабочий день — если хотя бы часть дня вы были за границей (в рейсе или на отдыхе, выходные тоже) или работали в стране фирмы. Не считается день целиком на отдыхе в стране фирмы. Где вы были, приложение знает по странам смен на главной. В календаре кольцом — работа в стране фирмы.",
   "@workDaysRule": {
     "description": "Пояснение правила под календарём рабочих дней"
   }

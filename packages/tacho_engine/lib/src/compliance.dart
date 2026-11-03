@@ -13,6 +13,7 @@ import 'package:tacho_engine/src/manual_shift.dart';
 import 'package:tacho_engine/src/shift_route.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
+import 'package:tacho_engine/src/weekly_rest_right.dart';
 
 /// Driver settings that change the calculation.
 @immutable
@@ -619,38 +620,37 @@ ComplianceSnapshot calculateCompliance({
   final previousWeeklyRest = completedWeekly.length < 2
       ? null
       : completedWeekly[completedWeekly.length - 2];
-  // Два сокращённых подряд (пакет мобильности) — только оба вне страны
-  // фирмы (ст. 8(6)). Страна отдыха — там, где кончилась смена перед ним;
+  // Право на сокращённый недельный отдых (ст. 8(6)): два подряд — только
+  // с пакетом мобильности, оба вне страны фирмы, и из четырёх недельных
+  // подряд два полных. Страна отдыха — там, где кончилась смена перед ним;
   // страна не выбрана — не проверяем.
-  final shiftStarts = [
-    for (final s in timeline.shifts) s.start,
-    for (final m in manual) m.start,
-  ];
-  String? countryAt(DateTime t) {
-    DateTime? last;
-    for (final start in shiftStarts) {
-      if (!start.isAfter(t) && (last == null || start.isAfter(last))) {
-        last = start;
-      }
-    }
-    return last == null ? null : routes[last]?.last;
-  }
-
-  final base = settings.baseCountry;
-  bool atBase(DateTime t) => base != null && countryAt(t) == base;
-  final secondReducedAllowed =
-      settings.mobilityPackage &&
-      (previousWeeklyRest == null ||
-          previousWeeklyRest.status == RestStatus.full);
-  final reducedWeeklyRestAtBase =
+  final atBase = atBaseCountry(
+    baseCountry: settings.baseCountry,
+    shiftStarts: [
+      for (final s in timeline.shifts) s.start,
+      for (final m in manual) m.start,
+    ],
+    routes: routes,
+  );
+  final right = reducedWeeklyRestRight(
+    completedWeekly,
+    restStart: now,
+    mobilityPackage: settings.mobilityPackage,
+    atBase: atBase,
+  );
+  final reducedWeeklyRestAtBase = right == ReducedWeeklyRestRight.atBase;
+  final reducedWeeklyRestAvailable = right == ReducedWeeklyRestRight.allowed;
+  // Последний недельный — сокращённый, а права на него не было
+  final lastWithoutRight =
       lastWeeklyRest != null &&
-      lastWeeklyRest.status != RestStatus.full &&
-      secondReducedAllowed &&
-      (atBase(lastWeeklyRest.start) || atBase(now));
-  final reducedWeeklyRestAvailable =
-      lastWeeklyRest == null ||
-      lastWeeklyRest.status == RestStatus.full ||
-      (secondReducedAllowed && !reducedWeeklyRestAtBase);
+      lastWeeklyRest.status == RestStatus.reduced &&
+      reducedWeeklyRestRight(
+            completedWeekly.sublist(0, completedWeekly.length - 1),
+            restStart: lastWeeklyRest.start,
+            mobilityPackage: settings.mobilityPackage,
+            atBase: atBase,
+          ) !=
+          ReducedWeeklyRestRight.allowed;
 
   // Компенсация сокращённого недельного отдыха (ст. 8(6), 8(7)): долг
   // берётся одним блоком, присоединённым к другому отдыху не короче 9 ч, до
@@ -988,6 +988,33 @@ ComplianceSnapshot calculateCompliance({
         );
       }
     }
+  }
+
+  // Сокращённый недельный отдых без права на него — нарушение, пока он
+  // последний недельный.
+  if (lastWeeklyRest case final last? when lastWithoutRight) {
+    infringements.add(
+      Infringement(
+        InfringementType.reducedWeeklyRestWithoutRight,
+        time: EuLimits.weeklyRestRegular - last.duration,
+      ),
+    );
+  }
+  // Идёт недельный отдых, а сокращённый недоступен — заканчивать раньше
+  // 45 ч нельзя. После срока 144 ч то же говорит «не прерывайте отдых».
+  if (offDutyRest case final rest?
+      when rest.weekly &&
+          !reducedWeeklyRestAvailable &&
+          rest.duration < EuLimits.weeklyRestRegular &&
+          !infringements.any(
+            (i) => i.type == InfringementType.weeklyRestContinue,
+          )) {
+    infringements.add(
+      Infringement(
+        InfringementType.fullWeeklyRestRequired,
+        time: EuLimits.weeklyRestRegular - rest.duration,
+      ),
+    );
   }
 
   // Компенсация: просроченная — нарушение, срок меньше чем через неделю —

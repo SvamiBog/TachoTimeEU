@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "Qisqartirilgan haftalik dam olish uchun {time} qoʻshilmagan. Kechikish — {days, plural, one{{days} kun} other{{days} kun}}.",
   "infrReducedRestsExceededTitle": "Qisqartirilgan dam olishlar juda koʻp",
   "infrReducedRestsExceededText": "Haftalik dam olishdan beri qisqartirilgan: {count}, ruxsat — 3.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Huquqsiz qisqartirilgan dam olish",
+  "infrReducedWeeklyRestWithoutRightText": "Oxirgi haftalik dam olish qisqartirilgan, lekin bunga huquq yoʻq edi: toʻliq 45 soat kerak edi. {time} yetmadi.",
+  "infrFullWeeklyRestRequiredTitle": "Toʻliq haftalik dam olish kerak",
+  "infrFullWeeklyRestRequiredText": "Qisqartirilgan haftalik dam olish hozir mumkin emas — dam olishni 45 soatdan oldin tugatmang. {time} qoldi.",
   "infrCardOverdueTitle": "Kartani oʻqish kechikdi",
   "infrCardOverdueText": "28 kunlik muddat {days, plural, one{{days} kun} other{{days} kun}} oldin oʻtdi.",
   "infrCardSoonTitle": "Tez orada kartani oʻqish",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "Chet elda",
   "workDaysAbroadHint": "Kunning hech boʻlmaganda bir qismi firma mamlakatidan tashqarida, dam olish kunlari ham",
   "workDaysHome": "Firma mamlakatida ish",
-  "workDaysHomeHint": "Butun kun firma mamlakatida, lekin ish bor edi",
+  "workDaysWeekendsAbroad": "Shundan dam olish kunlari",
+  "workDaysWeekendsAbroadHint": "Butun kun firma mamlakatidan tashqarida ishsiz",
+  "workDaysWeekendAbroad": "Chet elda dam olish kuni",
   "workDaysOff": "Ish kuni emas",
   "workDaysRate": "Kunlik stavka",
   "workDaysRateNotSet": "Belgilanmagan",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Oldingi oy",
   "workDaysNextMonth": "Keyingi oy",
   "workDaysNoBase": "Firma mamlakatini koʻrsating: ish kunlari unga nisbatan hisoblanadi.",
-  "workDaysRule": "Ish kuni — kunning hech boʻlmaganda bir qismida chet elda boʻlgan (reysda yoki dam olishda, dam olish kunlari ham) yoki firma mamlakatida ishlagan kuningiz. Firma mamlakatida butunlay dam olish bilan oʻtgan kun hisoblanmaydi. Qayerda boʻlganingizni ilova bosh ekrandagi smena mamlakatlaridan biladi."
+  "workDaysRule": "Ish kuni — kunning hech boʻlmaganda bir qismida chet elda boʻlgan (reysda yoki dam olishda, dam olish kunlari ham) yoki firma mamlakatida ishlagan kuningiz. Firma mamlakatida butunlay dam olish bilan oʻtgan kun hisoblanmaydi. Qayerda boʻlganingizni ilova bosh ekrandagi smena mamlakatlaridan biladi. Kalendarda halqa — firma mamlakatidagi ish."
 }

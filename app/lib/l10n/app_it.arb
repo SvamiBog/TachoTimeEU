@@ -172,6 +172,10 @@
   "infrCompensationOverdueText": "Non sono state aggiunte {time} per il riposo settimanale ridotto. Ritardo — {days, plural, one{{days} giorno} other{{days} giorni}}.",
   "infrReducedRestsExceededTitle": "Troppi riposi ridotti",
   "infrReducedRestsExceededText": "Ridotti dal riposo settimanale: {count}, ammessi 3.",
+  "infrReducedWeeklyRestWithoutRightTitle": "Riposo ridotto senza diritto",
+  "infrReducedWeeklyRestWithoutRightText": "L’ultimo riposo settimanale era ridotto senza averne diritto: serviva un riposo regolare di 45 h. Mancavano {time}.",
+  "infrFullWeeklyRestRequiredTitle": "Serve un riposo settimanale regolare",
+  "infrFullWeeklyRestRequiredText": "Ora non è possibile un riposo settimanale ridotto — non terminare il riposo prima di 45 h. Mancano {time}.",
   "infrCardOverdueTitle": "Scarico della carta in ritardo",
   "infrCardOverdueText": "Il termine di 28 giorni è scaduto da {days, plural, one{{days} giorno} other{{days} giorni}}.",
   "infrCardSoonTitle": "Scarico della carta a breve",
@@ -661,7 +665,9 @@
   "workDaysAbroad": "All’estero",
   "workDaysAbroadHint": "Almeno parte del giorno fuori dal paese dell’azienda, anche nel fine settimana",
   "workDaysHome": "Lavoro nel paese dell’azienda",
-  "workDaysHomeHint": "Tutto il giorno nel paese dell’azienda, ma con lavoro",
+  "workDaysWeekendsAbroad": "Di cui giorni di riposo",
+  "workDaysWeekendsAbroadHint": "Tutto il giorno senza lavoro fuori dal paese dell’azienda",
+  "workDaysWeekendAbroad": "Giorno di riposo all’estero",
   "workDaysOff": "Giorno non lavorativo",
   "workDaysRate": "Tariffa giornaliera",
   "workDaysRateNotSet": "Non impostata",
@@ -672,5 +678,5 @@
   "workDaysPrevMonth": "Mese precedente",
   "workDaysNextMonth": "Mese successivo",
   "workDaysNoBase": "Indica il paese dell’azienda: i giorni lavorativi si contano rispetto a esso.",
-  "workDaysRule": "Un giorno lavorativo è un giorno in cui sei stato all’estero almeno in parte (in viaggio o a riposo, anche nel fine settimana) o hai lavorato nel paese dell’azienda. Non conta un giorno interamente di riposo nel paese dell’azienda. L’app sa dove eri dai paesi dei turni nella schermata principale."
+  "workDaysRule": "Un giorno lavorativo è un giorno in cui sei stato all’estero almeno in parte (in viaggio o a riposo, anche nel fine settimana) o hai lavorato nel paese dell’azienda. Non conta un giorno interamente di riposo nel paese dell’azienda. L’app sa dove eri dai paesi dei turni nella schermata principale. Nel calendario un cerchio indica il lavoro nel paese dell’azienda."
 }

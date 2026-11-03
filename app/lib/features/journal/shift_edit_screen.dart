@@ -955,8 +955,12 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
   ) async {
     final l = context.l10n;
     final locale = context.localeTag;
-    final crew =
-        ref.read(complianceSettingsProvider).value?.crew ?? CrewMode.solo;
+    final settings =
+        ref.read(complianceSettingsProvider).value ??
+        const ComplianceSettings();
+    final crew = settings.crew;
+    // Страны смен — до правки: у остальных смен начало не меняется
+    final routes = ref.read(journalProvider).value?.routes ?? const {};
     try {
       final periods = await ref.read(activityRepositoryProvider).periods();
       final manual = await ref
@@ -972,6 +976,9 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
           now: now,
           manualShifts: manual,
           crew: crew,
+          mobilityPackage: settings.mobilityPackage,
+          baseCountry: settings.baseCountry,
+          routes: routes,
         ),
         recordedMeta: const {},
         manualMeta: const {},

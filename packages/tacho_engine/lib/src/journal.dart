@@ -9,8 +9,10 @@ import 'package:tacho_engine/src/driver_mode.dart';
 import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/manual_rest.dart';
 import 'package:tacho_engine/src/manual_shift.dart';
+import 'package:tacho_engine/src/shift_route.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
+import 'package:tacho_engine/src/weekly_rest_right.dart';
 
 /// Highlight of a journal value, as in the design: fine, warning, bad.
 enum JournalLevel { ok, warn, bad }
@@ -124,14 +126,44 @@ class JournalWeek {
 
 /// Журнал по неделям, от текущей к старым. Недели без смен не выводятся,
 /// кроме текущей.
+///
+/// Сокращённый недельный отдых без права на него (ст. 8(6)) — нарушение:
+/// право — по пакету мобильности [mobilityPackage], стране фирмы
+/// [baseCountry] и странам смен [routes] (по началу смены), как в
+/// [calculateCompliance].
 List<JournalWeek> buildJournal({
   required Timeline timeline,
   required DateTime now,
   Iterable<ManualShift> manualShifts = const [],
   CrewMode crew = CrewMode.solo,
+  bool mobilityPackage = true,
+  String? baseCountry,
+  Map<DateTime, ShiftRoute> routes = const {},
 }) {
   final manual = manualShifts.toList();
   final window = workdayWindow(crew);
+  final restOfManual = manualRests(manual, timeline, now);
+  final weeklyRests = _weeklyRests(timeline, restOfManual, now);
+  final withoutRight = reducedWeeklyRestsWithoutRight(
+    [
+      for (final r in weeklyRests)
+        if (r.end != null) r,
+    ]..sort((a, b) => a.start.compareTo(b.start)),
+    mobilityPackage: mobilityPackage,
+    atBase: atBaseCountry(
+      baseCountry: baseCountry,
+      shiftStarts: [
+        for (final s in timeline.shifts) s.start,
+        for (final m in manual) m.start,
+      ],
+      routes: routes,
+    ),
+  );
+  // Тот же отдых может быть и записью, и отдыхом ручной смены — по
+  // пересечению, а не по началу
+  bool takenWithoutRight(DateTime start, DateTime end) => withoutRight.any(
+    (w) => w.start.isBefore(end) && (w.end ?? now).isAfter(start),
+  );
 
   // Один водитель: 13 ч / 15 ч, экипаж: 19 ч / 21 ч.
   JournalLevel spanLevel(Duration span) {
@@ -153,6 +185,12 @@ List<JournalWeek> buildJournal({
     RestStatus.reduced => JournalLevel.warn,
     RestStatus.full || null => JournalLevel.ok,
   };
+
+  // Недельный отдых без права на сокращённый — нарушение
+  JournalLevel weeklyLevel(RestStatus? status, DateTime start, DateTime? end) =>
+      end != null && takenWithoutRight(start, end)
+      ? JournalLevel.bad
+      : restLevel(status);
 
   final shifts = <JournalShift>[];
 
@@ -193,12 +231,13 @@ List<JournalWeek> buildJournal({
         restEnd: r != null && !r.open ? r.end : null,
         driveLevel: driveLevel(s.driving),
         spanLevel: spanLevel(span),
-        restLevel: restLevel(status),
+        restLevel: kind == RestKind.weekly && r != null && !r.open
+            ? weeklyLevel(status, r.start, r.end)
+            : restLevel(status),
       ),
     );
   }
 
-  final restOfManual = manualRests(manual, timeline, now);
   for (final (i, m) in manual.indexed) {
     final span = durationBetween(m.start, m.end ?? now);
     final r = restOfManual[i];
@@ -233,7 +272,9 @@ List<JournalWeek> buildJournal({
         restEnd: r?.end,
         driveLevel: driveLevel(m.driving),
         spanLevel: spanLevel(span),
-        restLevel: restLevel(status),
+        restLevel: r != null && r.kind == RestKind.weekly
+            ? weeklyLevel(status, r.start, r.end)
+            : restLevel(status),
       ),
     );
   }
@@ -258,8 +299,34 @@ List<JournalWeek> buildJournal({
     return total;
   }
 
+  final sortedWeeks = weekStarts.toList()..sort((a, b) => b.compareTo(a));
+  return [
+    for (final start in sortedWeeks)
+      JournalWeek(
+        start: start,
+        isCurrent: start == currentWeek,
+        driving: drivingInWeek(start),
+        fortnightDriving:
+            drivingInWeek(start) + drivingInWeek(start.subtract(week)),
+        shifts: shifts.where((s) => weekStartUtc(s.start) == start).toList()
+          ..sort((a, b) => b.start.compareTo(a.start)),
+        // Недельный отдых показываем в неделе, где он закончился (или идёт)
+        weeklyRests: weeklyRests
+            .where((r) => weekStartUtc(r.end ?? now) == start)
+            .toList(),
+      ),
+  ];
+}
+
+/// Недельные отдыхи из записей и ручных смен, идущий — тоже ([WeeklyRest.end]
+/// null). Отдых ручной смены, который уже есть в записях, — один раз.
+List<WeeklyRest> _weeklyRests(
+  Timeline timeline,
+  List<ManualRest?> restOfManual,
+  DateTime now,
+) {
   final recordedWeekly = timeline.rests.where((p) => p.isWeekly).toList();
-  final weeklyRests = [
+  return [
     for (final p in recordedWeekly)
       WeeklyRest(
         start: p.start,
@@ -281,23 +348,5 @@ List<JournalWeek> buildJournal({
             duration: r.duration,
             status: weeklyRestStatus(r.duration),
           ),
-  ];
-
-  final sortedWeeks = weekStarts.toList()..sort((a, b) => b.compareTo(a));
-  return [
-    for (final start in sortedWeeks)
-      JournalWeek(
-        start: start,
-        isCurrent: start == currentWeek,
-        driving: drivingInWeek(start),
-        fortnightDriving:
-            drivingInWeek(start) + drivingInWeek(start.subtract(week)),
-        shifts: shifts.where((s) => weekStartUtc(s.start) == start).toList()
-          ..sort((a, b) => b.start.compareTo(a.start)),
-        // Недельный отдых показываем в неделе, где он закончился (или идёт)
-        weeklyRests: weeklyRests
-            .where((r) => weekStartUtc(r.end ?? now) == start)
-            .toList(),
-      ),
   ];
 }

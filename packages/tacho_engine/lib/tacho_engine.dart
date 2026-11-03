@@ -27,4 +27,5 @@ export 'src/shifts.dart';
 export 'src/time.dart'
     show durationBetween, floorTimeToMinute, floorToMinute, week, weekStartUtc;
 export 'src/timeline.dart';
+export 'src/weekly_rest_right.dart';
 export 'src/working_days.dart';

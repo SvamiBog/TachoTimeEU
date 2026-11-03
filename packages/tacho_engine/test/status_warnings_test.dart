@@ -91,6 +91,13 @@ void main() {
       InfringementType.reducedRestsExceeded: (v, shiftEnd, eu, '8(4)'),
       InfringementType.cardOverdue: (v, card, '581/2010', '1'),
       InfringementType.cardSoon: (w, card, '581/2010', '1'),
+      InfringementType.reducedWeeklyRestWithoutRight: (
+        v,
+        weeklyRest,
+        eu,
+        '8(6)',
+      ),
+      InfringementType.fullWeeklyRestRequired: (w, weeklyRest, eu, '8(6)'),
     };
 
     test('таблица покрывает все виды', () {

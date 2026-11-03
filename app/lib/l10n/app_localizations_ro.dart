@@ -727,6 +727,24 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Repaus redus fără drept';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'Ultimul repaus săptămânal a fost redus fără drept: era necesar unul complet de 45 h. Au lipsit $time.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle =>
+      'E necesar repaus săptămânal complet';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'Repausul săptămânal redus nu este disponibil acum — nu încheiați repausul înainte de 45 h. Au rămas $time.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Descărcarea cardului întârziată';
 
   @override
@@ -2630,7 +2648,14 @@ class AppLocalizationsRo extends AppLocalizations {
   String get workDaysHome => 'Muncă în țara firmei';
 
   @override
-  String get workDaysHomeHint => 'Toată ziua în țara firmei, dar cu muncă';
+  String get workDaysWeekendsAbroad => 'Din care zile de repaus';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'Toată ziua fără muncă în afara țării firmei';
+
+  @override
+  String get workDaysWeekendAbroad => 'Zi de repaus în străinătate';
 
   @override
   String get workDaysOff => 'Zi nelucrătoare';
@@ -2667,5 +2692,5 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Zi lucrătoare este ziua în care ați fost în străinătate măcar o parte din zi (în cursă sau în repaus, inclusiv în weekend) sau ați lucrat în țara firmei. Nu se numără ziua petrecută în întregime în repaus în țara firmei. Unde ați fost, aplicația știe din țările turelor de pe ecranul principal.';
+      'Zi lucrătoare este ziua în care ați fost în străinătate măcar o parte din zi (în cursă sau în repaus, inclusiv în weekend) sau ați lucrat în țara firmei. Nu se numără ziua petrecută în întregime în repaus în țara firmei. Unde ați fost, aplicația știe din țările turelor de pe ecranul principal. În calendar, cu cerc — munca în țara firmei.';
 }

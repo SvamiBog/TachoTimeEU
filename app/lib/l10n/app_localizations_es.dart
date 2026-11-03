@@ -722,6 +722,24 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Descanso reducido sin derecho';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'El último descanso semanal fue reducido sin tener derecho: hacía falta uno normal de 45 h. Faltaron $time.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle =>
+      'Hace falta descanso semanal normal';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'Ahora no es posible un descanso semanal reducido: no termine el descanso antes de 45 h. Quedan $time.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Descarga de la tarjeta atrasada';
 
   @override
@@ -2627,8 +2645,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workDaysHome => 'Trabajo en el país de la empresa';
 
   @override
-  String get workDaysHomeHint =>
-      'Todo el día en el país de la empresa, pero con trabajo';
+  String get workDaysWeekendsAbroad => 'De ellos, días de descanso';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'Todo el día sin trabajo fuera del país de la empresa';
+
+  @override
+  String get workDaysWeekendAbroad => 'Día de descanso en el extranjero';
 
   @override
   String get workDaysOff => 'Día no laborable';
@@ -2665,5 +2689,5 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Un día de trabajo es aquel en que estuvo en el extranjero al menos parte del día (en ruta o descansando, también fines de semana) o trabajó en el país de la empresa. No cuenta un día entero de descanso en el país de la empresa. La app sabe dónde estuvo por los países de las jornadas en la pantalla principal.';
+      'Un día de trabajo es aquel en que estuvo en el extranjero al menos parte del día (en ruta o descansando, también fines de semana) o trabajó en el país de la empresa. No cuenta un día entero de descanso en el país de la empresa. La app sabe dónde estuvo por los países de las jornadas en la pantalla principal. En el calendario, un anillo marca el trabajo en el país de la empresa.';
 }

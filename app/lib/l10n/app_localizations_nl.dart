@@ -721,6 +721,23 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get infrReducedWeeklyRestWithoutRightTitle =>
+      'Verkorte rust zonder recht';
+
+  @override
+  String infrReducedWeeklyRestWithoutRightText(String time) {
+    return 'De laatste wekelijkse rust was verkort zonder recht daarop: een normale rust van 45 u was nodig. Er ontbrak $time.';
+  }
+
+  @override
+  String get infrFullWeeklyRestRequiredTitle => 'Normale wekelijkse rust nodig';
+
+  @override
+  String infrFullWeeklyRestRequiredText(String time) {
+    return 'Een verkorte wekelijkse rust is nu niet mogelijk — beëindig uw rust niet vóór 45 u. Nog $time.';
+  }
+
+  @override
   String get infrCardOverdueTitle => 'Kaart uitlezen te laat';
 
   @override
@@ -2624,8 +2641,14 @@ class AppLocalizationsNl extends AppLocalizations {
   String get workDaysHome => 'Werk in het land van het bedrijf';
 
   @override
-  String get workDaysHomeHint =>
-      'De hele dag in het land van het bedrijf, maar met werk';
+  String get workDaysWeekendsAbroad => 'Waarvan rustdagen';
+
+  @override
+  String get workDaysWeekendsAbroadHint =>
+      'De hele dag zonder werk buiten het land van het bedrijf';
+
+  @override
+  String get workDaysWeekendAbroad => 'Rustdag in het buitenland';
 
   @override
   String get workDaysOff => 'Geen werkdag';
@@ -2662,5 +2685,5 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Een werkdag is een dag waarop u minstens een deel van de dag in het buitenland was (onderweg of in rust, ook in het weekend) of in het land van het bedrijf werkte. Een dag die volledig in rust in het land van het bedrijf is doorgebracht, telt niet. Waar u was, weet de app uit de landen van de diensten op het startscherm.';
+      'Een werkdag is een dag waarop u minstens een deel van de dag in het buitenland was (onderweg of in rust, ook in het weekend) of in het land van het bedrijf werkte. Een dag die volledig in rust in het land van het bedrijf is doorgebracht, telt niet. Waar u was, weet de app uit de landen van de diensten op het startscherm. In de kalender geeft een ring werk in het land van het bedrijf aan.';
 }
