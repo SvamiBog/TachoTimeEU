@@ -12,6 +12,10 @@ The ECC agents, skills and commands TachoGo uses are copied into `.claude/agents
 | ecc-flutter-reviewer | Flutter/Dart review | Changes in `app/` or `packages/` |
 | ecc-dart-build-resolver | Analyzer and build errors | `dart analyze`, `flutter analyze` or build failures |
 | ecc-security-reviewer | Security review | Premium and licensing, backup and transfer, export, network, permissions, crash reporting and analytics |
+| play-preflight | Google Play release gate: Play requirements and policies, Play Console answers, CI evidence and the release AAB for the commit to upload | Before the first upload, a beta tag or the production release |
+| site-review | UI/UX and content review of tachogo.eu: layout at phone to desktop widths, accessibility, the site's promises against the app, Polish and German texts, the live server | Before publishing site changes, or when asked to check the site |
+
+`play-preflight` and `site-review` are TachoGo's own agents, not from ECC, so they have no prefix. They only read and report; recording `play-preflight` results in `docs/store/play-audit.md` and fixing what `site-review` finds is up to the main session. `site-review` serves the built site through `.claude/launch.json` → `site`, audits it with headless Chrome or Edge (`.claude/agents/site-review/cdp.mjs`, `audit.js`: layout and contrast, screenshots, real key presses, the accessibility tree) and uses the built-in browser pane only for the console and checks by hand.
 
 Commands: `/ecc-plan`, `/ecc-code-review`, `/ecc-flutter-review`, `/ecc-flutter-build`, `/ecc-flutter-test`, `/ecc-test-coverage`, `/ecc-save-session`, `/ecc-resume-session`. Skills: `ecc-tdd-workflow`, `ecc-dart-flutter-patterns`, `ecc-flutter-dart-code-review`, `ecc-context-budget`.
 

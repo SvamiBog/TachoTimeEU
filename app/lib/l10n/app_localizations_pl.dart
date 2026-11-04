@@ -2634,7 +2634,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get workDaysTitle => 'Dni robocze';
 
   @override
-  String get workDaysHint => 'Dni za granicą i z pracą — do wynagrodzenia';
+  String get workDaysHint => 'Dni robocze i wolne — w kraju firmy i za granicą';
 
   @override
   String workDaysCount(int count) {
@@ -2650,17 +2650,10 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'Za granicą';
+  String get workDaysWorking => 'Dzień roboczy';
 
   @override
-  String get workDaysAbroadHint =>
-      'Przynajmniej część dnia poza krajem firmy, weekendy też';
-
-  @override
-  String get workDaysHome => 'Praca w kraju firmy';
-
-  @override
-  String get workDaysWeekendsAbroad => 'W tym dni odpoczynku';
+  String get workDaysWeekendsAbroad => 'Dni odpoczynku za granicą';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2670,27 +2663,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Dzień odpoczynku za granicą';
 
   @override
-  String get workDaysOff => 'Dzień wolny';
+  String get workDaysWeekendsHome => 'Dni odpoczynku w kraju firmy';
 
   @override
-  String get workDaysRate => 'Stawka dzienna';
+  String get workDaysWeekendsHomeHint => 'Cały dzień bez pracy w kraju firmy';
 
   @override
-  String get workDaysRateNotSet => 'Nie ustawiono';
+  String get workDaysWeekendHome => 'Dzień odpoczynku w kraju firmy';
 
   @override
-  String get workDaysAmount => 'Kwota';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Stawka za dzień roboczy';
-
-  @override
-  String get workDaysCurrency => 'Waluta';
+  String get workDaysNoData => 'Brak danych';
 
   @override
   String get workDaysPrevMonth => 'Poprzedni miesiąc';
@@ -2704,5 +2686,5 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Dzień roboczy to dzień, w którym choć część dnia byłeś za granicą (w trasie lub na odpoczynku, weekendy też) albo pracowałeś w kraju firmy. Nie liczy się dzień w całości na odpoczynku w kraju firmy. Gdzie byłeś, aplikacja wie z krajów zmian na ekranie głównym. W kalendarzu kółkiem — praca w kraju firmy.';
+      'Dzień roboczy to dzień z jazdą lub inną pracą, a za granicą — także z dyspozycyjnością. Dzień bez pracy to dzień odpoczynku: za granicą, jeśli choć część dnia byłeś poza krajem firmy, w przeciwnym razie — w kraju firmy. Gdzie byłeś, aplikacja wie z krajów zmian na ekranie głównym. W kalendarzu zamalowane są dni robocze i dni odpoczynku za granicą (zielone), kółkiem — dni odpoczynku w kraju firmy, szare — brak danych.';
 }

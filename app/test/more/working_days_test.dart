@@ -1,15 +1,11 @@
-// «Рабочие дни» (Premium): день считается, если водитель хоть часть дня был
-// вне страны фирмы или работал в ней; из них за границей и выходные за
-// границей; ставка за день и сумма. Правило — в движке (working_days_test).
-// План тестов: UI-29 в docs/testing.md.
+// «Рабочие дни» (Premium): рабочие дни, выходные за границей и в стране фирмы
+// за месяц и календарь. Правило — в движке (working_days_test). План тестов:
+// UI-29 в docs/testing.md.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
-import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
-import 'package:tachogo/data/settings/settings_providers.dart';
-import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/more/more_screen.dart';
 import 'package:tachogo/features/more/working_days_screen.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
@@ -29,7 +25,7 @@ DateTime _local(int day, int hour) => DateTime(2026, 10, day, hour).toUtc();
 
 /// Фирма в Польше. Чт 08.10 — смена в Германии; пт — из Германии домой к
 /// 22:00; сб–вс — дома; пн — выезд 06:00, в Германию; вт — назад; ср — рейс
-/// по Польше 05:00–15:00; чт 15.10 — дома: 5 рабочих дней, 4 за границей.
+/// по Польше 05:00–15:00; чт 15.10 — дома: 5 рабочих дней, 3 выходных дома.
 final List<ActivityPeriod> trip = consecutive(_local(8, 18), [
   (_drive, _h(4)),
   (_rest, _h(9)),
@@ -63,7 +59,6 @@ final Map<DateTime, ShiftMeta> tripCountries = {
 Future<void> pumpDays(
   WidgetTester tester, {
   String? base = 'PL',
-  DayRate? rate,
   Size viewport = const Size(412, 2400),
   double textScale = 1,
   Locale locale = const Locale('ru'),
@@ -73,15 +68,12 @@ Future<void> pumpDays(
   viewport: viewport,
   textScale: textScale,
   locale: locale,
-  overrides: [
-    ...journalOverrides(
-      periods: trip,
-      now: now,
-      shiftMeta: tripCountries,
-      settings: ComplianceSettings(baseCountry: base),
-    ),
-    if (rate != null) dayRateProvider.overrideWith((ref) => Stream.value(rate)),
-  ],
+  overrides: journalOverrides(
+    periods: trip,
+    now: now,
+    shiftMeta: tripCountries,
+    settings: ComplianceSettings(baseCountry: base),
+  ),
 );
 
 /// Значение строки итога с названием [title].
@@ -92,38 +84,44 @@ Finder valueOf(String title, String value) => find.descendant(
 
 void main() {
   group('UI-29: рабочие дни', () {
-    testWidgets('месяц: всего, за границей и выходные там, календарь', (
+    testWidgets('месяц: рабочие дни, выходные за границей и дома, календарь', (
       tester,
     ) async {
       await pumpDays(tester);
       expect(find.text('Октябрь 2026'), findsWidgets);
       expect(valueOf('рабочих дней', '5'), findsOneWidget);
-      expect(valueOf('За границей', '4'), findsOneWidget);
-      expect(valueOf('Из них выходные', '0'), findsOneWidget);
-      // Работа в стране фирмы — только в итоге, своей строки нет
-      expect(find.text('Работа в стране фирмы'), findsNothing);
-      // Календарь: пятница — за границей, суббота — дома, среда — рейс по
-      // стране, после сегодняшнего — ещё не наступили
+      expect(valueOf('Выходные за границей', '0'), findsOneWidget);
+      expect(valueOf('Выходные в стране фирмы', '3'), findsOneWidget);
+      // Ставки и суммы нет: экран только считает дни
+      expect(find.textContaining('Ставка'), findsNothing);
+      // Календарь: до журнала — нет данных, рабочий день — один вид и за
+      // границей (пятница), и в стране (среда), суббота — выходной дома, после
+      // сегодняшнего — ещё не наступили
       expect(
-        find.bySemanticsLabel('Пятница, 9 октября: За границей'),
+        find.bySemanticsLabel('Четверг, 1 октября: Нет данных'),
         findsOneWidget,
       );
       expect(
-        find.bySemanticsLabel('Суббота, 10 октября: Не рабочий день'),
+        find.bySemanticsLabel('Пятница, 9 октября: Рабочий день'),
         findsOneWidget,
       );
       expect(
-        find.bySemanticsLabel('Среда, 14 октября: Работа в стране фирмы'),
+        find.bySemanticsLabel('Суббота, 10 октября: Выходной в стране фирмы'),
         findsOneWidget,
       );
       expect(
-        find.bySemanticsLabel('Пятница, 16 октября: Не рабочий день'),
+        find.bySemanticsLabel('Среда, 14 октября: Рабочий день'),
         findsOneWidget,
       );
-      expect(find.textContaining('Рабочий день — если хотя бы'), findsOne);
-      expect(find.textContaining('В календаре кольцом'), findsOne);
-      expect(find.text('Не задана'), findsOneWidget);
-      expect(find.text('Сумма'), findsNothing);
+      expect(
+        find.bySemanticsLabel('Пятница, 16 октября: Нет данных'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Рабочий день — день с вождением'), findsOne);
+      expect(
+        find.textContaining('кольцом — выходные в стране фирмы'),
+        findsOne,
+      );
     });
 
     testWidgets('выходные за границей — отдельной строкой и в календаре', (
@@ -150,11 +148,12 @@ void main() {
           },
         ),
       );
-      expect(valueOf('рабочих дня', '4'), findsOneWidget);
-      expect(valueOf('За границей', '4'), findsOneWidget);
-      expect(valueOf('Из них выходные', '2'), findsOneWidget);
+      // Выходные за границей — не рабочие дни
+      expect(valueOf('рабочих дня', '2'), findsOneWidget);
+      expect(valueOf('Выходные за границей', '2'), findsOneWidget);
+      expect(valueOf('Выходные в стране фирмы', '0'), findsOneWidget);
       expect(
-        find.bySemanticsLabel('Пятница, 9 октября: За границей'),
+        find.bySemanticsLabel('Пятница, 9 октября: Рабочий день'),
         findsOneWidget,
       );
       for (final day in ['Суббота, 10 октября', 'Воскресенье, 11 октября']) {
@@ -164,7 +163,7 @@ void main() {
         );
       }
       expect(
-        find.bySemanticsLabel('Понедельник, 12 октября: За границей'),
+        find.bySemanticsLabel('Понедельник, 12 октября: Рабочий день'),
         findsOneWidget,
       );
     });
@@ -181,31 +180,12 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Сентябрь 2026'), findsWidgets);
       expect(valueOf('рабочих дней', '0'), findsOneWidget);
+      // До журнала — нет данных, а не выходные дома
+      expect(valueOf('Выходные в стране фирмы', '0'), findsOneWidget);
       expect(tester.widget<IconButton>(next).onPressed, isNotNull);
       await tester.tap(next);
       await tester.pumpAndSettle();
       expect(valueOf('рабочих дней', '5'), findsOneWidget);
-    });
-
-    testWidgets('ставка и валюта — сумма за месяц', (tester) async {
-      await pumpDays(tester);
-      await tester.tap(find.text('Ставка за день'));
-      await tester.pumpAndSettle();
-      expect(find.text('Ставка за рабочий день'), findsOneWidget);
-      final save = find.widgetWithText(FilledButton, 'Сохранить');
-      expect(tester.widget<FilledButton>(save).onPressed, isNull);
-      await tester.enterText(find.byType(TextField), '85,5');
-      await tester.tap(find.text('PLN'));
-      await tester.pump();
-      await tester.tap(save);
-      await settle(tester);
-      await tester.pumpAndSettle();
-      final rate = formatMoney(8550, 'PLN', 'ru');
-      expect(valueOf('Ставка за день', rate), findsOneWidget);
-      expect(find.text('Сумма'), findsOneWidget);
-      expect(find.text(formatMoney(5 * 8550, 'PLN', 'ru')), findsOneWidget);
-      expect(find.text('5 × $rate'), findsOneWidget);
-      await unmount(tester);
     });
 
     testWidgets('без страны фирмы — сначала она', (tester) async {
@@ -218,7 +198,7 @@ void main() {
       );
       expect(find.text('Страна фирмы'), findsOneWidget);
       expect(find.text('Не выбрана'), findsOneWidget);
-      expect(find.text('За границей'), findsNothing);
+      expect(find.text('Выходные за границей'), findsNothing);
     });
 
     testWidgets('в «Ещё» — строка, открывает экран', (tester) async {
@@ -232,7 +212,7 @@ void main() {
         ),
       );
       expect(
-        find.text('Дни за границей и с работой — для расчёта зарплаты'),
+        find.text('Рабочие дни и выходные — в стране фирмы и за границей'),
         findsOneWidget,
       );
       await tester.tap(find.text('Рабочие дни'));
@@ -246,7 +226,6 @@ void main() {
         testWidgets(locale.languageCode, (tester) async {
           await pumpDays(
             tester,
-            rate: const DayRate(cents: 1234567, currency: 'UZS'),
             viewport: const Size(360, 3200),
             textScale: 2,
             locale: locale,
@@ -258,17 +237,7 @@ void main() {
     });
   });
 
-  group('ввод ставки и дни месяца', () {
-    test('ставка из поля — в сотых', () {
-      expect(parseCents('85'), 8500);
-      expect(parseCents('85,5'), 8550);
-      expect(parseCents('85.05'), 8505);
-      expect(parseCents(' 1 200,50 '), 120050);
-      for (final bad in ['', ',', '8,555', 'abc', '123456789']) {
-        expect(parseCents(bad), isNull, reason: bad);
-      }
-    });
-
+  group('дни месяца', () {
     test('дни месяца — местные сутки подряд, не позже сегодняшних', () {
       final days = monthDays(DateTime(2026, 10), now);
       expect(days, hasLength(15));

@@ -2623,7 +2623,8 @@ class AppLocalizationsRo extends AppLocalizations {
   String get workDaysTitle => 'Zile lucrătoare';
 
   @override
-  String get workDaysHint => 'Zile în străinătate și cu muncă — pentru salariu';
+  String get workDaysHint =>
+      'Zile lucrătoare și libere — în țara firmei și în străinătate';
 
   @override
   String workDaysCount(int count) {
@@ -2638,17 +2639,10 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'În străinătate';
+  String get workDaysWorking => 'Zi lucrătoare';
 
   @override
-  String get workDaysAbroadHint =>
-      'Măcar o parte din zi în afara țării firmei, inclusiv în weekend';
-
-  @override
-  String get workDaysHome => 'Muncă în țara firmei';
-
-  @override
-  String get workDaysWeekendsAbroad => 'Din care zile de repaus';
+  String get workDaysWeekendsAbroad => 'Zile de repaus în străinătate';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2658,27 +2652,16 @@ class AppLocalizationsRo extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Zi de repaus în străinătate';
 
   @override
-  String get workDaysOff => 'Zi nelucrătoare';
+  String get workDaysWeekendsHome => 'Zile de repaus în țara firmei';
 
   @override
-  String get workDaysRate => 'Tarif pe zi';
+  String get workDaysWeekendsHomeHint => 'Toată ziua fără muncă în țara firmei';
 
   @override
-  String get workDaysRateNotSet => 'Nestabilit';
+  String get workDaysWeekendHome => 'Zi de repaus în țara firmei';
 
   @override
-  String get workDaysAmount => 'Suma';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Tarif pe zi lucrătoare';
-
-  @override
-  String get workDaysCurrency => 'Monedă';
+  String get workDaysNoData => 'Fără date';
 
   @override
   String get workDaysPrevMonth => 'Luna anterioară';
@@ -2692,5 +2675,5 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Zi lucrătoare este ziua în care ați fost în străinătate măcar o parte din zi (în cursă sau în repaus, inclusiv în weekend) sau ați lucrat în țara firmei. Nu se numără ziua petrecută în întregime în repaus în țara firmei. Unde ați fost, aplicația știe din țările turelor de pe ecranul principal. În calendar, cu cerc — munca în țara firmei.';
+      'Zi lucrătoare este ziua cu conducere sau altă muncă, iar în străinătate — și cu disponibilitate. Ziua fără muncă este zi de repaus: în străinătate, dacă ați fost măcar o parte din zi în afara țării firmei, altfel — în țara firmei. Unde ați fost, aplicația știe din țările turelor de pe ecranul principal. În calendar sunt colorate zilele lucrătoare și zilele de repaus în străinătate (verzi), cu cerc — zilele de repaus în țara firmei, cele gri — fără date.';
 }

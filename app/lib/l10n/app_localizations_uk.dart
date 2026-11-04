@@ -2629,7 +2629,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get workDaysHint =>
-      'Дні за кордоном і з роботою — для розрахунку зарплати';
+      'Робочі дні та вихідні — у країні фірми й за кордоном';
 
   @override
   String workDaysCount(int count) {
@@ -2645,17 +2645,10 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'За кордоном';
+  String get workDaysWorking => 'Робочий день';
 
   @override
-  String get workDaysAbroadHint =>
-      'Хоча б частина дня поза країною фірми, вихідні теж';
-
-  @override
-  String get workDaysHome => 'Робота в країні фірми';
-
-  @override
-  String get workDaysWeekendsAbroad => 'З них вихідні';
+  String get workDaysWeekendsAbroad => 'Вихідні за кордоном';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2665,27 +2658,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Вихідний за кордоном';
 
   @override
-  String get workDaysOff => 'Неробочий день';
+  String get workDaysWeekendsHome => 'Вихідні в країні фірми';
 
   @override
-  String get workDaysRate => 'Ставка за день';
+  String get workDaysWeekendsHomeHint => 'Увесь день без роботи в країні фірми';
 
   @override
-  String get workDaysRateNotSet => 'Не задано';
+  String get workDaysWeekendHome => 'Вихідний у країні фірми';
 
   @override
-  String get workDaysAmount => 'Сума';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Ставка за робочий день';
-
-  @override
-  String get workDaysCurrency => 'Валюта';
+  String get workDaysNoData => 'Немає даних';
 
   @override
   String get workDaysPrevMonth => 'Попередній місяць';
@@ -2699,5 +2681,5 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Робочий день — якщо хоча б частину дня ви були за кордоном (у рейсі чи на відпочинку, вихідні теж) або працювали в країні фірми. Не рахується день повністю на відпочинку в країні фірми. Де ви були, застосунок знає з країн змін на головній. У календарі кільцем — робота в країні фірми.';
+      'Робочий день — день із керуванням або іншою роботою, а за кордоном — і з готовністю. День без роботи — вихідний: за кордоном, якщо хоча б частину дня ви були поза країною фірми, інакше — у країні фірми. Де ви були, застосунок знає з країн змін на головній. У календарі зафарбовані робочі дні й вихідні за кордоном (зелені), кільцем — вихідні в країні фірми, сірі — немає даних.';
 }

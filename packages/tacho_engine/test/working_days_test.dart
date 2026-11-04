@@ -1,6 +1,6 @@
-// Рабочие дни для зарплаты: день считается, если водитель хоть часть дня был
-// вне страны фирмы или работал в ней; выходные за границей — отдельно. План
-// тестов: ENG-26 в docs/testing.md.
+// Рабочие дни для зарплаты: день с работой — рабочий, без неё — выходной за
+// границей или в стране фирмы; дни до журнала — без данных. План тестов:
+// ENG-26 в docs/testing.md.
 
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:test/test.dart';
@@ -50,10 +50,11 @@ List<WorkingDayKind> kinds(
 const WorkingDayKind abroad = WorkingDayKind.abroad;
 const WorkingDayKind restAbroad = WorkingDayKind.restAbroad;
 const WorkingDayKind home = WorkingDayKind.home;
+const WorkingDayKind restHome = WorkingDayKind.restHome;
 const WorkingDayKind off = WorkingDayKind.off;
 
 void main() {
-  group('ENG-26: рабочие дни — за границей или работа', () {
+  group('ENG-26: рабочие дни и выходные — за границей и в стране фирмы', () {
     // Фирма в Польше. Чт — смена в Германии; пт — из Германии домой к
     // 22:00; сб–вс — дома; пн — выезд 06:00, в Германию; вт — назад; ср —
     // рейс только по Польше 05:00–15:00; чт — дома.
@@ -74,34 +75,32 @@ void main() {
     ]);
     const route = ['D-D', 'D-PL', 'PL-D', 'D-PL', 'PL-PL'];
 
-    test(
-      'пример водителя: выходные дома не считаются, рейс по стране — да',
-      () {
-        expect(log.now, utc('2026-10-15 12:00'));
-        final result = kinds(
-          log.periods,
-          log.now,
-          route,
-          utcDays('2026-10-07', '2026-10-15'),
-        );
-        expect(result, [
-          off,
-          abroad,
-          abroad,
-          off,
-          off,
-          abroad,
-          abroad,
-          home,
-          off,
-        ]);
-        // Всего 5, вне страны 4, выходных за границей нет
-        expect(result.where((k) => k.counts), hasLength(5));
-        expect(result.where((k) => k.away), hasLength(4));
-      },
-    );
+    test('пример водителя: рейс по стране — рабочий, выходные дома — свои', () {
+      expect(log.now, utc('2026-10-15 12:00'));
+      final result = kinds(
+        log.periods,
+        log.now,
+        route,
+        utcDays('2026-10-07', '2026-10-15'),
+      );
+      // Ср 07.10 — до журнала: данных нет
+      expect(result, [
+        off,
+        abroad,
+        abroad,
+        restHome,
+        restHome,
+        abroad,
+        abroad,
+        home,
+        restHome,
+      ]);
+      // Рабочих 5, из них вне страны 4; выходных за границей нет, дома 3
+      expect(result.where((k) => k.working), hasLength(5));
+      expect(result.where((k) => k.away), hasLength(4));
+    });
 
-    test('выходные за границей — рабочие дни, отдельно от рейса', () {
+    test('выходные за границей — не рабочие, отдельно от рейса', () {
       // Пт в Германию к 16:45, отдых до пн 00:45 — сб и вс без работы
       final away = logFrom(utc('2026-10-09 07:00'), [
         ...drivingDay('9:00'),
@@ -115,7 +114,7 @@ void main() {
         [...utcDays('2026-10-09', '2026-10-12')],
       );
       expect(result, [abroad, restAbroad, restAbroad, abroad]);
-      expect(result.where((k) => k.counts), hasLength(4));
+      expect(result.where((k) => k.working), hasLength(2));
       expect(result.where((k) => k.away), hasLength(4));
     });
 
@@ -149,11 +148,11 @@ void main() {
         kinds(away.periods, away.now, [
           'PL',
         ], utcDays('2026-10-09', '2026-10-10')),
-        [home, off],
+        [home, restHome],
       );
     });
 
-    test('страны не выбраны — дни работы считаются, отдых нет', () {
+    test('страны не выбраны — работа и отдых в стране фирмы', () {
       expect(
         kinds(
           log.periods,
@@ -161,11 +160,11 @@ void main() {
           List.filled(5, null),
           utcDays('2026-10-08', '2026-10-15'),
         ),
-        [home, home, off, off, home, home, home, off],
+        [home, home, restHome, restHome, home, home, home, restHome],
       );
     });
 
-    test('только готовность в стране фирмы — день не рабочий', () {
+    test('только готовность в стране фирмы — выходной там', () {
       // Смена 20:00–22:00 вождения, после полуночи — готовность до 01:00
       final night = logFrom(utc('2026-10-09 20:00'), [
         drive('2:00'),
@@ -176,7 +175,7 @@ void main() {
         kinds(night.periods, night.now, [
           'PL-PL',
         ], utcDays('2026-10-09', '2026-10-10')),
-        [home, off],
+        [home, restHome],
       );
     });
 
@@ -199,7 +198,7 @@ void main() {
         kinds(late.periods, late.now, [
           'PL-PL',
         ], utcDays('2026-10-09', '2026-10-10')),
-        [home, off],
+        [home, restHome],
       );
     });
 
@@ -223,7 +222,7 @@ void main() {
           manual: manual,
           routes: {manual.first.start: const ShiftRoute(from: 'PL', to: 'PL')},
         ),
-        [home, off, off],
+        [home, restHome, restHome],
       );
       expect(
         kinds(
@@ -238,7 +237,8 @@ void main() {
       );
     });
 
-    test('идущая смена за границей — сегодня рабочий день', () {
+    test('идущая смена за границей — сегодня рабочий, до журнала — нет '
+        'данных', () {
       final now = utc('2026-10-12 08:00');
       final periods = logUntil(now, [rest('60:00'), drive('2:00')]);
       expect(kinds(periods, now, ['D'], utcDays('2026-10-11', '2026-10-12')), [

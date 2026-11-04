@@ -2628,7 +2628,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get workDaysHint =>
-      'Дни за границей и с работой — для расчёта зарплаты';
+      'Рабочие дни и выходные — в стране фирмы и за границей';
 
   @override
   String workDaysCount(int count) {
@@ -2644,17 +2644,10 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'За границей';
+  String get workDaysWorking => 'Рабочий день';
 
   @override
-  String get workDaysAbroadHint =>
-      'Хотя бы часть дня вне страны фирмы, выходные тоже';
-
-  @override
-  String get workDaysHome => 'Работа в стране фирмы';
-
-  @override
-  String get workDaysWeekendsAbroad => 'Из них выходные';
+  String get workDaysWeekendsAbroad => 'Выходные за границей';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2664,27 +2657,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Выходной за границей';
 
   @override
-  String get workDaysOff => 'Не рабочий день';
+  String get workDaysWeekendsHome => 'Выходные в стране фирмы';
 
   @override
-  String get workDaysRate => 'Ставка за день';
+  String get workDaysWeekendsHomeHint => 'Весь день без работы в стране фирмы';
 
   @override
-  String get workDaysRateNotSet => 'Не задана';
+  String get workDaysWeekendHome => 'Выходной в стране фирмы';
 
   @override
-  String get workDaysAmount => 'Сумма';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Ставка за рабочий день';
-
-  @override
-  String get workDaysCurrency => 'Валюта';
+  String get workDaysNoData => 'Нет данных';
 
   @override
   String get workDaysPrevMonth => 'Предыдущий месяц';
@@ -2698,5 +2680,5 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Рабочий день — если хотя бы часть дня вы были за границей (в рейсе или на отдыхе, выходные тоже) или работали в стране фирмы. Не считается день целиком на отдыхе в стране фирмы. Где вы были, приложение знает по странам смен на главной. В календаре кольцом — работа в стране фирмы.';
+      'Рабочий день — день с вождением или другой работой, а за границей — и с готовностью. День без работы — выходной: за границей, если хотя бы часть дня вы были вне страны фирмы, иначе — в стране фирмы. Где вы были, приложение знает по странам смен на главной. В календаре закрашены рабочие дни и выходные за границей (зелёные), кольцом — выходные в стране фирмы, серые — нет данных.';
 }

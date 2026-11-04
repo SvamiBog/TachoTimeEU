@@ -2617,7 +2617,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get workDaysHint =>
-      'Dagen in het buitenland en met werk — voor het loon';
+      'Werk- en rustdagen — in het land van het bedrijf en in het buitenland';
 
   @override
   String workDaysCount(int count) {
@@ -2631,17 +2631,10 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'In het buitenland';
+  String get workDaysWorking => 'Werkdag';
 
   @override
-  String get workDaysAbroadHint =>
-      'Minstens een deel van de dag buiten het land van het bedrijf, ook in het weekend';
-
-  @override
-  String get workDaysHome => 'Werk in het land van het bedrijf';
-
-  @override
-  String get workDaysWeekendsAbroad => 'Waarvan rustdagen';
+  String get workDaysWeekendsAbroad => 'Rustdagen in het buitenland';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2651,27 +2644,17 @@ class AppLocalizationsNl extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Rustdag in het buitenland';
 
   @override
-  String get workDaysOff => 'Geen werkdag';
+  String get workDaysWeekendsHome => 'Rustdagen in het land van het bedrijf';
 
   @override
-  String get workDaysRate => 'Dagtarief';
+  String get workDaysWeekendsHomeHint =>
+      'De hele dag zonder werk in het land van het bedrijf';
 
   @override
-  String get workDaysRateNotSet => 'Niet ingesteld';
+  String get workDaysWeekendHome => 'Rustdag in het land van het bedrijf';
 
   @override
-  String get workDaysAmount => 'Bedrag';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Tarief per werkdag';
-
-  @override
-  String get workDaysCurrency => 'Valuta';
+  String get workDaysNoData => 'Geen gegevens';
 
   @override
   String get workDaysPrevMonth => 'Vorige maand';
@@ -2685,5 +2668,5 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Een werkdag is een dag waarop u minstens een deel van de dag in het buitenland was (onderweg of in rust, ook in het weekend) of in het land van het bedrijf werkte. Een dag die volledig in rust in het land van het bedrijf is doorgebracht, telt niet. Waar u was, weet de app uit de landen van de diensten op het startscherm. In de kalender geeft een ring werk in het land van het bedrijf aan.';
+      'Een werkdag is een dag met rijden of ander werk, en in het buitenland ook met beschikbaarheid. Een dag zonder werk is een rustdag: in het buitenland als u minstens een deel van de dag buiten het land van het bedrijf was, anders in het land van het bedrijf. Waar u was, weet de app uit de landen van de diensten op het startscherm. In de kalender zijn werkdagen en rustdagen in het buitenland (groen) gevuld, rustdagen in het land van het bedrijf hebben een ring en grijs betekent geen gegevens.';
 }
