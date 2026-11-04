@@ -12,6 +12,9 @@ The ECC agents, skills and commands TachoGo uses are copied into `.claude/agents
 | ecc-flutter-reviewer | Flutter/Dart review | Changes in `app/` or `packages/` |
 | ecc-dart-build-resolver | Analyzer and build errors | `dart analyze`, `flutter analyze` or build failures |
 | ecc-security-reviewer | Security review | Premium and licensing, backup and transfer, export, network, permissions, crash reporting and analytics |
+| play-preflight | Google Play release gate: Play requirements and policies, Play Console answers, CI evidence and the release AAB for the commit to upload | Before the first upload, a beta tag or the production release |
+
+`play-preflight` is TachoGo's own agent, not from ECC, so it has no prefix. It only reads and reports; recording its results in `docs/store/play-audit.md` is up to the main session.
 
 Commands: `/ecc-plan`, `/ecc-code-review`, `/ecc-flutter-review`, `/ecc-flutter-build`, `/ecc-flutter-test`, `/ecc-test-coverage`, `/ecc-save-session`, `/ecc-resume-session`. Skills: `ecc-tdd-workflow`, `ecc-dart-flutter-patterns`, `ecc-flutter-dart-code-review`, `ecc-context-budget`.
 
