@@ -264,7 +264,7 @@ void main() {
     });
   });
 
-  group('REP-05: страна фирмы и ставка за рабочий день', () {
+  group('REP-05: страна фирмы', () {
     test('страны фирмы нет, пока водитель не выбрал', () async {
       expect((await repo.complianceSettings()).baseCountry, isNull);
     });
@@ -301,17 +301,21 @@ void main() {
       expect((await repo.complianceSettings()).baseCountry, 'LT');
     });
 
-    test('ставка: по умолчанию не задана, в евро; сохраняется', () async {
-      expect(await repo.watchDayRate().first, const DayRate());
-      const rate = DayRate(cents: 8550, currency: 'PLN');
-      await repo.setDayRate(rate);
-      expect(await repo.watchDayRate().first, rate);
+    test('переезжает на другой телефон вместе с журналом', () async {
+      await repo.setBaseCountry('RO');
+      final moved = await repo.transferableSettings();
+      final otherDb = AppDatabase(NativeDatabase.memory());
+      addTearDown(otherDb.close);
+      final other = SettingsRepository(otherDb);
+      await other.importTransferableSettings(moved);
+      expect((await other.complianceSettings()).baseCountry, 'RO');
     });
 
-    test('ставка: мусор в БД — умолчания', () async {
+    test('ставка за день прошлой версии в БД не переезжает', () async {
+      // Калькулятор зарплаты убран 04.11.2026, его ключи остались в БД
       for (final (key, value) in [
-        ('day_rate_cents', '-5'),
-        ('day_rate_currency', 'XYZ'),
+        ('day_rate_cents', '8550'),
+        ('day_rate_currency', 'PLN'),
       ]) {
         await db
             .into(db.settings)
@@ -319,34 +323,17 @@ void main() {
               SettingsCompanion.insert(key: key, value: value),
             );
       }
-      expect(await repo.watchDayRate().first, const DayRate());
-    });
-
-    test('переезжают на другой телефон вместе с журналом', () async {
-      await repo.setBaseCountry('RO');
-      await repo.setDayRate(const DayRate(cents: 10000, currency: 'RON'));
       final moved = await repo.transferableSettings();
-      final otherDb = AppDatabase(NativeDatabase.memory());
-      addTearDown(otherDb.close);
-      final other = SettingsRepository(otherDb);
-      await other.importTransferableSettings(moved);
-      expect((await other.complianceSettings()).baseCountry, 'RO');
-      expect(
-        await other.watchDayRate().first,
-        const DayRate(cents: 10000, currency: 'RON'),
-      );
+      expect(moved.keys, isNot(contains(startsWith('day_rate'))));
     });
 
     test('файл без страны фирмы или с неверной её не стирает', () async {
       // Перенос из версии, где страны фирмы ещё не было
       await repo.setBaseCountry('PL');
-      await repo.setDayRate(const DayRate(cents: 10000, currency: 'PLN'));
       await repo.importTransferableSettings({'mobility_package': 'false'});
       final settings = await repo.complianceSettings();
       expect(settings.baseCountry, 'PL');
       expect(settings.mobilityPackage, isFalse);
-      // Остальное — как в файле: ставки в нём нет — сброшена
-      expect(await repo.watchDayRate().first, const DayRate());
       await repo.importTransferableSettings({'base_country': 'XX'});
       expect((await repo.complianceSettings()).baseCountry, 'PL');
       await repo.importTransferableSettings({'base_country': 'LT'});

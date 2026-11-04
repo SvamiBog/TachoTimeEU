@@ -2628,7 +2628,8 @@ class AppLocalizationsSk extends AppLocalizations {
   String get workDaysTitle => 'Pracovné dni';
 
   @override
-  String get workDaysHint => 'Dni v zahraničí a s prácou — na výpočet mzdy';
+  String get workDaysHint =>
+      'Pracovné dni a dni voľna — v krajine firmy aj v zahraničí';
 
   @override
   String workDaysCount(int count) {
@@ -2644,17 +2645,10 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'V zahraničí';
+  String get workDaysWorking => 'Pracovný deň';
 
   @override
-  String get workDaysAbroadHint =>
-      'Aspoň časť dňa mimo krajiny firmy, aj víkendy';
-
-  @override
-  String get workDaysHome => 'Práca v krajine firmy';
-
-  @override
-  String get workDaysWeekendsAbroad => 'Z toho dni voľna';
+  String get workDaysWeekendsAbroad => 'Dni voľna v zahraničí';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2664,27 +2658,16 @@ class AppLocalizationsSk extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Deň voľna v zahraničí';
 
   @override
-  String get workDaysOff => 'Nepracovný deň';
+  String get workDaysWeekendsHome => 'Dni voľna v krajine firmy';
 
   @override
-  String get workDaysRate => 'Sadzba za deň';
+  String get workDaysWeekendsHomeHint => 'Celý deň bez práce v krajine firmy';
 
   @override
-  String get workDaysRateNotSet => 'Nezadaná';
+  String get workDaysWeekendHome => 'Deň voľna v krajine firmy';
 
   @override
-  String get workDaysAmount => 'Suma';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Sadzba za pracovný deň';
-
-  @override
-  String get workDaysCurrency => 'Mena';
+  String get workDaysNoData => 'Žiadne údaje';
 
   @override
   String get workDaysPrevMonth => 'Predchádzajúci mesiac';
@@ -2698,5 +2681,5 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Pracovný deň je, keď ste aspoň časť dňa boli v zahraničí (na ceste alebo na odpočinku, aj cez víkend) alebo ste pracovali v krajine firmy. Nepočíta sa deň celý na odpočinku v krajine firmy. Kde ste boli, aplikácia vie podľa krajín zmien na hlavnej obrazovke. V kalendári krúžok označuje prácu v krajine firmy.';
+      'Pracovný deň je deň s jazdou alebo inou prácou, v zahraničí aj s pohotovosťou. Deň bez práce je deň voľna: v zahraničí, ak ste aspoň časť dňa boli mimo krajiny firmy, inak v krajine firmy. Kde ste boli, aplikácia vie podľa krajín zmien na hlavnej obrazovke. V kalendári sú vyplnené pracovné dni a dni voľna v zahraničí (zelené), dni voľna v krajine firmy majú krúžok a sivé znamenajú žiadne údaje.';
 }

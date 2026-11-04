@@ -1,7 +1,7 @@
-/// Working days for pay: the calendar days the driver spent at least partly
-/// abroad or worked in the company country, with the rest days spent abroad
-/// told apart. Drivers are often paid by such days; the regulation does not
-/// count them.
+/// Working days for pay: each calendar day of the journal is a working day
+/// (driving or other work; abroad availability too) or a rest day, abroad or
+/// in the company country. Drivers are often paid by such days; the
+/// regulation does not count them.
 library;
 
 import 'package:tacho_engine/src/driver_mode.dart';
@@ -25,10 +25,14 @@ enum WorkingDayKind {
   /// Весь день в стране фирмы, но была работа: вождение или другая работа.
   home,
 
-  /// Весь день на отдыхе в стране фирмы или о нём нет данных — не рабочий.
+  /// Выходной в стране фирмы: весь день в ней без вождения и другой работы.
+  restHome,
+
+  /// Нет данных: день до начала журнала.
   off;
 
-  bool get counts => this != off;
+  /// Рабочий день — с работой, за границей или в стране фирмы.
+  bool get working => this == abroad || this == home;
 
   /// Хотя бы часть дня — вне страны фирмы: в рейсе или на выходном.
   bool get away => this == abroad || this == restAbroad;
@@ -40,10 +44,11 @@ enum WorkingDayKind {
 ///
 /// Где водитель: в смене — между страной начала и конца (за границей, если
 /// хоть одна из них не страна фирмы), после смены до начала следующей (или
-/// до [now]) — в стране её конца. Страна не выбрана — где водитель,
-/// неизвестно: такой отдых не рабочий день. Работа в стране фирмы —
-/// вождение и другая работа из записей; день за границей без них и без
-/// готовности — выходной. У ручной смены работа — вся смена.
+/// до [now]) — в стране её конца. Страна не выбрана — водитель в стране
+/// фирмы. Работа в стране фирмы — вождение и другая работа из записей; день
+/// за границей без них и без готовности — выходной там. У ручной смены
+/// работа — вся смена. День без работы и не за границей — выходной в стране
+/// фирмы; дни до первой смены журнала — без данных.
 List<WorkingDayKind> workingDayKinds({
   required Iterable<JournalShift> shifts,
   required Map<DateTime, ShiftRoute> routes,
@@ -81,6 +86,10 @@ List<WorkingDayKind> workingDayKinds({
       }
     }
   }
+  // Журнал — от первой смены до сейчас: где водитель, известно только в нём
+  final journal = <CalendarDay>[
+    if (sorted.isNotEmpty) (start: sorted.first.start, end: now),
+  ];
   bool touches(List<CalendarDay> spans, CalendarDay day) =>
       spans.any((s) => s.start.isBefore(day.end) && s.end.isAfter(day.start));
   return [
@@ -91,6 +100,8 @@ List<WorkingDayKind> workingDayKinds({
         WorkingDayKind.restAbroad
       else if (touches(work, day))
         WorkingDayKind.home
+      else if (touches(journal, day))
+        WorkingDayKind.restHome
       else
         WorkingDayKind.off,
   ];

@@ -2629,7 +2629,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get workDaysTitle => 'Arbeitstage';
 
   @override
-  String get workDaysHint => 'Tage im Ausland und mit Arbeit — für den Lohn';
+  String get workDaysHint =>
+      'Arbeits- und Ruhetage — im Unternehmensland und im Ausland';
 
   @override
   String workDaysCount(int count) {
@@ -2643,17 +2644,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'Im Ausland';
+  String get workDaysWorking => 'Arbeitstag';
 
   @override
-  String get workDaysAbroadHint =>
-      'Mindestens ein Teil des Tages außerhalb des Unternehmenslandes, auch am Wochenende';
-
-  @override
-  String get workDaysHome => 'Arbeit im Unternehmensland';
-
-  @override
-  String get workDaysWeekendsAbroad => 'Davon Ruhetage';
+  String get workDaysWeekendsAbroad => 'Ruhetage im Ausland';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2663,27 +2657,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Ruhetag im Ausland';
 
   @override
-  String get workDaysOff => 'Kein Arbeitstag';
+  String get workDaysWeekendsHome => 'Ruhetage im Unternehmensland';
 
   @override
-  String get workDaysRate => 'Tagessatz';
+  String get workDaysWeekendsHomeHint =>
+      'Ganzer Tag ohne Arbeit im Unternehmensland';
 
   @override
-  String get workDaysRateNotSet => 'Nicht festgelegt';
+  String get workDaysWeekendHome => 'Ruhetag im Unternehmensland';
 
   @override
-  String get workDaysAmount => 'Betrag';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Satz pro Arbeitstag';
-
-  @override
-  String get workDaysCurrency => 'Währung';
+  String get workDaysNoData => 'Keine Daten';
 
   @override
   String get workDaysPrevMonth => 'Vorheriger Monat';
@@ -2697,5 +2681,5 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Ein Arbeitstag ist ein Tag, an dem Sie mindestens zeitweise im Ausland waren (unterwegs oder in der Ruhezeit, auch am Wochenende) oder im Unternehmensland gearbeitet haben. Ein Tag ganz in der Ruhezeit im Unternehmensland zählt nicht. Wo Sie waren, weiß die App aus den Ländern der Schichten auf dem Startbildschirm. Im Kalender markiert ein Ring Arbeit im Unternehmensland.';
+      'Ein Arbeitstag ist ein Tag mit Lenken oder anderer Arbeit, im Ausland auch mit Bereitschaft. Ein Tag ohne Arbeit ist ein Ruhetag: im Ausland, wenn Sie mindestens zeitweise außerhalb des Unternehmenslandes waren, sonst im Unternehmensland. Wo Sie waren, weiß die App aus den Ländern der Schichten auf dem Startbildschirm. Im Kalender sind Arbeitstage und Ruhetage im Ausland (grün) ausgefüllt, Ruhetage im Unternehmensland haben einen Ring, grau heißt keine Daten.';
 }
