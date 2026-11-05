@@ -2604,7 +2604,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workDaysTitle => 'Working days';
 
   @override
-  String get workDaysHint => 'Days abroad and with work — for your pay';
+  String get workDaysHint =>
+      'Working days and rest days, in the company country and abroad';
 
   @override
   String workDaysCount(int count) {
@@ -2618,17 +2619,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'Abroad';
+  String get workDaysWorking => 'Working day';
 
   @override
-  String get workDaysAbroadHint =>
-      'At least part of the day outside the company country, weekends too';
-
-  @override
-  String get workDaysHome => 'Work in the company country';
-
-  @override
-  String get workDaysWeekendsAbroad => 'Of which rest days';
+  String get workDaysWeekendsAbroad => 'Rest days abroad';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2638,27 +2632,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Rest day abroad';
 
   @override
-  String get workDaysOff => 'Not a working day';
+  String get workDaysWeekendsHome => 'Rest days in the company country';
 
   @override
-  String get workDaysRate => 'Daily rate';
+  String get workDaysWeekendsHomeHint =>
+      'A whole day without work in the company country';
 
   @override
-  String get workDaysRateNotSet => 'Not set';
+  String get workDaysWeekendHome => 'Rest day in the company country';
 
   @override
-  String get workDaysAmount => 'Amount';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Rate per working day';
-
-  @override
-  String get workDaysCurrency => 'Currency';
+  String get workDaysNoData => 'No data';
 
   @override
   String get workDaysPrevMonth => 'Previous month';
@@ -2672,5 +2656,5 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'A working day is one when you were abroad for at least part of the day (on the road or resting, weekends too) or worked in the company country. A day spent entirely resting in the company country does not count. The app knows where you were from the shift countries on the home screen. In the calendar, a ring marks work in the company country.';
+      'A working day is a day with driving or other work, and abroad also with availability. A day without work is a rest day: abroad if you were outside the company country for at least part of the day, otherwise in the company country. The app knows where you were from the shift countries on the home screen. In the calendar, working days and rest days abroad (green) are filled, rest days in the company country have a ring, and grey means no data.';
 }

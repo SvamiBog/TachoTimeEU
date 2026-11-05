@@ -2613,7 +2613,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workDaysHint =>
-      'Giorni all’estero e con lavoro — per lo stipendio';
+      'Giorni lavorativi e di riposo — nel paese dell’azienda e all’estero';
 
   @override
   String workDaysCount(int count) {
@@ -2627,17 +2627,10 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'All’estero';
+  String get workDaysWorking => 'Giorno lavorativo';
 
   @override
-  String get workDaysAbroadHint =>
-      'Almeno parte del giorno fuori dal paese dell’azienda, anche nel fine settimana';
-
-  @override
-  String get workDaysHome => 'Lavoro nel paese dell’azienda';
-
-  @override
-  String get workDaysWeekendsAbroad => 'Di cui giorni di riposo';
+  String get workDaysWeekendsAbroad => 'Giorni di riposo all’estero';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2647,27 +2640,17 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Giorno di riposo all’estero';
 
   @override
-  String get workDaysOff => 'Giorno non lavorativo';
+  String get workDaysWeekendsHome => 'Giorni di riposo nel paese dell’azienda';
 
   @override
-  String get workDaysRate => 'Tariffa giornaliera';
+  String get workDaysWeekendsHomeHint =>
+      'Tutto il giorno senza lavoro nel paese dell’azienda';
 
   @override
-  String get workDaysRateNotSet => 'Non impostata';
+  String get workDaysWeekendHome => 'Giorno di riposo nel paese dell’azienda';
 
   @override
-  String get workDaysAmount => 'Importo';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Tariffa per giorno lavorativo';
-
-  @override
-  String get workDaysCurrency => 'Valuta';
+  String get workDaysNoData => 'Nessun dato';
 
   @override
   String get workDaysPrevMonth => 'Mese precedente';
@@ -2681,5 +2664,5 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Un giorno lavorativo è un giorno in cui sei stato all’estero almeno in parte (in viaggio o a riposo, anche nel fine settimana) o hai lavorato nel paese dell’azienda. Non conta un giorno interamente di riposo nel paese dell’azienda. L’app sa dove eri dai paesi dei turni nella schermata principale. Nel calendario un cerchio indica il lavoro nel paese dell’azienda.';
+      'Un giorno lavorativo è un giorno con guida o altro lavoro, e all’estero anche con disponibilità. Un giorno senza lavoro è di riposo: all’estero se sei stato fuori dal paese dell’azienda almeno in parte, altrimenti nel paese dell’azienda. L’app sa dove eri dai paesi dei turni nella schermata principale. Nel calendario i giorni lavorativi e quelli di riposo all’estero (verdi) sono pieni, quelli di riposo nel paese dell’azienda hanno un cerchio e quelli grigi sono senza dati.';
 }

@@ -2615,7 +2615,8 @@ class AppLocalizationsUz extends AppLocalizations {
   String get workDaysTitle => 'Ish kunlari';
 
   @override
-  String get workDaysHint => 'Chet eldagi va ishli kunlar — ish haqi uchun';
+  String get workDaysHint =>
+      'Ish va dam olish kunlari — firma mamlakatida va chet elda';
 
   @override
   String workDaysCount(int count) {
@@ -2629,17 +2630,10 @@ class AppLocalizationsUz extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'Chet elda';
+  String get workDaysWorking => 'Ish kuni';
 
   @override
-  String get workDaysAbroadHint =>
-      'Kunning hech boʻlmaganda bir qismi firma mamlakatidan tashqarida, dam olish kunlari ham';
-
-  @override
-  String get workDaysHome => 'Firma mamlakatida ish';
-
-  @override
-  String get workDaysWeekendsAbroad => 'Shundan dam olish kunlari';
+  String get workDaysWeekendsAbroad => 'Chet elda dam olish kunlari';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2649,27 +2643,16 @@ class AppLocalizationsUz extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Chet elda dam olish kuni';
 
   @override
-  String get workDaysOff => 'Ish kuni emas';
+  String get workDaysWeekendsHome => 'Firma mamlakatida dam olish kunlari';
 
   @override
-  String get workDaysRate => 'Kunlik stavka';
+  String get workDaysWeekendsHomeHint => 'Butun kun firma mamlakatida ishsiz';
 
   @override
-  String get workDaysRateNotSet => 'Belgilanmagan';
+  String get workDaysWeekendHome => 'Firma mamlakatida dam olish kuni';
 
   @override
-  String get workDaysAmount => 'Summa';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Bir ish kuni uchun stavka';
-
-  @override
-  String get workDaysCurrency => 'Valyuta';
+  String get workDaysNoData => 'Maʼlumot yoʻq';
 
   @override
   String get workDaysPrevMonth => 'Oldingi oy';
@@ -2683,5 +2666,5 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Ish kuni — kunning hech boʻlmaganda bir qismida chet elda boʻlgan (reysda yoki dam olishda, dam olish kunlari ham) yoki firma mamlakatida ishlagan kuningiz. Firma mamlakatida butunlay dam olish bilan oʻtgan kun hisoblanmaydi. Qayerda boʻlganingizni ilova bosh ekrandagi smena mamlakatlaridan biladi. Kalendarda halqa — firma mamlakatidagi ish.';
+      'Ish kuni — haydash yoki boshqa ish boʻlgan kun, chet elda esa tayyorlik boʻlgan kun ham. Ishsiz kun — dam olish kuni: kunning hech boʻlmaganda bir qismida firma mamlakatidan tashqarida boʻlsangiz — chet elda, aks holda — firma mamlakatida. Qayerda boʻlganingizni ilova bosh ekrandagi smena mamlakatlaridan biladi. Kalendarda ish kunlari va chet eldagi dam olish kunlari (yashil) boʻyalgan, firma mamlakatidagi dam olish kunlari — halqa bilan, kulranglari — maʼlumot yoʻq.';
 }

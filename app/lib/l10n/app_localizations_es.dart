@@ -2621,7 +2621,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get workDaysHint =>
-      'Días en el extranjero y con trabajo — para el salario';
+      'Días de trabajo y de descanso — en el país de la empresa y en el extranjero';
 
   @override
   String workDaysCount(int count) {
@@ -2635,17 +2635,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get workDaysAbroad => 'En el extranjero';
+  String get workDaysWorking => 'Día de trabajo';
 
   @override
-  String get workDaysAbroadHint =>
-      'Al menos parte del día fuera del país de la empresa, también fines de semana';
-
-  @override
-  String get workDaysHome => 'Trabajo en el país de la empresa';
-
-  @override
-  String get workDaysWeekendsAbroad => 'De ellos, días de descanso';
+  String get workDaysWeekendsAbroad => 'Días de descanso en el extranjero';
 
   @override
   String get workDaysWeekendsAbroadHint =>
@@ -2655,27 +2648,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workDaysWeekendAbroad => 'Día de descanso en el extranjero';
 
   @override
-  String get workDaysOff => 'Día no laborable';
+  String get workDaysWeekendsHome =>
+      'Días de descanso en el país de la empresa';
 
   @override
-  String get workDaysRate => 'Tarifa diaria';
+  String get workDaysWeekendsHomeHint =>
+      'Todo el día sin trabajo en el país de la empresa';
 
   @override
-  String get workDaysRateNotSet => 'Sin definir';
+  String get workDaysWeekendHome => 'Día de descanso en el país de la empresa';
 
   @override
-  String get workDaysAmount => 'Importe';
-
-  @override
-  String workDaysAmountHint(String days, String rate) {
-    return '$days × $rate';
-  }
-
-  @override
-  String get workDaysRateTitle => 'Tarifa por día de trabajo';
-
-  @override
-  String get workDaysCurrency => 'Moneda';
+  String get workDaysNoData => 'Sin datos';
 
   @override
   String get workDaysPrevMonth => 'Mes anterior';
@@ -2689,5 +2673,5 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get workDaysRule =>
-      'Un día de trabajo es aquel en que estuvo en el extranjero al menos parte del día (en ruta o descansando, también fines de semana) o trabajó en el país de la empresa. No cuenta un día entero de descanso en el país de la empresa. La app sabe dónde estuvo por los países de las jornadas en la pantalla principal. En el calendario, un anillo marca el trabajo en el país de la empresa.';
+      'Un día de trabajo es un día con conducción u otro trabajo, y en el extranjero también con disponibilidad. Un día sin trabajo es de descanso: en el extranjero si estuvo fuera del país de la empresa al menos parte del día; si no, en el país de la empresa. La app sabe dónde estuvo por los países de las jornadas en la pantalla principal. En el calendario, los días de trabajo y los de descanso en el extranjero (verdes) están rellenos, los de descanso en el país de la empresa llevan un anillo y los grises no tienen datos.';
 }

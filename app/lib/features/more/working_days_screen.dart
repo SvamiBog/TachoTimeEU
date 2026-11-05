@@ -1,13 +1,9 @@
-/// "Working days" (Premium): the days of a month the driver spent at least
-/// partly abroad or worked in the company country, how many were abroad and
-/// how many of those were rest days, and their pay at a daily rate. Drivers
-/// are often paid by such days.
+/// "Working days" (Premium): for a month, how many days the driver worked and
+/// how many rest days they had abroad and in the company country. Drivers are
+/// often paid by such days; the app only counts them.
 library;
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
@@ -15,15 +11,10 @@ import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
-import 'package:tachogo/core/widgets/buttons.dart';
-import 'package:tachogo/core/widgets/choice_pill.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/sections.dart';
-import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
-import 'package:tachogo/data/settings/settings_providers.dart';
-import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/home/detail_rows.dart';
 import 'package:tachogo/features/settings/base_country.dart';
 
@@ -49,20 +40,10 @@ List<CalendarDay> monthDays(DateTime month, DateTime now) {
   ];
 }
 
-/// Ставка из поля ввода в сотых: «85», «85,5», «1 200.50». null — не число
-/// или больше 99 999 999,99.
-int? parseCents(String text) {
-  final clean = text.replaceAll(RegExp(r'[\s  ]'), '').replaceAll(',', '.');
-  final match = RegExp(r'^(\d{1,8})(?:\.(\d{0,2}))?$').firstMatch(clean);
-  if (match == null) return null;
-  final fraction = (match[2] ?? '').padRight(2, '0');
-  return int.parse(match[1]!) * 100 + int.parse(fraction);
-}
-
 /// "Working days" (Premium, `docs/premium.md`): a month with arrows, the number
-/// of working days, of them abroad and rest days abroad, the daily rate and the
-/// amount, the calendar of the month and the rule. Without the company country
-/// it asks for it: the days are counted against it.
+/// of working days, rest days abroad and in the company country, the calendar
+/// of the month and the rule. Without the company country it asks for it: the
+/// days are counted against it.
 class WorkingDaysScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -87,7 +68,6 @@ class _WorkingDaysScreenState extends ConsumerState<WorkingDaysScreen> {
     final l = context.l10n;
     final base = ref.watch(baseCountryProvider);
     final journal = ref.watch(journalProvider).value;
-    final rate = ref.watch(dayRateProvider).value ?? const DayRate();
     final current = journal == null || !_month.isBefore(_monthOf(journal.now));
     final days = journal == null
         ? const <CalendarDay>[]
@@ -114,7 +94,7 @@ class _WorkingDaysScreenState extends ConsumerState<WorkingDaysScreen> {
           const SizedBox(height: AppSpacing.betweenCardsMax),
           const CardGroup(children: [BaseCountryRow()]),
         ] else ...[
-          _Summary(kinds: kinds, rate: rate),
+          _Summary(kinds: kinds),
           SectionTitle(formatMonthYear(_month, context.localeTag)),
           _Calendar(month: _month, kinds: kinds),
           InfoNote(l.workDaysRule),
@@ -166,28 +146,21 @@ class _MonthBar extends StatelessWidget {
   }
 }
 
-/// The number of working days, of them abroad and rest days abroad, the rate
-/// and the amount. Work in the company country has no row of its own: it only
-/// counts in the total.
+/// The number of working days, then rest days abroad and in the company
+/// country. The dots repeat the calendar: filled — abroad, a ring — in the
+/// company country.
 class _Summary extends StatelessWidget {
-  const new({required this.kinds, required this.rate});
+  const new({required this.kinds});
 
   final List<WorkingDayKind> kinds;
-  final DayRate rate;
+
+  int _count(WorkingDayKind kind) => kinds.where((k) => k == kind).length;
 
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
     final colors = context.colors;
-    final locale = context.localeTag;
-    final total = kinds.where((k) => k.counts).length;
-    final abroad = kinds.where((k) => k.away).length;
-    final restAbroad = kinds
-        .where((k) => k == WorkingDayKind.restAbroad)
-        .length;
-    final rateText = rate.cents == 0
-        ? l.workDaysRateNotSet
-        : formatMoney(rate.cents, rate.currency, locale);
+    final working = kinds.where((k) => k.working).length;
     return CardGroup(
       children: [
         MergeSemantics(
@@ -197,11 +170,11 @@ class _Summary extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text('$total', style: AppTextStyles.valueLarge),
+                Text('$working', style: AppTextStyles.valueLarge),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    l.workDaysCount(total),
+                    l.workDaysCount(working),
                     style: AppTextStyles.rowTitle,
                   ),
                 ),
@@ -211,55 +184,26 @@ class _Summary extends StatelessWidget {
         ),
         MilestoneRow(
           dot: MilestoneDot.solid,
-          title: l.workDaysAbroad,
-          subtitle: l.workDaysAbroadHint,
-          value: '$abroad',
-        ),
-        MilestoneRow(
-          dot: MilestoneDot.solid,
           dotColor: colors.rest,
           title: l.workDaysWeekendsAbroad,
           subtitle: l.workDaysWeekendsAbroadHint,
-          value: '$restAbroad',
+          value: '${_count(WorkingDayKind.restAbroad)}',
         ),
-        NavRow(
-          title: l.workDaysRate,
-          value: rateText,
-          numericValue: rate.cents != 0,
-          onTap: () => unawaited(showDayRateSheet(context, rate)),
+        MilestoneRow(
+          dot: MilestoneDot.ring,
+          dotColor: colors.rest,
+          title: l.workDaysWeekendsHome,
+          subtitle: l.workDaysWeekendsHomeHint,
+          value: '${_count(WorkingDayKind.restHome)}',
         ),
-        if (rate.cents != 0)
-          // Сумма — во всю ширину: длинная («12 345 678 soʻm») переносится
-          MergeSemantics(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.cardPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l.workDaysAmount, style: AppTextStyles.rowTitle),
-                  const SizedBox(height: 4),
-                  Text(
-                    formatMoney(total * rate.cents, rate.currency, locale),
-                    style: AppTextStyles.valueLarge,
-                  ),
-                  Text(
-                    l.workDaysAmountHint('$total', rateText),
-                    style: AppTextStyles.caption.copyWith(
-                      color: colors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
       ],
     );
   }
 }
 
-/// The month as a calendar from Monday: a solid day — on the road abroad, green
-/// — a rest day abroad, a ring — work in the company country, plain — not a
-/// working day; days after today are empty.
+/// The month as a calendar from Monday: a working day is filled, wherever it
+/// was; a rest day is green — filled abroad, a ring in the company country;
+/// plain — no data; days after today are empty.
 class _Calendar extends StatelessWidget {
   const new({required this.month, required this.kinds});
 
@@ -343,10 +287,10 @@ class _DayCell extends StatelessWidget {
     final colors = context.colors;
     final kind = this.kind;
     final label = switch (kind) {
-      WorkingDayKind.abroad => l.workDaysAbroad,
+      WorkingDayKind.abroad || WorkingDayKind.home => l.workDaysWorking,
       WorkingDayKind.restAbroad => l.workDaysWeekendAbroad,
-      WorkingDayKind.home => l.workDaysHome,
-      WorkingDayKind.off || null => l.workDaysOff,
+      WorkingDayKind.restHome => l.workDaysWeekendHome,
+      WorkingDayKind.off || null => l.workDaysNoData,
     };
     // Каждый день — свой узел: диктор читает день, а не весь месяц разом
     return Semantics(
@@ -359,19 +303,16 @@ class _DayCell extends StatelessWidget {
           child: DecoratedBox(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
+              // Рабочий день — один вид, где бы ни был; выходные — как точки
+              // итога: за границей — заливка, в стране фирмы — кольцо
               color: switch (kind) {
-                WorkingDayKind.abroad => colors.text,
-                WorkingDayKind.restAbroad => colors.restBg,
+                WorkingDayKind.abroad || WorkingDayKind.home => colors.text,
+                WorkingDayKind.restAbroad => colors.rest,
                 _ => null,
               },
-              border: switch (kind) {
-                WorkingDayKind.restAbroad => Border.all(
-                  color: colors.rest,
-                  width: 2,
-                ),
-                WorkingDayKind.home => Border.all(color: colors.text, width: 2),
-                _ => null,
-              },
+              border: kind == WorkingDayKind.restHome
+                  ? Border.all(color: colors.rest, width: 2)
+                  : null,
             ),
             child: SizedBox.square(
               dimension: 36,
@@ -380,9 +321,10 @@ class _DayCell extends StatelessWidget {
                   '${date.day}',
                   style: AppTextStyles.numericCaption.copyWith(
                     color: switch (kind) {
-                      WorkingDayKind.abroad => colors.background,
-                      WorkingDayKind.restAbroad => colors.restText,
-                      WorkingDayKind.home => colors.text,
+                      WorkingDayKind.abroad ||
+                      WorkingDayKind.home => colors.background,
+                      WorkingDayKind.restAbroad => colors.onAccent,
+                      WorkingDayKind.restHome => colors.text,
                       WorkingDayKind.off || null => colors.textSecondary,
                     },
                   ),
@@ -390,122 +332,6 @@ class _DayCell extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Шторка «Ставка за рабочий день»: сумма и валюта.
-Future<void> showDayRateSheet(BuildContext context, DayRate rate) =>
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (_) => _DayRateSheet(rate),
-    );
-
-/// The rate being edited: the amount field and the currency.
-class _DayRateSheet extends ConsumerStatefulWidget {
-  const new(this.rate);
-
-  final DayRate rate;
-
-  @override
-  ConsumerState<_DayRateSheet> createState() => _DayRateSheetState();
-}
-
-/// The entered amount and the chosen currency.
-class _DayRateSheetState extends ConsumerState<_DayRateSheet> {
-  late final _amount = TextEditingController(
-    text: widget.rate.cents == 0
-        ? ''
-        : (widget.rate.cents % 100 == 0
-              ? '${widget.rate.cents ~/ 100}'
-              : (widget.rate.cents / 100).toStringAsFixed(2)),
-  );
-  late String _currency = widget.rate.currency;
-
-  @override
-  void dispose() {
-    _amount.dispose();
-    super.dispose();
-  }
-
-  Future<void> _save() async {
-    final cents = parseCents(_amount.text);
-    if (cents == null) return;
-    final navigator = Navigator.of(context);
-    await ref
-        .read(settingsRepositoryProvider)
-        .setDayRate(DayRate(cents: cents, currency: _currency));
-    navigator.pop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-    const pad = AppSpacing.screenPadding + 4;
-    final valid = parseCents(_amount.text) != null;
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(pad, 0, pad, 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(l.workDaysRateTitle, style: AppTextStyles.header),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _amount,
-              autofocus: true,
-              onChanged: (_) => setState(() {}),
-              onSubmitted: (_) => unawaited(_save()),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[\d.,\s]')),
-              ],
-              style: AppTextStyles.valueSmall,
-              decoration: InputDecoration(
-                labelText: l.workDaysRate,
-                suffixText: _currency,
-                filled: true,
-                fillColor: colors.surface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.badge),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l.workDaysCurrency.toUpperCase(),
-              style: AppTextStyles.section.copyWith(
-                color: colors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final code in DayRate.currencies)
-                  ChoicePill(
-                    code,
-                    selected: code == _currency,
-                    onTap: () => setState(() => _currency = code),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            PrimaryButton(
-              label: l.save,
-              onPressed: valid ? () => unawaited(_save()) : null,
-            ),
-          ],
         ),
       ),
     );
