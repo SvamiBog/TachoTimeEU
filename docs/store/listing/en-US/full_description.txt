@@ -28,7 +28,7 @@ Simple and reliable
 • Rules in plain words and a check whether they apply to your van
 
 Free and Premium
-Free: activities, all timers and warnings, "End day", the log, today's bans. Premium: editing the log, PDF and CSV reports, moving to another phone, the ban calendar. Monthly or yearly subscription (7 days free) or a one-time lifetime purchase.
+Free: activities, all timers and warnings, "End day", the log, today's bans. Premium: editing the log, PDF and CSV reports, moving to another phone, the ban calendar. During the closed test, Premium is free for everyone.
 
 Sources
 TachoGo is an independent app: it is not affiliated with and does not represent the EU or the authorities of any European country. Limits follow Regulation (EC) No 561/2006 (official text: https://eur-lex.europa.eu/eli/reg/2006/561/oj) and the AETR Agreement. Driving bans follow the official websites of the countries; the links are in the app.
