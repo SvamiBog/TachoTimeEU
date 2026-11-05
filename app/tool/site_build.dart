@@ -285,12 +285,20 @@ String landingPage(String language, SiteTexts t, Map<String, Object?> arb) {
           '<p>${t['f${i}_text']}</p></li>',
   ].join('\n');
 
+  // Вид запрета виден только по заливке и рамке — экранному диктору
+  // говорим его словами (WCAG 1.3.1)
+  String banKind(BanCoverage coverage) => switch (coverage) {
+    BanCoverage.rules => t['bans_kind_rules'],
+    BanCoverage.someRoads => t['bans_some_roads'],
+    BanCoverage.none => t['bans_none'],
+  };
   final chips = [
     for (final c in bans)
       '<li class="chip chip-${c.coverage.name}" '
           'title="${_countryName(arb, c.code)}">'
           '<span aria-hidden="true">${c.code}</span>'
-          '<span class="sr">${_countryName(arb, c.code)}</span></li>',
+          '<span class="sr">${_countryName(arb, c.code)}, '
+          '${banKind(c.coverage)}</span></li>',
   ].join();
 
   final faq = [
@@ -426,9 +434,9 @@ $features
 <p>${t['free_text']}</p>
 </div>
 <div class="plan plan-amber">
-<p class="plan-name">Premium · ${t['premium_trial']}</p>
+<p class="plan-name">Premium</p>
 <p class="plan-price">${_price(premiumPrices.month, language)}<small>${t['per_month']}</small></p>
-<p class="plan-more">${_price(premiumPrices.year, language)} ${t['per_year']} · ${_price(premiumPrices.forever, language)} ${t['forever']}</p>
+<p class="plan-more">${_price(premiumPrices.year, language)} ${t['per_year']} (${t['premium_trial']}) · ${_price(premiumPrices.forever, language)} ${t['forever']}</p>
 <p>${t['premium_text']}</p>
 </div>
 </div>
@@ -503,12 +511,13 @@ String _css(String root) =>
 @font-face{font-family:"JetBrains Mono";src:url(${root}fonts/jetbrains-mono-700.woff2) format("woff2");font-weight:600 900;font-display:swap}
 :root{--navy:#0F1E33;--amber:#FFB020;--paper:#F4F3EF;--brown:#8A5500;--line:2px solid var(--navy);--display:Unbounded,sans-serif;--text:Onest,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;color-scheme:light}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;scroll-padding-top:80px;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{margin:0;background:var(--paper);color:var(--navy);font:400 18px/1.5 var(--text)}
 a{color:var(--navy)}
 a:hover{color:var(--brown)}
-a:focus-visible,summary:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+a:focus-visible,summary:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.foot a:focus-visible{outline-color:var(--amber)}
 h1,h2,h3,p{margin:0}
 ul{margin:0;padding:0;list-style:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -553,7 +562,7 @@ mark{display:inline-block;background:var(--amber);color:var(--navy);line-height:
 .big-time{font:800 clamp(96px,16vw,230px)/.85 var(--mono);letter-spacing:-.06em}
 .screen h2{font:800 clamp(28px,3.4vw,44px)/1.05 var(--display);text-transform:uppercase;letter-spacing:-.02em}
 .screen-text>p:last-child{font-size:19px;max-width:520px}
-.phone{flex:0 0 auto;margin:0 auto;width:320px;background:#111315;color:#EDEBE6;border:3px solid var(--navy);border-radius:44px;box-shadow:14px 14px 0 var(--amber);padding:22px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;font-family:Onest,sans-serif}
+.phone{flex:0 0 auto;margin:0 auto;width:min(320px,100%);background:#111315;color:#EDEBE6;border:3px solid var(--navy);border-radius:44px;box-shadow:14px 14px 0 var(--amber);padding:22px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;font-family:Onest,sans-serif}
 .pm-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .pm-head b{display:block;font-size:17px}
 .pm-head small{display:block;font-size:11px;color:#A3A8AE}
@@ -633,7 +642,8 @@ mark{display:inline-block;background:var(--amber);color:var(--navy);line-height:
 .foot-langs{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px}
 .foot-langs a[aria-current]{color:var(--amber);text-decoration:none}
 @media (max-width:900px){.nav{display:none}.cells,.faq-grid{grid-template-columns:minmax(0,1fr)}.cell{padding:24px}}
-@media (max-width:520px){body{font-size:17px}.top-row{gap:10px}.logo span{display:none}.actions .btn{width:100%}.hero{padding-top:40px}.hero-row{margin-top:32px}.lead{font-size:19px}.plan{padding:26px}}
+@media (max-width:520px){body{font-size:17px}.top-row{gap:10px;position:relative}.lang{position:static}.lang ul{right:24px;top:calc(100% - 6px)}.logo span{display:none}.actions .btn{width:100%}.hero{padding-top:40px}.hero-row{margin-top:32px}.lead{font-size:19px}.plan{padding:26px}}
+@media (max-width:380px){.phone{padding:20px 12px}.pm-modes{gap:4px}.pm-mode{padding:0 1px 8px}}
 ''';
 
 Future<void> main(List<String> args) async {
