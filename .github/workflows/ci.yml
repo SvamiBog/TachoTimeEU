@@ -43,13 +43,38 @@ jobs:
   # полные.
   # Пропущенную job защита main засчитывает как пройденную: эта job при
   # любой ошибке выбирает полные, а тяжёлые job без её ответа идут.
+  #
+  # Статус коммита «Полная ступень» — обязательная проверка main: без него
+  # PR сливался до полной ступени. Защита смотрит на последние проверки с
+  # нужными именами у головного коммита PR. «Ready for review» запускает CI
+  # заново на том же коммите, но job нового запуска появляются через минуту
+  # и больше, тяжёлые — только после «Приложения». До этого видны проверки
+  # черновика, где тяжёлые job пропущены, то есть «пройдены», и автомерж или
+  # merge вручную сливал непроверенный PR (запуск PR #50, 05.11.2026).
+  # Job не может ждать, не покраснев, — статус может, и он один на коммит,
+  # а не на запуск:
+  # - «Ступень проверок» ставит pending черновику, PR не в main и полной
+  #   ступени; success — готовому PR в main без правок в app/, packages/ и
+  #   ci.yml: полной ступени у него нет, остальное держат его job;
+  # - «Итог полной ступени» после тяжёлых job ставит success или failure.
+  # Пока новый запуск не дошёл до «Ступени проверок», на коммите остаётся
+  # pending черновика; у PR, сразу открытого готовым, статуса нет — merge
+  # тоже закрыт. Статус ставят только запуски pull_request: защита смотрит
+  # на PR, push в main, теги и ручной запуск его не трогают. Отменённый
+  # запуск итог не пишет — новый запуск того же коммита («Convert to draft»,
+  # затем «Ready for review») начинает с pending. «Re-run all jobs» — тоже с
+  # pending, «Re-run failed jobs» — до нового итога остаётся failure. PR из
+  # форка: токен только для чтения, статус не ставится, и такой PR сливает
+  # владелец в обход защиты (docs/beta/play-console.md, шаг 6).
   plan:
     name: Ступень проверок
     runs-on: ubuntu-24.04
-    # actions: read — прошлый успешный запуск CI на main (gh run list)
+    # actions: read — прошлый успешный запуск CI на main (gh run list);
+    # statuses: write — статус «Полная ступень»
     permissions:
       contents: read
       actions: read
+      statuses: write
     outputs:
       full: ${{ steps.plan.outputs.full }}
     steps:
@@ -114,6 +139,45 @@ jobs:
             echo "::notice::Только быстрые проверки: $reason"
           fi
           echo "full=$full" >> "$GITHUB_OUTPUT"
+      # Шаг выше упал — full пуст, ступень полная, статус pending. Не
+      # записался pending — merge и так закрыт прошлым pending или
+      # отсутствием статуса, а job не краснеет: её перезапуск повторил бы
+      # всю полную ступень. Не записался success — PR не слить, job краснеет.
+      - name: Статус «Полная ступень»
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        env:
+          FULL: ${{ steps.plan.outputs.full }}
+          BASE_REF: ${{ github.base_ref }}
+          DRAFT: ${{ github.event.pull_request.draft }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$BASE_REF" != main ]; then
+            state=pending desc="PR не в main: полной проверки нет"
+          elif [ "$DRAFT" = true ]; then
+            state=pending desc="Черновик: полная проверка — после «Ready for review»"
+          elif [ "$FULL" = false ]; then
+            state=success desc="Не нужна: app/, packages/ и ci.yml не изменены"
+          else
+            state=pending desc="Идёт полная проверка"
+          fi
+          echo "Полная ступень: $state — $desc"
+          if [ "$HEAD_REPO" != "$GITHUB_REPOSITORY" ]; then
+            echo "::warning::PR из форка: токен только для чтения, статус «Полная ступень» не ставится (docs/beta/play-console.md, шаг 6)"
+            exit 0
+          fi
+          if ! gh api "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
+            -f state="$state" -f context='Полная ступень' \
+            -f description="$desc" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            >/dev/null; then
+            if [ "$state" = success ]; then
+              echo "::error::Статус «Полная ступень» не записан — Re-run failed jobs"
+              exit 1
+            fi
+            echo "::warning::Статус «Полная ступень» ($state) не записан"
+          fi
 
   engine:
     name: Движок (tacho_engine)
@@ -832,6 +896,59 @@ jobs:
             -camera-back none
           working-directory: app
           script: tool/integration/upgrade_on_emulator.sh "$BASE_APP"
+
+  # Итог полной ступени PR — статус «Полная ступень» (зачем — у «Ступени
+  # проверок»): success, когда прошли все job ниже, иначе failure.
+  # Пропущенная тяжёлая job — тоже failure: значит, упал движок или
+  # приложение. Идёт только у PR с полной ступенью (и когда «Ступень
+  # проверок» упала) и не идёт в отменённом запуске: тот не должен
+  # перезаписать статус нового запуска того же коммита. «Re-run failed
+  # jobs» перезапускает и её: она ждёт перезапущенные job.
+  full-stage:
+    name: Итог полной ступени
+    needs:
+      - plan
+      - engine
+      - app
+      - timezones
+      - build-android
+      - integration-android
+      - upgrade-android
+    if: >-
+      ${{ !cancelled() && github.event_name == 'pull_request' &&
+      needs.plan.outputs.full != 'false' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      statuses: write
+    steps:
+      - name: Статус «Полная ступень»
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          failed=$(echo "$NEEDS" | jq -r \
+            '[to_entries[] | select(.value.result != "success") | .key] | join(", ")')
+          if [ -z "$failed" ]; then
+            state=success desc="Пройдена: сборка Android, эмулятор, обновление поверх, пояса"
+          else
+            state=failure desc="Не прошли: $failed"
+          fi
+          echo "Полная ступень: $state — $desc"
+          if [ "$HEAD_REPO" != "$GITHUB_REPOSITORY" ]; then
+            echo "::warning::PR из форка: токен только для чтения, статус «Полная ступень» не ставится (docs/beta/play-console.md, шаг 6)"
+            exit 0
+          fi
+          # Описание статуса — не длиннее 140 знаков
+          if ! gh api "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
+            -f state="$state" -f context='Полная ступень' \
+            -f description="${desc:0:140}" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            >/dev/null; then
+            echo "::error::Статус «Полная ступень» ($state) не записан — Re-run failed jobs"
+            exit 1
+          fi
 
   # iOS приостановлен до релиза v1.0 (решение 2026-09-27, docs/roadmap.md,
   # Фаза 8): сборка не блокирует PR и не тратит время macOS. Запуск вручную
