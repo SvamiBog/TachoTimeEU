@@ -28,7 +28,7 @@ Jednoducho a spoľahlivo
 • Pravidlá jednoduchými slovami a kontrola, či sa týkajú vašej dodávky
 
 Zadarmo a Premium
-Zadarmo: činnosti, všetky časovače a upozornenia, „Ukončiť deň“, denník, dnešné zákazy. Premium: úpravy denníka, výkazy PDF a CSV, presun do iného telefónu, kalendár zákazov. Predplatné mesačné alebo ročné (7 dní zadarmo) alebo nákup navždy.
+Zadarmo: činnosti, všetky časovače a upozornenia, „Ukončiť deň“, denník, dnešné zákazy. Premium: úpravy denníka, výkazy PDF a CSV, presun do iného telefónu, kalendár zákazov. Počas uzavretého testu je Premium pre všetkých zadarmo.
 
 Zdroje
 TachoGo je nezávislá aplikácia: nie je spojená s orgánmi EÚ ani európskych štátov a nezastupuje ich. Limity sa riadia nariadením (ES) č. 561/2006 (úradný text: https://eur-lex.europa.eu/eli/reg/2006/561/oj) a dohodou AETR. Zákazy jazdy sa riadia oficiálnymi stránkami štátov, odkazy na ne nájdete v aplikácii.
