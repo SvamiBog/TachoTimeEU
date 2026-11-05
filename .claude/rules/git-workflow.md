@@ -14,3 +14,4 @@
 - Open a PR as a draft: only the fast CI checks run. Mark it "Ready for review" once the changes are complete: that starts the full stage (about 90 minutes of the account's Actions quota, CI-13).
 - Describe the whole branch (`git diff main...HEAD`), not only the last commit, and include a test plan.
 - Merging into `main` with changes in `app/`, `packages/` or `ci.yml` ships an AAB to Google Play internal testing.
+- `main` is protected: a merge needs a PR with the required CI checks green (`docs/beta/play-console.md`, step 6). GitHub auto-merge is allowed, merge method "merge". For a PR that changes `app/`, `packages/` or `ci.yml`, enable it only once "Сборка Android", "Эмулятор Android" and "Обновление поверх прошлой версии" are running: until they start, the skipped jobs of the draft run on the same commit count as passed, and auto-merge would merge at once.
