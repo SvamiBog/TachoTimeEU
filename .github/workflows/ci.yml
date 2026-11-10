@@ -494,14 +494,17 @@ jobs:
       # Debug APK — поставить на телефон (docs/beta/README.md). ~100 МБ на
       # каждый запуск: храним 3 дня (решение владельца 20.10.2026), иначе
       # кончается квота артефактов аккаунта (19.10.2026); нет места —
-      # проверки выше всё равно прошли.
+      # проверки выше всё равно прошли. Из main — 90 дней (больше GitHub не
+      # даёт): три последних не удаляются, пока из main не придут новее,
+      # остальные через 3 дня удаляет artifacts.yml (решение владельца
+      # 10.11.2026).
       - uses: actions/upload-artifact@v6
         continue-on-error: true
         with:
           name: android-${{ github.sha }}
           path: app/build/app/outputs/flutter-apk/*.apk
           if-no-files-found: error
-          retention-days: 3
+          retention-days: ${{ github.ref == 'refs/heads/main' && 90 || 3 }}
 
   # Что и куда выпускать (docs/beta/README.md, «Как выпустить бету»):
   # - main — staging во внутреннее тестирование Google Play (PLAY_MAIN_TRACK,
