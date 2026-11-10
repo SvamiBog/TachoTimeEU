@@ -233,6 +233,38 @@ void main() {
       await unmount(tester);
     });
 
+    testWidgets('JRN-13: запись не удалась — водитель видит сообщение, '
+        'ошибка уходит в отчёт, смена идёт дальше', (tester) async {
+      final db = memoryDatabase();
+      addTearDown(db.close);
+      await seedWork(tester, db);
+      // База отказывает в записи ручной смены — как при полном диске
+      await tester.runAsync(
+        () => db.customStatement(
+          'CREATE TRIGGER fail_manual BEFORE INSERT ON manual_shifts '
+          "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+        ),
+      );
+      await pumpHome(tester, db);
+
+      await openSheet(tester);
+      await enterHm(tester, '830');
+      await tester.tap(confirm);
+      await settle(tester);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Не удалось сохранить. Попробуйте ещё раз.'),
+        findsOneWidget,
+      );
+      expect('${tester.takeException()}', contains('disk full'));
+      // Транзакция отменена: журнал прежний, смена идёт
+      expect(await manual(tester, db), isEmpty);
+      expect((await periods(tester, db)).single.isOpen, isTrue);
+      expect(endDayButton, findsOneWidget);
+      await unmount(tester);
+    });
+
     testWidgets('«Отмена» — смена идёт дальше', (tester) async {
       final db = memoryDatabase();
       addTearDown(db.close);

@@ -14,6 +14,7 @@ import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/confirm_sheet.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
+import 'package:tachogo/core/widgets/journal_save.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/segmented_tabs.dart';
@@ -812,7 +813,8 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     try {
       await ref.read(journalEditRepositoryProvider).deleteShift(shift);
       navigator.pop(true);
-    } on Object {
+    } on Object catch (error, stack) {
+      reportSaveError(error, stack);
       if (mounted) {
         setState(() {
           _saving = false;
@@ -927,7 +929,8 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     });
     try {
       await write!();
-    } on Object {
+    } on Object catch (error, stack) {
+      reportSaveError(error, stack);
       if (mounted) {
         setState(() {
           _saving = false;

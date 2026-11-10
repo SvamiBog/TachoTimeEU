@@ -9,6 +9,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
+import 'package:tachogo/core/widgets/journal_save.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/journal/pickers.dart';
@@ -17,7 +18,8 @@ import 'package:tachogo/features/journal/pickers.dart';
 /// времени ему не нужен — только итог (отзыв водителей, 28.09.2026). В поле
 /// — вождение по записям, если режимы переключали; разошлось с ними — смена
 /// становится ручной с этим итогом (`endDayWithDriving`). Смены нет — день
-/// завершается сразу. true — день завершён, false — водитель передумал.
+/// завершается сразу. true — день завершён, false — водитель передумал или
+/// запись не удалась: тогда он видит сообщение ([journalSaver]).
 ///
 /// [weekly] — «Начать недельный отдых» (экран 9): отдых сразу недельный, а
 /// без смены идущий отдых становится недельным (`declareWeeklyRest`).
@@ -27,11 +29,13 @@ Future<bool> finishDay(
   bool weekly = false,
 }) async {
   final s = ref.read(complianceProvider).value;
+  final save = journalSaver(context);
   if (s == null || s.shift == null) {
-    await (weekly
-        ? ref.read(journalEditRepositoryProvider).startWeeklyRest()
-        : ref.read(activityRepositoryProvider).endDay());
-    return true;
+    return await save(
+      () => weekly
+          ? ref.read(journalEditRepositoryProvider).startWeeklyRest()
+          : ref.read(activityRepositoryProvider).endDay(),
+    );
   }
   final l = context.l10n;
   final title = weekly ? l.weeklyStartRest : l.workdayEndDay;
@@ -47,10 +51,11 @@ Future<bool> finishDay(
     action: title,
   );
   if (driving == null) return false;
-  await ref
-      .read(journalEditRepositoryProvider)
-      .endDay(driving: driving, weekly: weekly);
-  return true;
+  return await save(
+    () => ref
+        .read(journalEditRepositoryProvider)
+        .endDay(driving: driving, weekly: weekly),
+  );
 }
 
 /// The "End day" button in the "Today" section of the home screen, while a
