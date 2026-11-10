@@ -13,6 +13,7 @@ import 'package:tacho_engine/src/manual_shift.dart';
 import 'package:tacho_engine/src/shift_route.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
+import 'package:tacho_engine/src/timeline.dart';
 import 'package:tacho_engine/src/weekly_rest_right.dart';
 
 /// Driver settings that change the calculation.
@@ -264,6 +265,8 @@ class ComplianceSnapshot {
     required this.currentModeStart,
     required this.currentModeDuration,
     required this.shift,
+    required this.shiftStart,
+    required this.splitFirstPart,
     required this.shiftDuration,
     required this.shiftRegularLimit,
     required this.shiftExtendedLimit,
@@ -310,10 +313,23 @@ class ComplianceSnapshot {
   final Duration currentModeDuration;
 
   // Смена и рабочий день (ст. 8(2))
+
+  /// Текущая смена по записям режимов: с ней работают правки журнала.
   final Shift? shift;
 
-  /// Рабочий день: от начала смены до сейчас, во время отдыха — до его
-  /// начала.
+  /// Начало рабочего дня: начало смены, а если она продолжает смену,
+  /// внесённую итогами (отдых после той был короче 9 ч и день не закончил), —
+  /// начало той. От него идут рабочий день и срок суточного отдыха; null —
+  /// смены нет.
+  final DateTime? shiftStart;
+
+  /// В рабочем дне уже был отдых от 3 ч — первая часть раздельного суточного
+  /// отдыха 3 + 9 (ст. 8(2)): в смене по записям, в ручной смене этого дня
+  /// или между ними.
+  final bool splitFirstPart;
+
+  /// Рабочий день: от его начала ([shiftStart]) до сейчас, во время отдыха —
+  /// до начала отдыха.
   final Duration shiftDuration;
 
   /// Обычный рабочий день: 13 ч (экипаж — 19 ч).
@@ -523,7 +539,26 @@ ComplianceSnapshot calculateCompliance({
         )
       : null;
 
-  final breakState = computeBreakState(shift?.blocks ?? const []);
+  // Рабочий день текущей смены. Ручные смены перед ней, отдых после которых
+  // был короче 9 ч, день не закончили: их вождение и время — в этом дне,
+  // как у отдыха короче 9 ч внутри смены из записей.
+  final days = ManualDays(manual, restOfManual);
+  final carried = shift == null
+      ? const <CarriedShift>[]
+      : days.before(shift.start);
+  final shiftStart = carried.firstOrNull?.shift.start ?? shift?.start;
+  final splitFirstPart =
+      (shift?.splitFirstPart ?? false) ||
+      carried.any(
+        (part) =>
+            part.shift.splitRest ||
+            part.rest.duration >= EuLimits.dailyRestSplitFirst,
+      );
+
+  final breakState = computeBreakState([
+    ..._breakBlocks(carried.lastOrNull),
+    ...?shift?.blocks,
+  ]);
   final continuousDriving = breakState.continuousDriving;
   final breakRequired = breakState.firstPartTaken
       ? EuLimits.breakSplitSecond
@@ -560,27 +595,34 @@ ComplianceSnapshot calculateCompliance({
   final weeklyLeft = EuLimits.weeklyDriving - weeklyDriving;
   final fortnightLeft = EuLimits.fortnightDriving - fortnightDriving;
 
-  // Продления до 10 ч на этой неделе — по завершённым сменам
+  // Продления до 10 ч на этой неделе — по завершённым рабочим дням. День —
+  // смена вместе с ручными сменами перед ней ([ManualDays]): 5 ч итогом и
+  // 5 ч по записям — одно продление.
   bool inThisWeek(DateTime t) =>
       !t.isBefore(weekStart) && t.isBefore(weekStart.add(week));
-  final extensionsUsed =
-      timeline.shifts
-          .where(
-            (s) =>
-                !identical(s, shift) &&
-                !s.start.isBefore(weekStart) &&
-                s.driving > EuLimits.dailyDriving,
-          )
-          .length +
-      manual
-          .where(
-            (m) => inThisWeek(m.start) && m.driving > EuLimits.dailyDriving,
-          )
-          .length;
+  var extensionsUsed = 0;
+  void countDay(DateTime start, Duration driving) {
+    final before = days.before(start);
+    final dayStart = before.firstOrNull?.shift.start ?? start;
+    if (inThisWeek(dayStart) &&
+        _drivingOf(before) + driving > EuLimits.dailyDriving) {
+      extensionsUsed++;
+    }
+  }
+
+  for (final s in timeline.shifts) {
+    if (identical(s, shift)) continue;
+    countDay(s.start, s.driving);
+  }
+  for (final m in manual) {
+    // Смена день не закончила — она в дне следующей смены
+    if (days.continues(m)) continue;
+    countDay(m.start, m.driving);
+  }
   final extensionsLeft = _nonNegative(
     EuLimits.dailyDrivingExtensionsPerWeek - extensionsUsed,
   );
-  final dailyDriving = shift?.driving ?? Duration.zero;
+  final dailyDriving = (shift?.driving ?? Duration.zero) + _drivingOf(carried);
   final dailyDrivingLimit = extensionsLeft > 0
       ? EuLimits.dailyDrivingExtended
       : EuLimits.dailyDriving;
@@ -838,18 +880,18 @@ ComplianceSnapshot calculateCompliance({
   // Рабочий день: во время отдыха считаем до его начала — отдых и есть
   // конец дня
   final spanEnd = resting && currentRest != null ? currentRest.start : now;
-  final shiftDuration = shift == null
+  final shiftDuration = shiftStart == null
       ? Duration.zero
-      : durationBetween(shift.start, spanEnd);
+      : durationBetween(shiftStart, spanEnd);
   // Отдых должен закончиться в окне 24 ч (экипаж — 30 ч): 11 ч или
   // сокращённый 9 ч. В экипаже 9 ч — тоже сокращённый отдых, поэтому после
   // трёх сокращений рабочий день экипажа — 19 ч, а не 21 ч.
   final window = workdayWindow(crew);
   final shiftRegularLimit = window - EuLimits.dailyRestRegular;
   final shiftExtendedLimit = window - EuLimits.dailyRestReduced;
-  final canExtend = reducedRestsLeft > 0 || (shift?.splitFirstPart ?? false);
+  final canExtend = reducedRestsLeft > 0 || splitFirstPart;
   final shiftLimit = canExtend ? shiftExtendedLimit : shiftRegularLimit;
-  final dailyRestDeadline = shift?.start.add(window);
+  final dailyRestDeadline = shiftStart?.add(window);
   final shiftArticle = crew == CrewMode.team ? '8(5)' : null;
 
   // Карта водителя. Считывание «из будущего» (часы телефона переведены
@@ -1071,6 +1113,8 @@ ComplianceSnapshot calculateCompliance({
         ? Duration.zero
         : durationBetween(openBlock.start, now),
     shift: shift,
+    shiftStart: shiftStart,
+    splitFirstPart: splitFirstPart,
     shiftDuration: shiftDuration,
     shiftRegularLimit: shiftRegularLimit,
     shiftExtendedLimit: shiftExtendedLimit,
@@ -1110,6 +1154,38 @@ ComplianceSnapshot calculateCompliance({
 }
 
 int _nonNegative(int n) => n < 0 ? 0 : n;
+
+/// Вождение ручных смен рабочего дня.
+Duration _drivingOf(List<CarriedShift> carried) =>
+    carried.fold(Duration.zero, (sum, part) => sum + part.shift.driving);
+
+/// Конец ручной смены [part] для перерыва по ст. 7: непрерывное вождение на
+/// её конец и отдых до следующей смены. Отдых от 45 мин — перерыв, от
+/// 15 мин — его первая часть, короче — вождение продолжается.
+List<Block> _breakBlocks(CarriedShift? part) {
+  if (part == null) return const [];
+  final end = part.rest.start;
+  final driving = part.shift.continuousDrivingAtEnd;
+  return [
+    if (driving > Duration.zero)
+      Block(
+        mode: DriverMode.driving,
+        start: end.subtract(driving),
+        end: end,
+        open: false,
+        ferry: false,
+        dayEnd: false,
+      ),
+    Block(
+      mode: DriverMode.rest,
+      start: end,
+      end: end.add(part.rest.duration),
+      open: false,
+      ferry: false,
+      dayEnd: false,
+    ),
+  ];
+}
 
 /// Сколько отдыха нужно без долга, чтобы сверх этого шла компенсация:
 /// недельный отдых (от 24 ч) — 45 ч, остальной — 9 ч (ст. 8(7)). [rest] —

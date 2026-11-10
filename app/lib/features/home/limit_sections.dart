@@ -126,7 +126,7 @@ typedef _Workday = ({
 });
 
 _Workday _workday(ComplianceSnapshot s) => (
-  start: s.shift?.start,
+  start: s.shiftStart,
   value: minutes(s.shiftDuration),
   regular: minutes(s.shiftRegularLimit),
   extended: minutes(s.shiftExtendedLimit),

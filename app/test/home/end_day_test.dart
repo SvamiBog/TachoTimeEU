@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
+import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/hm_field.dart';
 import 'package:tachogo/data/db/app_database.dart';
@@ -186,6 +187,49 @@ void main() {
             .onPressed,
         isNull,
       );
+      await unmount(tester);
+    });
+
+    testWidgets('ENG-29: день завершён с итогом, через 3 ч водитель снова '
+        'едет — на главной тот же рабочий день', (tester) async {
+      final db = memoryDatabase();
+      addTearDown(db.close);
+      // Смена с 06:00, в 15:00 — «Завершить день» с 8 ч вождения итогом,
+      // в 18:00 — снова вождение; сейчас 19:00
+      final ended = t0.add(const Duration(hours: 9));
+      final back = t0.add(const Duration(hours: 12));
+      final later = t0.add(const Duration(hours: 13));
+      await tester.runAsync(() async {
+        await ActivityRepository(
+          db,
+          clock: () => t0,
+        ).switchMode(DriverMode.otherWork);
+        await JournalEditRepository(
+          db,
+          SettingsRepository(db),
+          clock: () => ended,
+        ).endDay(driving: const Duration(hours: 8));
+        await ActivityRepository(
+          db,
+          clock: () => back,
+        ).switchMode(DriverMode.driving);
+      });
+      expect(await manual(tester, db), hasLength(1));
+
+      await pumpScreen(
+        tester,
+        const HomeScreen(),
+        overrides: databaseOverrides(db, now: () => later),
+      );
+      // Рабочий день — с 06:00, а не с возвращения в 18:00: 13 ч, вождение
+      // за день — 8 ч итогом и час по записям
+      expect(find.textContaining('смена с ${formatClock(t0)}'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('прошло 13:00'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('прошло 13:00'), findsOneWidget);
       await unmount(tester);
     });
 
