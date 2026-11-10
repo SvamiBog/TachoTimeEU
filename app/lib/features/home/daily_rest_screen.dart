@@ -56,11 +56,11 @@ DailyRestState dailyRestOf(ComplianceSnapshot s) {
     rest: minutes(off?.duration ?? inShift?.duration ?? Duration.zero),
     offDuty: off != null,
     weekly: off?.weekly ?? false,
-    shiftStart: s.shift?.start,
+    shiftStart: s.shiftStart,
     regular: minutes(s.shiftRegularLimit),
     extended: minutes(s.shiftExtendedLimit),
     reducedLeft: s.reducedRestsLeft,
-    splitFirstPart: s.shift?.splitFirstPart ?? false,
+    splitFirstPart: s.splitFirstPart,
     compensation: s.restCompensation != null,
     tone: toneOf(
       s,

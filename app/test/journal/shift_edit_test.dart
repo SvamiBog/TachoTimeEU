@@ -164,6 +164,31 @@ void main() {
       await unmount(tester);
     });
 
+    testWidgets('JRN-13: сохранить не удалось — форма говорит об этом и '
+        'остаётся, ошибка уходит в отчёт', (tester) async {
+      await defaultCountry(tester, 'PL');
+      // База отказывает в записи режимов — как при полном диске
+      await io(
+        tester,
+        () => db.customStatement(
+          'CREATE TRIGGER fail_periods BEFORE INSERT ON activity_periods '
+          "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+        ),
+      );
+      await pump(tester, const JournalScreen());
+      await tap(tester, find.text('Смена'));
+      await tap(tester, find.byTooltip('Сохранить'));
+
+      expect(find.byType(ShiftEditScreen), findsOneWidget);
+      expect(
+        find.text('Не удалось сохранить. Попробуйте ещё раз.'),
+        findsOneWidget,
+      );
+      expect('${tester.takeException()}', contains('disk full'));
+      expect(await periods(tester), isEmpty);
+      await unmount(tester);
+    });
+
     testWidgets('JRN-09: после вчерашней смены с отдыхом — тоже сегодня и '
         'сейчас, «Суточный» — конец сейчас', (tester) async {
       await defaultCountry(tester, 'PL');

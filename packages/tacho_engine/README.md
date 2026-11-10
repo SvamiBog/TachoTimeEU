@@ -41,6 +41,7 @@ dart test
 - «Завершить день» (`endDay`) — отдых с отметкой `dayEnd`: смена считается завершённой сразу, а не через 9 ч.
 - Недельный отдых, объявленный водителем (`endDay(weekly: true)`, `declareRest`, `declareWeeklyRest`), — отметка `weeklyRest`: пока отдых идёт, он недельный и короче 24 ч; прерванный раньше — по длительности.
 - «Завершить день» с вождением за день (`endDayWithDriving`) — водитель вводит итог вождения: совпал с записями — они остаются, иначе смена становится ручной с этим итогом (`ManualShift`), а отдых после неё остаётся записью с отметкой `dayEnd`.
+- Рабочий день после ручной смены (`ManualDays`): отдых после неё, до начала следующей смены, короче 9 ч день не заканчивает — следующая смена продолжает его. Суточное вождение, рабочий день (`shiftStart`, `shiftDuration`), перерыв по ст. 7 и продление до 10 ч считаются за весь день; `shift` — по-прежнему смена по записям, с ней работают правки.
 - «Паром / поезд» (`setFerry`) — отметка `ferry` у текущей записи; новые записи её наследуют, пока водитель не выключит режим. На пароме автоопределение не переключает режим по движению.
 - `ComplianceSnapshot.status` — состояние для главного экрана:
 
@@ -65,7 +66,7 @@ dart test
 | Суточное вождение 9 ч / 10 ч дважды в неделю | 6(1) | `dailyDriving`, `dailyDrivingLimit`, `dailyDrivingRemaining`, `extensionsLeft` |
 | Недельное вождение 56 ч | 6(2) | `weeklyDriving`, `weeklyDrivingRemaining` |
 | Две недели 90 ч | 6(3) | `fortnightDriving`, `fortnightDrivingRemaining`, `fortnightLimiting` |
-| Рабочий день 13 / 15 ч (экипаж 19 / 21 ч) | 8(2), 8(5) | `shiftDuration`, `shiftLimit`, `shiftRemaining`, `dailyRestDeadline` |
+| Рабочий день 13 / 15 ч (экипаж 19 / 21 ч) | 8(2), 8(5) | `shiftStart`, `shiftDuration`, `shiftLimit`, `shiftRemaining`, `dailyRestDeadline`, `splitFirstPart` |
 | Суточный отдых 11 / 9 ч, не больше трёх сокращённых | 8(2), 8(4) | `offDutyRest`, `dailyRestRemaining`, `reducedRestsLeft` |
 | Недельный отдых 45 / 24 ч + компенсация | 8(6) | `weeklyRestRemaining`, `lastWeeklyRest`, `reducedWeeklyRestAvailable`, `compensation` |
 | 144 ч между недельными отдыхами | 8(6) | `workWeekDuration`, `weeklyRestDeadline`, `workWeekRemaining` |

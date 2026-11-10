@@ -78,7 +78,7 @@ class HomeHeader extends ConsumerWidget {
       final local = s.now.toLocal();
       return (
         day: DateTime(local.year, local.month, local.day),
-        shiftStart: s.shift?.start,
+        shiftStart: s.shiftStart,
       );
     });
     final l = context.l10n;

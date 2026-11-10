@@ -33,6 +33,12 @@ const workDurations = [
   300,
   400,
 ];
+
+/// Отдых после ручной смены до начала следующей, мин.
+const manualRestDurations = [
+  0, 10, 14, 15, 20, 44, 45, 179, 180, 300, 480, 539, 540, 541, 600, 660, //
+  780,
+];
 const List<DriverMode> activities = [
   DriverMode.driving,
   DriverMode.driving,
@@ -109,19 +115,23 @@ ExtendedLog extendedLog(int seed) {
   var t = start;
   for (var k = r.nextInt(0, 3); k > 0; k--) {
     final kind = r.pick(RestKind.values);
+    // Отдых короче 9 ч день не заканчивает (ENG-29), отмеченный недельным
+    // короче 24 ч — не недельный (ENG-28)
     final restLength = switch (kind) {
       RestKind.none => Duration.zero,
-      RestKind.daily => minutes(r.nextInt(480, 780)),
-      RestKind.weekly => minutes(r.nextInt(1440, 3000)),
+      RestKind.daily => minutes(r.pick(manualRestDurations)),
+      RestKind.weekly => minutes(r.nextInt(480, 3000)),
     };
     final span = minutes(r.nextInt(60, 16 * 60));
     final end = t.subtract(restLength);
     final shiftStart = end.subtract(span);
+    final driving = r.nextInt(0, min(span.inMinutes, 11 * 60));
     manual.add(
       ManualShift(
         start: shiftStart,
         end: end,
-        driving: minutes(r.nextInt(0, min(span.inMinutes, 11 * 60))),
+        driving: minutes(driving),
+        continuousDrivingAtEnd: minutes(r.nextInt(0, min(driving, 300))),
         restKind: kind,
         splitRest: kind == RestKind.daily && r.next() < 0.2,
       ),
@@ -269,79 +279,6 @@ Map<String, Object?> oracle(
       ? shifts.last
       : null;
 
-  // Ст. 7: серия отдыха ≥ 45 мин или 15, затем ≥ 30
-  var continuous = 0;
-  var daily = 0;
-  if (current != null) {
-    var firstPart = false;
-    var run = 0;
-    void closeRun() {
-      if (run >= 45 || (firstPart && run >= 30)) {
-        continuous = 0;
-        firstPart = false;
-      } else if (!firstPart && run >= 15) {
-        firstPart = true;
-      }
-      run = 0;
-    }
-
-    for (var t = current.from; t < n; t++) {
-      if (isRest(t)) {
-        run++;
-        continue;
-      }
-      if (run > 0) closeRun();
-      if (isDriving(t)) {
-        continuous++;
-        daily++;
-      }
-    }
-    if (run > 0) closeRun();
-  }
-
-  final lastRun = rests.isEmpty ? null : rests.last;
-  final resting = isRest(n - 1);
-  final shiftMinutes = current == null
-      ? 0
-      : (resting ? lastRun!.from : n) - current.from;
-
-  // Неделя: записи по минутам, ручные смены — в неделе их начала
-  final weekStart = weekStartUtc(now);
-  int drivingIn(DateTime from, DateTime to) {
-    var total = count(
-      offset(from).clamp(0, n),
-      offset(to).clamp(0, n),
-      isDriving,
-    );
-    for (final m in manual) {
-      if (!m.start.isBefore(from) && m.start.isBefore(to)) {
-        total += m.driving.inMinutes;
-      }
-    }
-    return total;
-  }
-
-  // Продления до 10 ч — завершённые смены этой недели и ручные смены
-  var extensions = 0;
-  for (final s in shifts) {
-    if (identical(s, current) || at(s.from).isBefore(weekStart)) continue;
-    if (count(s.from, s.to, isDriving) > 540) extensions++;
-  }
-  for (final m in manual) {
-    if (!m.start.isBefore(weekStart) &&
-        m.start.isBefore(weekStart.add(week)) &&
-        m.driving > EuLimits.dailyDriving) {
-      extensions++;
-    }
-  }
-
-  // Последний завершённый недельный отдых: из записей или из ручной смены,
-  // если он не записан режимами
-  final recordedWeekly = [
-    for (final p in restPeriods)
-      if (p.rest >= weeklyMin)
-        (start: at(p.from), end: p.open ? null : at(p.to)),
-  ];
   // Отдых ручной смены — до начала ближайшей следующей смены, ручной или
   // из записей; следующей нет — отдых идёт
   ({DateTime start, DateTime? end, int rest, bool weekly})? manualRest(
@@ -363,10 +300,139 @@ Map<String, Object?> oracle(
       start: end,
       end: next,
       rest: rest,
-      weekly: m.restKind == RestKind.weekly || rest >= weeklyMin,
+      // Отмеченный недельным — недельный, пока идёт (ENG-28)
+      weekly:
+          (next == null && m.restKind == RestKind.weekly) || rest >= weeklyMin,
     );
   }
 
+  // Рабочий день (ENG-29): ручная смена, отдых после которой — до начала
+  // следующей смены — короче 9 ч, день не закончила. Перед сменой — такие
+  // смены по порядку
+  List<ManualShift> dayBefore(DateTime shiftStart) {
+    final chain = <ManualShift>[];
+    var next = shiftStart;
+    while (true) {
+      ManualShift? found;
+      for (final m in manual) {
+        final r = manualRest(m);
+        if (r == null || r.end != next || r.rest >= reduced) continue;
+        if (!m.start.isBefore(next)) continue;
+        if (found == null || m.start.isAfter(found.start)) found = m;
+      }
+      if (found == null) return chain;
+      chain.insert(0, found);
+      next = found.start;
+    }
+  }
+
+  int drivingOf(List<ManualShift> day) =>
+      day.fold(0, (sum, m) => sum + m.driving.inMinutes);
+
+  // Ст. 7: серия отдыха ≥ 45 мин или 15, затем ≥ 30. Перед сменой — конец
+  // ручной смены того же дня: её непрерывное вождение и отдых после неё
+  var continuous = 0;
+  var daily = 0;
+  final carried = current == null
+      ? const <ManualShift>[]
+      : dayBefore(at(current.from));
+  if (current != null) {
+    var firstPart = false;
+    var run = 0;
+    void closeRun() {
+      if (run >= 45 || (firstPart && run >= 30)) {
+        continuous = 0;
+        firstPart = false;
+      } else if (!firstPart && run >= 15) {
+        firstPart = true;
+      }
+      run = 0;
+    }
+
+    if (carried.isNotEmpty) {
+      continuous = carried.last.continuousDrivingAtEnd.inMinutes;
+      daily = drivingOf(carried);
+      run = manualRest(carried.last)!.rest;
+      if (run > 0) closeRun();
+    }
+    for (var t = current.from; t < n; t++) {
+      if (isRest(t)) {
+        run++;
+        continue;
+      }
+      if (run > 0) closeRun();
+      if (isDriving(t)) {
+        continuous++;
+        daily++;
+      }
+    }
+    if (run > 0) closeRun();
+  }
+
+  final lastRun = rests.isEmpty ? null : rests.last;
+  final resting = isRest(n - 1);
+  final dayStart = current == null
+      ? null
+      : carried.isEmpty
+      ? at(current.from)
+      : carried.first.start;
+  final shiftMinutes = dayStart == null
+      ? 0
+      : at(resting ? lastRun!.from : n).difference(dayStart).inMinutes;
+
+  // Неделя: записи по минутам, ручные смены — в неделе их начала
+  final weekStart = weekStartUtc(now);
+  int drivingIn(DateTime from, DateTime to) {
+    var total = count(
+      offset(from).clamp(0, n),
+      offset(to).clamp(0, n),
+      isDriving,
+    );
+    for (final m in manual) {
+      if (!m.start.isBefore(from) && m.start.isBefore(to)) {
+        total += m.driving.inMinutes;
+      }
+    }
+    return total;
+  }
+
+  // Продления до 10 ч — завершённые рабочие дни недели: смена вместе с
+  // ручными сменами перед ней. Неделя — та, в которую начался идущий
+  // рабочий день (ENG-30), смены нет — текущая
+  final extensionWeek = weekStartUtc(dayStart ?? now);
+  bool inWeek(DateTime t) =>
+      !t.isBefore(extensionWeek) && t.isBefore(extensionWeek.add(week));
+  var extensions = 0;
+  final continuing = <ManualShift>{};
+  for (final s in shifts) {
+    final before = dayBefore(at(s.from));
+    continuing.addAll(before);
+    if (identical(s, current)) continue;
+    final dayStart = before.isEmpty ? at(s.from) : before.first.start;
+    if (inWeek(dayStart) &&
+        drivingOf(before) + count(s.from, s.to, isDriving) > 540) {
+      extensions++;
+    }
+  }
+  for (final m in manual) {
+    continuing.addAll(dayBefore(m.start));
+  }
+  for (final m in manual) {
+    if (continuing.contains(m)) continue;
+    final before = dayBefore(m.start);
+    final dayStart = before.isEmpty ? m.start : before.first.start;
+    if (inWeek(dayStart) && drivingOf(before) + m.driving.inMinutes > 540) {
+      extensions++;
+    }
+  }
+
+  // Последний завершённый недельный отдых: из записей или из ручной смены,
+  // если он не записан режимами
+  final recordedWeekly = [
+    for (final p in restPeriods)
+      if (p.rest >= weeklyMin)
+        (start: at(p.from), end: p.open ? null : at(p.to)),
+  ];
   final weekly = [...recordedWeekly];
   for (final m in manual) {
     final r = manualRest(m);
@@ -428,6 +494,7 @@ Map<String, Object?> oracle(
   return {
     'shifts': shifts.length,
     'shiftStart': current == null ? null : at(current.from),
+    'dayStart': dayStart,
     'shiftMinutes': shiftMinutes,
     'continuous': continuous,
     'daily': daily,
@@ -449,6 +516,7 @@ Map<String, Object?> oracle(
 Map<String, Object?> engineValues(ComplianceSnapshot m) => {
   'shifts': m.timeline.shifts.length,
   'shiftStart': m.shift?.start,
+  'dayStart': m.shiftStart,
   'shiftMinutes': m.shiftDuration.inMinutes,
   'continuous': m.continuousDriving.inMinutes,
   'daily': m.dailyDriving.inMinutes,
