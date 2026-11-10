@@ -542,6 +542,11 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
     );
     if (rest == null) return null;
     final span = durationBetween(f.start, end);
+    // Недельный, выбранный в форме, оценивается как недельный: законченный
+    // раньше 24 ч расчёт посчитает суточным (ENG-28), а форма говорит
+    // «недостаточный» — недельного отдыха не получилось
+    final weekly =
+        rest.kind == RestKind.weekly || f.restKind == RestKind.weekly;
     return (
       kind: rest.kind,
       duration: rest.duration,
@@ -549,7 +554,7 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
       ongoing: rest.ongoing,
       status: rest.ongoing
           ? null
-          : rest.kind == RestKind.weekly
+          : weekly
           ? weeklyRestStatus(rest.duration)
           : dailyRestStatus(
               restInWindow(span, rest.duration, crew),

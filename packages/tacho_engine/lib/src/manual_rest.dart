@@ -19,9 +19,11 @@ class ManualRest {
     required this.duration,
   });
 
-  /// Суточный или недельный. Отдых от 24 ч — недельный, даже если водитель
-  /// отметил суточный: так же считается отдых из записей
-  /// (`RestPeriod.isWeekly`).
+  /// Суточный или недельный, как у отдыха из записей
+  /// (`RestPeriod.isWeekly`). Отдых от 24 ч — недельный, даже если водитель
+  /// отметил суточный. Отмеченный недельным — недельный, пока идёт;
+  /// законченный раньше 24 ч отметку теряет и считается по длительности:
+  /// недельным отдых короче 24 ч не бывает.
   final RestKind kind;
 
   /// Конец смены.
@@ -56,10 +58,9 @@ ManualRest? manualRestAfter(
     if (next == null || s.isBefore(next)) next = s;
   }
   final duration = durationBetween(end, next ?? now);
+  final declaredWeekly = next == null && shift.restKind == RestKind.weekly;
   return ManualRest(
-    kind:
-        shift.restKind == RestKind.weekly ||
-            duration >= EuLimits.weeklyRestReduced
+    kind: declaredWeekly || duration >= EuLimits.weeklyRestReduced
         ? RestKind.weekly
         : RestKind.daily,
     start: end,
