@@ -359,6 +359,10 @@ class ComplianceSnapshot {
   // Суточное вождение (ст. 6(1))
   final Duration dailyDriving;
   final Duration dailyDrivingLimit;
+
+  /// Продления до 10 ч, потраченные на неделе, к которой относится рабочий
+  /// день: идёт смена — на неделе её начала ([shiftStart]), смены нет — на
+  /// текущей.
   final int extensionsUsed;
   final int extensionsLeft;
 
@@ -595,16 +599,19 @@ ComplianceSnapshot calculateCompliance({
   final weeklyLeft = EuLimits.weeklyDriving - weeklyDriving;
   final fortnightLeft = EuLimits.fortnightDriving - fortnightDriving;
 
-  // Продления до 10 ч на этой неделе — по завершённым рабочим дням. День —
-  // смена вместе с ручными сменами перед ней ([ManualDays]): 5 ч итогом и
-  // 5 ч по записям — одно продление.
-  bool inThisWeek(DateTime t) =>
-      !t.isBefore(weekStart) && t.isBefore(weekStart.add(week));
+  // Продления до 10 ч — по завершённым рабочим дням недели. День — смена
+  // вместе с ручными сменами перед ней ([ManualDays]): 5 ч итогом и 5 ч по
+  // записям — одно продление. День относится к неделе, в которую начался:
+  // у смены с воскресенья на понедельник лимит в полночь не меняется, и
+  // продление она тратит у той недели, где его потом и засчитают.
+  final extensionWeek = weekStartUtc(shiftStart ?? now);
+  bool inExtensionWeek(DateTime t) =>
+      !t.isBefore(extensionWeek) && t.isBefore(extensionWeek.add(week));
   var extensionsUsed = 0;
   void countDay(DateTime start, Duration driving) {
     final before = days.before(start);
     final dayStart = before.firstOrNull?.shift.start ?? start;
-    if (inThisWeek(dayStart) &&
+    if (inExtensionWeek(dayStart) &&
         _drivingOf(before) + driving > EuLimits.dailyDriving) {
       extensionsUsed++;
     }

@@ -396,10 +396,12 @@ Map<String, Object?> oracle(
     return total;
   }
 
-  // Продления до 10 ч — завершённые рабочие дни этой недели: смена вместе
-  // с ручными сменами перед ней
+  // Продления до 10 ч — завершённые рабочие дни недели: смена вместе с
+  // ручными сменами перед ней. Неделя — та, в которую начался идущий
+  // рабочий день (ENG-30), смены нет — текущая
+  final extensionWeek = weekStartUtc(dayStart ?? now);
   bool inWeek(DateTime t) =>
-      !t.isBefore(weekStart) && t.isBefore(weekStart.add(week));
+      !t.isBefore(extensionWeek) && t.isBefore(extensionWeek.add(week));
   var extensions = 0;
   final continuing = <ManualShift>{};
   for (final s in shifts) {

@@ -129,6 +129,70 @@ void main() {
     });
   });
 
+  group('ENG-30: продление и смена через границу недели', () {
+    // Пн и вт — по 10 ч, недельный отдых, смена с вс 20.09 20:00 UTC:
+    // к 06:50 понедельника — 9:20 вождения
+    final sunday = utc('2026-09-20 20:00');
+    final log = logFrom(utc('2026-09-14 05:00'), [
+      ...drivingDay('10:00'),
+      rest('11:00'),
+      ...drivingDay('10:00'),
+      rest('125:00'),
+      ...drivingDay('9:20'),
+    ]);
+
+    test('оба продления недели потрачены — в понедельник лимит той же '
+        'смены остаётся 9 ч', () {
+      expect(log.now, utc('2026-09-21 06:50'));
+      final m = calc(log.periods, log.now);
+      expect(m.shift?.start, sunday);
+      expect(m.dailyDriving, dur('9:20'));
+      expect(m.extensionsUsed, 2);
+      expect(m.dailyDrivingLimit, EuLimits.dailyDriving);
+      expect(
+        m.infringement(InfringementType.dailyDriveExceeded)?.time,
+        minutes(20),
+      );
+      expect(keys(m), isNot(contains(InfringementType.extensionInUse)));
+    });
+
+    test('лимит в воскресенье и в понедельник один и тот же', () {
+      final before = calc(log.periods, utc('2026-09-20 23:59'));
+      final after = calc(log.periods, utc('2026-09-21 00:01'));
+      expect(before.dailyDrivingLimit, EuLimits.dailyDriving);
+      expect(after.dailyDrivingLimit, before.dailyDrivingLimit);
+      expect(after.extensionsUsed, before.extensionsUsed);
+    });
+
+    test('следующая смена — уже новой недели: продления снова есть', () {
+      final next = logFrom(utc('2026-09-14 05:00'), [
+        ...drivingDay('10:00'),
+        rest('11:00'),
+        ...drivingDay('10:00'),
+        rest('125:00'),
+        ...drivingDay('9:20'),
+        rest('11:00'),
+        drive('1:00'),
+      ]);
+      final m = calc(next.periods, next.now);
+      expect(m.shift?.start, utc('2026-09-21 17:50'));
+      // Воскресная смена — день прошлой недели
+      expect(m.extensionsUsed, 0);
+      expect(m.dailyDrivingLimit, EuLimits.dailyDrivingExtended);
+    });
+
+    test('смены нет — продления текущей недели', () {
+      final rested = logFrom(utc('2026-09-21 05:00'), [
+        ...drivingDay('10:00'),
+        rest('10:00'),
+      ]);
+      final m = calc(rested.periods, rested.now);
+      expect(m.shift, isNull);
+      expect(m.extensionsUsed, 1);
+      expect(m.extensionsLeft, 1);
+    });
+  });
+
   group('ст. 6(2): недельное вождение 56 ч', () {
     // Пн–сб: 10 + 10 + 9 + 9 + 9 + 9 = 56 ч, между днями по 11 ч отдыха
     ({List<ActivityPeriod> periods, DateTime now}) week56(String lastDay) =>
