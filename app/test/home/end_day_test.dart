@@ -233,6 +233,58 @@ void main() {
       await unmount(tester);
     });
 
+    testWidgets('ENG-29: день продолжает ручную смену — в шторке итог за '
+        'весь день, записывается разница', (tester) async {
+      final db = memoryDatabase();
+      addTearDown(db.close);
+      // 06:00–15:00 — 8 ч вождения итогом, с 18:00 — час вождения по
+      // записям; сейчас 19:00
+      final ended = t0.add(const Duration(hours: 9));
+      final back = t0.add(const Duration(hours: 12));
+      final later = t0.add(const Duration(hours: 13));
+      await tester.runAsync(() async {
+        await ActivityRepository(
+          db,
+          clock: () => t0,
+        ).switchMode(DriverMode.otherWork);
+        await JournalEditRepository(
+          db,
+          SettingsRepository(db),
+          clock: () => ended,
+        ).endDay(driving: const Duration(hours: 8));
+        await ActivityRepository(
+          db,
+          clock: () => back,
+        ).switchMode(DriverMode.driving);
+      });
+      await pumpScreen(
+        tester,
+        const HomeScreen(),
+        overrides: databaseOverrides(db, now: () => later),
+      );
+
+      await openSheet(tester);
+      // Вождение за день: 8 ч итогом и час по записям
+      expect(fieldText(tester), '9:00');
+      // Больше, чем длится день, и меньше уже внесённого — нельзя
+      await enterHm(tester, '930');
+      expect(find.text('Можно от 8:00 до 9:00'), findsOneWidget);
+      await enterHm(tester, '730');
+      expect(find.text('Можно от 8:00 до 9:00'), findsOneWidget);
+      // За последний час за рулём — только полчаса: за день 8:30
+      await enterHm(tester, '830');
+      await tester.tap(confirm);
+      await settle(tester);
+      await tester.pumpAndSettle();
+
+      final shifts = await manual(tester, db);
+      expect(shifts, hasLength(2));
+      expect(shifts.first.driving, const Duration(hours: 8));
+      expect(shifts.last.start, back);
+      expect(shifts.last.driving, const Duration(minutes: 30));
+      await unmount(tester);
+    });
+
     testWidgets('JRN-13: запись не удалась — водитель видит сообщение, '
         'ошибка уходит в отчёт, смена идёт дальше', (tester) async {
       final db = memoryDatabase();

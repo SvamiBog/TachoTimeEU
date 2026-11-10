@@ -30,13 +30,21 @@ Future<bool> finishDay(
 }) async {
   final s = ref.read(complianceProvider).value;
   final save = journalSaver(context);
-  if (s == null || s.shift == null) {
+  final shift = s?.shift;
+  final dayStart = s?.shiftStart;
+  if (s == null || shift == null || dayStart == null) {
     return await save(
       () => weekly
           ? ref.read(journalEditRepositoryProvider).startWeeklyRest()
           : ref.read(activityRepositoryProvider).endDay(),
     );
   }
+  // День может продолжать смену, уже внесённую итогом (отдых после неё был
+  // короче 9 ч, ENG-29): водитель вводит вождение за весь день, а
+  // записывается оно у текущей смены — за вычетом уже внесённого. Меньше
+  // внесённого и больше, чем длится текущая смена, ввести нельзя.
+  final before = s.dailyDriving - shift.driving;
+  final current = s.shiftDuration - shift.start.difference(dayStart);
   final l = context.l10n;
   final title = weekly ? l.weeklyStartRest : l.workdayEndDay;
   final recorded = floorToMinute(s.dailyDriving);
@@ -46,7 +54,8 @@ Future<bool> finishDay(
     subtitle: l.endDayDrivingHint,
     label: l.endDayDriving,
     initial: recorded,
-    max: floorToMinute(s.shiftDuration),
+    min: before,
+    max: before + floorToMinute(current),
     computed: recorded > Duration.zero ? recorded : null,
     action: title,
   );
@@ -54,7 +63,7 @@ Future<bool> finishDay(
   return await save(
     () => ref
         .read(journalEditRepositoryProvider)
-        .endDay(driving: driving, weekly: weekly),
+        .endDay(driving: driving - before, weekly: weekly),
   );
 }
 
