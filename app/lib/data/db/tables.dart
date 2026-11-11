@@ -95,6 +95,32 @@ class ManualShifts extends Table {
       dateTime().map(const UtcDateTimeConverter())();
 }
 
+/// The driver's explanations of infringements (More → "Infringements"): why it
+/// happened, as the driver would write it on the back of a tachograph printout.
+/// The infringements themselves are not stored: the engine works them out from
+/// the journal (`violationLog`), and a note finds its infringement by the kind
+/// and the time ([atUtc]…[untilUtc]).
+@DataClassName('ViolationNoteRow')
+class ViolationNotes extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Вид нарушения: имя `InfringementType`. Текстом, а не `textEnum`: вид,
+  /// которого в этой версии приложения нет, не должен ломать чтение таблицы.
+  TextColumn get type => text()();
+
+  /// Первая минута нарушения.
+  DateTimeColumn get atUtc => dateTime().map(const UtcDateTimeConverter())();
+
+  /// Когда нарушение закончилось; у ещё не устранённого — когда записано
+  /// пояснение.
+  DateTimeColumn get untilUtc => dateTime().map(const UtcDateTimeConverter())();
+  TextColumn get note => text()();
+  DateTimeColumn get createdAt =>
+      dateTime().map(const UtcDateTimeConverter())();
+  DateTimeColumn get updatedAt =>
+      dateTime().map(const UtcDateTimeConverter())();
+}
+
 /// Driver card downloads (28-day limit).
 @DataClassName('CardDownloadRow')
 class CardDownloads extends Table {

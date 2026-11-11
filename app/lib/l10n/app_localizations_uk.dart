@@ -2682,4 +2682,86 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get workDaysRule =>
       'Робочий день — день із керуванням або іншою роботою, а за кордоном — і з готовністю. День без роботи — вихідний: за кордоном, якщо хоча б частину дня ви були поза країною фірми, інакше — у країні фірми. Де ви були, застосунок знає з країн змін на головній. У календарі зафарбовані робочі дні й вихідні за кордоном (зелені), кільцем — вихідні в країні фірми, сірі — немає даних.';
+
+  @override
+  String get violationsTitle => 'Порушення';
+
+  @override
+  String get violationsHint => 'За 56 днів, з вашими поясненнями';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'порушення за 56 днів',
+      many: 'порушень за 56 днів',
+      few: 'порушення за 56 днів',
+      one: 'порушення за 56 днів',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'Період перевірки';
+
+  @override
+  String get violationsUnexplained => 'Без пояснення';
+
+  @override
+  String get violationsEmpty => 'За 56 днів порушень немає';
+
+  @override
+  String get violationsEmptyText =>
+      'Коли застосунок помітить порушення, воно з’явиться тут.';
+
+  @override
+  String get violationsRule =>
+      'Під час перевірки на дорозі водій пред’являє записи за 56 днів — стільки порушення залишається в цьому списку. Запишіть до нього пояснення, поки пам’ятаєте причину: затор, не було місця на стоянці, затримали на завантаженні. Офіційно причину пишуть від руки на роздруківці тахографа. Список — за журналом застосунку, інспектор дивиться дані тахографа.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'У перевірці ще $days дня',
+      many: 'У перевірці ще $days днів',
+      few: 'У перевірці ще $days дні',
+      one: 'У перевірці ще $days день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'зараз';
+
+  @override
+  String violationsOver(String time) {
+    return 'Перевищення $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'Запізнення $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'Забракло відпочинку: $time';
+  }
+
+  @override
+  String get violationsNoNote => 'без пояснення';
+
+  @override
+  String get violationsNoteAdd => 'Додати пояснення';
+
+  @override
+  String get violationsNoteTitle => 'Пояснення до порушення';
+
+  @override
+  String get violationsNoteHint => 'Наприклад: затор, не було місця на стоянці';
+
+  @override
+  String get violationsNote => 'Пояснення';
 }

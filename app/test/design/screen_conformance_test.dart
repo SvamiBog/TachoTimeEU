@@ -38,6 +38,7 @@ import 'package:tachogo/features/more/more_screen.dart';
 import 'package:tachogo/features/onboarding/onboarding_screen.dart';
 import 'package:tachogo/features/settings/settings_screen.dart';
 import 'package:tachogo/features/shell/app_shell.dart';
+import 'package:tachogo/features/violations/violations_screen.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 
 import '../support/app_harness.dart';
@@ -119,6 +120,21 @@ Future<void> _openExport(WidgetTester tester, AppLocalizations l) async {
   expect(find.text(l.exportCreate), findsOneWidget);
 }
 
+/// Пояснение к первому нарушению списка: кнопка есть у каждого.
+Future<void> _openViolationNote(WidgetTester tester, AppLocalizations l) async {
+  final buttons = find.text(l.violationsNoteAdd);
+  // Ленивый список: при крупном шрифте кнопка первой карточки ещё не построена
+  for (var i = 0; i < 20 && buttons.evaluate().isEmpty; i++) {
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -200));
+    await tester.pumpAndSettle();
+  }
+  await tester.ensureVisible(buttons.first);
+  await tester.pumpAndSettle();
+  await tester.tap(buttons.first);
+  await tester.pumpAndSettle();
+  expect(find.text(l.violationsNoteTitle), findsOneWidget);
+}
+
 /// Шаги онбординга: «Начать», затем «Далее».
 _Open _onboardingStep(int step) => (tester, l) async {
   for (var i = 0; i < step; i++) {
@@ -192,6 +208,13 @@ final _screens = <String, _Screen>{
   'Шторка «Перенос на другой телефон»': (
     build: MoreScreen.new,
     open: _tapText((l) => l.transferTitle),
+  ),
+  // У недели с макета в прошлой неделе нет записей отдыха между сменами —
+  // для движка это нарушения: список не пустой.
+  'Нарушения': (build: ViolationsScreen.new, open: null),
+  'Шторка «Пояснение к нарушению»': (
+    build: ViolationsScreen.new,
+    open: _openViolationNote,
   ),
   'Суточный отдых': (build: DailyRestScreen.new, open: null),
   'Вождение': (build: DrivingScreen.new, open: null),

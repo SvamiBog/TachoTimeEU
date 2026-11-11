@@ -4172,6 +4172,114 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Рабочий день — день с вождением или другой работой, а за границей — и с готовностью. День без работы — выходной: за границей, если хотя бы часть дня вы были вне страны фирмы, иначе — в стране фирмы. Где вы были, приложение знает по странам смен на главной. В календаре закрашены рабочие дни и выходные за границей (зелёные), кольцом — выходные в стране фирмы, серые — нет данных.'**
   String get workDaysRule;
+
+  /// Экран и строка в «Ещё»: нарушения водителя за 56 дней с его пояснениями
+  ///
+  /// In ru, this message translates to:
+  /// **'Нарушения'**
+  String get violationsTitle;
+
+  /// Подпись строки «Нарушения» в «Ещё»
+  ///
+  /// In ru, this message translates to:
+  /// **'За 56 дней, с вашими пояснениями'**
+  String get violationsHint;
+
+  /// Подпись под числом нарушений за период проверки: «3 нарушения за 56 дней» — число стоит отдельно
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{нарушение за 56 дней} few{нарушения за 56 дней} many{нарушений за 56 дней} other{нарушения за 56 дней}}'**
+  String violationsCount(int count);
+
+  /// Строка итога: период, за который водитель предъявляет записи при проверке; справа — даты «17.09 – 11.11»
+  ///
+  /// In ru, this message translates to:
+  /// **'Период проверки'**
+  String get violationsPeriod;
+
+  /// Строка итога: сколько нарушений без пояснения водителя; справа — число
+  ///
+  /// In ru, this message translates to:
+  /// **'Без пояснения'**
+  String get violationsUnexplained;
+
+  /// Экран «Нарушения»: за период проверки нарушений нет
+  ///
+  /// In ru, this message translates to:
+  /// **'За 56 дней нарушений нет'**
+  String get violationsEmpty;
+
+  /// Пояснение под «За 56 дней нарушений нет»
+  ///
+  /// In ru, this message translates to:
+  /// **'Когда приложение заметит нарушение, оно появится здесь.'**
+  String get violationsEmptyText;
+
+  /// Пояснение под списком нарушений: почему 56 дней, зачем пояснение и что список — не официальная запись
+  ///
+  /// In ru, this message translates to:
+  /// **'При проверке на дороге водитель предъявляет записи за 56 дней — столько нарушение остаётся в этом списке. Запишите к нему пояснение, пока помните причину: пробка, не было места на стоянке, задержали на погрузке. Официально причину пишут от руки на распечатке тахографа. Список — по журналу приложения, инспектор смотрит данные тахографа.'**
+  String get violationsRule;
+
+  /// Под нарушением: сколько суток оно ещё входит в 56 дней проверки, считая сегодняшние
+  ///
+  /// In ru, this message translates to:
+  /// **'{days, plural, one{В проверке ещё {days} день} few{В проверке ещё {days} дня} many{В проверке ещё {days} дней} other{В проверке ещё {days} дня}}'**
+  String violationsDaysLeft(int days);
+
+  /// Чип у нарушения, которое ещё не устранено: идёт сейчас
+  ///
+  /// In ru, this message translates to:
+  /// **'сейчас'**
+  String get violationsActive;
+
+  /// Под нарушением: наибольшее превышение лимита вождения или рабочего дня, «Превышение 0:35»
+  ///
+  /// In ru, this message translates to:
+  /// **'Превышение {time}'**
+  String violationsOver(String time);
+
+  /// Под нарушением «Недельный отдых просрочен»: на сколько позже срока 144 ч отдых начат
+  ///
+  /// In ru, this message translates to:
+  /// **'Опоздание {time}'**
+  String violationsLate(String time);
+
+  /// Под нарушением: сколько отдыха не хватило — до полного недельного 45 ч или не взятой компенсации
+  ///
+  /// In ru, this message translates to:
+  /// **'Не хватило отдыха: {time}'**
+  String violationsShort(String time);
+
+  /// Чип у нарушения, к которому водитель не записал пояснение
+  ///
+  /// In ru, this message translates to:
+  /// **'без пояснения'**
+  String get violationsNoNote;
+
+  /// Кнопка под нарушением без пояснения — открывает шторку с полем
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить пояснение'**
+  String get violationsNoteAdd;
+
+  /// Заголовок шторки с пояснением водителя к нарушению
+  ///
+  /// In ru, this message translates to:
+  /// **'Пояснение к нарушению'**
+  String get violationsNoteTitle;
+
+  /// Подсказка в поле пояснения к нарушению
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: пробка, не было места на стоянке'**
+  String get violationsNoteHint;
+
+  /// Подпись над текстом пояснения водителя под нарушением
+  ///
+  /// In ru, this message translates to:
+  /// **'Пояснение'**
+  String get violationsNote;
 }
 
 class _AppLocalizationsDelegate

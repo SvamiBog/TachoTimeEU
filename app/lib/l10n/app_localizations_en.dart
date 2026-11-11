@@ -2657,4 +2657,82 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get workDaysRule =>
       'A working day is a day with driving or other work, and abroad also with availability. A day without work is a rest day: abroad if you were outside the company country for at least part of the day, otherwise in the company country. The app knows where you were from the shift countries on the home screen. In the calendar, working days and rest days abroad (green) are filled, rest days in the company country have a ring, and grey means no data.';
+
+  @override
+  String get violationsTitle => 'Infringements';
+
+  @override
+  String get violationsHint => 'The last 56 days, with your explanations';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'infringements in 56 days',
+      one: 'infringement in 56 days',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'Inspection period';
+
+  @override
+  String get violationsUnexplained => 'Not explained';
+
+  @override
+  String get violationsEmpty => 'No infringements in 56 days';
+
+  @override
+  String get violationsEmptyText =>
+      'When the app notices an infringement, it will appear here.';
+
+  @override
+  String get violationsRule =>
+      'At a roadside check a driver presents the records for 56 days — that is how long an infringement stays in this list. Add an explanation while you remember the reason: traffic jam, no parking space, delayed loading. Officially the reason is written by hand on a tachograph printout. The list is based on the app’s log; an inspector checks the tachograph data.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'In the inspection period for $days more days',
+      one: 'In the inspection period for $days more day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'now';
+
+  @override
+  String violationsOver(String time) {
+    return 'Over by $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'Late by $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'Rest short by $time';
+  }
+
+  @override
+  String get violationsNoNote => 'not explained';
+
+  @override
+  String get violationsNoteAdd => 'Add an explanation';
+
+  @override
+  String get violationsNoteTitle => 'Explanation of the infringement';
+
+  @override
+  String get violationsNoteHint => 'For example: traffic jam, no parking space';
+
+  @override
+  String get violationsNote => 'Explanation';
 }

@@ -2679,4 +2679,87 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get workDaysRule =>
       'Pracovní den je den s řízením nebo jinou prací, v zahraničí i s pohotovostí. Den bez práce je den volna: v zahraničí, pokud jste aspoň část dne byli mimo zemi firmy, jinak v zemi firmy. Kde jste byli, aplikace ví podle zemí směn na hlavní obrazovce. V kalendáři jsou vyplněné pracovní dny a dny volna v zahraničí (zelené), dny volna v zemi firmy mají kroužek a šedé znamenají žádná data.';
+
+  @override
+  String get violationsTitle => 'Porušení';
+
+  @override
+  String get violationsHint => 'Za posledních 56 dní, s vašimi vysvětleními';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'porušení za 56 dní',
+      many: 'porušení za 56 dní',
+      few: 'porušení za 56 dní',
+      one: 'porušení za 56 dní',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'Kontrolované období';
+
+  @override
+  String get violationsUnexplained => 'Bez vysvětlení';
+
+  @override
+  String get violationsEmpty => 'Za 56 dní žádná porušení';
+
+  @override
+  String get violationsEmptyText =>
+      'Jakmile aplikace zaznamená porušení, objeví se zde.';
+
+  @override
+  String get violationsRule =>
+      'Při silniční kontrole řidič předkládá záznamy za 56 dní — tak dlouho zůstává porušení v tomto seznamu. Připište k němu vysvětlení, dokud si pamatujete důvod: kolona, žádné místo na parkovišti, zdržení při nakládce. Oficiálně se důvod píše ručně na výtisk z tachografu. Seznam vychází z deníku aplikace, inspektor kontroluje data tachografu.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'V kontrole ještě $days dní',
+      many: 'V kontrole ještě $days dne',
+      few: 'V kontrole ještě $days dny',
+      one: 'V kontrole ještě $days den',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'nyní';
+
+  @override
+  String violationsOver(String time) {
+    return 'Překročení $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'Zpoždění $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'Chybějící odpočinek: $time';
+  }
+
+  @override
+  String get violationsNoNote => 'bez vysvětlení';
+
+  @override
+  String get violationsNoteAdd => 'Přidat vysvětlení';
+
+  @override
+  String get violationsNoteTitle => 'Vysvětlení k porušení';
+
+  @override
+  String get violationsNoteHint =>
+      'Například: kolona, žádné místo na parkovišti';
+
+  @override
+  String get violationsNote => 'Vysvětlení';
 }

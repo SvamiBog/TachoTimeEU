@@ -2665,4 +2665,83 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get workDaysRule =>
       'Un giorno lavorativo è un giorno con guida o altro lavoro, e all’estero anche con disponibilità. Un giorno senza lavoro è di riposo: all’estero se sei stato fuori dal paese dell’azienda almeno in parte, altrimenti nel paese dell’azienda. L’app sa dove eri dai paesi dei turni nella schermata principale. Nel calendario i giorni lavorativi e quelli di riposo all’estero (verdi) sono pieni, quelli di riposo nel paese dell’azienda hanno un cerchio e quelli grigi sono senza dati.';
+
+  @override
+  String get violationsTitle => 'Infrazioni';
+
+  @override
+  String get violationsHint => 'Gli ultimi 56 giorni, con le tue spiegazioni';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'infrazioni in 56 giorni',
+      one: 'infrazione in 56 giorni',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'Periodo di controllo';
+
+  @override
+  String get violationsUnexplained => 'Senza spiegazione';
+
+  @override
+  String get violationsEmpty => 'Nessuna infrazione in 56 giorni';
+
+  @override
+  String get violationsEmptyText =>
+      'Quando l’app rileva un’infrazione, comparirà qui.';
+
+  @override
+  String get violationsRule =>
+      'Durante un controllo su strada il conducente presenta le registrazioni di 56 giorni: per questo tempo un’infrazione resta in questo elenco. Aggiungi una spiegazione finché ricordi il motivo: coda, nessun posto nel parcheggio, ritardo al carico. Ufficialmente il motivo si scrive a mano sulla stampa del tachigrafo. L’elenco si basa sul registro dell’app; l’ispettore controlla i dati del tachigrafo.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Ancora $days giorni nel periodo di controllo',
+      one: 'Ancora $days giorno nel periodo di controllo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'ora';
+
+  @override
+  String violationsOver(String time) {
+    return 'Superamento di $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'Ritardo di $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'Riposo mancante: $time';
+  }
+
+  @override
+  String get violationsNoNote => 'senza spiegazione';
+
+  @override
+  String get violationsNoteAdd => 'Aggiungi una spiegazione';
+
+  @override
+  String get violationsNoteTitle => 'Spiegazione dell’infrazione';
+
+  @override
+  String get violationsNoteHint =>
+      'Per esempio: coda, nessun posto nel parcheggio';
+
+  @override
+  String get violationsNote => 'Spiegazione';
 }

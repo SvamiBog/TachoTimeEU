@@ -2667,4 +2667,83 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get workDaysRule =>
       'Ish kuni — haydash yoki boshqa ish boʻlgan kun, chet elda esa tayyorlik boʻlgan kun ham. Ishsiz kun — dam olish kuni: kunning hech boʻlmaganda bir qismida firma mamlakatidan tashqarida boʻlsangiz — chet elda, aks holda — firma mamlakatida. Qayerda boʻlganingizni ilova bosh ekrandagi smena mamlakatlaridan biladi. Kalendarda ish kunlari va chet eldagi dam olish kunlari (yashil) boʻyalgan, firma mamlakatidagi dam olish kunlari — halqa bilan, kulranglari — maʼlumot yoʻq.';
+
+  @override
+  String get violationsTitle => 'Qoidabuzarliklar';
+
+  @override
+  String get violationsHint => '56 kun uchun, izohlaringiz bilan';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '56 kundagi qoidabuzarlik',
+      one: '56 kundagi qoidabuzarlik',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'Tekshiruv davri';
+
+  @override
+  String get violationsUnexplained => 'Izohsiz';
+
+  @override
+  String get violationsEmpty => '56 kunda qoidabuzarlik yoʻq';
+
+  @override
+  String get violationsEmptyText =>
+      'Ilova qoidabuzarlikni sezsa, u shu yerda paydo boʻladi.';
+
+  @override
+  String get violationsRule =>
+      'Yoʻldagi tekshiruvda haydovchi 56 kunlik yozuvlarni koʻrsatadi — qoidabuzarlik shu roʻyxatda shuncha vaqt turadi. Sababi esingizda ekan, unga izoh yozing: tirbandlik, toʻxtash joyida joy yoʻq edi, yuklashda kechikish. Rasman sabab taxograf chiqargan qogʻozga qoʻlda yoziladi. Roʻyxat ilova jurnali boʻyicha tuzilgan, inspektor taxograf maʼlumotlarini tekshiradi.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Tekshiruvda yana $days kun',
+      one: 'Tekshiruvda yana $days kun',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'hozir';
+
+  @override
+  String violationsOver(String time) {
+    return 'Ortiqcha: $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'Kechikish: $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'Dam olish yetmadi: $time';
+  }
+
+  @override
+  String get violationsNoNote => 'izohsiz';
+
+  @override
+  String get violationsNoteAdd => 'Izoh qoʻshish';
+
+  @override
+  String get violationsNoteTitle => 'Qoidabuzarlikka izoh';
+
+  @override
+  String get violationsNoteHint =>
+      'Masalan: tirbandlik, toʻxtash joyida joy yoʻq edi';
+
+  @override
+  String get violationsNote => 'Izoh';
 }

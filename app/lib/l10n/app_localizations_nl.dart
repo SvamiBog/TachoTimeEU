@@ -2669,4 +2669,82 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get workDaysRule =>
       'Een werkdag is een dag met rijden of ander werk, en in het buitenland ook met beschikbaarheid. Een dag zonder werk is een rustdag: in het buitenland als u minstens een deel van de dag buiten het land van het bedrijf was, anders in het land van het bedrijf. Waar u was, weet de app uit de landen van de diensten op het startscherm. In de kalender zijn werkdagen en rustdagen in het buitenland (groen) gevuld, rustdagen in het land van het bedrijf hebben een ring en grijs betekent geen gegevens.';
+
+  @override
+  String get violationsTitle => 'Overtredingen';
+
+  @override
+  String get violationsHint => 'De laatste 56 dagen, met uw toelichtingen';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'overtredingen in 56 dagen',
+      one: 'overtreding in 56 dagen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'Controleperiode';
+
+  @override
+  String get violationsUnexplained => 'Zonder toelichting';
+
+  @override
+  String get violationsEmpty => 'Geen overtredingen in 56 dagen';
+
+  @override
+  String get violationsEmptyText =>
+      'Zodra de app een overtreding opmerkt, verschijnt die hier.';
+
+  @override
+  String get violationsRule =>
+      'Bij een wegcontrole toont de chauffeur de registraties van 56 dagen — zo lang blijft een overtreding in deze lijst staan. Voeg een toelichting toe zolang u de reden nog weet: file, geen parkeerplaats, vertraging bij het laden. Officieel wordt de reden met de hand op een afdruk van de tachograaf geschreven. De lijst is gebaseerd op het logboek van de app; de inspecteur controleert de gegevens van de tachograaf.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Nog $days dagen in de controleperiode',
+      one: 'Nog $days dag in de controleperiode',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'nu';
+
+  @override
+  String violationsOver(String time) {
+    return 'Overschrijding $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'Vertraging $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'Te weinig rust: $time';
+  }
+
+  @override
+  String get violationsNoNote => 'zonder toelichting';
+
+  @override
+  String get violationsNoteAdd => 'Toelichting toevoegen';
+
+  @override
+  String get violationsNoteTitle => 'Toelichting bij de overtreding';
+
+  @override
+  String get violationsNoteHint => 'Bijvoorbeeld: file, geen parkeerplaats';
+
+  @override
+  String get violationsNote => 'Toelichting';
 }
