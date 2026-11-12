@@ -2677,4 +2677,83 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get workDaysRule =>
       'Un jour de travail est un jour avec conduite ou autre travail, et à l’étranger aussi avec disponibilité. Un jour sans travail est un jour de repos : à l’étranger si vous étiez hors du pays de l’entreprise au moins une partie de la journée, sinon dans le pays de l’entreprise. L’appli sait où vous étiez grâce aux pays des postes sur l’écran d’accueil. Dans le calendrier, les jours de travail et les jours de repos à l’étranger (verts) sont pleins, les jours de repos dans le pays de l’entreprise ont un cercle et le gris signifie pas de données.';
+
+  @override
+  String get violationsTitle => 'Infractions';
+
+  @override
+  String get violationsHint => 'Les 56 derniers jours, avec vos explications';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'infractions en 56 jours',
+      one: 'infraction en 56 jours',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'Période de contrôle';
+
+  @override
+  String get violationsUnexplained => 'Sans explication';
+
+  @override
+  String get violationsEmpty => 'Aucune infraction en 56 jours';
+
+  @override
+  String get violationsEmptyText =>
+      'Dès que l’application remarque une infraction, elle apparaît ici.';
+
+  @override
+  String get violationsRule =>
+      'Lors d’un contrôle routier, le conducteur présente les enregistrements de 56 jours — c’est la durée pendant laquelle une infraction reste dans cette liste. Ajoutez une explication tant que vous vous souvenez de la raison : embouteillage, pas de place de stationnement, retard au chargement. Officiellement, la raison s’écrit à la main sur un ticket du tachygraphe. La liste repose sur le journal de l’application ; le contrôleur vérifie les données du tachygraphe.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Encore $days jours dans la période de contrôle',
+      one: 'Encore $days jour dans la période de contrôle',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'en cours';
+
+  @override
+  String violationsOver(String time) {
+    return 'Dépassement de $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'Retard de $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'Repos manquant : $time';
+  }
+
+  @override
+  String get violationsNoNote => 'sans explication';
+
+  @override
+  String get violationsNoteAdd => 'Ajouter une explication';
+
+  @override
+  String get violationsNoteTitle => 'Explication de l’infraction';
+
+  @override
+  String get violationsNoteHint =>
+      'Par exemple : embouteillage, pas de place de stationnement';
+
+  @override
+  String get violationsNote => 'Explication';
 }

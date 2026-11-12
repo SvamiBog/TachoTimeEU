@@ -2682,4 +2682,87 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get workDaysRule =>
       'Pracovný deň je deň s jazdou alebo inou prácou, v zahraničí aj s pohotovosťou. Deň bez práce je deň voľna: v zahraničí, ak ste aspoň časť dňa boli mimo krajiny firmy, inak v krajine firmy. Kde ste boli, aplikácia vie podľa krajín zmien na hlavnej obrazovke. V kalendári sú vyplnené pracovné dni a dni voľna v zahraničí (zelené), dni voľna v krajine firmy majú krúžok a sivé znamenajú žiadne údaje.';
+
+  @override
+  String get violationsTitle => 'Porušenia';
+
+  @override
+  String get violationsHint => 'Za posledných 56 dní, s vašimi vysvetleniami';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'porušení za 56 dní',
+      many: 'porušenia za 56 dní',
+      few: 'porušenia za 56 dní',
+      one: 'porušenie za 56 dní',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'Kontrolované obdobie';
+
+  @override
+  String get violationsUnexplained => 'Bez vysvetlenia';
+
+  @override
+  String get violationsEmpty => 'Za 56 dní žiadne porušenia';
+
+  @override
+  String get violationsEmptyText =>
+      'Keď aplikácia zaznamená porušenie, zobrazí sa tu.';
+
+  @override
+  String get violationsRule =>
+      'Pri cestnej kontrole vodič predkladá záznamy za 56 dní — tak dlho zostáva porušenie v tomto zozname. Pripíšte k nemu vysvetlenie, kým si pamätáte dôvod: kolóna, žiadne miesto na parkovisku, zdržanie pri nakládke. Oficiálne sa dôvod píše rukou na výtlačok z tachografu. Zoznam vychádza z denníka aplikácie, inšpektor kontroluje údaje tachografu.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'V kontrole ešte $days dní',
+      many: 'V kontrole ešte $days dňa',
+      few: 'V kontrole ešte $days dni',
+      one: 'V kontrole ešte $days deň',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'teraz';
+
+  @override
+  String violationsOver(String time) {
+    return 'Prekročenie $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'Meškanie $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'Chýbajúci odpočinok: $time';
+  }
+
+  @override
+  String get violationsNoNote => 'bez vysvetlenia';
+
+  @override
+  String get violationsNoteAdd => 'Pridať vysvetlenie';
+
+  @override
+  String get violationsNoteTitle => 'Vysvetlenie k porušeniu';
+
+  @override
+  String get violationsNoteHint =>
+      'Napríklad: kolóna, žiadne miesto na parkovisku';
+
+  @override
+  String get violationsNote => 'Vysvetlenie';
 }

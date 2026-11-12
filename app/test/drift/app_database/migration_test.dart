@@ -9,6 +9,7 @@ import 'generated/schema_v1.dart' as v1;
 import 'generated/schema_v2.dart' as v2;
 import 'generated/schema_v3.dart' as v3;
 import 'generated/schema_v4.dart' as v4;
+import 'generated/schema_v5.dart' as v5;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -199,6 +200,65 @@ void main() {
             updatedAt: created,
           ),
         ]);
+      },
+    );
+  });
+
+  test('JRN-14: v4 → v5 — журнал сохраняется, пояснений к нарушениям '
+      'нет', () async {
+    const start = '2026-11-10T06:00:00.000Z';
+    const end = '2026-11-10T11:00:00.000Z';
+    const period = v4.ActivityPeriodsData(
+      id: 1,
+      mode: 'driving',
+      startUtc: start,
+      endUtc: end,
+      utcOffsetMinutes: 60,
+      source: 'live',
+      ferry: 0,
+      dayEnd: 0,
+      weeklyRest: 0,
+      createdAt: start,
+      updatedAt: end,
+    );
+    await verifier.testWithDataIntegrity(
+      oldVersion: 4,
+      newVersion: 5,
+      createOld: v4.DatabaseAtV4.new,
+      createNew: v5.DatabaseAtV5.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) {
+        batch
+          ..insert(oldDb.activityPeriods, period)
+          ..insert(
+            oldDb.shifts,
+            const v4.ShiftsData(
+              id: 1,
+              startUtc: start,
+              startCountry: 'PL',
+              utcOffsetMinutes: 60,
+              note: 'пробка',
+            ),
+          );
+      },
+      validateItems: (newDb) async {
+        expect(await newDb.select(newDb.activityPeriods).get(), [
+          const v5.ActivityPeriodsData(
+            id: 1,
+            mode: 'driving',
+            startUtc: start,
+            endUtc: end,
+            utcOffsetMinutes: 60,
+            source: 'live',
+            ferry: 0,
+            dayEnd: 0,
+            weeklyRest: 0,
+            createdAt: start,
+            updatedAt: end,
+          ),
+        ]);
+        expect(await newDb.select(newDb.shifts).get(), hasLength(1));
+        expect(await newDb.select(newDb.violationNotes).get(), isEmpty);
       },
     );
   });

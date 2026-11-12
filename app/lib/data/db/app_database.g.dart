@@ -2464,6 +2464,459 @@ class SettingsCompanion extends UpdateCompanion<SettingRow> {
   }
 }
 
+class $ViolationNotesTable extends ViolationNotes
+    with TableInfo<$ViolationNotesTable, ViolationNoteRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ViolationNotesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> atUtc =
+      GeneratedColumn<DateTime>(
+        'at_utc',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ViolationNotesTable.$converteratUtc);
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> untilUtc =
+      GeneratedColumn<DateTime>(
+        'until_utc',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ViolationNotesTable.$converteruntilUtc);
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> createdAt =
+      GeneratedColumn<DateTime>(
+        'created_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ViolationNotesTable.$convertercreatedAt);
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> updatedAt =
+      GeneratedColumn<DateTime>(
+        'updated_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($ViolationNotesTable.$converterupdatedAt);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    type,
+    atUtc,
+    untilUtc,
+    note,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'violation_notes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ViolationNoteRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_noteMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ViolationNoteRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ViolationNoteRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      atUtc: $ViolationNotesTable.$converteratUtc.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}at_utc'],
+        )!,
+      ),
+      untilUtc: $ViolationNotesTable.$converteruntilUtc.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}until_utc'],
+        )!,
+      ),
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      createdAt: $ViolationNotesTable.$convertercreatedAt.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}created_at'],
+        )!,
+      ),
+      updatedAt: $ViolationNotesTable.$converterupdatedAt.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}updated_at'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $ViolationNotesTable createAlias(String alias) {
+    return $ViolationNotesTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<DateTime, DateTime> $converteratUtc =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime, DateTime> $converteruntilUtc =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime, DateTime> $convertercreatedAt =
+      const UtcDateTimeConverter();
+  static TypeConverter<DateTime, DateTime> $converterupdatedAt =
+      const UtcDateTimeConverter();
+}
+
+class ViolationNoteRow extends DataClass
+    implements Insertable<ViolationNoteRow> {
+  final int id;
+
+  /// Вид нарушения: имя `InfringementType`. Текстом, а не `textEnum`: вид,
+  /// которого в этой версии приложения нет, не должен ломать чтение таблицы.
+  final String type;
+
+  /// Первая минута нарушения.
+  final DateTime atUtc;
+
+  /// Когда нарушение закончилось; у ещё не устранённого — когда записано
+  /// пояснение.
+  final DateTime untilUtc;
+  final String note;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ViolationNoteRow({
+    required this.id,
+    required this.type,
+    required this.atUtc,
+    required this.untilUtc,
+    required this.note,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['type'] = Variable<String>(type);
+    {
+      map['at_utc'] = Variable<DateTime>(
+        $ViolationNotesTable.$converteratUtc.toSql(atUtc),
+      );
+    }
+    {
+      map['until_utc'] = Variable<DateTime>(
+        $ViolationNotesTable.$converteruntilUtc.toSql(untilUtc),
+      );
+    }
+    map['note'] = Variable<String>(note);
+    {
+      map['created_at'] = Variable<DateTime>(
+        $ViolationNotesTable.$convertercreatedAt.toSql(createdAt),
+      );
+    }
+    {
+      map['updated_at'] = Variable<DateTime>(
+        $ViolationNotesTable.$converterupdatedAt.toSql(updatedAt),
+      );
+    }
+    return map;
+  }
+
+  ViolationNotesCompanion toCompanion(bool nullToAbsent) {
+    return ViolationNotesCompanion(
+      id: Value(id),
+      type: Value(type),
+      atUtc: Value(atUtc),
+      untilUtc: Value(untilUtc),
+      note: Value(note),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ViolationNoteRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ViolationNoteRow(
+      id: serializer.fromJson<int>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      atUtc: serializer.fromJson<DateTime>(json['atUtc']),
+      untilUtc: serializer.fromJson<DateTime>(json['untilUtc']),
+      note: serializer.fromJson<String>(json['note']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'type': serializer.toJson<String>(type),
+      'atUtc': serializer.toJson<DateTime>(atUtc),
+      'untilUtc': serializer.toJson<DateTime>(untilUtc),
+      'note': serializer.toJson<String>(note),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ViolationNoteRow copyWith({
+    int? id,
+    String? type,
+    DateTime? atUtc,
+    DateTime? untilUtc,
+    String? note,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ViolationNoteRow(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    atUtc: atUtc ?? this.atUtc,
+    untilUtc: untilUtc ?? this.untilUtc,
+    note: note ?? this.note,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ViolationNoteRow copyWithCompanion(ViolationNotesCompanion data) {
+    return ViolationNoteRow(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      atUtc: data.atUtc.present ? data.atUtc.value : this.atUtc,
+      untilUtc: data.untilUtc.present ? data.untilUtc.value : this.untilUtc,
+      note: data.note.present ? data.note.value : this.note,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ViolationNoteRow(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('atUtc: $atUtc, ')
+          ..write('untilUtc: $untilUtc, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, type, atUtc, untilUtc, note, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ViolationNoteRow &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.atUtc == this.atUtc &&
+          other.untilUtc == this.untilUtc &&
+          other.note == this.note &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ViolationNotesCompanion extends UpdateCompanion<ViolationNoteRow> {
+  final Value<int> id;
+  final Value<String> type;
+  final Value<DateTime> atUtc;
+  final Value<DateTime> untilUtc;
+  final Value<String> note;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const ViolationNotesCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.atUtc = const Value.absent(),
+    this.untilUtc = const Value.absent(),
+    this.note = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  ViolationNotesCompanion.insert({
+    this.id = const Value.absent(),
+    required String type,
+    required DateTime atUtc,
+    required DateTime untilUtc,
+    required String note,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : type = Value(type),
+       atUtc = Value(atUtc),
+       untilUtc = Value(untilUtc),
+       note = Value(note),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ViolationNoteRow> custom({
+    Expression<int>? id,
+    Expression<String>? type,
+    Expression<DateTime>? atUtc,
+    Expression<DateTime>? untilUtc,
+    Expression<String>? note,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (atUtc != null) 'at_utc': atUtc,
+      if (untilUtc != null) 'until_utc': untilUtc,
+      if (note != null) 'note': note,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  ViolationNotesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? type,
+    Value<DateTime>? atUtc,
+    Value<DateTime>? untilUtc,
+    Value<String>? note,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return ViolationNotesCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      atUtc: atUtc ?? this.atUtc,
+      untilUtc: untilUtc ?? this.untilUtc,
+      note: note ?? this.note,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (atUtc.present) {
+      map['at_utc'] = Variable<DateTime>(
+        $ViolationNotesTable.$converteratUtc.toSql(atUtc.value),
+      );
+    }
+    if (untilUtc.present) {
+      map['until_utc'] = Variable<DateTime>(
+        $ViolationNotesTable.$converteruntilUtc.toSql(untilUtc.value),
+      );
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(
+        $ViolationNotesTable.$convertercreatedAt.toSql(createdAt.value),
+      );
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(
+        $ViolationNotesTable.$converterupdatedAt.toSql(updatedAt.value),
+      );
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ViolationNotesCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('atUtc: $atUtc, ')
+          ..write('untilUtc: $untilUtc, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2474,6 +2927,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ManualShiftsTable manualShifts = $ManualShiftsTable(this);
   late final $CardDownloadsTable cardDownloads = $CardDownloadsTable(this);
   late final $SettingsTable settings = $SettingsTable(this);
+  late final $ViolationNotesTable violationNotes = $ViolationNotesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2484,6 +2938,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     manualShifts,
     cardDownloads,
     settings,
+    violationNotes,
   ];
   @override
   DriftDatabaseOptions get options =>
@@ -3761,6 +4216,257 @@ typedef $$SettingsTableProcessedTableManager =
       SettingRow,
       PrefetchHooks Function()
     >;
+typedef $$ViolationNotesTableCreateCompanionBuilder =
+    ViolationNotesCompanion Function({
+      Value<int> id,
+      required String type,
+      required DateTime atUtc,
+      required DateTime untilUtc,
+      required String note,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$ViolationNotesTableUpdateCompanionBuilder =
+    ViolationNotesCompanion Function({
+      Value<int> id,
+      Value<String> type,
+      Value<DateTime> atUtc,
+      Value<DateTime> untilUtc,
+      Value<String> note,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$ViolationNotesTableFilterComposer
+    extends Composer<_$AppDatabase, $ViolationNotesTable> {
+  $$ViolationNotesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get atUtc =>
+      $composableBuilder(
+        column: $table.atUtc,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get untilUtc =>
+      $composableBuilder(
+        column: $table.untilUtc,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get createdAt =>
+      $composableBuilder(
+        column: $table.createdAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get updatedAt =>
+      $composableBuilder(
+        column: $table.updatedAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$ViolationNotesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ViolationNotesTable> {
+  $$ViolationNotesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get atUtc => $composableBuilder(
+    column: $table.atUtc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get untilUtc => $composableBuilder(
+    column: $table.untilUtc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ViolationNotesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ViolationNotesTable> {
+  $$ViolationNotesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get atUtc =>
+      $composableBuilder(column: $table.atUtc, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get untilUtc =>
+      $composableBuilder(column: $table.untilUtc, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ViolationNotesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ViolationNotesTable,
+          ViolationNoteRow,
+          $$ViolationNotesTableFilterComposer,
+          $$ViolationNotesTableOrderingComposer,
+          $$ViolationNotesTableAnnotationComposer,
+          $$ViolationNotesTableCreateCompanionBuilder,
+          $$ViolationNotesTableUpdateCompanionBuilder,
+          (
+            ViolationNoteRow,
+            BaseReferences<
+              _$AppDatabase,
+              $ViolationNotesTable,
+              ViolationNoteRow
+            >,
+          ),
+          ViolationNoteRow,
+          PrefetchHooks Function()
+        > {
+  $$ViolationNotesTableTableManager(
+    _$AppDatabase db,
+    $ViolationNotesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ViolationNotesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ViolationNotesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ViolationNotesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<DateTime> atUtc = const Value.absent(),
+                Value<DateTime> untilUtc = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => ViolationNotesCompanion(
+                id: id,
+                type: type,
+                atUtc: atUtc,
+                untilUtc: untilUtc,
+                note: note,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String type,
+                required DateTime atUtc,
+                required DateTime untilUtc,
+                required String note,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => ViolationNotesCompanion.insert(
+                id: id,
+                type: type,
+                atUtc: atUtc,
+                untilUtc: untilUtc,
+                note: note,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ViolationNotesTable, ViolationNoteRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $ViolationNotesTable,
+                    ViolationNoteRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ViolationNotesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ViolationNotesTable,
+      ViolationNoteRow,
+      $$ViolationNotesTableFilterComposer,
+      $$ViolationNotesTableOrderingComposer,
+      $$ViolationNotesTableAnnotationComposer,
+      $$ViolationNotesTableCreateCompanionBuilder,
+      $$ViolationNotesTableUpdateCompanionBuilder,
+      (
+        ViolationNoteRow,
+        BaseReferences<_$AppDatabase, $ViolationNotesTable, ViolationNoteRow>,
+      ),
+      ViolationNoteRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3775,4 +4481,6 @@ class $AppDatabaseManager {
       $$CardDownloadsTableTableManager(_db, _db.cardDownloads);
   $$SettingsTableTableManager get settings =>
       $$SettingsTableTableManager(_db, _db.settings);
+  $$ViolationNotesTableTableManager get violationNotes =>
+      $$ViolationNotesTableTableManager(_db, _db.violationNotes);
 }

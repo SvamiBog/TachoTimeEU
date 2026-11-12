@@ -2676,4 +2676,85 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get workDaysRule =>
       'Zi lucrătoare este ziua cu conducere sau altă muncă, iar în străinătate — și cu disponibilitate. Ziua fără muncă este zi de repaus: în străinătate, dacă ați fost măcar o parte din zi în afara țării firmei, altfel — în țara firmei. Unde ați fost, aplicația știe din țările turelor de pe ecranul principal. În calendar sunt colorate zilele lucrătoare și zilele de repaus în străinătate (verzi), cu cerc — zilele de repaus în țara firmei, cele gri — fără date.';
+
+  @override
+  String get violationsTitle => 'Încălcări';
+
+  @override
+  String get violationsHint => 'Din 56 de zile, cu explicațiile dvs.';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'de încălcări în 56 de zile',
+      few: 'încălcări în 56 de zile',
+      one: 'încălcare în 56 de zile',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'Perioada de control';
+
+  @override
+  String get violationsUnexplained => 'Fără explicație';
+
+  @override
+  String get violationsEmpty => 'Nicio încălcare în 56 de zile';
+
+  @override
+  String get violationsEmptyText =>
+      'Când aplicația observă o încălcare, aceasta apare aici.';
+
+  @override
+  String get violationsRule =>
+      'La controlul în trafic, șoferul prezintă înregistrările din 56 de zile — atât rămâne o încălcare în această listă. Adăugați o explicație cât vă amintiți motivul: ambuteiaj, niciun loc în parcare, întârziere la încărcare. Oficial, motivul se scrie de mână pe imprimarea tahografului. Lista se bazează pe jurnalul aplicației; inspectorul verifică datele tahografului.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'În control încă $days de zile',
+      few: 'În control încă $days zile',
+      one: 'În control încă $days zi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'acum';
+
+  @override
+  String violationsOver(String time) {
+    return 'Depășire $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'Întârziere $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'Repaus lipsă: $time';
+  }
+
+  @override
+  String get violationsNoNote => 'fără explicație';
+
+  @override
+  String get violationsNoteAdd => 'Adăugați o explicație';
+
+  @override
+  String get violationsNoteTitle => 'Explicație pentru încălcare';
+
+  @override
+  String get violationsNoteHint =>
+      'De exemplu: ambuteiaj, niciun loc în parcare';
+
+  @override
+  String get violationsNote => 'Explicație';
 }

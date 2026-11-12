@@ -14,6 +14,7 @@ import 'package:tachogo/data/journal/card_download_repository.dart';
 import 'package:tachogo/data/journal/journal_edit_repository.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
+import 'package:tachogo/data/violations/violation_notes.dart';
 
 void main() {
   final now = DateTime.utc(2026, 9, 23, 8);
@@ -68,6 +69,17 @@ void main() {
     );
     await settings.setTachograph(TachographType.analog);
     await settings.setDefaultCountry('PL');
+    await ViolationNoteRepository(db, clock: () => now).save(
+      LoggedViolation(
+        at: DateTime.utc(2026, 9, 22, 10, 31),
+        until: DateTime.utc(2026, 9, 22, 11, 35),
+        infringement: const Infringement(
+          InfringementType.continuousExceeded,
+          time: Duration(minutes: 20),
+        ),
+      ),
+      'пробка на A2',
+    );
   }
 
   JournalBackup backup(AppDatabase db, {void Function()? onChanged}) =>
@@ -104,6 +116,10 @@ void main() {
         c.downloadedAtUtc,
     ],
     'settings': await SettingsRepository(db).transferableSettings(),
+    'notes': [
+      for (final n in await db.select(db.violationNotes).get())
+        (n.type, n.atUtc, n.untilUtc, n.note, n.createdAt, n.updatedAt),
+    ],
   };
 
   group('TRF-04: круговой перенос', () {
@@ -242,6 +258,39 @@ void main() {
       expect(restored.last.dayEnd, isTrue);
     });
 
+    test('TRF-08: файл прежнего приложения без пояснений к нарушениям '
+        'читается — пояснений нет', () async {
+      await seed(oldPhone);
+      final json = jsonDecode(
+        utf8.decode(await backup(oldPhone).export()),
+      ) as Map<String, Object?>;
+      expect(json['violationNotes'], hasLength(1));
+      json.remove('violationNotes');
+      final contents = JournalBackup.parse(utf8.encode(jsonEncode(json)));
+      expect(contents.violationNotes, isEmpty);
+      await backup(newPhone).restore(contents);
+      expect(await newPhone.select(newPhone.violationNotes).get(), isEmpty);
+      expect(await ActivityRepository(newPhone).periods(), isNotEmpty);
+    });
+
+    test('TRF-08: пояснения нового телефона заменяются пояснениями из '
+        'файла', () async {
+      await seed(oldPhone);
+      await ViolationNoteRepository(newPhone, clock: () => now).save(
+        LoggedViolation(
+          at: DateTime.utc(2026, 9, 1, 12),
+          until: DateTime.utc(2026, 9, 1, 13),
+          infringement: const Infringement(InfringementType.shiftExceeded),
+        ),
+        'старое пояснение',
+      );
+      await backup(newPhone)
+          .restore(JournalBackup.parse(await backup(oldPhone).export()));
+      final notes = await newPhone.select(newPhone.violationNotes).get();
+      expect(notes.map((n) => n.note), ['пробка на A2']);
+      expect(notes.single.type, 'continuousExceeded');
+    });
+
     test('текущая версия и BOM в начале читаются', () {
       final bytes = Uint8List.fromList([
         0xEF,
@@ -299,6 +348,12 @@ void main() {
         withField('shifts', 'startCountry', 'POLAND'),
         withField('manualShifts', 'drivingMinutes', -5),
         withField('manualShifts', 'restKind', 'nap'),
+        withField('violationNotes', 'type', ''),
+        withField('violationNotes', 'at', 'вчера'),
+        withField('violationNotes', 'until', null),
+        withField('violationNotes', 'note', 5),
+        withField('violationNotes', 'note', 'я' * 501),
+        {...good, 'violationNotes': 'none'},
         {...good, 'periods': 'none'},
         {
           ...good,

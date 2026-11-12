@@ -2682,4 +2682,82 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get workDaysRule =>
       'Ein Arbeitstag ist ein Tag mit Lenken oder anderer Arbeit, im Ausland auch mit Bereitschaft. Ein Tag ohne Arbeit ist ein Ruhetag: im Ausland, wenn Sie mindestens zeitweise außerhalb des Unternehmenslandes waren, sonst im Unternehmensland. Wo Sie waren, weiß die App aus den Ländern der Schichten auf dem Startbildschirm. Im Kalender sind Arbeitstage und Ruhetage im Ausland (grün) ausgefüllt, Ruhetage im Unternehmensland haben einen Ring, grau heißt keine Daten.';
+
+  @override
+  String get violationsTitle => 'Verstöße';
+
+  @override
+  String get violationsHint => 'Die letzten 56 Tage, mit Ihren Erklärungen';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Verstöße in 56 Tagen',
+      one: 'Verstoß in 56 Tagen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'Kontrollzeitraum';
+
+  @override
+  String get violationsUnexplained => 'Ohne Erklärung';
+
+  @override
+  String get violationsEmpty => 'Keine Verstöße in 56 Tagen';
+
+  @override
+  String get violationsEmptyText =>
+      'Sobald die App einen Verstoß bemerkt, erscheint er hier.';
+
+  @override
+  String get violationsRule =>
+      'Bei einer Straßenkontrolle legt der Fahrer die Aufzeichnungen von 56 Tagen vor — so lange bleibt ein Verstoß in dieser Liste. Notieren Sie eine Erklärung, solange Sie den Grund noch wissen: Stau, kein Parkplatz, Verzögerung beim Beladen. Offiziell wird der Grund handschriftlich auf dem Ausdruck des Tachografen vermerkt. Die Liste beruht auf dem Protokoll der App; der Kontrolleur prüft die Daten des Tachografen.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Noch $days Tage im Kontrollzeitraum',
+      one: 'Noch $days Tag im Kontrollzeitraum',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'jetzt';
+
+  @override
+  String violationsOver(String time) {
+    return 'Überschreitung $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'Verspätung $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'Fehlende Ruhezeit: $time';
+  }
+
+  @override
+  String get violationsNoNote => 'ohne Erklärung';
+
+  @override
+  String get violationsNoteAdd => 'Erklärung hinzufügen';
+
+  @override
+  String get violationsNoteTitle => 'Erklärung zum Verstoß';
+
+  @override
+  String get violationsNoteHint => 'Zum Beispiel: Stau, kein Parkplatz';
+
+  @override
+  String get violationsNote => 'Erklärung';
 }
