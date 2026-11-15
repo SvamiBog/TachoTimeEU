@@ -103,10 +103,7 @@ void main() {
       findsOneWidget,
     );
     await show(tester, 'Карта водителя');
-    expect(
-      find.text('Данные карты нужно считывать не реже раза в 28 дней.'),
-      findsOneWidget,
-    );
+    expect(find.text('Карту считывают хотя бы раз в 28 дней.'), findsOneWidget);
   });
 
   testWidgets('диктор читает лимит длительностью: «4 часа 30 минут»', (

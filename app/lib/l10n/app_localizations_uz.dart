@@ -99,7 +99,7 @@ class AppLocalizationsUz extends AppLocalizations {
   }
 
   @override
-  String get switchFailed => 'Rejim yozilmadi. Qayta urinib koʻring.';
+  String get switchFailed => 'Rejim almashmadi. Qayta urinib koʻring.';
 
   @override
   String homeShiftSince(String date, String time) {
@@ -134,15 +134,14 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get heroOffDutyHint =>
-      'Smena tugadi. Yangisi dam olishdan boshqa birinchi rejim bilan boshlanadi.';
+      'Smena tugadi. Yangisi dam olishdan boshqa istalgan rejim bilan boshlanadi.';
 
   @override
-  String get bannerBreakNeeded45 =>
-      '45 daq tanaffus kerak (yoki boʻlingan 15 + 30)';
+  String get bannerBreakNeeded45 => '45 daq tanaffus yoki 15 + 30 kerak';
 
   @override
   String get bannerBreakNeeded30 =>
-      '30 daq tanaffus kerak — boʻlingan 15 + 30 ning ikkinchi qismi';
+      'Tanaffusning ikkinchi qismi kerak — 30 daq';
 
   @override
   String bannerOnBreak(String time, int required) {
@@ -176,7 +175,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get chipExceeded => 'oshib ketdi';
 
   @override
-  String get chipLimiting => 'cheklaydi';
+  String get chipLimiting => 'oldinroq tugaydi';
 
   @override
   String get chipShiftSoon => 'tez orada tugaydi';
@@ -338,7 +337,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get workWeekRule =>
-      'Ish haftasi — haftalik dam olish tugaganidan keyingi vaqt. Keyingi haftalik dam olishni oltita 24 soatlik davr — 144 soatdan kechiktirmay boshlash kerak (561/2006-sonli Reglamentning 8(6)-moddasi).';
+      'Haftalik dam olishni oldingisi tugaganidan keyin koʻpi bilan 144 soat (6 sutka) ichida boshlash kerak. 561/2006-sonli Reglamentning 8(6)-moddasi.';
 
   @override
   String get cardTitle => 'Kartani oʻqish';
@@ -361,7 +360,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get cardSheetRule =>
-      'Haydovchi kartasi maʼlumotlarini kamida 28 kunda bir marta oʻqish kerak (YeI 581/2010 Reglamenti).';
+      'Kartani kamida 28 kunda bir marta oʻqish kerak. YeI 581/2010 Reglamenti.';
 
   @override
   String get cardMarkToday => 'Bugun oʻqildi';
@@ -394,7 +393,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get workdayRule =>
-      'Kunlik dam olish smena boshlanganidan 24 soat ichida tugashi kerak. 9 soatlik qisqartirilgan dam olishni haftalik dam olishlar orasida koʻpi bilan uch marta olish mumkin.';
+      'Dam olish smena boshlanganidan koʻpi bilan 24 soat ichida tugashi kerak. Uni 9 soatgacha haftalik dam olishlar orasida koʻpi bilan uch marta qisqartirish mumkin.';
 
   @override
   String get dailyRestOngoing => 'Dam olish davom etmoqda';
@@ -446,11 +445,11 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get dailyRestInShift =>
-      'Dam olish 9 soatdan qisqa boʻlsa, bu smena ichidagi tanaffus. 9 soatdan u kunlik dam olishga aylanadi va smenani yakunlaydi. Ishni tugatdingizmi — «Kunni yakunlash».';
+      '9 soatgacha bu smena ichidagi tanaffus, 9 soatdan — kunlik dam olish. Ishni tugatdingizmi? «Kunni yakunlash»ni bosing.';
 
   @override
   String get dailyRestRule =>
-      'Kunlik dam olish — ketma-ket 11 soat. Qisqartirilgan — 9 soat, haftalik dam olishlar orasida koʻpi bilan uch marta. Boʻlingan — avval kamida 3 soat, keyin kamida 9 soat. Dam olish smena boshlanganidan 24 soat ichida tugashi kerak.';
+      'Toʻliq dam olish — ketma-ket 11 soat. Qisqartirilgan — 9 soat, haftalik dam olishlar orasida uch martagacha. Boʻlingan — 3 + 9 soat. Dam olish smena boshlanganidan koʻpi bilan 24 soat ichida tugashi kerak.';
 
   @override
   String get drivingCorrect => 'Kunlik haydashni tuzatish';
@@ -468,7 +467,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get drivingDailyRule =>
-      'Kunlik haydash — ikki kunlik dam olish orasidagi rul ortidagi vaqt: koʻpi bilan 9 soat, haftada ikki marta — 10 soatgacha. Hafta dushanba kuni 00:00 da boshlanadi.';
+      'Ikki kunlik dam olish orasida — rul ortida koʻpi bilan 9 soat, haftada ikki marta 10 soat mumkin. Hafta dushanba kuni 00:00 da boshlanadi.';
 
   @override
   String drivingWeekSince(String date) {
@@ -503,7 +502,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get drivingWeekRule =>
-      'Hafta — dushanba 00:00 dan yakshanba 24:00 gacha, taxografdagidek. Haftada — koʻpi bilan 56 soat haydash, ketma-ket ikki haftada — koʻpi bilan 90 soat.';
+      'Haftasiga 56 soatgacha, ketma-ket ikki haftada — 90 soatgacha haydash mumkin. Hafta — dushanba 00:00 dan yakshanba 24:00 gacha.';
 
   @override
   String get drivingCanDrive => 'Yana haydash mumkin';
@@ -560,7 +559,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get endDayDrivingHint =>
-      'Bugun qancha vaqt rul ortida bo‘ldingiz? Rejimlarning aniq vaqti kerak emas — faqat jami.';
+      'Bugun jami qancha vaqt rul ortida boʻldingiz? Jami yetarli.';
 
   @override
   String todayDate(String date) {
@@ -625,7 +624,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String infrShiftSoonText(String time) {
-    return 'Kunlik dam olishni $time dan keyin boshlang.';
+    return 'Kunlik dam olishni kechi bilan $time ichida boshlang.';
   }
 
   @override
@@ -674,7 +673,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String infrWeeklyRestSoonText(String time) {
-    return 'Haftalik dam olishni $time dan keyin boshlang.';
+    return 'Haftalik dam olishni kechi bilan $time ichida boshlang.';
   }
 
   @override
@@ -710,7 +709,7 @@ class AppLocalizationsUz extends AppLocalizations {
       other: '$days kun',
       one: '$days kun',
     );
-    return 'Qisqartirilgan haftalik dam olish uchun $time qoʻshilmagan. Kechikish — $_temp0.';
+    return 'Qisqartirilgan haftalik dam olish uchun $time kompensatsiya olinmagan. Kechikish — $_temp0.';
   }
 
   @override
@@ -719,16 +718,16 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String infrReducedRestsExceededText(int count) {
-    return 'Haftalik dam olishdan beri qisqartirilgan: $count, ruxsat — 3.';
+    return 'Haftalik dam olishdan keyin qisqartirilgan: $count, ruxsat esa 3.';
   }
 
   @override
   String get infrReducedWeeklyRestWithoutRightTitle =>
-      'Huquqsiz qisqartirilgan dam olish';
+      'Dam olishni qisqartirib boʻlmasdi';
 
   @override
   String infrReducedWeeklyRestWithoutRightText(String time) {
-    return 'Oxirgi haftalik dam olish qisqartirilgan, lekin bunga huquq yoʻq edi: toʻliq 45 soat kerak edi. $time yetmadi.';
+    return 'Oxirgi haftalik dam olish toʻliq — 45 soat boʻlishi kerak edi. $time yetmadi.';
   }
 
   @override
@@ -737,7 +736,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String infrFullWeeklyRestRequiredText(String time) {
-    return 'Qisqartirilgan haftalik dam olish hozir mumkin emas — dam olishni 45 soatdan oldin tugatmang. $time qoldi.';
+    return 'Hozir qisqartirib boʻlmaydi: toʻliq 45 soat dam oling. $time qoldi.';
   }
 
   @override
@@ -773,7 +772,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get ferryHint =>
-      'Dam olishni koʻpi bilan ikki marta, jami 1 soatgacha toʻxtatish mumkin (9-modda). Parom harakati haydashni yoqmaydi.';
+      'Dam olishni koʻpi bilan ikki marta, jami 1 soatdan oshirmay toʻxtatish mumkin (9-modda). Parom yurayotganda haydash oʻzi yoqilmaydi.';
 
   @override
   String get ferryOn => 'parom';
@@ -811,7 +810,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get breakSplitText =>
-      'Birinchi qism kamida 15 daq, ikkinchisi — kamida 30 daq, aynan shu tartibda. Ilova uni oʻzi taniydi.';
+      'Avval kamida 15 daq, keyin kamida 30 daq — faqat shu tartibda. Qismlar oʻzi hisoblanadi.';
 
   @override
   String get breakStart => 'Tanaffusni boshlash';
@@ -891,7 +890,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Ketma-ket ikkita qisqartirilgan — bitta qarz $debt: u toʻliq, bitta blok bilan, ikkinchisidan keyin va keyingi haftalik dam olishdan oldin olinadi; boʻlib-boʻlib va ular orasida mumkin emas. Toʻliq haftalik dam olish bilan birga — $total uzluksiz dam olish.';
+    return 'Ketma-ket ikkita qisqartirilgan — bitta qarz $debt. U toʻliq, keyingi haftalik dam olishdan bevosita oldin olinadi: birgalikda $total uzluksiz dam olish.';
   }
 
   @override
@@ -906,11 +905,11 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get weeklyMobilityOn =>
-      'Mobillik paketi yoqilgan: xalqaro tashuvlarda roʻyxatdan oʻtgan mamlakatdan tashqarida boʻlsa, ketma-ket ikkita qisqartirilgan dam olish olish mumkin. Qisqartirish uchinchi hafta oxirigacha kompensatsiya qilinadi.';
+      'Mobillik paketi: xalqaro reysda ketma-ket ikkita qisqartirilgan haftalik dam olish mumkin, agar ikkalasi ham firma mamlakatidan tashqarida boʻlsa. Kompensatsiya uchinchi hafta oxirigacha olinadi.';
 
   @override
   String get weeklyMobilityOff =>
-      'Qisqartirilgan haftalik dam olish uchinchi hafta oxirigacha kompensatsiya qilinadi: qarz kamida 9 soatlik dam olishga qoʻshiladi.';
+      'Qisqartirilgan haftalik dam olish kompensatsiyasi uchinchi hafta oxirigacha kamida 9 soatlik dam olishga qoʻshiladi.';
 
   @override
   String get weeklyStartRest => 'Dam olishni boshlash';
@@ -1066,7 +1065,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get journalEmpty =>
-      'Hozircha smenalar yoʻq. Rejimlarni almashtirishni boshlaganingizda paydo boʻladi yoki smenani qoʻlda qoʻshing.';
+      'Hozircha smenalar yoʻq. Bosh ekranda rejimni almashtiring yoki smenani qoʻlda qoʻshing.';
 
   @override
   String restStatus(String status) {
@@ -1233,7 +1232,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get shiftDrivingAfterRest =>
-      'smenadan keyingi dam olish tanlanganda kiritiladi';
+      'avval smenadan keyingi dam olishni tanlang';
 
   @override
   String get shiftRestNone => 'Boshlanmagan';
@@ -1276,7 +1275,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get shiftDeleteRecorded =>
-      'Bu smenaning barcha rejim yozuvlari oʻchiriladi. Buni bekor qilib boʻlmaydi.';
+      'Bu smenaning barcha rejimlari oʻchadi. Ularni qaytarib boʻlmaydi.';
 
   @override
   String get shiftErrStartCountry => 'Smena boshlanish mamlakatini tanlang';
@@ -1306,7 +1305,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get shiftErrNotLast =>
-      'Bu smenadan keyin boshqalari bor — hozir davom eta olmaydi';
+      'Bu smenadan keyin boshqalari bor — undan keyingi dam olishni tanlang';
 
   @override
   String get shiftSaveFailed => 'Saqlab boʻlmadi. Qayta urinib koʻring.';
@@ -1323,15 +1322,15 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get shiftLiveHint =>
-      'Smena rejim yozuvlari boʻyicha boradi: boshlanish, yakun va haydashni oʻzgartirish yozuvlarning oʻzini suradi.';
+      'Smena rejimlardan tuzilgan. Boshlanish, yakun yoki haydashni oʻzgartirsangiz, rejimlar suriladi.';
 
   @override
   String get shiftConvertHint =>
-      'Vaqt, haydash yoki dam olish oʻzgartirildi — smena rejim yozuvlari oʻrniga qoʻlda kiritilgan yozuv sifatida saqlanadi.';
+      'Vaqt, haydash yoki dam olishni oʻzgartirdingiz — smena vaqt boʻyicha rejimlarsiz, jami sifatida saqlanadi.';
 
   @override
   String get shiftLiveConvertHint =>
-      'Kunlik haydash jami sifatida kiritildi — smena rejim yozuvlari oʻrniga qoʻlda kiritilgan yozuv sifatida saqlanadi, undan keyingi dam olish davom etadi.';
+      'Haydash jami sifatida kiritildi — smena vaqt boʻyicha rejimlarsiz saqlanadi. Undan keyingi dam olish davom etadi.';
 
   @override
   String shiftEndNowHint(String time) {
@@ -1340,18 +1339,18 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get shiftResumeHint =>
-      'Smenadan keyingi dam olish oʻchiriladi — smena davom etadi.';
+      'Smenadan keyingi dam olish oʻchadi va smena davom etadi.';
 
   @override
   String shiftOngoingHint(String time, String mode) {
-    return 'Smena joriy boʻladi va asosiy ekranda $time dan davom etadi. «$mode» rejimi — hozir boshqasi boʻlsa, uni oʻsha yerda almashtiring.';
+    return 'Smena $time dan joriy boʻladi, rejim — «$mode». Hozir boshqasi boʻlsa, bosh ekranda almashtiring.';
   }
 
   @override
   String get shiftUnsavedTitle => 'Oʻzgarishlar saqlansinmi?';
 
   @override
-  String get shiftUnsavedText => 'Smenadagi oʻzgarishlar hali saqlanmagan.';
+  String get shiftUnsavedText => 'Saqlanmasa, oʻzgarishlar yoʻqoladi.';
 
   @override
   String get shiftDiscard => 'Saqlamaslik';
@@ -1361,11 +1360,11 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String driveEditSubtitle(String date) {
-    return 'Qoʻlda tuzatish · $date';
+    return 'Tuzatish · $date';
   }
 
   @override
-  String get driveEditComputed => 'Ilova hisoblagan';
+  String get driveEditComputed => 'Rejimlar boʻyicha hisoblangan';
 
   @override
   String driveEditDiff(String diff) {
@@ -1377,11 +1376,11 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get driveEditHint =>
-      'Rejim vaqtida almashtirilmagan boʻlsa foydalaning — limitlar qayta hisoblanadi.';
+      'Rejimni vaqtida almashtirmadingizmi? Shu yerda tuzating — limitlar qayta hisoblanadi.';
 
   @override
   String get driveEditNoDrive =>
-      'Joriy smenada hali haydash yoʻq — tuzatadigan narsa yoʻq.';
+      'Bu smenada hali haydash boʻlmagan — tuzatadigan narsa yoʻq.';
 
   @override
   String get breakCorrection => 'Tuzatish';
@@ -1394,11 +1393,11 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get breakNoBreak =>
-      'Smenada hali tanaffus yoʻq — tuzatadigan narsa yoʻq.';
+      'Bu smenada hali tanaffus boʻlmagan — tuzatadigan narsa yoʻq.';
 
   @override
   String get breakEditHint =>
-      'Vaqt qoʻshni yozuvdan olinadi — limitlar qayta hisoblanadi.';
+      'Farqni qoʻshni rejim oladi, limitlar qayta hisoblanadi.';
 
   @override
   String get workdayChangeStart => 'Smena boshlanishini oʻzgartirish';
@@ -1451,7 +1450,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get exportPdfHint =>
-      'Rasmiy yozuv emas: hisobot taxograf va haydovchi kartasi maʼlumotlari oʻrnini bosmaydi.';
+      'Hisobot taxograf va haydovchi kartasi maʼlumotlari oʻrnini bosmaydi.';
 
   @override
   String get exportCsvHint =>
@@ -1735,7 +1734,8 @@ class AppLocalizationsUz extends AppLocalizations {
   String get notifyAllow => 'Bildirishnomalarga ruxsat berish';
 
   @override
-  String get notifyDenied => 'Hozir bildirishnomalar telefonda taqiqlangan';
+  String get notifyDenied =>
+      'Bildirishnomalar telefon sozlamalarida oʻchirilgan';
 
   @override
   String get notifyAllowed => 'Bildirishnomalarga ruxsat berilgan';
@@ -1759,7 +1759,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String notifyBreakTakenText(int required, String time) {
-    return '$required daq tanaffus toʻldi. Keyingi tanaffusgacha $time haydash mumkin.';
+    return '$required daq toʻldi — yana $time haydash mumkin.';
   }
 
   @override
@@ -1806,7 +1806,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String serviceSuggestText(String time) {
-    return 'Haydashni $time dan boshlaymizmi? Dam olish toʻxtatiladi';
+    return 'Haydashni $time dan yoqamizmi? Dam olish toʻxtaydi';
   }
 
   @override
@@ -1872,7 +1872,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get autoStartFromRestHint =>
-      'Aks holda ilova avval soʻraydi: siz yoʻlovchi boʻlib ketayotgan boʻlishingiz mumkin';
+      'Aks holda avval soʻraymiz: balki yoʻlovchi boʻlib ketayotgandirsiz';
 
   @override
   String get autoBattery => 'Batareyani tejash';
@@ -1897,7 +1897,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get autoBlockedDenied =>
-      'Geolokatsiyaga ruxsatsiz haydashni aniqlab boʻlmaydi. Ilovaga faqat tezlik kerak, koordinatalar saqlanmaydi.';
+      'Geolokatsiyaga ruxsatsiz haydashni aniqlab boʻlmaydi. Faqat tezlik kerak — koordinatalar saqlanmaydi.';
 
   @override
   String get autoBlockedForever =>
@@ -1937,7 +1937,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get clearText =>
-      'Rejimlar jurnali, smenalar, mamlakatlar, izohlar va karta oʻqishlari oʻchiriladi. Buni bekor qilib boʻlmaydi. Sozlamalar qoladi.';
+      'Rejimlar jurnali, smenalar, mamlakatlar, izohlar va karta oʻqishlari oʻchadi. Ularni qaytarib boʻlmaydi. Sozlamalar qoladi.';
 
   @override
   String get clearConfirm => 'Tozalash';
@@ -1951,7 +1951,7 @@ class AppLocalizationsUz extends AppLocalizations {
   }
 
   @override
-  String get onbWelcomeTitle => 'Rul ortidagi vaqt — nazorat ostida';
+  String get onbWelcomeTitle => 'Yana qancha haydash mumkinligini biling';
 
   @override
   String get onbWelcomeText =>
@@ -1974,8 +1974,7 @@ class AppLocalizationsUz extends AppLocalizations {
       'Rejimni asosiy ekrandagi tugmalar bilan almashtiring. Taymerlar oʻzi hisoblaydi — ilova yopiq boʻlsa ham.';
 
   @override
-  String get onbModeDriving =>
-      'Rulda. Uzluksiz, kunlik va haftalik haydashni hisoblaymiz.';
+  String get onbModeDriving => 'Mashina harakatda, rulda siz.';
 
   @override
   String get onbModeWork =>
@@ -1983,18 +1982,18 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get onbModeAvailability =>
-      'Kutish: yuklash navbati, chegara, yoʻldagi ikkinchi haydovchi.';
+      'Kutish: yuklash navbati, chegara, ikkinchi haydovchi rulda.';
 
   @override
   String get onbModeRest =>
-      'Tanaffus va dam olish. «Kunni yakunlash» smenani yopadi.';
+      'Tanaffus va dam olish. Smena oxirida — «Kunni yakunlash».';
 
   @override
-  String get onbSetupTitle => 'Sizga moslaymiz';
+  String get onbSetupTitle => 'Bir nechta sozlama';
 
   @override
   String get onbSetupText =>
-      'Bularning hammasini keyinroq sozlamalarda oʻzgartirish mumkin.';
+      'Ularni keyinroq sozlamalarda oʻzgartirish mumkin.';
 
   @override
   String get onbMobilityHint => 'Xalqaro reyslarda yursangiz, yoqing';
@@ -2012,7 +2011,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get onbAutoText =>
-      'Yurdingiz — ilova haydashni yoqadi, toʻxtadingiz — boshqa ishni. Dam olishdan keyin avval soʻraydi. Faqat GPS tezligi kerak: koordinatalar saqlanmaydi va hech qayerga yuborilmaydi.';
+      'Yurdingiz — haydashni yoqamiz, toʻxtadingiz — boshqa ishni. Dam olishdan keyin avval soʻraymiz. Faqat GPS tezligini olamiz: koordinatalar saqlanmaydi va hech qayerga yuborilmaydi.';
 
   @override
   String get onbAutoLater => 'Keyinroq sozlamalarda yoqish mumkin.';
@@ -2030,7 +2029,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get onbRulesText =>
-      'Yuk mashinalari, avtobuslar va furgonlar uchun bir xil. Ilova ularni oʻzi hisoblaydi va oldindan ogohlantiradi.';
+      'Yuk mashinalari, avtobuslar va furgonlar uchun umumiy.';
 
   @override
   String get onbRulesMore =>
@@ -2052,7 +2051,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get guideStep3 =>
-      'Limitlarni kuzating. Ilova tanaffus va kun oxiri haqida oldindan ogohlantiradi. Istalgan vaqtni qoʻlda tuzatish mumkin.';
+      'Tanaffus va kun oxiri haqida oldindan ogohlantiramiz. Xato qildingizmi? Vaqtni tuzatish mumkin.';
 
   @override
   String get guideRules => 'YeI 561/2006 va AETR qoidalari';
@@ -2086,7 +2085,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String guideDailyRestText(String reduced, String first, String second) {
-    return 'Haftalik dam olishlar orasida uch martagacha $reduced gacha qisqartirish mumkin. Boʻlingan variant — $first + $second.';
+    return 'Haftalik dam olishlar orasida uni $reduced gacha qisqartirish mumkin — uch martagacha. Boʻlish ham mumkin: $first + $second.';
   }
 
   @override
@@ -2094,7 +2093,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String guideWorkdayText(String window, String regular, String reduced) {
-    return 'Dam olish smena boshlanganidan $window ichida tugashi kerak: toʻliq dam olishda $regular, qisqartirilganda $reduced.';
+    return 'Smena dam olish bilan birga $window ga sigʻadi: toʻliq dam olishdan oldin $regular, qisqartirilgandan oldin $reduced.';
   }
 
   @override
@@ -2121,7 +2120,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String guideWorkWeekText(String period) {
-    return 'Haftalik dam olish oldingisidan keyin koʻpi bilan 6 × $period oʻtgach boshlanadi.';
+    return 'Keyingi haftalik dam olish — oldingisi tugaganidan keyin koʻpi bilan 6 × $period ichida.';
   }
 
   @override
@@ -2129,7 +2128,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String guideCardText(String days) {
-    return 'Karta maʼlumotlarini kamida ${days}da bir marta oʻqish kerak.';
+    return 'Karta kamida ${days}da bir marta oʻqiladi.';
   }
 
   @override
@@ -2164,7 +2163,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get guideNewbieRestPlaceText =>
-      'Kunlik va qisqartirilgan haftalik dam olishni mashinada oʻtkazish mumkin, agar unda yotoq joyi boʻlsa va u turgan boʻlsa. Muntazam haftalik dam olish va kompensatsiya — faqat mashinadan tashqarida.';
+      'Kunlik va qisqartirilgan haftalik dam olishni mashinada oʻtkazish mumkin, agar unda yotoq joyi boʻlsa va u turgan boʻlsa. Toʻliq haftalik dam olish va kompensatsiya — faqat mashinadan tashqarida.';
 
   @override
   String get guideNewbieCountry => 'Mamlakatlar';
@@ -2295,7 +2294,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get problemText =>
-      'Hisobotga ilova versiyasi, telefon modeli, sozlamalar, ruxsatlar, bildirishnomalar jadvali va oxirgi ikki sutkadagi jurnal yozuvlari kiradi. Unda koordinatalar yoʻq. Qayerga yuborishni tanlang — pochta yoki messenjer — va nima boʻlganini yozing.';
+      'Hisobotga ilova versiyasi, telefon modeli, sozlamalar, ruxsatlar, bildirishnomalar jadvali va oxirgi ikki sutkadagi jurnal kiradi. Unda koordinatalar yoʻq. Pochta yoki messenjerni tanlang va nima boʻlganini yozing.';
 
   @override
   String get problemSend => 'Yuborish';
@@ -2320,7 +2319,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get transferText =>
-      'Eski telefonda jurnalni faylga saqlang va oʻzingizga yuboring — messenjerga, pochtaga yoki bulutga. Yangi telefonda xuddi shu ekranni oching va faylni yuklang: jurnal, karta oʻqishlari va hisob sozlamalari eski telefondagidek boʻladi.';
+      'Eski telefonda jurnalni faylga saqlang va oʻzingizga yuboring — messenjerga, pochtaga yoki bulutga. Yangisida shu ekranni oching va faylni yuklang: jurnal, karta oʻqishlari va hisob sozlamalari koʻchadi.';
 
   @override
   String get transferSave => 'Jurnalni faylga saqlash';
@@ -2363,7 +2362,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get transferFailed =>
-      'Jurnalni yuklab boʻlmadi. Telefondagi jurnal oʻzgarmadi';
+      'Jurnal yuklanmadi. Telefonda hammasi avvalgidek qoldi';
 
   @override
   String get transferSaveFailed =>
@@ -2420,7 +2419,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String notifyCompensationTakenText(String time) {
-    return 'Dam olish qisqartirilgan haftalik dam olish uchun $time qarzni qopladi — qarz yopildi.';
+    return 'Qisqartirilgan haftalik dam olish uchun $time qarz yopildi.';
   }
 
   @override
@@ -2512,7 +2511,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get bansNeedsCheck =>
-      'Manbalar tafsilotlarda farq qiladi — reys oldidan rasmiy manbada tekshiring.';
+      'Manbalar farq qiladi — reys oldidan rasmiy manbada tekshiring.';
 
   @override
   String get bansDisclaimer =>
@@ -2602,7 +2601,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get baseCountryCardText =>
-      'Usiz ilova ketma-ket ikkita qisqartirilgan haftalik dam olish mumkinligini tekshirmaydi va ish kunlarini hisoblamaydi';
+      'Usiz ketma-ket ikkita qisqartirilgan haftalik dam olish mumkinligini tekshirib ham, ish kunlarini hisoblab ham boʻlmaydi';
 
   @override
   String get onbBaseCountryRequired =>
@@ -2637,7 +2636,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get workDaysWeekendsAbroadHint =>
-      'Butun kun firma mamlakatidan tashqarida ishsiz';
+      'Ishsiz, kunning hech boʻlmasa bir qismi chet elda';
 
   @override
   String get workDaysWeekendAbroad => 'Chet elda dam olish kuni';
@@ -2646,7 +2645,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get workDaysWeekendsHome => 'Firma mamlakatida dam olish kunlari';
 
   @override
-  String get workDaysWeekendsHomeHint => 'Butun kun firma mamlakatida ishsiz';
+  String get workDaysWeekendsHomeHint => 'Ishsiz, butun kun firma mamlakatida';
 
   @override
   String get workDaysWeekendHome => 'Firma mamlakatida dam olish kuni';
@@ -2662,9 +2661,9 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get workDaysNoBase =>
-      'Firma mamlakatini koʻrsating: ish kunlari unga nisbatan hisoblanadi.';
+      'Firma mamlakatini koʻrsating: usiz kunlarni hisoblab boʻlmaydi.';
 
   @override
   String get workDaysRule =>
-      'Ish kuni — haydash yoki boshqa ish boʻlgan kun, chet elda esa tayyorlik boʻlgan kun ham. Ishsiz kun — dam olish kuni: kunning hech boʻlmaganda bir qismida firma mamlakatidan tashqarida boʻlsangiz — chet elda, aks holda — firma mamlakatida. Qayerda boʻlganingizni ilova bosh ekrandagi smena mamlakatlaridan biladi. Kalendarda ish kunlari va chet eldagi dam olish kunlari (yashil) boʻyalgan, firma mamlakatidagi dam olish kunlari — halqa bilan, kulranglari — maʼlumot yoʻq.';
+      'Ish kuni — haydash yoki boshqa ish boʻlgan kun, chet elda esa tayyorlik ham. Qolgan kunlar — dam olish kunlari. Mamlakatlarni bosh ekrandagi smenalardan olamiz. Ish kunlari boʻyalgan, kulrang — maʼlumot yoʻq.';
 }

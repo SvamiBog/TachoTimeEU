@@ -208,7 +208,10 @@ void main() {
       expect(find.text('Предыдущий · полный'), findsOneWidget);
       expect(find.text(formatHm(s.lastWeeklyRest!.duration)), findsOneWidget);
       expect(find.text('нет'), findsOneWidget);
-      expect(find.textContaining('Пакет мобильности включён'), findsOneWidget);
+      expect(
+        find.textContaining('Пакет мобильности: в международном рейсе'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('«Недельный отдых»: сокращённый — долг и срок компенсации', (
@@ -253,7 +256,9 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.textContaining('компенсируется до конца третьей недели'),
+        find.textContaining(
+          'присоединяют к отдыху от 9 ч до конца третьей недели',
+        ),
         findsOneWidget,
       );
       expect(find.textContaining('Пакет мобильности'), findsNothing);
@@ -357,7 +362,7 @@ void main() {
       expect(find.text('ещё 9:00'), findsOneWidget);
       expect(find.text(at(h11)), findsOneWidget);
 
-      expect(find.textContaining('Пока отдых короче 9 ч'), findsOneWidget);
+      expect(find.textContaining('До 9 ч это перерыв в смене'), findsOneWidget);
       expect(
         find.widgetWithText(PrimaryButton, 'Завершить день'),
         findsOneWidget,
@@ -643,7 +648,7 @@ void main() {
           find.widgetWithText(NavRow, formatWeekdayDay(start, 'ru')),
         );
       }
-      await scrollTo(tester, find.textContaining('ст. 8(6)'));
+      await scrollTo(tester, find.textContaining('8(6) Регламента'));
       await scrollTo(tester, find.text('Недельный отдых'));
       await tester.tap(find.text('Недельный отдых'));
       await tester.pumpAndSettle();

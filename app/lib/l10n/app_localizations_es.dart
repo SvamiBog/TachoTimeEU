@@ -99,7 +99,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get switchFailed => 'La actividad no se guardó. Inténtelo de nuevo.';
+  String get switchFailed => 'La actividad no cambió. Inténtelo de nuevo.';
 
   @override
   String homeShiftSince(String date, String time) {
@@ -134,15 +134,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get heroOffDutyHint =>
-      'Jornada terminada. La siguiente empezará con la primera actividad que no sea descanso.';
+      'Jornada terminada. La siguiente empezará con cualquier actividad salvo el descanso.';
 
   @override
-  String get bannerBreakNeeded45 =>
-      'Se necesita una pausa de 45 min (o dividida 15 + 30)';
+  String get bannerBreakNeeded45 => 'Necesita una pausa de 45 min o 15 + 30';
 
   @override
   String get bannerBreakNeeded30 =>
-      'Se necesita una pausa de 30 min — segunda parte de la dividida 15 + 30';
+      'Necesita la segunda parte de la pausa: 30 min';
 
   @override
   String bannerOnBreak(String time, int required) {
@@ -176,7 +175,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chipExceeded => 'superado';
 
   @override
-  String get chipLimiting => 'limita';
+  String get chipLimiting => 'se acaba antes';
 
   @override
   String get chipShiftSoon => 'fin pronto';
@@ -337,7 +336,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get workWeekRule =>
-      'La semana de trabajo es el tiempo desde el final del descanso semanal. El siguiente descanso semanal debe empezar como muy tarde al final de seis periodos de 24 horas — 144 h (art. 8, apdo. 6, del Reglamento 561/2006).';
+      'Empiece el descanso semanal como muy tarde 144 h (6 días) después del final del anterior. Art. 8, apdo. 6, del Reglamento 561/2006.';
 
   @override
   String get cardTitle => 'Descarga de la tarjeta';
@@ -360,7 +359,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cardSheetRule =>
-      'Los datos de la tarjeta del conductor deben descargarse al menos cada 28 días (Reglamento (UE) n.º 581/2010).';
+      'La tarjeta debe descargarse al menos cada 28 días. Reglamento (UE) n.º 581/2010.';
 
   @override
   String get cardMarkToday => 'Descargada hoy';
@@ -393,7 +392,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get workdayRule =>
-      'El descanso diario debe terminar dentro de las 24 horas siguientes al inicio de la jornada. El descanso reducido de 9 h se permite como máximo tres veces entre dos descansos semanales.';
+      'El descanso debe terminar como muy tarde 24 h después del inicio de la jornada. Puede reducirlo a 9 h como máximo tres veces entre dos descansos semanales.';
 
   @override
   String get dailyRestOngoing => 'Descanso en curso';
@@ -445,11 +444,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dailyRestInShift =>
-      'Mientras el descanso dure menos de 9 h, es una pausa dentro de la jornada. A partir de 9 h pasa a ser descanso diario y termina la jornada. ¿Ha terminado de trabajar? «Terminar el día».';
+      'Por debajo de 9 h es una pausa en la jornada; desde 9 h, descanso diario. ¿Ha terminado de trabajar? Pulse «Terminar el día».';
 
   @override
   String get dailyRestRule =>
-      'Descanso diario: 11 h seguidas. Reducido: 9 h, como máximo tres veces entre dos descansos semanales. Fraccionado: primero al menos 3 h, luego al menos 9 h. El descanso debe terminar dentro de las 24 horas siguientes al inicio de la jornada.';
+      'Descanso normal: 11 h seguidas. Reducido: 9 h, hasta tres veces entre dos descansos semanales. Fraccionado: 3 + 9 h. El descanso debe terminar como muy tarde 24 h después del inicio de la jornada.';
 
   @override
   String get drivingCorrect => 'Corregir la conducción del día';
@@ -467,7 +466,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get drivingDailyRule =>
-      'La conducción diaria es el tiempo al volante entre dos descansos diarios: como máximo 9 h, dos veces por semana hasta 10 h. La semana empieza el lunes a las 00:00.';
+      'Entre dos descansos diarios: como máximo 9 h al volante, 10 h dos veces por semana. La semana empieza el lunes a las 00:00.';
 
   @override
   String drivingWeekSince(String date) {
@@ -502,7 +501,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get drivingWeekRule =>
-      'La semana va del lunes 00:00 al domingo 24:00, como en el tacógrafo. Como máximo 56 h de conducción por semana y 90 h en dos semanas consecutivas.';
+      'Hasta 56 h de conducción por semana y 90 h en dos semanas seguidas. La semana va del lunes 00:00 al domingo 24:00.';
 
   @override
   String get drivingCanDrive => 'Aún puede conducir';
@@ -559,7 +558,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get endDayDrivingHint =>
-      '¿Cuánto tiempo condujo hoy? No hacen falta las horas exactas de los modos, solo el total.';
+      '¿Cuánto tiempo condujo hoy en total? Basta con el total.';
 
   @override
   String todayDate(String date) {
@@ -624,7 +623,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String infrShiftSoonText(String time) {
-    return 'Empiece el descanso diario dentro de $time.';
+    return 'Empiece el descanso diario como máximo dentro de $time.';
   }
 
   @override
@@ -674,7 +673,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String infrWeeklyRestSoonText(String time) {
-    return 'Empiece el descanso semanal dentro de $time.';
+    return 'Empiece el descanso semanal como máximo dentro de $time.';
   }
 
   @override
@@ -710,7 +709,7 @@ class AppLocalizationsEs extends AppLocalizations {
       other: '$days días',
       one: '$days día',
     );
-    return 'No se añadieron $time por el descanso semanal reducido. Retraso: $_temp0.';
+    return 'No se tomó la compensación de $time por el descanso semanal reducido. Retraso: $_temp0.';
   }
 
   @override
@@ -718,16 +717,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String infrReducedRestsExceededText(int count) {
-    return 'Reducidos desde el descanso semanal: $count, se permiten 3.';
+    return 'Descansos reducidos desde el semanal: $count, y se permiten 3.';
   }
 
   @override
   String get infrReducedWeeklyRestWithoutRightTitle =>
-      'Descanso reducido sin derecho';
+      'Este descanso no se podía reducir';
 
   @override
   String infrReducedWeeklyRestWithoutRightText(String time) {
-    return 'El último descanso semanal fue reducido sin tener derecho: hacía falta uno normal de 45 h. Faltaron $time.';
+    return 'El último descanso semanal tenía que ser normal: 45 h. Faltaron $time.';
   }
 
   @override
@@ -736,7 +735,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String infrFullWeeklyRestRequiredText(String time) {
-    return 'Ahora no es posible un descanso semanal reducido: no termine el descanso antes de 45 h. Quedan $time.';
+    return 'Esta vez no se puede reducir: descanse las 45 h completas. Quedan $time.';
   }
 
   @override
@@ -772,7 +771,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ferryHint =>
-      'El descanso puede interrumpirse dos veces como máximo, hasta 1 h en total (art. 9). El movimiento del ferry no activa la conducción.';
+      'El descanso puede interrumpirse hasta dos veces, 1 h en total como máximo (art. 9). Mientras el ferry navega, la conducción no se activa sola.';
 
   @override
   String get ferryOn => 'ferry';
@@ -811,7 +810,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get breakSplitText =>
-      'La primera parte de al menos 15 min, la segunda de al menos 30 min, justo en este orden. La aplicación la reconoce sola.';
+      'Primero al menos 15 min, luego al menos 30 min, solo en este orden. Las dos partes se cuentan solas.';
 
   @override
   String get breakStart => 'Empezar pausa';
@@ -891,7 +890,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Dos reducidos seguidos — una sola deuda de $debt: se toma entera, de una vez, después del segundo y antes del próximo descanso semanal; ni por partes ni entre ellos. Junto con un descanso semanal normal — $total de descanso seguido.';
+    return 'Dos reducidos seguidos generan una sola deuda de $debt. Se toma de una vez, justo antes del siguiente descanso semanal: en total, $total de descanso seguido.';
   }
 
   @override
@@ -906,11 +905,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get weeklyMobilityOn =>
-      'Paquete de movilidad activado: en transporte internacional se permiten dos descansos reducidos seguidos si se toman fuera del país de matriculación. La reducción se compensa antes del final de la tercera semana.';
+      'Paquete de movilidad: en transporte internacional puede tomar dos descansos semanales reducidos seguidos si ambos son fuera del país de la empresa. La compensación se toma antes del final de la tercera semana.';
 
   @override
   String get weeklyMobilityOff =>
-      'Un descanso semanal reducido se compensa antes del final de la tercera semana: la deuda se añade a un descanso de al menos 9 h.';
+      'La compensación de un descanso semanal reducido se añade a un descanso de al menos 9 h antes del final de la tercera semana.';
 
   @override
   String get weeklyStartRest => 'Empezar descanso';
@@ -1066,7 +1065,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get journalEmpty =>
-      'Todavía no hay jornadas. Aparecerán cuando empiece a cambiar de actividad, o añada una jornada a mano.';
+      'Todavía no hay jornadas. Cambie de actividad en la pantalla de inicio o añada una jornada a mano.';
 
   @override
   String restStatus(String status) {
@@ -1233,7 +1232,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get shiftDrivingAfterRest =>
-      'se introduce al elegir el descanso tras la jornada';
+      'elija primero el descanso tras la jornada';
 
   @override
   String get shiftRestNone => 'No iniciado';
@@ -1277,7 +1276,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get shiftDeleteRecorded =>
-      'Se eliminarán todos los registros de actividades de esta jornada. No se puede deshacer.';
+      'Se borrarán todas las actividades de esta jornada. No se podrán recuperar.';
 
   @override
   String get shiftErrStartCountry => 'Elija el país de inicio de la jornada';
@@ -1310,7 +1309,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get shiftErrNotLast =>
-      'Después de esta jornada hay otras: no puede estar en curso';
+      'Después de esta jornada ya hay otras: elija el descanso posterior';
 
   @override
   String get shiftSaveFailed => 'No se pudo guardar. Inténtelo de nuevo.';
@@ -1327,15 +1326,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get shiftLiveHint =>
-      'La jornada sigue los registros de actividades: cambiar el inicio, el fin o la conducción moverá los propios registros.';
+      'Esta jornada se compone de sus actividades. Cambie el inicio, el fin o la conducción y las actividades se moverán.';
 
   @override
   String get shiftConvertHint =>
-      'Hora, conducción o descanso cambiados: la jornada se guardará como entrada manual en lugar de los registros de actividades.';
+      'Ha cambiado la hora, la conducción o el descanso: la jornada se guardará como totales, sin actividades con hora.';
 
   @override
   String get shiftLiveConvertHint =>
-      'Conducción del día introducida como total: la jornada se guardará como entrada manual en lugar de los registros de actividades y el descanso posterior continúa.';
+      'Conducción introducida como total: la jornada se guardará sin actividades con hora. El descanso posterior continúa.';
 
   @override
   String shiftEndNowHint(String time) {
@@ -1344,19 +1343,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get shiftResumeHint =>
-      'Se eliminará el descanso tras la jornada: la jornada continuará.';
+      'El descanso tras la jornada se eliminará y la jornada continuará.';
 
   @override
   String shiftOngoingHint(String time, String mode) {
-    return 'La jornada pasará a ser la actual y continuará en la pantalla de inicio desde las $time. Actividad «$mode»: si ahora es otra, cámbiela allí.';
+    return 'La jornada pasa a ser la actual desde las $time, actividad «$mode». Si ahora está en otra, cámbiela en la pantalla de inicio.';
   }
 
   @override
   String get shiftUnsavedTitle => '¿Guardar los cambios?';
 
   @override
-  String get shiftUnsavedText =>
-      'Los cambios de esta jornada aún no están guardados.';
+  String get shiftUnsavedText => 'Sin guardar, los cambios se perderán.';
 
   @override
   String get shiftDiscard => 'No guardar';
@@ -1366,11 +1364,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String driveEditSubtitle(String date) {
-    return 'Corrección manual · $date';
+    return 'Corrección · $date';
   }
 
   @override
-  String get driveEditComputed => 'Calculado por la aplicación';
+  String get driveEditComputed => 'Calculado a partir de las actividades';
 
   @override
   String driveEditDiff(String diff) {
@@ -1382,11 +1380,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get driveEditHint =>
-      'Úselo si la actividad se cambió en mal momento: los límites se recalcularán.';
+      '¿Cambió la actividad a destiempo? Corríjalo aquí: los límites se recalcularán.';
 
   @override
   String get driveEditNoDrive =>
-      'Aún no hay conducción en la jornada actual: nada que corregir.';
+      'Aún no hubo conducción en esta jornada: nada que corregir.';
 
   @override
   String get breakCorrection => 'Corrección';
@@ -1399,11 +1397,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get breakNoBreak =>
-      'Aún no hay pausa en la jornada: nada que corregir.';
+      'Aún no hubo pausa en esta jornada: nada que corregir.';
 
   @override
   String get breakEditHint =>
-      'El tiempo se toma del registro vecino: los límites se recalcularán.';
+      'La actividad vecina asume la diferencia; los límites se recalculan.';
 
   @override
   String get workdayChangeStart => 'Cambiar el inicio de la jornada';
@@ -1456,7 +1454,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get exportPdfHint =>
-      'No es un documento oficial: el informe no sustituye los datos del tacógrafo ni de la tarjeta del conductor.';
+      'El informe no sustituye los datos del tacógrafo ni de la tarjeta del conductor.';
 
   @override
   String get exportCsvHint =>
@@ -1740,7 +1738,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get notifyDenied =>
-      'Las notificaciones están bloqueadas en el teléfono';
+      'Las notificaciones están desactivadas en los ajustes del teléfono';
 
   @override
   String get notifyAllowed => 'Notificaciones permitidas';
@@ -1764,7 +1762,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String notifyBreakTakenText(int required, String time) {
-    return 'Pausa de $required min cumplida. Puede conducir $time hasta la próxima pausa.';
+    return '$required min cumplidos: puede conducir $time más.';
   }
 
   @override
@@ -1811,7 +1809,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String serviceSuggestText(String time) {
-    return '¿Empezar la conducción desde las $time? El descanso se interrumpirá';
+    return '¿Activar la conducción desde las $time? El descanso se interrumpirá';
   }
 
   @override
@@ -1878,7 +1876,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get autoStartFromRestHint =>
-      'Si no, la aplicación preguntará primero: podía ir de pasajero';
+      'Si no, preguntaremos primero: quizá vaya de pasajero';
 
   @override
   String get autoBattery => 'Ahorro de batería';
@@ -1903,7 +1901,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get autoBlockedDenied =>
-      'Sin acceso a la ubicación no se puede detectar la conducción. La aplicación solo necesita la velocidad, las coordenadas no se guardan.';
+      'Sin acceso a la ubicación no se puede detectar la conducción. Solo se necesita la velocidad: las coordenadas no se guardan.';
 
   @override
   String get autoBlockedForever =>
@@ -1943,7 +1941,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get clearText =>
-      'Se eliminarán el registro de actividades, las jornadas, los países, las notas y las descargas de la tarjeta. No se puede deshacer. Los ajustes se conservarán.';
+      'Se borrarán el registro de actividades, las jornadas, los países, las notas y las descargas de la tarjeta. No se podrán recuperar. Los ajustes se conservarán.';
 
   @override
   String get clearConfirm => 'Borrar';
@@ -1957,7 +1955,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get onbWelcomeTitle => 'El tiempo al volante bajo control';
+  String get onbWelcomeTitle => 'Sepa cuánto puede conducir todavía';
 
   @override
   String get onbWelcomeText =>
@@ -1980,26 +1978,24 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambie la actividad con los botones de la pantalla de inicio. Los contadores funcionan solos, incluso con la aplicación cerrada.';
 
   @override
-  String get onbModeDriving =>
-      'Al volante. Contamos la conducción sin pausa, diaria y semanal.';
+  String get onbModeDriving => 'El vehículo se mueve y usted conduce.';
 
   @override
   String get onbModeWork => 'Carga, revisión del vehículo, documentos.';
 
   @override
   String get onbModeAvailability =>
-      'Espera: cola de carga, frontera, segundo conductor en ruta.';
+      'Espera: cola de carga, frontera, segundo conductor al volante.';
 
   @override
   String get onbModeRest =>
-      'Pausas y descanso. «Terminar el día» cierra la jornada.';
+      'Pausas y descanso. Al final de la jornada: «Terminar el día».';
 
   @override
-  String get onbSetupTitle => 'Vamos a ajustarla para usted';
+  String get onbSetupTitle => 'Un par de ajustes';
 
   @override
-  String get onbSetupText =>
-      'Todo esto se puede cambiar después en los ajustes.';
+  String get onbSetupText => 'Podrá cambiarlos después en los ajustes.';
 
   @override
   String get onbMobilityHint => 'Actívelo si hace rutas internacionales';
@@ -2017,7 +2013,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get onbAutoText =>
-      'Arranca: la aplicación activa la conducción; para: otros trabajos. Tras un descanso pregunta primero. Solo se necesita la velocidad del GPS: las coordenadas no se guardan ni se envían.';
+      'Arranca: activamos la conducción; para: otros trabajos. Tras un descanso preguntamos primero. Solo usamos la velocidad del GPS: las coordenadas no se guardan ni se envían.';
 
   @override
   String get onbAutoLater => 'Puede activarlo más tarde en los ajustes.';
@@ -2034,8 +2030,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get onbRulesTitle => 'Normas principales';
 
   @override
-  String get onbRulesText =>
-      'Iguales para camiones, autobuses y furgonetas. La aplicación las calcula sola y avisa con antelación.';
+  String get onbRulesText => 'Iguales para camiones, autobuses y furgonetas.';
 
   @override
   String get onbRulesMore =>
@@ -2057,7 +2052,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideStep3 =>
-      'Vigile los límites. La aplicación avisará con antelación de la pausa y del fin del día. Cualquier tiempo se puede corregir a mano.';
+      'Le avisamos con antelación de la pausa y del fin del día. ¿Se equivocó? La hora se puede corregir.';
 
   @override
   String get guideRules => 'Normas UE 561/2006 y AETR';
@@ -2091,7 +2086,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String guideDailyRestText(String reduced, String first, String second) {
-    return 'Hasta tres veces entre descansos semanales puede reducirse a $reduced. Opción dividida: $first + $second.';
+    return 'Entre descansos semanales puede reducirse a $reduced, hasta tres veces. También puede dividirse: $first + $second.';
   }
 
   @override
@@ -2099,7 +2094,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String guideWorkdayText(String window, String regular, String reduced) {
-    return 'El descanso debe terminar dentro de las $window desde el inicio de la jornada: $regular con descanso normal, $reduced con reducido.';
+    return 'La jornada y su descanso caben en $window: $regular antes de un descanso normal, $reduced antes de uno reducido.';
   }
 
   @override
@@ -2126,7 +2121,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String guideWorkWeekText(String period) {
-    return 'El descanso semanal empieza como muy tarde tras seis periodos de $period desde el anterior.';
+    return 'El siguiente descanso semanal empieza como muy tarde 6 × $period después del final del anterior.';
   }
 
   @override
@@ -2134,7 +2129,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String guideCardText(String days) {
-    return 'Los datos de la tarjeta deben descargarse al menos cada $days.';
+    return 'La tarjeta se descarga al menos cada $days.';
   }
 
   @override
@@ -2301,7 +2296,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get problemText =>
-      'El informe incluye la versión de la aplicación, el modelo del teléfono, los ajustes, los permisos, el calendario de notificaciones y las entradas del registro de los dos últimos días. No incluye coordenadas. Elija dónde enviarlo —correo o mensajería— y describa qué pasó.';
+      'El informe incluye la versión de la aplicación, el modelo del teléfono, los ajustes, los permisos, el calendario de notificaciones y el registro de los dos últimos días. No incluye coordenadas. Elija correo o mensajería y describa qué pasó.';
 
   @override
   String get problemSend => 'Enviar';
@@ -2324,7 +2319,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get transferText =>
-      'En el teléfono antiguo, guarde el registro en un archivo y envíeselo a usted mismo: por mensajería, correo o a la nube. En el teléfono nuevo, abra esta misma pantalla y cargue el archivo: el registro, las descargas de la tarjeta y los ajustes de cálculo quedarán como en el antiguo.';
+      'En el teléfono antiguo, guarde el registro en un archivo y envíeselo a usted mismo: por mensajería, correo o a la nube. En el nuevo, abra esta pantalla y cargue el archivo: el registro, las descargas de la tarjeta y los ajustes de cálculo se transferirán.';
 
   @override
   String get transferSave => 'Guardar registro en archivo';
@@ -2367,7 +2362,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get transferFailed =>
-      'No se pudo cargar el registro. El registro del teléfono no ha cambiado';
+      'El registro no se cargó. En el teléfono todo sigue igual';
 
   @override
   String get transferSaveFailed =>
@@ -2424,7 +2419,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String notifyCompensationTakenText(String time) {
-    return 'Este descanso cubre las $time debidas por un descanso semanal reducido: la deuda está saldada.';
+    return 'La deuda de $time por un descanso semanal reducido está saldada.';
   }
 
   @override
@@ -2516,7 +2511,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get bansNeedsCheck =>
-      'Las fuentes difieren en detalles: compruebe la fuente oficial antes del viaje.';
+      'Las fuentes difieren: compruebe la oficial antes del viaje.';
 
   @override
   String get bansDisclaimer =>
@@ -2606,7 +2601,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get baseCountryCardText =>
-      'Sin él, la app no comprueba si se permiten dos descansos semanales reducidos seguidos ni cuenta los días de trabajo';
+      'Sin él no se puede comprobar si se permiten dos descansos semanales reducidos seguidos ni contar los días de trabajo';
 
   @override
   String get onbBaseCountryRequired =>
@@ -2642,7 +2637,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get workDaysWeekendsAbroadHint =>
-      'Todo el día sin trabajo fuera del país de la empresa';
+      'Sin trabajo, al menos parte del día en el extranjero';
 
   @override
   String get workDaysWeekendAbroad => 'Día de descanso en el extranjero';
@@ -2653,7 +2648,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get workDaysWeekendsHomeHint =>
-      'Todo el día sin trabajo en el país de la empresa';
+      'Sin trabajo, todo el día en el país de la empresa';
 
   @override
   String get workDaysWeekendHome => 'Día de descanso en el país de la empresa';
@@ -2669,9 +2664,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get workDaysNoBase =>
-      'Indique el país de la empresa: los días de trabajo se cuentan respecto a él.';
+      'Indique el país de la empresa: sin él no se pueden contar los días.';
 
   @override
   String get workDaysRule =>
-      'Un día de trabajo es un día con conducción u otro trabajo, y en el extranjero también con disponibilidad. Un día sin trabajo es de descanso: en el extranjero si estuvo fuera del país de la empresa al menos parte del día; si no, en el país de la empresa. La app sabe dónde estuvo por los países de las jornadas en la pantalla principal. En el calendario, los días de trabajo y los de descanso en el extranjero (verdes) están rellenos, los de descanso en el país de la empresa llevan un anillo y los grises no tienen datos.';
+      'Un día de trabajo tiene conducción u otro trabajo, y en el extranjero también disponibilidad. Los demás días son de descanso. Los países salen de las jornadas de la pantalla de inicio. Los días de trabajo están rellenos y el gris significa sin datos.';
 }

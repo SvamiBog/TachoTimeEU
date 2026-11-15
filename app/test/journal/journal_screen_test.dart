@@ -306,7 +306,7 @@ void main() {
         ),
         overrides: journalOverrides(periods: j.periods, now: j.now),
       );
-      expect(find.text('Смены больше нет в журнале.'), findsOneWidget);
+      expect(find.text('Этой смены уже нет в журнале.'), findsOneWidget);
     });
   });
 }

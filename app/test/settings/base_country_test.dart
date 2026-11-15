@@ -87,8 +87,8 @@ void main() {
       expect(find.byIcon(Icons.error_outline), findsOneWidget);
       expect(
         find.text(
-          'Без неё приложение не проверит, можно ли взять два сокращённых '
-          'недельных отдыха подряд, и не посчитает рабочие дни',
+          'Без неё не проверить, можно ли два сокращённых недельных '
+          'отдыха подряд, и не посчитать рабочие дни',
         ),
         findsOneWidget,
       );
@@ -183,9 +183,11 @@ void main() {
             },
           ),
         );
-        expect(find.text('Сокращённый отдых без права'), findsOneWidget);
+        expect(find.text('Сокращать отдых было нельзя'), findsOneWidget);
         expect(
-          find.textContaining('нужен был полный 45 ч. Не хватило 21:00'),
+          find.textContaining(
+            'должен был быть полным — 45 ч. Не хватило 21:00',
+          ),
           findsOneWidget,
         );
       });

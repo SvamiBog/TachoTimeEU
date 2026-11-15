@@ -251,7 +251,7 @@ abstract class AppLocalizations {
   /// No description provided for @switchFailed.
   ///
   /// In ru, this message translates to:
-  /// **'Режим не записан. Попробуйте ещё раз.'**
+  /// **'Режим не переключился. Попробуйте ещё раз.'**
   String get switchFailed;
 
   /// No description provided for @homeShiftSince.
@@ -305,19 +305,19 @@ abstract class AppLocalizations {
   /// No description provided for @heroOffDutyHint.
   ///
   /// In ru, this message translates to:
-  /// **'Смена завершена. Новая начнётся с первого режима кроме отдыха.'**
+  /// **'Смена завершена. Новая начнётся с любого режима, кроме отдыха.'**
   String get heroOffDutyHint;
 
   /// No description provided for @bannerBreakNeeded45.
   ///
   /// In ru, this message translates to:
-  /// **'Нужен перерыв 45 мин (или раздельный 15 + 30)'**
+  /// **'Нужен перерыв 45 мин или 15 + 30'**
   String get bannerBreakNeeded45;
 
   /// No description provided for @bannerBreakNeeded30.
   ///
   /// In ru, this message translates to:
-  /// **'Нужен перерыв 30 мин — вторая часть раздельного 15 + 30'**
+  /// **'Нужна вторая часть перерыва — 30 мин'**
   String get bannerBreakNeeded30;
 
   /// No description provided for @bannerOnBreak.
@@ -377,7 +377,7 @@ abstract class AppLocalizations {
   /// No description provided for @chipLimiting.
   ///
   /// In ru, this message translates to:
-  /// **'ограничивает'**
+  /// **'кончится раньше'**
   String get chipLimiting;
 
   /// No description provided for @chipShiftSoon.
@@ -629,7 +629,7 @@ abstract class AppLocalizations {
   /// Правило рабочей недели внизу экрана «Рабочая неделя»
   ///
   /// In ru, this message translates to:
-  /// **'Рабочая неделя — время от конца недельного отдыха. Следующий недельный отдых нужно начать не позже чем через шесть периодов по 24 часа — 144 ч (ст. 8(6) Регламента 561/2006).'**
+  /// **'Недельный отдых нужно начать не позже чем через 144 ч (6 суток) после конца прошлого. Ст. 8(6) Регламента 561/2006.'**
   String get workWeekRule;
 
   /// No description provided for @cardTitle.
@@ -665,7 +665,7 @@ abstract class AppLocalizations {
   /// No description provided for @cardSheetRule.
   ///
   /// In ru, this message translates to:
-  /// **'Данные карты водителя нужно считывать не реже раза в 28 дней (Регламент (ЕС) 581/2010).'**
+  /// **'Карту нужно считывать хотя бы раз в 28 дней. Регламент (ЕС) 581/2010.'**
   String get cardSheetRule;
 
   /// No description provided for @cardMarkToday.
@@ -713,7 +713,7 @@ abstract class AppLocalizations {
   /// No description provided for @workdayRule.
   ///
   /// In ru, this message translates to:
-  /// **'Суточный отдых должен закончиться в пределах 24 часов от начала смены. Сокращённый отдых 9 ч можно брать не больше трёх раз между недельными отдыхами.'**
+  /// **'Отдых должен закончиться не позже чем через 24 ч после начала смены. Сократить его до 9 ч можно не больше трёх раз между недельными отдыхами.'**
   String get workdayRule;
 
   /// Экран «Суточный отдых»: подпись над таймером идущего отдыха
@@ -785,13 +785,13 @@ abstract class AppLocalizations {
   /// Пояснение, пока водитель отдыхает внутри смены (меньше 9 ч)
   ///
   /// In ru, this message translates to:
-  /// **'Пока отдых короче 9 ч, это перерыв в смене. С 9 ч он станет суточным и завершит смену. Закончили работу — «Завершить день».'**
+  /// **'До 9 ч это перерыв в смене, с 9 ч — суточный отдых. Закончили работу — нажмите «Завершить день».'**
   String get dailyRestInShift;
 
   /// Правило суточного отдыха внизу экрана
   ///
   /// In ru, this message translates to:
-  /// **'Суточный отдых — 11 ч подряд. Сокращённый — 9 ч, не больше трёх раз между недельными отдыхами. Раздельный — сначала от 3 ч, потом от 9 ч. Отдых должен закончиться в пределах 24 часов от начала смены.'**
+  /// **'Полный отдых — 11 ч подряд. Сокращённый — 9 ч, до трёх раз между недельными. Раздельный — 3 + 9 ч. Отдых должен закончиться не позже чем через 24 ч после начала смены.'**
   String get dailyRestRule;
 
   /// Экран «Суточное вождение»: кнопка правки вождения за день (экран 7)
@@ -806,22 +806,22 @@ abstract class AppLocalizations {
   /// **'выбрано полностью'**
   String get drivingUsedUp;
 
-  /// Удлинение до 10 ч: сколько осталось на неделе
+  /// Продление до 10 ч: сколько осталось на неделе
   ///
   /// In ru, this message translates to:
   /// **'дважды в неделю · осталось ×{count}'**
   String drivingExtensionsLeft(int count);
 
-  /// Удлинений до 10 ч на неделе не осталось
+  /// Продлений до 10 ч на неделе не осталось
   ///
   /// In ru, this message translates to:
-  /// **'удлинения на этой неделе использованы'**
+  /// **'продлений на этой неделе не осталось'**
   String get drivingNoExtensions;
 
   /// Правило суточного вождения внизу экрана
   ///
   /// In ru, this message translates to:
-  /// **'Суточное вождение — время за рулём между двумя суточными отдыхами: не больше 9 ч, дважды в неделю — до 10 ч. Неделя начинается в понедельник в 00:00.'**
+  /// **'Между двумя суточными отдыхами — не больше 9 ч за рулём, дважды в неделю можно 10 ч. Неделя начинается в понедельник в 00:00.'**
   String get drivingDailyRule;
 
   /// Экран «Недельное вождение»: начало недели
@@ -869,7 +869,7 @@ abstract class AppLocalizations {
   /// Правило недельного вождения внизу экрана
   ///
   /// In ru, this message translates to:
-  /// **'Неделя — с понедельника 00:00 до воскресенья 24:00, как на тахографе. За неделю — не больше 56 ч вождения, за две недели подряд — не больше 90 ч.'**
+  /// **'За неделю можно ехать до 56 ч, за две недели подряд — до 90 ч. Неделя — с понедельника 00:00 до воскресенья 24:00.'**
   String get drivingWeekRule;
 
   /// Экран «Вождение»: надпись над временем, сколько ещё можно ехать
@@ -935,7 +935,7 @@ abstract class AppLocalizations {
   /// Пояснение в шторке «Завершить день»: водителю не нужен журнал режимов по времени, только итог вождения.
   ///
   /// In ru, this message translates to:
-  /// **'Сколько вы сегодня были за рулём? Точное время режимов не нужно — только сумма.'**
+  /// **'Сколько всего вы сегодня были за рулём? Хватит общей суммы.'**
   String get endDayDrivingHint;
 
   /// No description provided for @todayDate.
@@ -1031,7 +1031,7 @@ abstract class AppLocalizations {
   /// No description provided for @infrShiftSoonText.
   ///
   /// In ru, this message translates to:
-  /// **'Начните суточный отдых через {time}.'**
+  /// **'Начните суточный отдых не позже чем через {time}.'**
   String infrShiftSoonText(String time);
 
   /// No description provided for @infrWeeklyDriveExceededTitle.
@@ -1103,7 +1103,7 @@ abstract class AppLocalizations {
   /// No description provided for @infrWeeklyRestSoonText.
   ///
   /// In ru, this message translates to:
-  /// **'Начните недельный отдых через {time}.'**
+  /// **'Начните недельный отдых не позже чем через {time}.'**
   String infrWeeklyRestSoonText(String time);
 
   /// No description provided for @infrWeeklyRestContinueTitle.
@@ -1127,7 +1127,7 @@ abstract class AppLocalizations {
   /// No description provided for @infrCompensationSoonText.
   ///
   /// In ru, this message translates to:
-  /// **'Присоедините {time} к отдыху не короче 9 ч. До срока {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}.'**
+  /// **'Присоедините {time} к отдыху от 9 ч. До срока {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}.'**
   String infrCompensationSoonText(String time, int days);
 
   /// No description provided for @infrCompensationOverdueTitle.
@@ -1139,7 +1139,7 @@ abstract class AppLocalizations {
   /// No description provided for @infrCompensationOverdueText.
   ///
   /// In ru, this message translates to:
-  /// **'Не присоединено {time} за сокращённый недельный отдых. Просрочка — {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}.'**
+  /// **'Компенсация {time} за сокращённый недельный отдых не взята. Просрочка — {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}.'**
   String infrCompensationOverdueText(String time, int days);
 
   /// No description provided for @infrReducedRestsExceededTitle.
@@ -1151,19 +1151,19 @@ abstract class AppLocalizations {
   /// No description provided for @infrReducedRestsExceededText.
   ///
   /// In ru, this message translates to:
-  /// **'С недельного отдыха сокращённых: {count}, допускается 3.'**
+  /// **'Сокращённых отдыхов после недельного: {count}, а можно 3.'**
   String infrReducedRestsExceededText(int count);
 
   /// No description provided for @infrReducedWeeklyRestWithoutRightTitle.
   ///
   /// In ru, this message translates to:
-  /// **'Сокращённый отдых без права'**
+  /// **'Сокращать отдых было нельзя'**
   String get infrReducedWeeklyRestWithoutRightTitle;
 
   /// No description provided for @infrReducedWeeklyRestWithoutRightText.
   ///
   /// In ru, this message translates to:
-  /// **'Последний недельный отдых — сокращённый, а права на это не было: нужен был полный 45 ч. Не хватило {time}.'**
+  /// **'Последний недельный отдых должен был быть полным — 45 ч. Не хватило {time}.'**
   String infrReducedWeeklyRestWithoutRightText(String time);
 
   /// No description provided for @infrFullWeeklyRestRequiredTitle.
@@ -1175,7 +1175,7 @@ abstract class AppLocalizations {
   /// No description provided for @infrFullWeeklyRestRequiredText.
   ///
   /// In ru, this message translates to:
-  /// **'Сокращённый недельный отдых сейчас недоступен — не заканчивайте отдых раньше 45 ч. Осталось {time}.'**
+  /// **'Сейчас сокращать нельзя: отдыхайте все 45 ч. Осталось {time}.'**
   String infrFullWeeklyRestRequiredText(String time);
 
   /// No description provided for @infrCardOverdueTitle.
@@ -1211,7 +1211,7 @@ abstract class AppLocalizations {
   /// No description provided for @ferryHint.
   ///
   /// In ru, this message translates to:
-  /// **'Отдых можно прервать не больше двух раз, всего до 1 ч (ст. 9). Движение парома не включит вождение.'**
+  /// **'Отдых можно прервать до двух раз, всего не дольше 1 ч (ст. 9). Пока паром идёт, вождение само не включится.'**
   String get ferryHint;
 
   /// Рядом с текущим режимом, когда включён режим «паром / поезд»
@@ -1265,7 +1265,7 @@ abstract class AppLocalizations {
   /// No description provided for @breakSplitText.
   ///
   /// In ru, this message translates to:
-  /// **'Первая часть не меньше 15 мин, вторая — не меньше 30 мин, именно в таком порядке. Приложение распознаёт его само.'**
+  /// **'Сначала от 15 мин, потом от 30 мин — только в таком порядке. Части засчитаются сами.'**
   String get breakSplitText;
 
   /// No description provided for @breakStart.
@@ -1391,7 +1391,7 @@ abstract class AppLocalizations {
   /// После двух сокращённых недельных подряд (ст. 8(6)): один долг на оба — «42:00», с полным недельным — «87:00»
   ///
   /// In ru, this message translates to:
-  /// **'Два сокращённых подряд — один долг {debt}: его берут целиком, одним блоком, после второго из них и перед следующим недельным отдыхом; по частям и между ними нельзя. Вместе с полным недельным — {total} отдыха подряд.'**
+  /// **'Два сокращённых подряд — один долг {debt}. Его берут целиком, прямо перед следующим недельным отдыхом: вместе это {total} отдыха подряд.'**
   String weeklyTwoReducedNote(String debt, String total);
 
   /// Экран «Недельный отдых»: долг за два сокращённых подряд, «за отдыхи 19.09 и 26.09»
@@ -1409,13 +1409,13 @@ abstract class AppLocalizations {
   /// No description provided for @weeklyMobilityOn.
   ///
   /// In ru, this message translates to:
-  /// **'Пакет мобильности включён: при международных перевозках можно взять два сокращённых отдыха подряд, если они проходят за пределами страны регистрации. Сокращение компенсируется до конца третьей недели.'**
+  /// **'Пакет мобильности: в международном рейсе можно взять два сокращённых недельных отдыха подряд, если оба — вне страны фирмы. Компенсацию берут до конца третьей недели.'**
   String get weeklyMobilityOn;
 
   /// No description provided for @weeklyMobilityOff.
   ///
   /// In ru, this message translates to:
-  /// **'Сокращённый недельный отдых компенсируется до конца третьей недели: долг присоединяют к отдыху не короче 9 ч.'**
+  /// **'Компенсацию за сокращённый недельный отдых присоединяют к отдыху от 9 ч до конца третьей недели.'**
   String get weeklyMobilityOff;
 
   /// No description provided for @weeklyStartRest.
@@ -1493,7 +1493,7 @@ abstract class AppLocalizations {
   /// No description provided for @countryFooter.
   ///
   /// In ru, this message translates to:
-  /// **'Страну начала и конца смены водитель вводит в тахограф (Регламент (ЕС) 165/2014, ст. 34).'**
+  /// **'Страну начала и конца смены вводят и в тахограф — ст. 34 Регламента (ЕС) 165/2014.'**
   String get countryFooter;
 
   /// Название страны по коду тахографа (TachoCountries.codes)
@@ -1583,7 +1583,7 @@ abstract class AppLocalizations {
   /// No description provided for @journalEmpty.
   ///
   /// In ru, this message translates to:
-  /// **'Смен пока нет. Они появятся, когда вы начнёте переключать режимы, или добавьте смену вручную.'**
+  /// **'Смен пока нет. Переключите режим на главной или добавьте смену вручную.'**
   String get journalEmpty;
 
   /// Оценка отдыха: RestStatus.name
@@ -1686,7 +1686,7 @@ abstract class AppLocalizations {
   /// No description provided for @dayNotFound.
   ///
   /// In ru, this message translates to:
-  /// **'Смены больше нет в журнале.'**
+  /// **'Этой смены уже нет в журнале.'**
   String get dayNotFound;
 
   /// No description provided for @dayRestUntil.
@@ -1854,7 +1854,7 @@ abstract class AppLocalizations {
   /// No description provided for @shiftDrivingAfterRest.
   ///
   /// In ru, this message translates to:
-  /// **'вводится, когда выбран отдых после смены'**
+  /// **'сначала выберите отдых после смены'**
   String get shiftDrivingAfterRest;
 
   /// No description provided for @shiftRestNone.
@@ -1926,13 +1926,13 @@ abstract class AppLocalizations {
   /// No description provided for @shiftDeleteManual.
   ///
   /// In ru, this message translates to:
-  /// **'Смена будет удалена из журнала.'**
+  /// **'Смена исчезнет из журнала.'**
   String get shiftDeleteManual;
 
   /// No description provided for @shiftDeleteRecorded.
   ///
   /// In ru, this message translates to:
-  /// **'Будут удалены все записи режимов этой смены. Отменить это нельзя.'**
+  /// **'Все режимы этой смены сотрутся. Вернуть их будет нельзя.'**
   String get shiftDeleteRecorded;
 
   /// No description provided for @shiftErrStartCountry.
@@ -1968,7 +1968,7 @@ abstract class AppLocalizations {
   /// No description provided for @shiftErrDrivingTooLong.
   ///
   /// In ru, this message translates to:
-  /// **'Вождение больше длительности смены'**
+  /// **'Вождение дольше самой смены'**
   String get shiftErrDrivingTooLong;
 
   /// No description provided for @shiftErrContinuous.
@@ -1986,7 +1986,7 @@ abstract class AppLocalizations {
   /// No description provided for @shiftErrNotLast.
   ///
   /// In ru, this message translates to:
-  /// **'После этой смены есть другие — идти сейчас она не может'**
+  /// **'После этой смены уже есть другие — выберите отдых после неё'**
   String get shiftErrNotLast;
 
   /// No description provided for @shiftSaveFailed.
@@ -2016,19 +2016,19 @@ abstract class AppLocalizations {
   /// No description provided for @shiftLiveHint.
   ///
   /// In ru, this message translates to:
-  /// **'Смена идёт по записям режимов: изменения начала, конца и вождения сдвинут сами записи.'**
+  /// **'Смена собрана из режимов. Измените начало, конец или вождение — режимы сдвинутся.'**
   String get shiftLiveHint;
 
   /// No description provided for @shiftConvertHint.
   ///
   /// In ru, this message translates to:
-  /// **'Время, вождение или отдых изменены — смена сохранится как ручная запись вместо записей режимов.'**
+  /// **'Вы изменили время, вождение или отдых — смена сохранится итогами, без режимов по времени.'**
   String get shiftConvertHint;
 
   /// No description provided for @shiftLiveConvertHint.
   ///
   /// In ru, this message translates to:
-  /// **'Вождение за день введено итогом — смена сохранится как ручная запись вместо записей режимов, отдых после неё пойдёт дальше.'**
+  /// **'Вождение введено итогом — смена сохранится без режимов по времени. Отдых после неё продолжится.'**
   String get shiftLiveConvertHint;
 
   /// No description provided for @shiftEndNowHint.
@@ -2040,13 +2040,13 @@ abstract class AppLocalizations {
   /// No description provided for @shiftResumeHint.
   ///
   /// In ru, this message translates to:
-  /// **'Отдых после смены будет удалён — смена продолжится.'**
+  /// **'Отдых после смены удалится, и смена продолжится.'**
   String get shiftResumeHint;
 
   /// No description provided for @shiftOngoingHint.
   ///
   /// In ru, this message translates to:
-  /// **'Смена станет текущей и продолжится на главном экране с {time}. Режим «{mode}» — если сейчас другой, переключите его там.'**
+  /// **'Смена станет текущей с {time}, режим — «{mode}». Если сейчас другой, переключите на главной.'**
   String shiftOngoingHint(String time, String mode);
 
   /// No description provided for @shiftUnsavedTitle.
@@ -2058,7 +2058,7 @@ abstract class AppLocalizations {
   /// No description provided for @shiftUnsavedText.
   ///
   /// In ru, this message translates to:
-  /// **'Изменения в смене ещё не сохранены.'**
+  /// **'Без сохранения правки пропадут.'**
   String get shiftUnsavedText;
 
   /// No description provided for @shiftDiscard.
@@ -2076,13 +2076,13 @@ abstract class AppLocalizations {
   /// No description provided for @driveEditSubtitle.
   ///
   /// In ru, this message translates to:
-  /// **'Ручная корректировка · {date}'**
+  /// **'Исправление · {date}'**
   String driveEditSubtitle(String date);
 
   /// No description provided for @driveEditComputed.
   ///
   /// In ru, this message translates to:
-  /// **'Посчитано приложением'**
+  /// **'Посчитано по режимам'**
   String get driveEditComputed;
 
   /// No description provided for @driveEditDiff.
@@ -2100,19 +2100,19 @@ abstract class AppLocalizations {
   /// No description provided for @driveEditHint.
   ///
   /// In ru, this message translates to:
-  /// **'Используйте, если режим переключили не вовремя — лимиты пересчитаются.'**
+  /// **'Переключили режим не вовремя — поправьте здесь, лимиты пересчитаются.'**
   String get driveEditHint;
 
   /// No description provided for @driveEditNoDrive.
   ///
   /// In ru, this message translates to:
-  /// **'В текущей смене ещё нет вождения — корректировать нечего.'**
+  /// **'В этой смене ещё не было вождения — исправлять нечего.'**
   String get driveEditNoDrive;
 
   /// No description provided for @breakCorrection.
   ///
   /// In ru, this message translates to:
-  /// **'Корректировка'**
+  /// **'Исправление'**
   String get breakCorrection;
 
   /// No description provided for @breakCurrentDuration.
@@ -2130,13 +2130,13 @@ abstract class AppLocalizations {
   /// No description provided for @breakNoBreak.
   ///
   /// In ru, this message translates to:
-  /// **'В смене ещё нет перерыва — корректировать нечего.'**
+  /// **'В этой смене ещё не было перерыва — исправлять нечего.'**
   String get breakNoBreak;
 
   /// No description provided for @breakEditHint.
   ///
   /// In ru, this message translates to:
-  /// **'Время возьмётся у соседней записи — лимиты пересчитаются.'**
+  /// **'Разницу возьмёт соседний режим, лимиты пересчитаются.'**
   String get breakEditHint;
 
   /// No description provided for @workdayChangeStart.
@@ -2232,13 +2232,13 @@ abstract class AppLocalizations {
   /// No description provided for @exportPdfHint.
   ///
   /// In ru, this message translates to:
-  /// **'Не официальная запись: отчёт не заменяет данные тахографа и карты водителя.'**
+  /// **'Отчёт не заменяет данные тахографа и карты водителя.'**
   String get exportPdfHint;
 
   /// No description provided for @exportCsvHint.
   ///
   /// In ru, this message translates to:
-  /// **'Записи режимов по строкам, время в UTC — для Excel и программ учёта.'**
+  /// **'Режимы по строкам, время в UTC — для Excel и программ учёта.'**
   String get exportCsvHint;
 
   /// Кнопка выбора языка PDF-отчёта в шторке экспорта: отчёт показывают инспектору в стране проверки, например в Германии.
@@ -2268,7 +2268,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportEmpty.
   ///
   /// In ru, this message translates to:
-  /// **'За выбранный период смен нет.'**
+  /// **'За этот период смен нет.'**
   String get exportEmpty;
 
   /// No description provided for @exportFailed.
@@ -2580,7 +2580,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMobilityHint.
   ///
   /// In ru, this message translates to:
-  /// **'Два сокращённых недельных отдыха подряд при международных перевозках'**
+  /// **'Два сокращённых недельных отдыха подряд в международных рейсах'**
   String get settingsMobilityHint;
 
   /// No description provided for @settingsCrew.
@@ -2592,7 +2592,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsCrewHint.
   ///
   /// In ru, this message translates to:
-  /// **'Суточный отдых 9 ч в пределах 30 ч от начала смены'**
+  /// **'Суточный отдых 9 ч в течение 30 ч с начала смены'**
   String get settingsCrewHint;
 
   /// No description provided for @settingsNotifications.
@@ -2694,7 +2694,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifyDenied.
   ///
   /// In ru, this message translates to:
-  /// **'Сейчас уведомления запрещены в телефоне'**
+  /// **'Уведомления выключены в настройках телефона'**
   String get notifyDenied;
 
   /// No description provided for @notifyAllowed.
@@ -2736,7 +2736,7 @@ abstract class AppLocalizations {
   /// Уведомление: «Перерыв 45 мин набран. Можно ехать 4:30…»
   ///
   /// In ru, this message translates to:
-  /// **'Перерыв {required} мин набран. Можно ехать {time} до следующего перерыва.'**
+  /// **'{required} мин набрано — можно ехать ещё {time}.'**
   String notifyBreakTakenText(int required, String time);
 
   /// No description provided for @notifyDailyRestTakenTitle.
@@ -2808,7 +2808,7 @@ abstract class AppLocalizations {
   /// «Начать вождение с 06:05?» — местное время
   ///
   /// In ru, this message translates to:
-  /// **'Начать вождение с {time}? Отдых будет прерван'**
+  /// **'Включить вождение с {time}? Отдых прервётся'**
   String serviceSuggestText(String time);
 
   /// No description provided for @serviceDriving.
@@ -2910,7 +2910,7 @@ abstract class AppLocalizations {
   /// No description provided for @autoStartFromRestHint.
   ///
   /// In ru, this message translates to:
-  /// **'Иначе приложение сначала спросит: вы могли ехать пассажиром'**
+  /// **'Иначе сначала спросим: вдруг вы едете пассажиром'**
   String get autoStartFromRestHint;
 
   /// No description provided for @autoBattery.
@@ -2952,7 +2952,7 @@ abstract class AppLocalizations {
   /// No description provided for @autoBlockedDenied.
   ///
   /// In ru, this message translates to:
-  /// **'Без доступа к геолокации вождение не определить. Приложению нужна только скорость, координаты не сохраняются.'**
+  /// **'Без доступа к геолокации вождение не определить. Нужна только скорость — координаты не сохраняются.'**
   String get autoBlockedDenied;
 
   /// No description provided for @autoBlockedForever.
@@ -3024,7 +3024,7 @@ abstract class AppLocalizations {
   /// No description provided for @clearText.
   ///
   /// In ru, this message translates to:
-  /// **'Журнал режимов, смены, страны, заметки и считывания карты будут удалены. Отменить это нельзя. Настройки останутся.'**
+  /// **'Сотрутся журнал режимов, смены, страны, заметки и считывания карты. Вернуть их будет нельзя. Настройки останутся.'**
   String get clearText;
 
   /// No description provided for @clearConfirm.
@@ -3048,7 +3048,7 @@ abstract class AppLocalizations {
   /// No description provided for @onbWelcomeTitle.
   ///
   /// In ru, this message translates to:
-  /// **'Время за рулём — под контролем'**
+  /// **'Знайте, сколько ещё можно ехать'**
   String get onbWelcomeTitle;
 
   /// No description provided for @onbWelcomeText.
@@ -3084,13 +3084,13 @@ abstract class AppLocalizations {
   /// No description provided for @onbModesText.
   ///
   /// In ru, this message translates to:
-  /// **'Переключайте режим кнопками на главном экране. Таймеры считаются сами — даже когда приложение закрыто.'**
+  /// **'Переключайте режим кнопками на главном экране. Таймеры идут, даже когда приложение закрыто.'**
   String get onbModesText;
 
   /// No description provided for @onbModeDriving.
   ///
   /// In ru, this message translates to:
-  /// **'За рулём. Считаем непрерывное, суточное и недельное вождение.'**
+  /// **'Машина едет, вы за рулём.'**
   String get onbModeDriving;
 
   /// No description provided for @onbModeWork.
@@ -3102,25 +3102,25 @@ abstract class AppLocalizations {
   /// No description provided for @onbModeAvailability.
   ///
   /// In ru, this message translates to:
-  /// **'Ожидание: очередь на погрузку, граница, второй водитель в пути.'**
+  /// **'Ожидание: очередь на погрузку, граница, второй водитель за рулём.'**
   String get onbModeAvailability;
 
   /// No description provided for @onbModeRest.
   ///
   /// In ru, this message translates to:
-  /// **'Перерывы и отдых. «Завершить день» закрывает смену.'**
+  /// **'Перерывы и отдых. В конце смены — «Завершить день».'**
   String get onbModeRest;
 
   /// No description provided for @onbSetupTitle.
   ///
   /// In ru, this message translates to:
-  /// **'Настроим под вас'**
+  /// **'Пара настроек'**
   String get onbSetupTitle;
 
   /// No description provided for @onbSetupText.
   ///
   /// In ru, this message translates to:
-  /// **'Всё это можно поменять позже в настройках.'**
+  /// **'Поменять их можно потом в настройках.'**
   String get onbSetupText;
 
   /// No description provided for @onbMobilityHint.
@@ -3132,13 +3132,13 @@ abstract class AppLocalizations {
   /// No description provided for @onbNotifyText.
   ///
   /// In ru, this message translates to:
-  /// **'Предупредим за {minutes, plural, one{{minutes} минуту} few{{minutes} минуты} many{{minutes} минут} other{{minutes} минуты}} до перерыва и конца рабочего дня — даже когда приложение закрыто.'**
+  /// **'Предупредим за {minutes, plural, one{{minutes} минуту} few{{minutes} минуты} many{{minutes} минут} other{{minutes} минуты}} до перерыва и конца рабочего дня, даже когда приложение закрыто.'**
   String onbNotifyText(int minutes);
 
   /// No description provided for @onbAutoText.
   ///
   /// In ru, this message translates to:
-  /// **'Поехали — приложение включит вождение, остановились — другую работу. После отдыха оно сначала спросит. Нужна только скорость по GPS: координаты не сохраняются и никуда не отправляются.'**
+  /// **'Поехали — включим вождение, остановились — другую работу. После отдыха сначала спросим. Берём только скорость по GPS: координаты не сохраняются и никуда не уходят.'**
   String get onbAutoText;
 
   /// No description provided for @onbAutoLater.
@@ -3168,7 +3168,7 @@ abstract class AppLocalizations {
   /// No description provided for @onbRulesText.
   ///
   /// In ru, this message translates to:
-  /// **'Одни и те же для грузовиков, автобусов и фургонов. Приложение считает их само и заранее предупреждает.'**
+  /// **'Общие для грузовиков, автобусов и фургонов.'**
   String get onbRulesText;
 
   /// No description provided for @onbRulesMore.
@@ -3204,7 +3204,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideStep3.
   ///
   /// In ru, this message translates to:
-  /// **'Следите за лимитами. Приложение заранее предупредит о перерыве и конце дня. Любое время можно поправить вручную.'**
+  /// **'Мы заранее предупредим о перерыве и конце дня. Ошиблись — время можно поправить.'**
   String get guideStep3;
 
   /// No description provided for @guideRules.
@@ -3258,7 +3258,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideDailyRestText.
   ///
   /// In ru, this message translates to:
-  /// **'До трёх раз между недельными отдыхами можно сократить до {reduced}. Раздельный вариант — {first} + {second}.'**
+  /// **'Между недельными отдыхами его можно сократить до {reduced} — до трёх раз. Можно и разделить: {first} + {second}.'**
   String guideDailyRestText(String reduced, String first, String second);
 
   /// No description provided for @guideWorkday.
@@ -3270,7 +3270,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideWorkdayText.
   ///
   /// In ru, this message translates to:
-  /// **'Отдых должен закончиться в пределах {window} от начала смены: {regular} при полном отдыхе, {reduced} при сокращённом.'**
+  /// **'Смена вместе с отдыхом укладывается в {window}: {regular} перед полным отдыхом, {reduced} перед сокращённым.'**
   String guideWorkdayText(String window, String regular, String reduced);
 
   /// «13/15» для диктора
@@ -3300,7 +3300,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideWorkWeekText.
   ///
   /// In ru, this message translates to:
-  /// **'Недельный отдых начинается не позже чем через шесть периодов по {period} после предыдущего.'**
+  /// **'Следующий недельный отдых — не позже чем через 6 × {period} после конца прошлого.'**
   String guideWorkWeekText(String period);
 
   /// No description provided for @guideCard.
@@ -3312,7 +3312,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideCardText.
   ///
   /// In ru, this message translates to:
-  /// **'Данные карты нужно считывать не реже раза в {days}.'**
+  /// **'Карту считывают хотя бы раз в {days}.'**
   String guideCardText(String days);
 
   /// No description provided for @guideModes.
@@ -3372,7 +3372,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideNewbieRestPlaceText.
   ///
   /// In ru, this message translates to:
-  /// **'Суточный и сокращённый недельный отдых можно провести в машине, если в ней есть спальное место и она стоит. Регулярный недельный отдых и компенсацию — только вне машины.'**
+  /// **'Суточный и сокращённый недельный отдых можно провести в машине, если в ней есть спальное место и она стоит. Полный недельный отдых и компенсацию — только вне машины.'**
   String get guideNewbieRestPlaceText;
 
   /// No description provided for @guideNewbieCountry.
@@ -3384,7 +3384,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideNewbieCountryText.
   ///
   /// In ru, this message translates to:
-  /// **'Страну вводят в тахограф в начале и в конце смены. Пересечение границы умный тахограф второго поколения записывает сам, в старых — страну вводят на первой остановке после границы.'**
+  /// **'Страну вводят в тахограф в начале и в конце смены. Границу умный тахограф второго поколения записывает сам, в старых её вводят на первой остановке после границы.'**
   String get guideNewbieCountryText;
 
   /// No description provided for @guideVanText.
@@ -3498,7 +3498,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideVanDomesticText.
   ///
   /// In ru, this message translates to:
-  /// **'Регламент ЕС внутри страны фургоны не касается. Проверьте правила своей страны.'**
+  /// **'Внутри страны регламент ЕС фургонов не касается. Проверьте правила своей страны.'**
   String get guideVanDomesticText;
 
   /// No description provided for @guideVanOwnText.
@@ -3522,7 +3522,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideVanNotes.
   ///
   /// In ru, this message translates to:
-  /// **'С прицепом тяжелее 3,5 т вместе — правила как у грузовика, и внутри страны. Рейс частично вне ЕС — в Украину, Молдову, Турцию, на Балканы — уточните у перевозчика: единого толкования нет.'**
+  /// **'Если фургон с прицепом весит больше 3,5 т, правила как у грузовика, и внутри страны тоже. Рейс частично вне ЕС: в Украину, Молдову, Турцию, на Балканы? Уточните у перевозчика — единого толкования нет.'**
   String get guideVanNotes;
 
   /// No description provided for @guideDisclaimer.
@@ -3594,7 +3594,7 @@ abstract class AppLocalizations {
   /// Шторка перед отправкой: что войдёт в отчёт
   ///
   /// In ru, this message translates to:
-  /// **'В отчёт войдут версия приложения, модель телефона, настройки, разрешения, расписание уведомлений и записи журнала за двое суток. Координат в нём нет. Выберите, куда отправить, — почта или мессенджер — и опишите, что случилось.'**
+  /// **'В отчёт войдут версия приложения, модель телефона, настройки, разрешения, расписание уведомлений и журнал за двое суток. Координат в нём нет. Выберите почту или мессенджер и опишите, что случилось.'**
   String get problemText;
 
   /// No description provided for @problemSend.
@@ -3636,7 +3636,7 @@ abstract class AppLocalizations {
   /// Шторка переноса: как перенести журнал
   ///
   /// In ru, this message translates to:
-  /// **'На старом телефоне сохраните журнал в файл и отправьте себе — в мессенджер, на почту или в облако. На новом телефоне откройте этот же экран и загрузите файл: журнал, считывания карты и настройки расчёта будут как на старом.'**
+  /// **'На старом телефоне сохраните журнал в файл и отправьте себе — в мессенджер, на почту или в облако. На новом откройте этот экран и загрузите файл: журнал, считывания карты и настройки расчёта перенесутся.'**
   String get transferText;
 
   /// Кнопка: журнал в файл и в системное «Поделиться»
@@ -3666,7 +3666,7 @@ abstract class AppLocalizations {
   /// Подтверждение, если на телефоне уже есть журнал
   ///
   /// In ru, this message translates to:
-  /// **'Журнал на этом телефоне будет заменён журналом из файла.'**
+  /// **'Журнал на этом телефоне заменится журналом из файла.'**
   String get transferConfirmReplace;
 
   /// Кнопка подтверждения загрузки
@@ -3708,7 +3708,7 @@ abstract class AppLocalizations {
   /// Ошибка загрузки, журнал не изменён
   ///
   /// In ru, this message translates to:
-  /// **'Не удалось загрузить журнал. Журнал на телефоне не изменился'**
+  /// **'Журнал не загрузился. На телефоне всё осталось как было'**
   String get transferFailed;
 
   /// Ошибка сохранения файла переноса
@@ -3798,7 +3798,7 @@ abstract class AppLocalizations {
   /// Уведомление: отдых погасил долг компенсации
   ///
   /// In ru, this message translates to:
-  /// **'Отдых вместил долг {time} за сокращённый недельный отдых — долг погашен.'**
+  /// **'Долг {time} за сокращённый недельный отдых погашен.'**
   String notifyCompensationTakenText(String time);
 
   /// Экран и строка «Запреты движения»
@@ -3954,13 +3954,13 @@ abstract class AppLocalizations {
   /// Экран страны: данные расходятся, проверить
   ///
   /// In ru, this message translates to:
-  /// **'Источники расходятся в деталях — перед рейсом проверьте по официальному источнику.'**
+  /// **'Источники расходятся — перед рейсом сверьтесь с официальным.'**
   String get bansNeedsCheck;
 
   /// Экраны запретов: справка, не официальный источник
   ///
   /// In ru, this message translates to:
-  /// **'Справка, не официальный источник: бывают исключения (скоропортящиеся грузы, разрешения) и местные запреты. Проверяйте маршрут по источнику страны.'**
+  /// **'Это справка, не официальный источник: бывают исключения (скоропортящиеся грузы, разрешения) и местные запреты. Маршрут сверяйте с источником страны.'**
   String get bansDisclaimer;
 
   /// Запрет позже известного календаря страны
@@ -4068,7 +4068,7 @@ abstract class AppLocalizations {
   /// Текст карточки «Укажите страну фирмы» на главной
   ///
   /// In ru, this message translates to:
-  /// **'Без неё приложение не проверит, можно ли взять два сокращённых недельных отдыха подряд, и не посчитает рабочие дни'**
+  /// **'Без неё не проверить, можно ли два сокращённых недельных отдыха подряд, и не посчитать рабочие дни'**
   String get baseCountryCardText;
 
   /// Онбординг, шаг настройки: «Далее» ждёт страну фирмы
@@ -4116,7 +4116,7 @@ abstract class AppLocalizations {
   /// Подпись строки «Выходные за границей»
   ///
   /// In ru, this message translates to:
-  /// **'Весь день без работы вне страны фирмы'**
+  /// **'Без работы, хотя бы часть дня за границей'**
   String get workDaysWeekendsAbroadHint;
 
   /// Для экранного диктора: день календаря — выходной вне страны фирмы
@@ -4134,7 +4134,7 @@ abstract class AppLocalizations {
   /// Подпись строки «Выходные в стране фирмы»
   ///
   /// In ru, this message translates to:
-  /// **'Весь день без работы в стране фирмы'**
+  /// **'Без работы, весь день в стране фирмы'**
   String get workDaysWeekendsHomeHint;
 
   /// Для экранного диктора: день календаря — выходной в стране фирмы (зелёное кольцо)
@@ -4164,13 +4164,13 @@ abstract class AppLocalizations {
   /// Экран «Рабочие дни» без страны фирмы
   ///
   /// In ru, this message translates to:
-  /// **'Укажите страну фирмы: рабочие дни считаются относительно неё.'**
+  /// **'Укажите страну фирмы: без неё дни не посчитать.'**
   String get workDaysNoBase;
 
   /// Пояснение правила под календарём рабочих дней
   ///
   /// In ru, this message translates to:
-  /// **'Рабочий день — день с вождением или другой работой, а за границей — и с готовностью. День без работы — выходной: за границей, если хотя бы часть дня вы были вне страны фирмы, иначе — в стране фирмы. Где вы были, приложение знает по странам смен на главной. В календаре закрашены рабочие дни и выходные за границей (зелёные), кольцом — выходные в стране фирмы, серые — нет данных.'**
+  /// **'Рабочий день — когда было вождение или другая работа, а за границей ещё и готовность. Остальные дни — выходные. Страны берём из смен на главной. Закрашены рабочие дни, серые — нет данных.'**
   String get workDaysRule;
 }
 

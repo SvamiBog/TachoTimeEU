@@ -100,7 +100,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get switchFailed =>
-      'De activiteit is niet opgeslagen. Probeer het opnieuw.';
+      'De activiteit is niet gewisseld. Probeer het opnieuw.';
 
   @override
   String homeShiftSince(String date, String time) {
@@ -135,15 +135,13 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get heroOffDutyHint =>
-      'Dienst beëindigd. De volgende begint met de eerste activiteit die geen rust is.';
+      'Dienst beëindigd. De volgende begint met elke activiteit behalve rust.';
 
   @override
-  String get bannerBreakNeeded45 =>
-      'Een pauze van 45 min is nodig (of gesplitst 15 + 30)';
+  String get bannerBreakNeeded45 => 'Neem een pauze van 45 min of 15 + 30';
 
   @override
-  String get bannerBreakNeeded30 =>
-      'Een pauze van 30 min is nodig — tweede deel van de gesplitste 15 + 30';
+  String get bannerBreakNeeded30 => 'Neem het tweede deel van de pauze: 30 min';
 
   @override
   String bannerOnBreak(String time, int required) {
@@ -177,7 +175,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get chipExceeded => 'overschreden';
 
   @override
-  String get chipLimiting => 'beperkend';
+  String get chipLimiting => 'loopt eerst af';
 
   @override
   String get chipShiftSoon => 'einde bijna';
@@ -337,7 +335,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get workWeekRule =>
-      'De werkweek is de tijd sinds het einde van de wekelijkse rust. De volgende wekelijkse rust moet uiterlijk na zes perioden van 24 uur beginnen — 144 u (art. 8, lid 6, Verordening 561/2006).';
+      'Begin de wekelijkse rust uiterlijk 144 u (6 dagen) na het einde van de vorige. Art. 8, lid 6, Verordening 561/2006.';
 
   @override
   String get cardTitle => 'Kaart uitlezen';
@@ -360,7 +358,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get cardSheetRule =>
-      'De gegevens van de bestuurderskaart moeten minstens elke 28 dagen worden gedownload (Verordening (EU) nr. 581/2010).';
+      'De kaart moet minstens elke 28 dagen worden uitgelezen. Verordening (EU) nr. 581/2010.';
 
   @override
   String get cardMarkToday => 'Vandaag uitgelezen';
@@ -393,7 +391,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get workdayRule =>
-      'De dagelijkse rust moet binnen 24 uur na het begin van de dienst eindigen. De verkorte rust van 9 u mag maximaal drie keer tussen twee wekelijkse rusttijden.';
+      'De rust moet uiterlijk 24 u na het begin van de dienst eindigen. Inkorten tot 9 u mag maximaal drie keer tussen twee wekelijkse rusttijden.';
 
   @override
   String get dailyRestOngoing => 'Rust loopt';
@@ -445,11 +443,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get dailyRestInShift =>
-      'Zolang de rust korter is dan 9 u, is het een pauze in de dienst. Vanaf 9 u wordt het dagelijkse rust en eindigt de dienst. Klaar met werken? „Dag beëindigen”.';
+      'Onder 9 u is het een pauze in de dienst, vanaf 9 u dagelijkse rust. Klaar met werken? Tik op ‘Dag beëindigen’.';
 
   @override
   String get dailyRestRule =>
-      'Dagelijkse rust: 11 u aaneengesloten. Verkort: 9 u, maximaal drie keer tussen twee wekelijkse rusttijden. Gesplitst: eerst minstens 3 u, daarna minstens 9 u. De rust moet binnen 24 uur na het begin van de dienst eindigen.';
+      'Normale rust: 11 u aaneengesloten. Verkort: 9 u, tot drie keer tussen twee wekelijkse rusttijden. Gesplitst: 3 + 9 u. De rust moet uiterlijk 24 u na het begin van de dienst eindigen.';
 
   @override
   String get drivingCorrect => 'Rijtijd van vandaag corrigeren';
@@ -467,7 +465,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get drivingDailyRule =>
-      'Dagelijkse rijtijd is de tijd achter het stuur tussen twee dagelijkse rusttijden: maximaal 9 u, twee keer per week tot 10 u. De week begint op maandag om 00:00.';
+      'Tussen twee dagelijkse rusttijden: maximaal 9 u achter het stuur, twee keer per week 10 u. De week begint op maandag om 00:00.';
 
   @override
   String drivingWeekSince(String date) {
@@ -502,7 +500,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get drivingWeekRule =>
-      'De week loopt van maandag 00:00 tot zondag 24:00, zoals op de tachograaf. Maximaal 56 u rijtijd per week en 90 u in twee opeenvolgende weken.';
+      'Tot 56 u rijtijd per week en 90 u in twee opeenvolgende weken. De week loopt van maandag 00:00 tot zondag 24:00.';
 
   @override
   String get drivingCanDrive => 'Nog te rijden';
@@ -559,7 +557,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get endDayDrivingHint =>
-      'Hoe lang heeft u vandaag gereden? Exacte tijden van de modi zijn niet nodig — alleen het totaal.';
+      'Hoe lang heeft u vandaag in totaal gereden? Het totaal is genoeg.';
 
   @override
   String todayDate(String date) {
@@ -624,7 +622,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String infrShiftSoonText(String time) {
-    return 'Begin de dagelijkse rust over $time.';
+    return 'Begin de dagelijkse rust uiterlijk over $time.';
   }
 
   @override
@@ -673,7 +671,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String infrWeeklyRestSoonText(String time) {
-    return 'Begin de wekelijkse rust over $time.';
+    return 'Begin de wekelijkse rust uiterlijk over $time.';
   }
 
   @override
@@ -709,7 +707,7 @@ class AppLocalizationsNl extends AppLocalizations {
       other: '$days dagen',
       one: '$days dag',
     );
-    return '$time voor de verkorte wekelijkse rust is niet toegevoegd. Te laat — $_temp0.';
+    return 'De compensatie van $time voor de verkorte wekelijkse rust is niet genomen. Te laat — $_temp0.';
   }
 
   @override
@@ -717,16 +715,16 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String infrReducedRestsExceededText(int count) {
-    return 'Verkort sinds de wekelijkse rust: $count, toegestaan 3.';
+    return 'Verkorte rusttijden sinds de wekelijkse rust: $count, terwijl 3 mag.';
   }
 
   @override
   String get infrReducedWeeklyRestWithoutRightTitle =>
-      'Verkorte rust zonder recht';
+      'Deze rust mocht niet verkort worden';
 
   @override
   String infrReducedWeeklyRestWithoutRightText(String time) {
-    return 'De laatste wekelijkse rust was verkort zonder recht daarop: een normale rust van 45 u was nodig. Er ontbrak $time.';
+    return 'De laatste wekelijkse rust had normaal moeten zijn: 45 u. Er ontbrak $time.';
   }
 
   @override
@@ -734,7 +732,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String infrFullWeeklyRestRequiredText(String time) {
-    return 'Een verkorte wekelijkse rust is nu niet mogelijk — beëindig uw rust niet vóór 45 u. Nog $time.';
+    return 'Nu niet verkorten: rust de volle 45 u. Nog $time.';
   }
 
   @override
@@ -770,7 +768,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get ferryHint =>
-      'De rust mag hoogstens twee keer worden onderbroken, samen tot 1 u (art. 9). De beweging van de veerboot schakelt rijden niet in.';
+      'De rust mag hoogstens twee keer worden onderbroken, samen hoogstens 1 u (art. 9). Zolang de veerboot vaart, gaat rijden niet vanzelf aan.';
 
   @override
   String get ferryOn => 'veerboot';
@@ -809,7 +807,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get breakSplitText =>
-      'Het eerste deel minstens 15 min, het tweede minstens 30 min, precies in deze volgorde. De app herkent dit zelf.';
+      'Eerst minstens 15 min, dan minstens 30 min, alleen in deze volgorde. Beide delen tellen vanzelf mee.';
 
   @override
   String get breakStart => 'Pauze beginnen';
@@ -889,7 +887,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Twee verkorte achter elkaar — één schuld van $debt: die wordt in zijn geheel, in één blok, genomen na de tweede en vóór de volgende wekelijkse rust; niet in delen en niet ertussen. Samen met een normale wekelijkse rust — $total rust aan één stuk.';
+    return 'Twee verkorte achter elkaar geven één schuld van $debt. Die neemt u in één blok, direct vóór de volgende wekelijkse rust: samen $total rust aan één stuk.';
   }
 
   @override
@@ -904,11 +902,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get weeklyMobilityOn =>
-      'Mobiliteitspakket aan: in internationaal vervoer mogen twee verkorte rusttijden op rij, als ze buiten het land van inschrijving vallen. De verkorting wordt gecompenseerd vóór het einde van de derde week.';
+      'Mobiliteitspakket: in internationaal vervoer mag u twee verkorte wekelijkse rusttijden op rij nemen als beide buiten het land van het bedrijf vallen. De compensatie neemt u vóór het einde van de derde week.';
 
   @override
   String get weeklyMobilityOff =>
-      'Een verkorte wekelijkse rust wordt gecompenseerd vóór het einde van de derde week: de schuld wordt toegevoegd aan een rust van minstens 9 u.';
+      'De compensatie voor een verkorte wekelijkse rust voegt u vóór het einde van de derde week toe aan een rust van minstens 9 u.';
 
   @override
   String get weeklyStartRest => 'Rust beginnen';
@@ -1064,7 +1062,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get journalEmpty =>
-      'Nog geen diensten. Ze verschijnen zodra u van activiteit wisselt — of voeg handmatig een dienst toe.';
+      'Nog geen diensten. Wissel van activiteit op het startscherm of voeg handmatig een dienst toe.';
 
   @override
   String restStatus(String status) {
@@ -1230,8 +1228,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get shiftLiveContinuous => 'berekend uit de pauzes';
 
   @override
-  String get shiftDrivingAfterRest =>
-      'in te voeren zodra de rust na de dienst is gekozen';
+  String get shiftDrivingAfterRest => 'kies eerst de rust na de dienst';
 
   @override
   String get shiftRestNone => 'Niet begonnen';
@@ -1273,7 +1270,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get shiftDeleteRecorded =>
-      'Alle registraties van activiteiten van deze dienst worden verwijderd. Dit kan niet ongedaan worden gemaakt.';
+      'Alle activiteiten van deze dienst worden gewist. Ze zijn niet terug te halen.';
 
   @override
   String get shiftErrStartCountry => 'Kies het land waar de dienst begint';
@@ -1305,7 +1302,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get shiftErrNotLast =>
-      'Na deze dienst volgen andere — hij kan nu niet lopen';
+      'Na deze dienst volgen al andere — kies de rust erna';
 
   @override
   String get shiftSaveFailed => 'Opslaan mislukt. Probeer het opnieuw.';
@@ -1322,15 +1319,15 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get shiftLiveHint =>
-      'De dienst volgt de registraties van activiteiten: begin, einde of rijtijd wijzigen verschuift de registraties zelf.';
+      'Deze dienst bestaat uit uw activiteiten. Wijzig begin, einde of rijtijd en de activiteiten schuiven mee.';
 
   @override
   String get shiftConvertHint =>
-      'Tijd, rijtijd of rust gewijzigd — de dienst wordt opgeslagen als handmatige invoer in plaats van de registraties van activiteiten.';
+      'U heeft tijd, rijtijd of rust gewijzigd: de dienst wordt als totalen opgeslagen, zonder activiteiten met tijden.';
 
   @override
   String get shiftLiveConvertHint =>
-      'Rijtijd per dag als totaal ingevoerd — de dienst wordt opgeslagen als handmatige invoer in plaats van de registraties van activiteiten, de rust daarna loopt door.';
+      'Rijtijd als totaal ingevoerd: de dienst wordt opgeslagen zonder activiteiten met tijden. De rust daarna loopt door.';
 
   @override
   String shiftEndNowHint(String time) {
@@ -1339,19 +1336,18 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get shiftResumeHint =>
-      'De rust na de dienst wordt verwijderd — de dienst loopt verder.';
+      'De rust na de dienst wordt verwijderd en de dienst loopt verder.';
 
   @override
   String shiftOngoingHint(String time, String mode) {
-    return 'De dienst wordt de huidige en loopt op het startscherm verder vanaf $time. Activiteit ‘$mode’ — geldt nu een andere, wissel die daar.';
+    return 'De dienst wordt de huidige vanaf $time, activiteit ‘$mode’. Zit u nu in een andere, wissel die op het startscherm.';
   }
 
   @override
   String get shiftUnsavedTitle => 'Wijzigingen opslaan?';
 
   @override
-  String get shiftUnsavedText =>
-      'De wijzigingen in deze dienst zijn nog niet opgeslagen.';
+  String get shiftUnsavedText => 'Zonder opslaan gaan de wijzigingen verloren.';
 
   @override
   String get shiftDiscard => 'Niet opslaan';
@@ -1361,11 +1357,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String driveEditSubtitle(String date) {
-    return 'Handmatige correctie · $date';
+    return 'Correctie · $date';
   }
 
   @override
-  String get driveEditComputed => 'Berekend door de app';
+  String get driveEditComputed => 'Berekend uit de activiteiten';
 
   @override
   String driveEditDiff(String diff) {
@@ -1377,11 +1373,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get driveEditHint =>
-      'Gebruik dit als de activiteit op het verkeerde moment is gewisseld — de limieten worden opnieuw berekend.';
+      'Activiteit op het verkeerde moment gewisseld? Corrigeer het hier — de limieten worden opnieuw berekend.';
 
   @override
   String get driveEditNoDrive =>
-      'In de huidige dienst is nog niet gereden — niets te corrigeren.';
+      'In deze dienst is nog niet gereden — niets te corrigeren.';
 
   @override
   String get breakCorrection => 'Correctie';
@@ -1394,11 +1390,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get breakNoBreak =>
-      'In de dienst is nog geen pauze — niets te corrigeren.';
+      'In deze dienst was nog geen pauze — niets te corrigeren.';
 
   @override
   String get breakEditHint =>
-      'De tijd wordt van de naburige registratie genomen — de limieten worden opnieuw berekend.';
+      'De naburige activiteit neemt het verschil over, de limieten worden opnieuw berekend.';
 
   @override
   String get workdayChangeStart => 'Begin van de dienst wijzigen';
@@ -1451,7 +1447,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get exportPdfHint =>
-      'Geen officieel document: het rapport vervangt de gegevens van de tachograaf en de bestuurderskaart niet.';
+      'Het rapport vervangt de gegevens van de tachograaf en de bestuurderskaart niet.';
 
   @override
   String get exportCsvHint =>
@@ -1736,7 +1732,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get notifyAllow => 'Meldingen toestaan';
 
   @override
-  String get notifyDenied => 'Meldingen zijn op de telefoon geblokkeerd';
+  String get notifyDenied =>
+      'Meldingen staan uit in de instellingen van de telefoon';
 
   @override
   String get notifyAllowed => 'Meldingen toegestaan';
@@ -1760,7 +1757,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String notifyBreakTakenText(int required, String time) {
-    return 'Pauze van $required min geteld. U mag $time rijden tot de volgende pauze.';
+    return '$required min gehaald — u mag nog $time rijden.';
   }
 
   @override
@@ -1807,7 +1804,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String serviceSuggestText(String time) {
-    return 'Rijden vanaf $time beginnen? De rust wordt onderbroken';
+    return 'Rijden vanaf $time aanzetten? De rust wordt onderbroken';
   }
 
   @override
@@ -1874,7 +1871,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get autoStartFromRestHint =>
-      'Anders vraagt de app eerst: u kon passagier zijn geweest';
+      'Anders vragen we het eerst: misschien rijdt u mee als passagier';
 
   @override
   String get autoBattery => 'Batterijbesparing';
@@ -1899,7 +1896,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get autoBlockedDenied =>
-      'Zonder toegang tot de locatie kan rijden niet worden herkend. De app heeft alleen de snelheid nodig, coördinaten worden niet opgeslagen.';
+      'Zonder toegang tot de locatie kan rijden niet worden herkend. Alleen de snelheid is nodig — coördinaten worden niet opgeslagen.';
 
   @override
   String get autoBlockedForever =>
@@ -1939,7 +1936,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get clearText =>
-      'Het activiteitenlogboek, diensten, landen, notities en kaartuitlezingen worden verwijderd. Dit kan niet ongedaan worden gemaakt. De instellingen blijven.';
+      'Het activiteitenlogboek, diensten, landen, notities en kaartuitlezingen worden gewist. Ze zijn niet terug te halen. De instellingen blijven.';
 
   @override
   String get clearConfirm => 'Wissen';
@@ -1953,7 +1950,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get onbWelcomeTitle => 'Tijd achter het stuur onder controle';
+  String get onbWelcomeTitle => 'Weet hoe lang u nog mag rijden';
 
   @override
   String get onbWelcomeText =>
@@ -1976,26 +1973,24 @@ class AppLocalizationsNl extends AppLocalizations {
       'Wissel de activiteit met de knoppen op het startscherm. De tellers lopen vanzelf — ook als de app gesloten is.';
 
   @override
-  String get onbModeDriving =>
-      'Achter het stuur. We tellen rijden zonder pauze, per dag en per week.';
+  String get onbModeDriving => 'Het voertuig rijdt, u zit achter het stuur.';
 
   @override
   String get onbModeWork => 'Laden, controle van het voertuig, papieren.';
 
   @override
   String get onbModeAvailability =>
-      'Wachten: rij bij het laden, grens, tweede bestuurder onderweg.';
+      'Wachten: rij bij het laden, grens, tweede bestuurder achter het stuur.';
 
   @override
   String get onbModeRest =>
-      'Pauzes en rust. ‘Dag beëindigen’ sluit de dienst af.';
+      'Pauzes en rust. Aan het einde van de dienst: ‘Dag beëindigen’.';
 
   @override
-  String get onbSetupTitle => 'We stellen het voor u in';
+  String get onbSetupTitle => 'Een paar instellingen';
 
   @override
-  String get onbSetupText =>
-      'Dit kunt u later allemaal wijzigen in de instellingen.';
+  String get onbSetupText => 'U kunt ze later wijzigen in de instellingen.';
 
   @override
   String get onbMobilityHint => 'Zet dit aan als u internationale ritten rijdt';
@@ -2013,7 +2008,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get onbAutoText =>
-      'Wegrijden — de app zet rijden aan, stoppen — ander werk. Na een rust vraagt hij eerst. Alleen de gps-snelheid is nodig: coördinaten worden niet opgeslagen of verzonden.';
+      'Wegrijden — we zetten rijden aan, stoppen — ander werk. Na een rust vragen we het eerst. We gebruiken alleen de gps-snelheid: coördinaten worden niet opgeslagen of verzonden.';
 
   @override
   String get onbAutoLater => 'U kunt dit later in de instellingen aanzetten.';
@@ -2031,7 +2026,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get onbRulesText =>
-      'Gelijk voor vrachtwagens, bussen en bestelwagens. De app berekent ze zelf en waarschuwt tijdig.';
+      'Gelijk voor vrachtwagens, bussen en bestelwagens.';
 
   @override
   String get onbRulesMore =>
@@ -2053,7 +2048,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get guideStep3 =>
-      'Let op de limieten. De app waarschuwt tijdig voor de pauze en het einde van de dag. Elke tijd kunt u handmatig corrigeren.';
+      'We waarschuwen tijdig voor de pauze en het einde van de dag. Vergist? De tijd kunt u corrigeren.';
 
   @override
   String get guideRules => 'Regels EU 561/2006 en AETR';
@@ -2087,7 +2082,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String guideDailyRestText(String reduced, String first, String second) {
-    return 'Tot drie keer tussen wekelijkse rusttijden inkortbaar tot $reduced. Gesplitste variant — $first + $second.';
+    return 'Tussen wekelijkse rusttijden mag hij worden ingekort tot $reduced — hoogstens drie keer. Splitsen kan ook: $first + $second.';
   }
 
   @override
@@ -2095,7 +2090,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String guideWorkdayText(String window, String regular, String reduced) {
-    return 'De rust moet binnen $window na het begin van de dienst eindigen: $regular bij normale rust, $reduced bij verkorte.';
+    return 'Dienst en rust passen samen in $window: $regular vóór een normale rust, $reduced vóór een verkorte.';
   }
 
   @override
@@ -2122,7 +2117,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String guideWorkWeekText(String period) {
-    return 'De wekelijkse rust begint uiterlijk na zes perioden van $period na de vorige.';
+    return 'De volgende wekelijkse rust begint uiterlijk 6 × $period na het einde van de vorige.';
   }
 
   @override
@@ -2130,7 +2125,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String guideCardText(String days) {
-    return 'De kaartgegevens moeten minstens elke $days worden gedownload.';
+    return 'De kaart wordt minstens elke $days uitgelezen.';
   }
 
   @override
@@ -2296,7 +2291,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get problemText =>
-      'Het rapport bevat de appversie, het telefoonmodel, instellingen, machtigingen, het meldingsschema en de logboekregels van de laatste twee dagen. Coördinaten staan er niet in. Kies waarheen u het stuurt — e-mail of messenger — en beschrijf wat er is gebeurd.';
+      'Het rapport bevat de appversie, het telefoonmodel, instellingen, machtigingen, het meldingsschema en het logboek van de laatste twee dagen. Coördinaten staan er niet in. Kies e-mail of messenger en beschrijf wat er is gebeurd.';
 
   @override
   String get problemSend => 'Versturen';
@@ -2320,7 +2315,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get transferText =>
-      'Sla op de oude telefoon het logboek op in een bestand en stuur het naar jezelf — via messenger, e-mail of de cloud. Open op de nieuwe telefoon hetzelfde scherm en laad het bestand: logboek, kaartuitlezingen en berekeningsinstellingen zijn dan net als op de oude.';
+      'Sla op de oude telefoon het logboek op in een bestand en stuur het naar uzelf — via messenger, e-mail of de cloud. Open op de nieuwe dit scherm en laad het bestand: logboek, kaartuitlezingen en berekeningsinstellingen gaan mee.';
 
   @override
   String get transferSave => 'Logboek opslaan in bestand';
@@ -2363,7 +2358,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get transferFailed =>
-      'Het logboek kon niet worden geladen. Het logboek op de telefoon is niet gewijzigd';
+      'Het logboek is niet geladen. Op de telefoon is niets veranderd';
 
   @override
   String get transferSaveFailed =>
@@ -2420,7 +2415,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String notifyCompensationTakenText(String time) {
-    return 'Deze rust dekt de $time voor een verkorte wekelijkse rust — de schuld is voldaan.';
+    return 'De $time voor een verkorte wekelijkse rust is ingehaald.';
   }
 
   @override
@@ -2512,7 +2507,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get bansNeedsCheck =>
-      'Bronnen verschillen in details — controleer de officiële bron vóór de rit.';
+      'De bronnen verschillen — controleer de officiële vóór de rit.';
 
   @override
   String get bansDisclaimer =>
@@ -2602,7 +2597,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get baseCountryCardText =>
-      'Zonder dat controleert de app niet of twee verkorte wekelijkse rusttijden op rij mogen en telt ze geen werkdagen';
+      'Zonder dat valt niet te controleren of twee verkorte wekelijkse rusttijden op rij mogen, en zijn de werkdagen niet te tellen';
 
   @override
   String get onbBaseCountryRequired =>
@@ -2638,7 +2633,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get workDaysWeekendsAbroadHint =>
-      'De hele dag zonder werk buiten het land van het bedrijf';
+      'Geen werk, minstens een deel van de dag in het buitenland';
 
   @override
   String get workDaysWeekendAbroad => 'Rustdag in het buitenland';
@@ -2648,7 +2643,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get workDaysWeekendsHomeHint =>
-      'De hele dag zonder werk in het land van het bedrijf';
+      'Geen werk, de hele dag in het land van het bedrijf';
 
   @override
   String get workDaysWeekendHome => 'Rustdag in het land van het bedrijf';
@@ -2664,9 +2659,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get workDaysNoBase =>
-      'Kies het land van het bedrijf: werkdagen worden daartegen geteld.';
+      'Kies het land van het bedrijf: zonder dat zijn de dagen niet te tellen.';
 
   @override
   String get workDaysRule =>
-      'Een werkdag is een dag met rijden of ander werk, en in het buitenland ook met beschikbaarheid. Een dag zonder werk is een rustdag: in het buitenland als u minstens een deel van de dag buiten het land van het bedrijf was, anders in het land van het bedrijf. Waar u was, weet de app uit de landen van de diensten op het startscherm. In de kalender zijn werkdagen en rustdagen in het buitenland (groen) gevuld, rustdagen in het land van het bedrijf hebben een ring en grijs betekent geen gegevens.';
+      'Een werkdag heeft rijden of ander werk, in het buitenland ook beschikbaarheid. De overige dagen zijn rustdagen. De landen komen uit de diensten op het startscherm. Werkdagen zijn gevuld, grijs betekent geen gegevens.';
 }

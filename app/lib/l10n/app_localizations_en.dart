@@ -99,7 +99,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get switchFailed => 'The mode was not saved. Please try again.';
+  String get switchFailed => 'The mode did not switch. Please try again.';
 
   @override
   String homeShiftSince(String date, String time) {
@@ -134,15 +134,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get heroOffDutyHint =>
-      'Shift ended. The next one starts with the first mode other than rest.';
+      'Shift over. The next one starts with any mode except rest.';
 
   @override
-  String get bannerBreakNeeded45 =>
-      'A 45 min break is needed (or split 15 + 30)';
+  String get bannerBreakNeeded45 => 'Take a 45 min break or 15 + 30';
 
   @override
-  String get bannerBreakNeeded30 =>
-      'A 30 min break is needed — the second part of the split 15 + 30';
+  String get bannerBreakNeeded30 => 'Take the second part of the break: 30 min';
 
   @override
   String bannerOnBreak(String time, int required) {
@@ -176,7 +174,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chipExceeded => 'exceeded';
 
   @override
-  String get chipLimiting => 'limiting';
+  String get chipLimiting => 'runs out first';
 
   @override
   String get chipShiftSoon => 'ends soon';
@@ -336,7 +334,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workWeekRule =>
-      'The working week is the time since the end of the weekly rest. The next weekly rest must start no later than at the end of six 24-hour periods — 144 h (Art. 8(6) of Regulation 561/2006).';
+      'Start the weekly rest no later than 144 h (6 days) after the end of the last one. Art. 8(6) of Regulation 561/2006.';
 
   @override
   String get cardTitle => 'Card download';
@@ -359,7 +357,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cardSheetRule =>
-      'Driver card data must be downloaded at least every 28 days (Regulation (EU) No 581/2010).';
+      'Download the card at least every 28 days. Regulation (EU) No 581/2010.';
 
   @override
   String get cardMarkToday => 'Downloaded today';
@@ -392,7 +390,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workdayRule =>
-      'Daily rest must end within 24 hours of the start of the shift. The reduced 9 h rest may be taken at most three times between weekly rests.';
+      'The rest must end within 24 h of the start of the shift. You may cut it to 9 h at most three times between weekly rests.';
 
   @override
   String get dailyRestOngoing => 'Rest in progress';
@@ -443,11 +441,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dailyRestInShift =>
-      'While the rest is shorter than 9 h, it is a break within the shift. At 9 h it becomes daily rest and ends the shift. Finished work? Tap “End day”.';
+      'Under 9 h it is a break in the shift; from 9 h it is daily rest. Done for the day? Tap “End day”.';
 
   @override
   String get dailyRestRule =>
-      'Daily rest is 11 h in a row. Reduced: 9 h, at most three times between weekly rests. Split: first at least 3 h, then at least 9 h. The rest must end within 24 hours of the start of the shift.';
+      'Regular rest: 11 h in a row. Reduced: 9 h, up to three times between weekly rests. Split: 3 + 9 h. The rest must end within 24 h of the start of the shift.';
 
   @override
   String get drivingCorrect => 'Correct today’s driving';
@@ -465,7 +463,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get drivingDailyRule =>
-      'Daily driving is the time at the wheel between two daily rests: at most 9 h, twice a week up to 10 h. The week starts on Monday at 00:00.';
+      'Between two daily rests: at most 9 h at the wheel, 10 h twice a week. The week starts on Monday at 00:00.';
 
   @override
   String drivingWeekSince(String date) {
@@ -500,7 +498,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get drivingWeekRule =>
-      'The week runs from Monday 00:00 to Sunday 24:00, as on the tachograph. At most 56 h of driving per week and 90 h in any two consecutive weeks.';
+      'Up to 56 h of driving a week and 90 h in any two weeks in a row. The week runs from Monday 00:00 to Sunday 24:00.';
 
   @override
   String get drivingCanDrive => 'You can still drive';
@@ -557,7 +555,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get endDayDrivingHint =>
-      'How long were you at the wheel today? The exact mode times are not needed — only the total.';
+      'How long were you at the wheel today? The total is enough.';
 
   @override
   String todayDate(String date) {
@@ -622,7 +620,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String infrShiftSoonText(String time) {
-    return 'Start your daily rest in $time.';
+    return 'Start your daily rest within $time.';
   }
 
   @override
@@ -670,7 +668,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String infrWeeklyRestSoonText(String time) {
-    return 'Start your weekly rest in $time.';
+    return 'Start your weekly rest within $time.';
   }
 
   @override
@@ -706,7 +704,7 @@ class AppLocalizationsEn extends AppLocalizations {
       other: '$days days',
       one: '$days day',
     );
-    return '$time for the reduced weekly rest were not attached. Overdue by $_temp0.';
+    return 'Compensation of $time for the reduced weekly rest was not taken. Overdue by $_temp0.';
   }
 
   @override
@@ -714,16 +712,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String infrReducedRestsExceededText(int count) {
-    return 'Reduced rests since the weekly rest: $count, 3 allowed.';
+    return 'Reduced rests since the weekly rest: $count, only 3 allowed.';
   }
 
   @override
   String get infrReducedWeeklyRestWithoutRightTitle =>
-      'Reduced rest without the right';
+      'This rest could not be reduced';
 
   @override
   String infrReducedWeeklyRestWithoutRightText(String time) {
-    return 'The last weekly rest was reduced without the right to it: a regular 45 h rest was needed. $time short.';
+    return 'The last weekly rest had to be a regular 45 h. $time short.';
   }
 
   @override
@@ -731,7 +729,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String infrFullWeeklyRestRequiredText(String time) {
-    return 'A reduced weekly rest is not allowed now — do not end your rest before 45 h. $time left.';
+    return 'No reduced rest this time: rest the full 45 h. $time left.';
   }
 
   @override
@@ -767,7 +765,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ferryHint =>
-      'Rest may be interrupted no more than twice, up to 1 h in total (Art. 9). The ferry moving will not switch on driving.';
+      'Rest may be interrupted up to twice, for no more than 1 h in total (Art. 9). While the ferry is moving, driving will not switch on by itself.';
 
   @override
   String get ferryOn => 'ferry';
@@ -805,7 +803,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get breakSplitText =>
-      'The first part at least 15 min, the second at least 30 min, in exactly this order. The app detects it by itself.';
+      'First at least 15 min, then at least 30 min, in that order only. Both parts are counted automatically.';
 
   @override
   String get breakStart => 'Start break';
@@ -885,7 +883,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Two reduced rests in a row — one debt of $debt: it is taken in full, en bloc, after the second of them and before the next weekly rest; not in parts and not in between. Together with a regular weekly rest — $total of rest in one go.';
+    return 'Two reduced rests in a row make one debt of $debt. Take it in one piece right before the next weekly rest: $total of rest in a row.';
   }
 
   @override
@@ -900,11 +898,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weeklyMobilityOn =>
-      'Mobility package on: in international transport two reduced rests in a row are allowed if they are taken outside the country of registration. The reduction is compensated by the end of the third week.';
+      'Mobility package: on international trips you may take two reduced weekly rests in a row if both are outside the company country. Take the compensation by the end of the third week.';
 
   @override
   String get weeklyMobilityOff =>
-      'A reduced weekly rest is compensated by the end of the third week: the debt is attached to a rest of at least 9 h.';
+      'Add the compensation for a reduced weekly rest to a rest of at least 9 h by the end of the third week.';
 
   @override
   String get weeklyStartRest => 'Start rest';
@@ -1060,7 +1058,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get journalEmpty =>
-      'No shifts yet. They appear when you start switching modes — or add a shift manually.';
+      'No shifts yet. Switch a mode on the home screen or add a shift manually.';
 
   @override
   String restStatus(String status) {
@@ -1226,8 +1224,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shiftLiveContinuous => 'calculated from breaks';
 
   @override
-  String get shiftDrivingAfterRest =>
-      'entered once the rest after the shift is chosen';
+  String get shiftDrivingAfterRest => 'choose the rest after the shift first';
 
   @override
   String get shiftRestNone => 'Not started';
@@ -1269,7 +1266,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shiftDeleteRecorded =>
-      'All mode records of this shift will be deleted. This cannot be undone.';
+      'All modes of this shift will be erased. They cannot be restored.';
 
   @override
   String get shiftErrStartCountry =>
@@ -1301,7 +1298,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shiftErrNotLast =>
-      'There are other shifts after this one — it cannot be ongoing now';
+      'There are already other shifts after this one — choose the rest after it';
 
   @override
   String get shiftSaveFailed => 'Could not save. Please try again.';
@@ -1318,15 +1315,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shiftLiveHint =>
-      'The shift follows the mode records: changing the start, end or driving will move the records themselves.';
+      'This shift is built from your modes. Change the start, end or driving and the modes will move.';
 
   @override
   String get shiftConvertHint =>
-      'Time, driving or rest changed — the shift will be saved as a manual entry instead of the mode records.';
+      'You changed the time, driving or rest, so the shift will be saved as totals, without timed modes.';
 
   @override
   String get shiftLiveConvertHint =>
-      'Daily driving entered as a total — the shift will be saved as a manual entry instead of the mode records, the rest after it continues.';
+      'Driving entered as a total: the shift will be saved without timed modes. The rest after it goes on.';
 
   @override
   String shiftEndNowHint(String time) {
@@ -1335,18 +1332,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shiftResumeHint =>
-      'The rest after the shift will be deleted — the shift will continue.';
+      'The rest after the shift will be removed and the shift will continue.';
 
   @override
   String shiftOngoingHint(String time, String mode) {
-    return 'The shift will become the current one and continue on the home screen from $time. Mode “$mode” — if another one applies now, switch it there.';
+    return 'The shift becomes current from $time, mode “$mode”. If you are in another mode now, switch it on the home screen.';
   }
 
   @override
   String get shiftUnsavedTitle => 'Save changes?';
 
   @override
-  String get shiftUnsavedText => 'The changes to this shift are not saved yet.';
+  String get shiftUnsavedText => 'Unsaved changes will be lost.';
 
   @override
   String get shiftDiscard => 'Don’t save';
@@ -1356,11 +1353,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String driveEditSubtitle(String date) {
-    return 'Manual correction · $date';
+    return 'Correction · $date';
   }
 
   @override
-  String get driveEditComputed => 'Calculated by the app';
+  String get driveEditComputed => 'Counted from modes';
 
   @override
   String driveEditDiff(String diff) {
@@ -1372,11 +1369,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get driveEditHint =>
-      'Use this if the mode was switched at the wrong time — the limits will be recalculated.';
+      'Switched the mode at the wrong time? Fix it here — the limits will be recalculated.';
 
   @override
   String get driveEditNoDrive =>
-      'There is no driving in the current shift yet — nothing to correct.';
+      'No driving in this shift yet — nothing to correct.';
 
   @override
   String get breakCorrection => 'Correction';
@@ -1388,12 +1385,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get breakLastDuration => 'Last break';
 
   @override
-  String get breakNoBreak =>
-      'There is no break in the shift yet — nothing to correct.';
+  String get breakNoBreak => 'No break in this shift yet — nothing to correct.';
 
   @override
   String get breakEditHint =>
-      'The time is taken from the neighbouring record — the limits will be recalculated.';
+      'The neighbouring mode takes the difference; limits are recalculated.';
 
   @override
   String get workdayChangeStart => 'Change shift start';
@@ -1446,7 +1442,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportPdfHint =>
-      'Not an official record: the report does not replace the tachograph and driver card data.';
+      'The report does not replace the tachograph and driver card data.';
 
   @override
   String get exportCsvHint =>
@@ -1729,7 +1725,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifyAllow => 'Allow notifications';
 
   @override
-  String get notifyDenied => 'Notifications are currently blocked on the phone';
+  String get notifyDenied =>
+      'Notifications are turned off in the phone settings';
 
   @override
   String get notifyAllowed => 'Notifications allowed';
@@ -1753,7 +1750,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String notifyBreakTakenText(int required, String time) {
-    return 'The $required min break is counted. You can drive $time until the next break.';
+    return '$required min done. You can drive $time more.';
   }
 
   @override
@@ -1800,7 +1797,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String serviceSuggestText(String time) {
-    return 'Start driving from $time? Your rest will be interrupted';
+    return 'Switch on driving from $time? Your rest will be interrupted';
   }
 
   @override
@@ -1867,7 +1864,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoStartFromRestHint =>
-      'Otherwise the app asks first: you might have been a passenger';
+      'Otherwise we ask first: you might be a passenger';
 
   @override
   String get autoBattery => 'Battery saving';
@@ -1892,7 +1889,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoBlockedDenied =>
-      'Driving cannot be detected without location access. The app only needs the speed, coordinates are not saved.';
+      'Driving cannot be detected without location access. Only the speed is needed — coordinates are not saved.';
 
   @override
   String get autoBlockedForever =>
@@ -1932,7 +1929,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clearText =>
-      'The mode log, shifts, countries, notes and card downloads will be deleted. This cannot be undone. The settings will remain.';
+      'The mode log, shifts, countries, notes and card downloads will be erased. They cannot be restored. The settings will remain.';
 
   @override
   String get clearConfirm => 'Clear';
@@ -1946,7 +1943,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get onbWelcomeTitle => 'Time at the wheel under control';
+  String get onbWelcomeTitle => 'Know how long you can still drive';
 
   @override
   String get onbWelcomeText =>
@@ -1969,25 +1966,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switch the mode with the buttons on the home screen. The counters run by themselves — even when the app is closed.';
 
   @override
-  String get onbModeDriving =>
-      'At the wheel. We count continuous, daily and weekly driving.';
+  String get onbModeDriving => 'The vehicle is moving and you are driving.';
 
   @override
   String get onbModeWork => 'Loading, vehicle check, paperwork.';
 
   @override
   String get onbModeAvailability =>
-      'Waiting: queue for loading, border, second driver on the road.';
+      'Waiting: queue for loading, border, second driver at the wheel.';
 
   @override
-  String get onbModeRest => 'Breaks and rest. “End day” closes the shift.';
+  String get onbModeRest =>
+      'Breaks and rest. At the end of the shift, tap “End day”.';
 
   @override
-  String get onbSetupTitle => 'Let’s set it up for you';
+  String get onbSetupTitle => 'A couple of settings';
 
   @override
-  String get onbSetupText =>
-      'All of this can be changed later in the settings.';
+  String get onbSetupText => 'You can change them later in the settings.';
 
   @override
   String get onbMobilityHint => 'Turn on if you drive international routes';
@@ -2005,7 +2001,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onbAutoText =>
-      'You move off — the app switches on driving; you stop — other work. After a rest it asks first. Only the GPS speed is needed: coordinates are neither saved nor sent anywhere.';
+      'You move off — we switch on driving; you stop — other work. After a rest we ask first. We only use the GPS speed: coordinates are neither saved nor sent anywhere.';
 
   @override
   String get onbAutoLater => 'You can turn it on later in the settings.';
@@ -2022,8 +2018,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onbRulesTitle => 'Key rules';
 
   @override
-  String get onbRulesText =>
-      'The same for trucks, buses and vans. The app calculates them itself and warns in advance.';
+  String get onbRulesText => 'The same for trucks, buses and vans.';
 
   @override
   String get onbRulesMore =>
@@ -2045,7 +2040,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideStep3 =>
-      'Watch the limits. The app will warn you in advance about a break and the end of the day. Any time can be corrected manually.';
+      'We warn you ahead of a break and the end of the day. Made a mistake? The time can be corrected.';
 
   @override
   String get guideRules => 'EU 561/2006 and AETR rules';
@@ -2079,7 +2074,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String guideDailyRestText(String reduced, String first, String second) {
-    return 'Up to three times between weekly rests it may be reduced to $reduced. Split option — $first + $second.';
+    return 'Between weekly rests it may be reduced to $reduced — up to three times. It can also be split: $first + $second.';
   }
 
   @override
@@ -2087,7 +2082,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String guideWorkdayText(String window, String regular, String reduced) {
-    return 'Rest must end within $window of the start of the shift: $regular with a regular rest, $reduced with a reduced one.';
+    return 'A shift plus its rest fits into $window: $regular before a regular rest, $reduced before a reduced one.';
   }
 
   @override
@@ -2114,7 +2109,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String guideWorkWeekText(String period) {
-    return 'The weekly rest starts no later than after six periods of $period from the previous one.';
+    return 'The next weekly rest starts no later than 6 × $period after the end of the last one.';
   }
 
   @override
@@ -2122,7 +2117,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String guideCardText(String days) {
-    return 'Card data must be downloaded at least every $days.';
+    return 'The card is downloaded at least every $days.';
   }
 
   @override
@@ -2289,7 +2284,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get problemText =>
-      'The report contains the app version, phone model, settings, permissions, notification schedule and log entries for the last two days. It contains no coordinates. Choose where to send it — email or a messenger — and describe what happened.';
+      'The report contains the app version, phone model, settings, permissions, notification schedule and the log for the last two days. It contains no coordinates. Choose email or a messenger and describe what happened.';
 
   @override
   String get problemSend => 'Send';
@@ -2311,7 +2306,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transferText =>
-      'On your old phone, save the log to a file and send it to yourself — via messenger, email or cloud storage. On the new phone, open this same screen and load the file: the log, card downloads and calculation settings will be the same as on the old one.';
+      'On your old phone, save the log to a file and send it to yourself — via messenger, email or cloud storage. On the new one, open this screen and load the file: the log, card downloads and calculation settings will carry over.';
 
   @override
   String get transferSave => 'Save log to file';
@@ -2354,7 +2349,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transferFailed =>
-      'Could not load the log. The log on this phone has not changed';
+      'The log did not load. Nothing on this phone has changed';
 
   @override
   String get transferSaveFailed => 'Could not save the file. Please try again.';
@@ -2410,7 +2405,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String notifyCompensationTakenText(String time) {
-    return 'This rest covered the $time owed for a reduced weekly rest — the debt is paid.';
+    return 'The $time owed for a reduced weekly rest is paid back.';
   }
 
   @override
@@ -2502,7 +2497,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bansNeedsCheck =>
-      'Sources differ in details — check the official source before your trip.';
+      'Sources differ — check the official one before your trip.';
 
   @override
   String get bansDisclaimer =>
@@ -2592,7 +2587,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get baseCountryCardText =>
-      'Without it the app cannot check whether two reduced weekly rests in a row are allowed, and cannot count working days';
+      'Without it there is no way to check whether two reduced weekly rests in a row are allowed, or to count working days';
 
   @override
   String get onbBaseCountryRequired => 'Choose the company country to continue';
@@ -2626,7 +2621,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workDaysWeekendsAbroadHint =>
-      'A whole day without work outside the company country';
+      'No work, at least part of the day abroad';
 
   @override
   String get workDaysWeekendAbroad => 'Rest day abroad';
@@ -2636,7 +2631,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workDaysWeekendsHomeHint =>
-      'A whole day without work in the company country';
+      'No work, the whole day in the company country';
 
   @override
   String get workDaysWeekendHome => 'Rest day in the company country';
@@ -2652,9 +2647,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workDaysNoBase =>
-      'Set the company country: working days are counted against it.';
+      'Set the company country: the days cannot be counted without it.';
 
   @override
   String get workDaysRule =>
-      'A working day is a day with driving or other work, and abroad also with availability. A day without work is a rest day: abroad if you were outside the company country for at least part of the day, otherwise in the company country. The app knows where you were from the shift countries on the home screen. In the calendar, working days and rest days abroad (green) are filled, rest days in the company country have a ring, and grey means no data.';
+      'A working day has driving or other work, and abroad also availability. Other days are rest days. Countries come from the shifts on the home screen. Working days are filled, grey means no data.';
 }

@@ -101,7 +101,7 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
-  String get switchFailed => 'Modul nu a fost salvat. Încercați din nou.';
+  String get switchFailed => 'Modul nu s-a schimbat. Încercați din nou.';
 
   @override
   String homeShiftSince(String date, String time) {
@@ -136,15 +136,13 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get heroOffDutyHint =>
-      'Tura s-a încheiat. Următoarea începe cu primul mod care nu e repaus.';
+      'Tura s-a încheiat. Următoarea începe cu orice mod în afară de repaus.';
 
   @override
-  String get bannerBreakNeeded45 =>
-      'Este necesară o pauză de 45 min (sau împărțită 15 + 30)';
+  String get bannerBreakNeeded45 => 'Faceți o pauză de 45 min sau 15 + 30';
 
   @override
-  String get bannerBreakNeeded30 =>
-      'Este necesară o pauză de 30 min — a doua parte din 15 + 30';
+  String get bannerBreakNeeded30 => 'Faceți a doua parte a pauzei — 30 min';
 
   @override
   String bannerOnBreak(String time, int required) {
@@ -178,7 +176,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get chipExceeded => 'depășit';
 
   @override
-  String get chipLimiting => 'limitează';
+  String get chipLimiting => 'se termină primul';
 
   @override
   String get chipShiftSoon => 'final curând';
@@ -339,7 +337,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get workWeekRule =>
-      'Săptămâna de lucru este timpul de la sfârșitul repausului săptămânal. Următorul repaus săptămânal trebuie început cel târziu după șase perioade de 24 de ore — 144 h (art. 8 alin. (6) din Regulamentul 561/2006).';
+      'Începeți repausul săptămânal cel târziu la 144 h (6 zile) după sfârșitul celui precedent. Art. 8 alin. (6) din Regulamentul 561/2006.';
 
   @override
   String get cardTitle => 'Descărcarea cardului';
@@ -362,7 +360,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get cardSheetRule =>
-      'Datele de pe cardul conducătorului auto se descarcă cel puțin o dată la 28 de zile (Regulamentul (UE) nr. 581/2010).';
+      'Cardul trebuie descărcat cel puțin o dată la 28 de zile. Regulamentul (UE) nr. 581/2010.';
 
   @override
   String get cardMarkToday => 'Descărcat azi';
@@ -395,7 +393,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get workdayRule =>
-      'Repausul zilnic trebuie să se încheie în 24 de ore de la începutul turei. Repausul redus de 9 h se poate lua de cel mult trei ori între două repausuri săptămânale.';
+      'Repausul trebuie să se încheie cel târziu la 24 h după începutul turei. Îl puteți reduce la 9 h de cel mult trei ori între repausurile săptămânale.';
 
   @override
   String get dailyRestOngoing => 'Repaus în curs';
@@ -447,11 +445,11 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get dailyRestInShift =>
-      'Cât timp repausul e mai scurt de 9 h, este o pauză în tură. De la 9 h devine repaus zilnic și încheie tura. Ați terminat lucrul — „Încheie ziua”.';
+      'Sub 9 h e o pauză în tură, de la 9 h — repaus zilnic. Ați terminat lucrul? Apăsați „Încheie ziua”.';
 
   @override
   String get dailyRestRule =>
-      'Repausul zilnic — 11 h fără întrerupere. Redus — 9 h, de cel mult trei ori între două repausuri săptămânale. Fracționat — întâi cel puțin 3 h, apoi cel puțin 9 h. Repausul trebuie să se încheie în 24 de ore de la începutul turei.';
+      'Repaus complet — 11 h fără întrerupere. Redus — 9 h, de până la trei ori între repausurile săptămânale. Fracționat — 3 + 9 h. Repausul trebuie să se încheie cel târziu la 24 h după începutul turei.';
 
   @override
   String get drivingCorrect => 'Corectează conducerea pe zi';
@@ -470,7 +468,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get drivingDailyRule =>
-      'Conducerea zilnică — timpul la volan între două repausuri zilnice: cel mult 9 h, de două ori pe săptămână — până la 10 h. Săptămâna începe luni la 00:00.';
+      'Între două repausuri zilnice — cel mult 9 h la volan, de două ori pe săptămână se poate 10 h. Săptămâna începe luni la 00:00.';
 
   @override
   String drivingWeekSince(String date) {
@@ -505,7 +503,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get drivingWeekRule =>
-      'Săptămâna — de luni 00:00 până duminică 24:00, ca la tahograf. Pe săptămână — cel mult 56 h de conducere, în două săptămâni consecutive — cel mult 90 h.';
+      'Pe săptămână puteți conduce până la 56 h, în două săptămâni consecutive — până la 90 h. Săptămâna ține de luni 00:00 până duminică 24:00.';
 
   @override
   String get drivingCanDrive => 'Mai puteți conduce';
@@ -562,7 +560,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get endDayDrivingHint =>
-      'Cât ați condus astăzi? Orele exacte ale modurilor nu sunt necesare — doar totalul.';
+      'Cât ați condus astăzi în total? Ajunge suma.';
 
   @override
   String todayDate(String date) {
@@ -627,7 +625,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String infrShiftSoonText(String time) {
-    return 'Începeți repausul zilnic peste $time.';
+    return 'Începeți repausul zilnic în cel mult $time.';
   }
 
   @override
@@ -677,7 +675,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String infrWeeklyRestSoonText(String time) {
-    return 'Începeți repausul săptămânal peste $time.';
+    return 'Începeți repausul săptămânal în cel mult $time.';
   }
 
   @override
@@ -715,7 +713,7 @@ class AppLocalizationsRo extends AppLocalizations {
       few: '$days zile',
       one: '$days zi',
     );
-    return 'Nu s-au atașat $time pentru repausul săptămânal redus. Întârziere — $_temp0.';
+    return 'Compensarea de $time pentru repausul săptămânal redus nu a fost luată. Întârziere — $_temp0.';
   }
 
   @override
@@ -723,16 +721,16 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String infrReducedRestsExceededText(int count) {
-    return 'De la repausul săptămânal, reduse: $count, permise 3.';
+    return 'Repausuri reduse după cel săptămânal: $count, iar permise sunt 3.';
   }
 
   @override
   String get infrReducedWeeklyRestWithoutRightTitle =>
-      'Repaus redus fără drept';
+      'Repausul nu putea fi redus';
 
   @override
   String infrReducedWeeklyRestWithoutRightText(String time) {
-    return 'Ultimul repaus săptămânal a fost redus fără drept: era necesar unul complet de 45 h. Au lipsit $time.';
+    return 'Ultimul repaus săptămânal trebuia să fie complet — 45 h. Au lipsit $time.';
   }
 
   @override
@@ -741,7 +739,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String infrFullWeeklyRestRequiredText(String time) {
-    return 'Repausul săptămânal redus nu este disponibil acum — nu încheiați repausul înainte de 45 h. Au rămas $time.';
+    return 'Acum nu se poate reduce: odihniți-vă toate cele 45 h. Au rămas $time.';
   }
 
   @override
@@ -779,7 +777,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get ferryHint =>
-      'Repausul se poate întrerupe de cel mult două ori, în total până la 1 h (art. 9). Mișcarea feribotului nu pornește conducerea.';
+      'Repausul se poate întrerupe de cel mult două ori, în total cel mult 1 h (art. 9). Cât timp feribotul merge, conducerea nu pornește singură.';
 
   @override
   String get ferryOn => 'feribot';
@@ -818,7 +816,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get breakSplitText =>
-      'Prima parte de cel puțin 15 min, a doua — de cel puțin 30 min, exact în această ordine. Aplicația o recunoaște singură.';
+      'Întâi cel puțin 15 min, apoi cel puțin 30 min — doar în această ordine. Părțile se socotesc singure.';
 
   @override
   String get breakStart => 'Începe pauza';
@@ -898,7 +896,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Două repausuri reduse consecutive — o singură datorie de $debt: se ia integral, într-un singur bloc, după al doilea și înaintea următorului repaus săptămânal; nu pe părți și nu între ele. Împreună cu repausul săptămânal complet — $total de repaus fără întrerupere.';
+    return 'Două reduse consecutive — o singură datorie de $debt. Se ia întreagă, imediat înaintea următorului repaus săptămânal: împreună, $total de repaus fără întrerupere.';
   }
 
   @override
@@ -913,11 +911,11 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get weeklyMobilityOn =>
-      'Pachetul de mobilitate este activ: în transportul internațional se pot lua două repausuri reduse consecutive, dacă sunt în afara țării de înmatriculare. Reducerea se compensează până la sfârșitul celei de-a treia săptămâni.';
+      'Pachetul de mobilitate: în cursele internaționale puteți lua două repausuri săptămânale reduse consecutive, dacă ambele sunt în afara țării firmei. Compensarea se ia până la sfârșitul celei de-a treia săptămâni.';
 
   @override
   String get weeklyMobilityOff =>
-      'Repausul săptămânal redus se compensează până la sfârșitul celei de-a treia săptămâni: datoria se atașează la un repaus de cel puțin 9 h.';
+      'Compensarea pentru repausul săptămânal redus se atașează la un repaus de cel puțin 9 h până la sfârșitul celei de-a treia săptămâni.';
 
   @override
   String get weeklyStartRest => 'Începe repausul';
@@ -1073,7 +1071,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get journalEmpty =>
-      'Încă nu există ture. Vor apărea când începeți să schimbați modurile, sau adăugați o tură manual.';
+      'Încă nu există ture. Schimbați modul pe ecranul principal sau adăugați o tură manual.';
 
   @override
   String restStatus(String status) {
@@ -1239,8 +1237,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get shiftLiveContinuous => 'se calculează după pauze';
 
   @override
-  String get shiftDrivingAfterRest =>
-      'se introduce după ce alegeți repausul de după tură';
+  String get shiftDrivingAfterRest => 'întâi alegeți repausul de după tură';
 
   @override
   String get shiftRestNone => 'Neînceput';
@@ -1283,7 +1280,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get shiftDeleteRecorded =>
-      'Toate înregistrările de moduri ale acestei ture vor fi șterse. Acțiunea nu poate fi anulată.';
+      'Toate modurile acestei ture se șterg. Nu mai pot fi recuperate.';
 
   @override
   String get shiftErrStartCountry => 'Alegeți țara de început a turei';
@@ -1314,7 +1311,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get shiftErrNotLast =>
-      'După această tură mai sunt altele — nu poate fi în curs acum';
+      'După această tură există deja altele — alegeți repausul de după ea';
 
   @override
   String get shiftSaveFailed => 'Nu s-a putut salva. Încercați din nou.';
@@ -1331,15 +1328,15 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get shiftLiveHint =>
-      'Tura urmează înregistrările de moduri: modificarea începutului, sfârșitului și conducerii mută chiar înregistrările.';
+      'Tura este formată din moduri. Schimbați începutul, sfârșitul sau conducerea — modurile se vor muta.';
 
   @override
   String get shiftConvertHint =>
-      'Ora, conducerea sau repausul au fost modificate — tura se va salva ca înregistrare manuală în locul înregistrărilor de moduri.';
+      'Ați schimbat ora, conducerea sau repausul — tura se salvează ca totaluri, fără moduri pe ore.';
 
   @override
   String get shiftLiveConvertHint =>
-      'Conducerea pe zi a fost introdusă ca total — tura se va salva ca înregistrare manuală în locul înregistrărilor de moduri, repausul de după ea continuă.';
+      'Conducerea e introdusă ca total — tura se salvează fără moduri pe ore. Repausul de după ea continuă.';
 
   @override
   String shiftEndNowHint(String time) {
@@ -1348,18 +1345,18 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get shiftResumeHint =>
-      'Repausul de după tură va fi șters — tura continuă.';
+      'Repausul de după tură se șterge, iar tura continuă.';
 
   @override
   String shiftOngoingHint(String time, String mode) {
-    return 'Tura devine curentă și continuă pe ecranul principal de la $time. Modul „$mode” — dacă acum e altul, schimbați-l acolo.';
+    return 'Tura devine curentă de la $time, modul „$mode”. Dacă acum e altul, schimbați-l pe ecranul principal.';
   }
 
   @override
   String get shiftUnsavedTitle => 'Salvați modificările?';
 
   @override
-  String get shiftUnsavedText => 'Modificările turei nu sunt încă salvate.';
+  String get shiftUnsavedText => 'Fără salvare, modificările se pierd.';
 
   @override
   String get shiftDiscard => 'Nu salva';
@@ -1369,11 +1366,11 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String driveEditSubtitle(String date) {
-    return 'Corecție manuală · $date';
+    return 'Corecție · $date';
   }
 
   @override
-  String get driveEditComputed => 'Calculat de aplicație';
+  String get driveEditComputed => 'Calculat din moduri';
 
   @override
   String driveEditDiff(String diff) {
@@ -1385,11 +1382,11 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get driveEditHint =>
-      'Folosiți dacă modul a fost schimbat la momentul greșit — limitele se recalculează.';
+      'Ați schimbat modul la momentul greșit? Corectați aici — limitele se recalculează.';
 
   @override
   String get driveEditNoDrive =>
-      'În tura curentă nu există încă conducere — nu e nimic de corectat.';
+      'În această tură nu s-a condus încă — nu e nimic de corectat.';
 
   @override
   String get breakCorrection => 'Corecție';
@@ -1402,11 +1399,11 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get breakNoBreak =>
-      'În tură nu există încă nicio pauză — nu e nimic de corectat.';
+      'În această tură nu a fost încă nicio pauză — nu e nimic de corectat.';
 
   @override
   String get breakEditHint =>
-      'Timpul se ia de la înregistrarea vecină — limitele se recalculează.';
+      'Diferența o preia modul vecin, limitele se recalculează.';
 
   @override
   String get workdayChangeStart => 'Modifică începutul turei';
@@ -1459,7 +1456,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get exportPdfHint =>
-      'Nu este o înregistrare oficială: raportul nu înlocuiește datele din tahograf și de pe cardul conducătorului auto.';
+      'Raportul nu înlocuiește datele din tahograf și de pe cardul conducătorului auto.';
 
   @override
   String get exportCsvHint =>
@@ -1745,7 +1742,8 @@ class AppLocalizationsRo extends AppLocalizations {
   String get notifyAllow => 'Permite notificările';
 
   @override
-  String get notifyDenied => 'Acum notificările sunt blocate în telefon';
+  String get notifyDenied =>
+      'Notificările sunt dezactivate în setările telefonului';
 
   @override
   String get notifyAllowed => 'Notificări permise';
@@ -1769,7 +1767,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String notifyBreakTakenText(int required, String time) {
-    return 'Pauza de $required min este efectuată. Puteți conduce $time până la următoarea pauză.';
+    return '$required min efectuate — mai puteți conduce $time.';
   }
 
   @override
@@ -1816,7 +1814,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String serviceSuggestText(String time) {
-    return 'Începeți conducerea de la $time? Repausul va fi întrerupt';
+    return 'Porniți conducerea de la $time? Repausul se întrerupe';
   }
 
   @override
@@ -1883,7 +1881,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get autoStartFromRestHint =>
-      'Altfel aplicația întreabă mai întâi: puteați merge ca pasager';
+      'Altfel întrebăm mai întâi: poate mergeți ca pasager';
 
   @override
   String get autoBattery => 'Economisirea bateriei';
@@ -1908,7 +1906,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get autoBlockedDenied =>
-      'Fără acces la localizare conducerea nu poate fi detectată. Aplicația are nevoie doar de viteză, coordonatele nu se salvează.';
+      'Fără acces la localizare conducerea nu poate fi detectată. E nevoie doar de viteză — coordonatele nu se salvează.';
 
   @override
   String get autoBlockedForever =>
@@ -1948,7 +1946,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get clearText =>
-      'Jurnalul de moduri, turele, țările, notele și descărcările cardului vor fi șterse. Acțiunea nu poate fi anulată. Setările rămân.';
+      'Se șterg jurnalul de moduri, turele, țările, notele și descărcările cardului. Nu mai pot fi recuperate. Setările rămân.';
 
   @override
   String get clearConfirm => 'Șterge';
@@ -1962,7 +1960,7 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
-  String get onbWelcomeTitle => 'Timpul la volan sub control';
+  String get onbWelcomeTitle => 'Știți cât mai puteți conduce';
 
   @override
   String get onbWelcomeText =>
@@ -1985,24 +1983,24 @@ class AppLocalizationsRo extends AppLocalizations {
       'Schimbați modul cu butoanele de pe ecranul principal. Cronometrele merg singure — chiar și când aplicația e închisă.';
 
   @override
-  String get onbModeDriving =>
-      'La volan. Calculăm conducerea continuă, zilnică și săptămânală.';
+  String get onbModeDriving => 'Vehiculul merge, sunteți la volan.';
 
   @override
   String get onbModeWork => 'Încărcare, verificarea vehiculului, documente.';
 
   @override
   String get onbModeAvailability =>
-      'Așteptare: coadă la încărcare, frontieră, al doilea șofer pe drum.';
+      'Așteptare: coadă la încărcare, frontieră, al doilea șofer la volan.';
 
   @override
-  String get onbModeRest => 'Pauze și repaus. „Încheie ziua” închide tura.';
+  String get onbModeRest =>
+      'Pauze și repaus. La sfârșitul turei — „Încheie ziua”.';
 
   @override
-  String get onbSetupTitle => 'Să configurăm pentru dvs.';
+  String get onbSetupTitle => 'Câteva setări';
 
   @override
-  String get onbSetupText => 'Toate acestea se pot schimba ulterior în setări.';
+  String get onbSetupText => 'Le puteți schimba mai târziu în setări.';
 
   @override
   String get onbMobilityHint => 'Activați dacă faceți curse internaționale';
@@ -2021,7 +2019,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get onbAutoText =>
-      'Ați pornit — aplicația activează conducerea, v-ați oprit — altă muncă. După repaus întreabă mai întâi. E nevoie doar de viteza GPS: coordonatele nu se salvează și nu se trimit nicăieri.';
+      'Ați pornit — activăm conducerea, v-ați oprit — altă muncă. După repaus întrebăm mai întâi. Folosim doar viteza GPS: coordonatele nu se salvează și nu se trimit nicăieri.';
 
   @override
   String get onbAutoLater => 'Se poate activa mai târziu în setări.';
@@ -2038,8 +2036,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get onbRulesTitle => 'Regulile principale';
 
   @override
-  String get onbRulesText =>
-      'Aceleași pentru camioane, autobuze și dube. Aplicația le calculează singură și avertizează din timp.';
+  String get onbRulesText => 'Aceleași pentru camioane, autobuze și dube.';
 
   @override
   String get onbRulesMore =>
@@ -2061,7 +2058,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get guideStep3 =>
-      'Urmăriți limitele. Aplicația avertizează din timp despre pauză și sfârșitul zilei. Orice oră se poate corecta manual.';
+      'Vă avertizăm din timp despre pauză și sfârșitul zilei. Ați greșit? Ora se poate corecta.';
 
   @override
   String get guideRules => 'Regulile UE 561/2006 și AETR';
@@ -2095,7 +2092,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String guideDailyRestText(String reduced, String first, String second) {
-    return 'De până la trei ori între repausurile săptămânale se poate reduce la $reduced. Varianta împărțită — $first + $second.';
+    return 'Între repausurile săptămânale se poate reduce la $reduced — de cel mult trei ori. Se poate și împărți: $first + $second.';
   }
 
   @override
@@ -2103,7 +2100,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String guideWorkdayText(String window, String regular, String reduced) {
-    return 'Repausul trebuie să se încheie în $window de la începutul turei: $regular cu repaus complet, $reduced cu repaus redus.';
+    return 'Tura împreună cu repausul încape în $window: $regular înaintea unui repaus complet, $reduced înaintea unuia redus.';
   }
 
   @override
@@ -2131,7 +2128,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String guideWorkWeekText(String period) {
-    return 'Repausul săptămânal începe cel târziu după șase perioade de $period de la cel anterior.';
+    return 'Următorul repaus săptămânal — cel târziu la 6 × $period după sfârșitul celui precedent.';
   }
 
   @override
@@ -2139,7 +2136,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String guideCardText(String days) {
-    return 'Datele cardului se descarcă cel puțin o dată la $days.';
+    return 'Cardul se descarcă cel puțin o dată la $days.';
   }
 
   @override
@@ -2174,7 +2171,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get guideNewbieRestPlaceText =>
-      'Repausul zilnic și cel săptămânal redus se pot petrece în vehicul, dacă are cușetă și staționează. Repausul săptămânal normal și compensarea — doar în afara vehiculului.';
+      'Repausul zilnic și cel săptămânal redus se pot petrece în vehicul, dacă are cușetă și staționează. Repausul săptămânal complet și compensarea — doar în afara vehiculului.';
 
   @override
   String get guideNewbieCountry => 'Țări';
@@ -2305,7 +2302,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get problemText =>
-      'Raportul include versiunea aplicației, modelul telefonului, setările, permisiunile, programul notificărilor și înregistrările din jurnal din ultimele două zile. Nu conține coordonate. Alegeți unde îl trimiteți — e-mail sau mesagerie — și descrieți ce s-a întâmplat.';
+      'Raportul include versiunea aplicației, modelul telefonului, setările, permisiunile, programul notificărilor și jurnalul din ultimele două zile. Nu conține coordonate. Alegeți e-mailul sau mesageria și descrieți ce s-a întâmplat.';
 
   @override
   String get problemSend => 'Trimiteți';
@@ -2329,7 +2326,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get transferText =>
-      'Pe telefonul vechi salvați jurnalul într-un fișier și trimiteți-l vouă — prin mesagerie, e-mail sau în cloud. Pe telefonul nou deschideți același ecran și încărcați fișierul: jurnalul, descărcările cardului și setările de calcul vor fi ca pe cel vechi.';
+      'Pe telefonul vechi salvați jurnalul într-un fișier și trimiteți-vi-l — prin mesagerie, e-mail sau în cloud. Pe cel nou deschideți acest ecran și încărcați fișierul: jurnalul, descărcările cardului și setările de calcul se transferă.';
 
   @override
   String get transferSave => 'Salvează jurnalul în fișier';
@@ -2372,7 +2369,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get transferFailed =>
-      'Jurnalul nu s-a putut încărca. Jurnalul de pe telefon nu s-a schimbat';
+      'Jurnalul nu s-a încărcat. Pe telefon totul a rămas la fel';
 
   @override
   String get transferSaveFailed =>
@@ -2429,7 +2426,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String notifyCompensationTakenText(String time) {
-    return 'Repausul a cuprins datoria de $time pentru repausul săptămânal redus — datoria este achitată.';
+    return 'Datoria de $time pentru repausul săptămânal redus este achitată.';
   }
 
   @override
@@ -2521,7 +2518,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get bansNeedsCheck =>
-      'Sursele diferă în detalii — înainte de cursă verificați sursa oficială.';
+      'Sursele diferă — înainte de cursă verificați în cea oficială.';
 
   @override
   String get bansDisclaimer =>
@@ -2611,7 +2608,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get baseCountryCardText =>
-      'Fără ea, aplicația nu verifică dacă se pot lua două repausuri săptămânale reduse consecutive și nu numără zilele lucrătoare';
+      'Fără ea nu se poate verifica dacă sunt permise două repausuri săptămânale reduse consecutive și nu se pot număra zilele lucrătoare';
 
   @override
   String get onbBaseCountryRequired => 'Alegeți țara firmei pentru a continua';
@@ -2646,7 +2643,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get workDaysWeekendsAbroadHint =>
-      'Toată ziua fără muncă în afara țării firmei';
+      'Fără muncă, măcar o parte din zi în străinătate';
 
   @override
   String get workDaysWeekendAbroad => 'Zi de repaus în străinătate';
@@ -2655,7 +2652,8 @@ class AppLocalizationsRo extends AppLocalizations {
   String get workDaysWeekendsHome => 'Zile de repaus în țara firmei';
 
   @override
-  String get workDaysWeekendsHomeHint => 'Toată ziua fără muncă în țara firmei';
+  String get workDaysWeekendsHomeHint =>
+      'Fără muncă, toată ziua în țara firmei';
 
   @override
   String get workDaysWeekendHome => 'Zi de repaus în țara firmei';
@@ -2671,9 +2669,9 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get workDaysNoBase =>
-      'Indicați țara firmei: zilele lucrătoare se numără față de ea.';
+      'Indicați țara firmei: fără ea zilele nu pot fi numărate.';
 
   @override
   String get workDaysRule =>
-      'Zi lucrătoare este ziua cu conducere sau altă muncă, iar în străinătate — și cu disponibilitate. Ziua fără muncă este zi de repaus: în străinătate, dacă ați fost măcar o parte din zi în afara țării firmei, altfel — în țara firmei. Unde ați fost, aplicația știe din țările turelor de pe ecranul principal. În calendar sunt colorate zilele lucrătoare și zilele de repaus în străinătate (verzi), cu cerc — zilele de repaus în țara firmei, cele gri — fără date.';
+      'Zi lucrătoare — zi cu conducere sau altă muncă, iar în străinătate și cu disponibilitate. Celelalte zile sunt zile de repaus. Țările le luăm din turele de pe ecranul principal. Zilele lucrătoare sunt colorate, cele gri — fără date.';
 }

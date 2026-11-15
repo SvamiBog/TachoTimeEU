@@ -99,7 +99,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get switchFailed => 'რეჟიმი არ ჩაიწერა. სცადეთ ხელახლა.';
+  String get switchFailed => 'რეჟიმი არ გადაირთო. სცადეთ ხელახლა.';
 
   @override
   String homeShiftSince(String date, String time) {
@@ -134,15 +134,13 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get heroOffDutyHint =>
-      'ცვლა დასრულდა. ახალი დაიწყება პირველივე რეჟიმით, დასვენების გარდა.';
+      'ცვლა დასრულდა. ახალი დაიწყება ნებისმიერი რეჟიმით, დასვენების გარდა.';
 
   @override
-  String get bannerBreakNeeded45 =>
-      'საჭიროა 45 წთ შესვენება (ან გაყოფილი 15 + 30)';
+  String get bannerBreakNeeded45 => 'საჭიროა 45 წთ შესვენება ან 15 + 30';
 
   @override
-  String get bannerBreakNeeded30 =>
-      'საჭიროა 30 წთ შესვენება — გაყოფილი 15 + 30-ის მეორე ნაწილი';
+  String get bannerBreakNeeded30 => 'საჭიროა შესვენების მეორე ნაწილი — 30 წთ';
 
   @override
   String bannerOnBreak(String time, int required) {
@@ -176,7 +174,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get chipExceeded => 'გადაჭარბებულია';
 
   @override
-  String get chipLimiting => 'ზღუდავს';
+  String get chipLimiting => 'ადრე ამოიწურება';
 
   @override
   String get chipShiftSoon => 'მალე დასასრული';
@@ -337,7 +335,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get workWeekRule =>
-      'სამუშაო კვირა — დრო კვირეული დასვენების დასრულებიდან. შემდეგი კვირეული დასვენება უნდა დაიწყოს არაუგვიანეს ექვსი 24-საათიანი პერიოდის ბოლოს — 144 სთ (რეგლამენტ 561/2006-ის მე-8 მუხლის მე-6 პუნქტი).';
+      'კვირეული დასვენება უნდა დაიწყოს წინას დასრულებიდან არაუგვიანეს 144 სთ-ში (6 დღე-ღამე). რეგლამენტ 561/2006-ის მე-8 მუხლის მე-6 პუნქტი.';
 
   @override
   String get cardTitle => 'ბარათის წაკითხვა';
@@ -360,7 +358,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get cardSheetRule =>
-      'მძღოლის ბარათის მონაცემები უნდა წაიკითხოთ არანაკლებ 28 დღეში ერთხელ (რეგულაცია (EU) 581/2010).';
+      'ბარათი უნდა წაიკითხოთ სულ მცირე 28 დღეში ერთხელ. რეგულაცია (EU) 581/2010.';
 
   @override
   String get cardMarkToday => 'წაკითხულია დღეს';
@@ -393,7 +391,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get workdayRule =>
-      'დღიური დასვენება უნდა დასრულდეს ცვლის დაწყებიდან 24 საათში. შემცირებული 9-საათიანი დასვენება კვირეულ დასვენებებს შორის მაქსიმუმ სამჯერ შეიძლება.';
+      'დასვენება უნდა დასრულდეს ცვლის დაწყებიდან არაუგვიანეს 24 სთ-ში. 9 სთ-მდე შემცირება კვირეულ დასვენებებს შორის მაქსიმუმ სამჯერ შეიძლება.';
 
   @override
   String get dailyRestOngoing => 'დასვენება მიმდინარეობს';
@@ -443,11 +441,11 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get dailyRestInShift =>
-      'სანამ დასვენება 9 სთ-ზე მოკლეა, ეს ცვლის შიგნით შესვენებაა. 9 სთ-დან ის დღიური დასვენება გახდება და ცვლას დაასრულებს. სამუშაო დაასრულეთ — „დღის დასრულება“.';
+      '9 სთ-მდე ეს ცვლის შიგნით შესვენებაა, 9 სთ-დან — დღიური დასვენება. სამუშაო დაასრულეთ? დააჭირეთ „დღის დასრულება“.';
 
   @override
   String get dailyRestRule =>
-      'დღიური დასვენება — 11 სთ უწყვეტად. შემცირებული — 9 სთ, კვირეულ დასვენებებს შორის მაქსიმუმ სამჯერ. გაყოფილი — ჯერ 3 სთ-დან, შემდეგ 9 სთ-დან. დასვენება უნდა დასრულდეს ცვლის დაწყებიდან 24 საათში.';
+      'სრული დასვენება — 11 სთ უწყვეტად. შემცირებული — 9 სთ, კვირეულ დასვენებებს შორის სამჯერამდე. გაყოფილი — 3 + 9 სთ. დასვენება უნდა დასრულდეს ცვლის დაწყებიდან არაუგვიანეს 24 სთ-ში.';
 
   @override
   String get drivingCorrect => 'დღის მართვის შესწორება';
@@ -465,7 +463,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get drivingDailyRule =>
-      'დღიური მართვა — საჭესთან დრო ორ დღიურ დასვენებას შორის: არაუმეტეს 9 სთ, კვირაში ორჯერ — 10 სთ-მდე. კვირა ორშაბათს 00:00-ზე იწყება.';
+      'ორ დღიურ დასვენებას შორის — არაუმეტეს 9 სთ საჭესთან, კვირაში ორჯერ შეიძლება 10 სთ. კვირა ორშაბათს 00:00-ზე იწყება.';
 
   @override
   String drivingWeekSince(String date) {
@@ -500,7 +498,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get drivingWeekRule =>
-      'კვირა — ორშაბათის 00:00-დან კვირის 24:00-მდე, როგორც ტაქოგრაფზე. კვირაში — არაუმეტეს 56 სთ მართვა, ზედიზედ ორ კვირაში — არაუმეტეს 90 სთ.';
+      'კვირაში შეიძლება 56 სთ-მდე მართვა, ზედიზედ ორ კვირაში — 90 სთ-მდე. კვირა — ორშაბათის 00:00-დან კვირის 24:00-მდე.';
 
   @override
   String get drivingCanDrive => 'კიდევ შეიძლება მართვა';
@@ -557,7 +555,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get endDayDrivingHint =>
-      'რამდენი ხანი იყავით დღეს საჭესთან? რეჟიმების ზუსტი დრო საჭირო არ არის — მხოლოდ ჯამი.';
+      'ჯამში რამდენი ხანი იყავით დღეს საჭესთან? საკმარისია ჯამი.';
 
   @override
   String todayDate(String date) {
@@ -622,7 +620,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String infrShiftSoonText(String time) {
-    return 'დაიწყეთ დღიური დასვენება $time-ში.';
+    return 'დაიწყეთ დღიური დასვენება არაუგვიანეს $time-ში.';
   }
 
   @override
@@ -671,7 +669,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String infrWeeklyRestSoonText(String time) {
-    return 'დაიწყეთ კვირეული დასვენება $time-ში.';
+    return 'დაიწყეთ კვირეული დასვენება არაუგვიანეს $time-ში.';
   }
 
   @override
@@ -707,7 +705,7 @@ class AppLocalizationsKa extends AppLocalizations {
       other: '$days დღე',
       one: '$days დღე',
     );
-    return 'შემცირებული კვირეული დასვენებისთვის არ არის დამატებული $time. დაგვიანება — $_temp0.';
+    return 'შემცირებული კვირეული დასვენების კომპენსაცია $time არ არის აღებული. დაგვიანება — $_temp0.';
   }
 
   @override
@@ -716,16 +714,16 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String infrReducedRestsExceededText(int count) {
-    return 'კვირეული დასვენების შემდეგ შემცირებული: $count, დასაშვებია 3.';
+    return 'შემცირებული დასვენებები კვირეულის შემდეგ: $count, დასაშვებია 3.';
   }
 
   @override
   String get infrReducedWeeklyRestWithoutRightTitle =>
-      'შემცირებული დასვენება უფლების გარეშე';
+      'დასვენების შემცირება არ შეიძლებოდა';
 
   @override
   String infrReducedWeeklyRestWithoutRightText(String time) {
-    return 'ბოლო კვირეული დასვენება შემცირებული იყო, თუმცა ამის უფლება არ გქონდათ: საჭირო იყო სრული 45 სთ. დააკლდა $time.';
+    return 'ბოლო კვირეული დასვენება სრული უნდა ყოფილიყო — 45 სთ. დააკლდა $time.';
   }
 
   @override
@@ -734,7 +732,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String infrFullWeeklyRestRequiredText(String time) {
-    return 'შემცირებული კვირეული დასვენება ახლა მიუწვდომელია — ნუ დაასრულებთ დასვენებას 45 სთ-მდე. დარჩა $time.';
+    return 'ახლა შემცირება არ შეიძლება: დაისვენეთ სრული 45 სთ. დარჩა $time.';
   }
 
   @override
@@ -770,7 +768,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get ferryHint =>
-      'დასვენების შეწყვეტა შეიძლება მაქსიმუმ ორჯერ, ჯამში 1 სთ-მდე (მუხ. 9). ბორნის მოძრაობა მართვას არ ჩართავს.';
+      'დასვენების შეწყვეტა შეიძლება ორჯერ, ჯამში არაუმეტეს 1 სთ-ით (მუხ. 9). სანამ ბორანი მოძრაობს, მართვა თავისით არ ჩაირთვება.';
 
   @override
   String get ferryOn => 'ბორანი';
@@ -808,7 +806,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get breakSplitText =>
-      'პირველი ნაწილი არანაკლებ 15 წთ, მეორე — არანაკლებ 30 წთ, სწორედ ამ თანმიმდევრობით. აპლიკაცია მას თავად ამოიცნობს.';
+      'ჯერ არანაკლებ 15 წთ, შემდეგ არანაკლებ 30 წთ — მხოლოდ ამ თანმიმდევრობით. ნაწილები თავად ჩაითვლება.';
 
   @override
   String get breakStart => 'შესვენების დაწყება';
@@ -888,7 +886,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'ზედიზედ ორი შემცირებული — ერთი ვალი $debt: მას იღებენ მთლიანად, ერთ ბლოკად, მეორის შემდეგ და შემდეგ კვირეულ დასვენებამდე; ნაწილ-ნაწილ და მათ შორის არ შეიძლება. სრულ კვირეულ დასვენებასთან ერთად — $total უწყვეტი დასვენება.';
+    return 'ზედიზედ ორი შემცირებული — ერთი ვალი $debt. მას იღებენ მთლიანად, უშუალოდ შემდეგი კვირეული დასვენების წინ: ერთად $total უწყვეტი დასვენება.';
   }
 
   @override
@@ -903,11 +901,11 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get weeklyMobilityOn =>
-      'მობილობის პაკეტი ჩართულია: საერთაშორისო გადაზიდვებისას შეიძლება ზედიზედ ორი შემცირებული დასვენება, თუ ისინი რეგისტრაციის ქვეყნის გარეთ ტარდება. შემცირება კომპენსირდება მესამე კვირის ბოლომდე.';
+      'მობილობის პაკეტი: საერთაშორისო რეისში შეიძლება ზედიზედ ორი შემცირებული კვირეული დასვენება, თუ ორივე ფირმის ქვეყნის გარეთაა. კომპენსაციას იღებენ მესამე კვირის ბოლომდე.';
 
   @override
   String get weeklyMobilityOff =>
-      'შემცირებული კვირეული დასვენება კომპენსირდება მესამე კვირის ბოლომდე: ვალი ემატება დასვენებას, რომელიც არანაკლებ 9 სთ-ია.';
+      'შემცირებული კვირეული დასვენების კომპენსაციას მესამე კვირის ბოლომდე უერთებენ არანაკლებ 9 სთ-იან დასვენებას.';
 
   @override
   String get weeklyStartRest => 'დასვენების დაწყება';
@@ -1063,7 +1061,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get journalEmpty =>
-      'ცვლები ჯერ არ არის. ისინი გამოჩნდება, როცა რეჟიმების გადართვას დაიწყებთ, ან დაამატეთ ცვლა ხელით.';
+      'ცვლები ჯერ არ არის. გადართეთ რეჟიმი მთავარ ეკრანზე ან დაამატეთ ცვლა ხელით.';
 
   @override
   String restStatus(String status) {
@@ -1229,8 +1227,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get shiftLiveContinuous => 'ითვლება შესვენებებით';
 
   @override
-  String get shiftDrivingAfterRest =>
-      'შეიყვანება, როცა ცვლის შემდეგ დასვენება არჩეულია';
+  String get shiftDrivingAfterRest => 'ჯერ აირჩიეთ ცვლის შემდეგ დასვენება';
 
   @override
   String get shiftRestNone => 'არ დაწყებულა';
@@ -1272,7 +1269,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get shiftDeleteRecorded =>
-      'ამ ცვლის რეჟიმების ყველა ჩანაწერი წაიშლება. ამის გაუქმება შეუძლებელია.';
+      'ამ ცვლის ყველა რეჟიმი წაიშლება. მათი აღდგენა ვეღარ მოხერხდება.';
 
   @override
   String get shiftErrStartCountry => 'აირჩიეთ ცვლის დაწყების ქვეყანა';
@@ -1302,7 +1299,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get shiftErrNotLast =>
-      'ამ ცვლის შემდეგ სხვა ცვლებიცაა — ახლა ვერ გაგრძელდება';
+      'ამ ცვლის შემდეგ უკვე სხვა ცვლებია — აირჩიეთ მის შემდგომი დასვენება';
 
   @override
   String get shiftSaveFailed => 'შენახვა ვერ მოხერხდა. სცადეთ ხელახლა.';
@@ -1319,15 +1316,15 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get shiftLiveHint =>
-      'ცვლა რეჟიმების ჩანაწერებით მიდის: დასაწყისის, დასასრულის და მართვის ცვლილება თავად ჩანაწერებს გადაწევს.';
+      'ცვლა რეჟიმებისგან შედგება. შეცვალეთ დასაწყისი, დასასრული ან მართვა — რეჟიმები გადაიწევს.';
 
   @override
   String get shiftConvertHint =>
-      'დრო, მართვა ან დასვენება შეიცვალა — ცვლა შეინახება ხელით ჩანაწერად რეჟიმების ჩანაწერების ნაცვლად.';
+      'თქვენ შეცვალეთ დრო, მართვა ან დასვენება — ცვლა შეინახება ჯამებით, რეჟიმების დროის გარეშე.';
 
   @override
   String get shiftLiveConvertHint =>
-      'დღის მართვა შეყვანილია ჯამად — ცვლა შეინახება ხელით ჩანაწერად რეჟიმების ჩანაწერების ნაცვლად, მის შემდეგ დასვენება გაგრძელდება.';
+      'მართვა შეყვანილია ჯამად — ცვლა შეინახება რეჟიმების დროის გარეშე. მის შემდეგ დასვენება გაგრძელდება.';
 
   @override
   String shiftEndNowHint(String time) {
@@ -1336,18 +1333,18 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get shiftResumeHint =>
-      'ცვლის შემდგომი დასვენება წაიშლება — ცვლა გაგრძელდება.';
+      'ცვლის შემდგომი დასვენება წაიშლება და ცვლა გაგრძელდება.';
 
   @override
   String shiftOngoingHint(String time, String mode) {
-    return 'ცვლა გახდება მიმდინარე და გაგრძელდება მთავარ ეკრანზე $time-დან. რეჟიმი „$mode“ — თუ ახლა სხვაა, გადართეთ იქ.';
+    return 'ცვლა გახდება მიმდინარე $time-დან, რეჟიმი — „$mode“. თუ ახლა სხვაა, გადართეთ მთავარ ეკრანზე.';
   }
 
   @override
   String get shiftUnsavedTitle => 'შევინახოთ ცვლილებები?';
 
   @override
-  String get shiftUnsavedText => 'ცვლის ცვლილებები ჯერ არ არის შენახული.';
+  String get shiftUnsavedText => 'შენახვის გარეშე ცვლილებები დაიკარგება.';
 
   @override
   String get shiftDiscard => 'არ შეინახოს';
@@ -1357,11 +1354,11 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String driveEditSubtitle(String date) {
-    return 'ხელით კორექტირება · $date';
+    return 'შესწორება · $date';
   }
 
   @override
-  String get driveEditComputed => 'დათვლილია აპლიკაციის მიერ';
+  String get driveEditComputed => 'დათვლილია რეჟიმებით';
 
   @override
   String driveEditDiff(String diff) {
@@ -1373,11 +1370,11 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get driveEditHint =>
-      'გამოიყენეთ, თუ რეჟიმი დროულად არ გადართეთ — ლიმიტები თავიდან დაითვლება.';
+      'რეჟიმი დროულად არ გადართეთ? აქ გაასწორეთ — ლიმიტები თავიდან დაითვლება.';
 
   @override
   String get driveEditNoDrive =>
-      'მიმდინარე ცვლაში მართვა ჯერ არ არის — გასასწორებელი არაფერია.';
+      'ამ ცვლაში მართვა ჯერ არ ყოფილა — გასასწორებელი არაფერია.';
 
   @override
   String get breakCorrection => 'კორექტირება';
@@ -1390,11 +1387,11 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get breakNoBreak =>
-      'ცვლაში შესვენება ჯერ არ არის — გასასწორებელი არაფერია.';
+      'ამ ცვლაში შესვენება ჯერ არ ყოფილა — გასასწორებელი არაფერია.';
 
   @override
   String get breakEditHint =>
-      'დრო აიღება მეზობელი ჩანაწერიდან — ლიმიტები თავიდან დაითვლება.';
+      'სხვაობას მეზობელი რეჟიმი აიღებს, ლიმიტები თავიდან დაითვლება.';
 
   @override
   String get workdayChangeStart => 'ცვლის დასაწყისის შეცვლა';
@@ -1447,7 +1444,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get exportPdfHint =>
-      'ეს არ არის ოფიციალური ჩანაწერი: ანგარიში არ ცვლის ტაქოგრაფისა და მძღოლის ბარათის მონაცემებს.';
+      'ანგარიში არ ცვლის ტაქოგრაფისა და მძღოლის ბარათის მონაცემებს.';
 
   @override
   String get exportCsvHint =>
@@ -1729,7 +1726,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get notifyAllow => 'შეტყობინებების დაშვება';
 
   @override
-  String get notifyDenied => 'შეტყობინებები ახლა აკრძალულია ტელეფონში';
+  String get notifyDenied => 'შეტყობინებები გამორთულია ტელეფონის პარამეტრებში';
 
   @override
   String get notifyAllowed => 'შეტყობინებები დაშვებულია';
@@ -1753,7 +1750,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String notifyBreakTakenText(int required, String time) {
-    return '$required წთ შესვენება შესრულდა. შეგიძლიათ იაროთ $time შემდეგ შესვენებამდე.';
+    return '$required წთ შესრულდა — შეგიძლიათ იაროთ კიდევ $time.';
   }
 
   @override
@@ -1800,7 +1797,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String serviceSuggestText(String time) {
-    return 'დავიწყოთ მართვა $time-დან? დასვენება შეწყდება';
+    return 'ჩავრთოთ მართვა $time-დან? დასვენება შეწყდება';
   }
 
   @override
@@ -1867,7 +1864,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get autoStartFromRestHint =>
-      'თორემ აპლიკაცია ჯერ იკითხავს: შეიძლება მგზავრად მიდიოდით';
+      'თორემ ჯერ გკითხავთ: იქნებ მგზავრად მიდიხართ';
 
   @override
   String get autoBattery => 'ბატარეის დაზოგვა';
@@ -1892,7 +1889,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get autoBlockedDenied =>
-      'გეოლოკაციაზე წვდომის გარეშე მართვის განსაზღვრა შეუძლებელია. აპლიკაციას მხოლოდ სიჩქარე სჭირდება, კოორდინატები არ ინახება.';
+      'გეოლოკაციაზე წვდომის გარეშე მართვის განსაზღვრა შეუძლებელია. საჭიროა მხოლოდ სიჩქარე — კოორდინატები არ ინახება.';
 
   @override
   String get autoBlockedForever =>
@@ -1932,7 +1929,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get clearText =>
-      'რეჟიმების ჟურნალი, ცვლები, ქვეყნები, შენიშვნები და ბარათის წაკითხვები წაიშლება. ამის გაუქმება შეუძლებელია. პარამეტრები დარჩება.';
+      'წაიშლება რეჟიმების ჟურნალი, ცვლები, ქვეყნები, შენიშვნები და ბარათის წაკითხვები. მათი აღდგენა ვეღარ მოხერხდება. პარამეტრები დარჩება.';
 
   @override
   String get clearConfirm => 'წაშლა';
@@ -1946,7 +1943,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get onbWelcomeTitle => 'საჭესთან დრო — კონტროლის ქვეშ';
+  String get onbWelcomeTitle => 'იცოდეთ, კიდევ რამდენი ხანი შეგიძლიათ იაროთ';
 
   @override
   String get onbWelcomeText =>
@@ -1969,26 +1966,24 @@ class AppLocalizationsKa extends AppLocalizations {
       'გადართეთ რეჟიმი მთავარი ეკრანის ღილაკებით. ტაიმერები თავად ითვლის — მაშინაც, როცა აპლიკაცია დახურულია.';
 
   @override
-  String get onbModeDriving =>
-      'საჭესთან. ვითვლით უწყვეტ, დღიურ და კვირეულ მართვას.';
+  String get onbModeDriving => 'მანქანა მოძრაობს, საჭესთან თქვენ ხართ.';
 
   @override
   String get onbModeWork => 'დატვირთვა, მანქანის დათვალიერება, დოკუმენტები.';
 
   @override
   String get onbModeAvailability =>
-      'მოლოდინი: რიგი დატვირთვაზე, საზღვარი, მეორე მძღოლი გზაში.';
+      'მოლოდინი: რიგი დატვირთვაზე, საზღვარი, მეორე მძღოლი საჭესთან.';
 
   @override
   String get onbModeRest =>
-      'შესვენებები და დასვენება. „დღის დასრულება“ ხურავს ცვლას.';
+      'შესვენებები და დასვენება. ცვლის ბოლოს — „დღის დასრულება“.';
 
   @override
-  String get onbSetupTitle => 'მოვარგოთ თქვენ';
+  String get onbSetupTitle => 'რამდენიმე პარამეტრი';
 
   @override
-  String get onbSetupText =>
-      'ამ ყველაფრის შეცვლა შემდეგ პარამეტრებშიც შეიძლება.';
+  String get onbSetupText => 'მათი შეცვლა მოგვიანებით პარამეტრებში შეგიძლიათ.';
 
   @override
   String get onbMobilityHint => 'ჩართეთ, თუ საერთაშორისო რეისებზე დადიხართ';
@@ -2006,7 +2001,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get onbAutoText =>
-      'დაიძარით — აპლიკაცია ჩართავს მართვას, გაჩერდით — სხვა სამუშაოს. დასვენების შემდეგ ჯერ იკითხავს. საჭიროა მხოლოდ GPS სიჩქარე: კოორდინატები არ ინახება და არსად იგზავნება.';
+      'დაიძარით — ჩავრთავთ მართვას, გაჩერდით — სხვა სამუშაოს. დასვენების შემდეგ ჯერ გკითხავთ. ვიყენებთ მხოლოდ GPS სიჩქარეს: კოორდინატები არ ინახება და არსად იგზავნება.';
 
   @override
   String get onbAutoLater => 'შეგიძლიათ მოგვიანებით ჩართოთ პარამეტრებში.';
@@ -2024,7 +2019,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get onbRulesText =>
-      'ერთნაირია სატვირთოების, ავტობუსებისა და ფურგონებისთვის. აპლიკაცია მათ თავად ითვლის და წინასწარ გაფრთხილებთ.';
+      'საერთოა სატვირთოების, ავტობუსებისა და ფურგონებისთვის.';
 
   @override
   String get onbRulesMore =>
@@ -2046,7 +2041,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get guideStep3 =>
-      'ადევნეთ თვალი ლიმიტებს. აპლიკაცია წინასწარ გაგაფრთხილებთ შესვენებასა და დღის დასასრულზე. ნებისმიერი დრო შეიძლება ხელით შესწორდეს.';
+      'შესვენებასა და დღის დასასრულზე წინასწარ გაგაფრთხილებთ. შეცდით? დრო შეიძლება შესწორდეს.';
 
   @override
   String get guideRules => 'EU 561/2006-ისა და AETR-ის წესები';
@@ -2080,7 +2075,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String guideDailyRestText(String reduced, String first, String second) {
-    return 'კვირეულ დასვენებებს შორის სამჯერ შეიძლება შემცირდეს $reduced-მდე. გაყოფილი ვარიანტი — $first + $second.';
+    return 'კვირეულ დასვენებებს შორის მისი შემცირება შეიძლება $reduced-მდე — სამჯერ. შეიძლება გაყოფაც: $first + $second.';
   }
 
   @override
@@ -2088,7 +2083,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String guideWorkdayText(String window, String regular, String reduced) {
-    return 'დასვენება უნდა დასრულდეს ცვლის დაწყებიდან $window-ში: $regular სრული დასვენებისას, $reduced შემცირებულისას.';
+    return 'ცვლა დასვენებასთან ერთად $window-ში ეტევა: $regular სრული დასვენების წინ, $reduced შემცირებულის წინ.';
   }
 
   @override
@@ -2115,7 +2110,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String guideWorkWeekText(String period) {
-    return 'კვირეული დასვენება იწყება წინადან არაუგვიანეს 6 × $period პერიოდის შემდეგ.';
+    return 'შემდეგი კვირეული დასვენება — წინას დასრულებიდან არაუგვიანეს 6 × $period-ში.';
   }
 
   @override
@@ -2158,7 +2153,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get guideNewbieRestPlaceText =>
-      'დღიური და შემცირებული კვირეული დასვენება შეიძლება მანქანაში, თუ მასში საწოლია და ის დგას. რეგულარული კვირეული დასვენება და კომპენსაცია — მხოლოდ მანქანის გარეთ.';
+      'დღიური და შემცირებული კვირეული დასვენება შეიძლება მანქანაში, თუ მასში საწოლია და ის დგას. სრული კვირეული დასვენება და კომპენსაცია — მხოლოდ მანქანის გარეთ.';
 
   @override
   String get guideNewbieCountry => 'ქვეყნები';
@@ -2289,7 +2284,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get problemText =>
-      'ანგარიშში შევა აპლიკაციის ვერსია, ტელეფონის მოდელი, პარამეტრები, ნებართვები, შეტყობინებების განრიგი და ჟურნალის ჩანაწერები ბოლო ორი დღე-ღამის განმავლობაში. კოორდინატები მასში არ არის. აირჩიეთ, სად გაგზავნოთ — ელფოსტა ან მესენჯერი — და აღწერეთ, რა მოხდა.';
+      'ანგარიშში შევა აპლიკაციის ვერსია, ტელეფონის მოდელი, პარამეტრები, ნებართვები, შეტყობინებების განრიგი და ბოლო ორი დღე-ღამის ჟურნალი. კოორდინატები მასში არ არის. აირჩიეთ ელფოსტა ან მესენჯერი და აღწერეთ, რა მოხდა.';
 
   @override
   String get problemSend => 'გაგზავნა';
@@ -2311,7 +2306,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get transferText =>
-      'ძველ ტელეფონზე შეინახეთ ჟურნალი ფაილად და გაუგზავნეთ საკუთარ თავს — მესენჯერში, ფოსტით ან ღრუბელში. ახალ ტელეფონზე გახსენით იგივე ეკრანი და ჩატვირთეთ ფაილი: ჟურნალი, ბარათის წაკითხვები და გაანგარიშების პარამეტრები იქნება ისეთივე, როგორც ძველზე.';
+      'ძველ ტელეფონზე შეინახეთ ჟურნალი ფაილად და გაუგზავნეთ საკუთარ თავს — მესენჯერში, ფოსტით ან ღრუბელში. ახალზე გახსენით ეს ეკრანი და ჩატვირთეთ ფაილი: ჟურნალი, ბარათის წაკითხვები და გაანგარიშების პარამეტრები გადმოვა.';
 
   @override
   String get transferSave => 'ჟურნალის ფაილად შენახვა';
@@ -2354,7 +2349,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get transferFailed =>
-      'ჟურნალის ჩატვირთვა ვერ მოხერხდა. ტელეფონის ჟურნალი არ შეცვლილა';
+      'ჟურნალი არ ჩაიტვირთა. ტელეფონში ყველაფერი ისე დარჩა, როგორც იყო';
 
   @override
   String get transferSaveFailed =>
@@ -2411,7 +2406,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String notifyCompensationTakenText(String time) {
-    return 'დასვენებამ დაიტია $time ვალი შემცირებული კვირის დასვენებისთვის — ვალი დაფარულია.';
+    return '$time ვალი შემცირებული კვირეული დასვენებისთვის დაფარულია.';
   }
 
   @override
@@ -2503,7 +2498,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get bansNeedsCheck =>
-      'წყაროები დეტალებში განსხვავდება — რეისამდე შეამოწმეთ ოფიციალურ წყაროში.';
+      'წყაროები განსხვავდება — რეისამდე შეამოწმეთ ოფიციალურში.';
 
   @override
   String get bansDisclaimer =>
@@ -2593,7 +2588,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get baseCountryCardText =>
-      'მის გარეშე აპი ვერ შეამოწმებს, შეიძლება თუ არა ზედიზედ ორი შემცირებული კვირეული დასვენება, და ვერ დათვლის სამუშაო დღეებს';
+      'მის გარეშე ვერ შემოწმდება, შეიძლება თუ არა ზედიზედ ორი შემცირებული კვირეული დასვენება, და ვერ დაითვლება სამუშაო დღეები';
 
   @override
   String get onbBaseCountryRequired => 'გასაგრძელებლად აირჩიეთ ფირმის ქვეყანა';
@@ -2627,7 +2622,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get workDaysWeekendsAbroadHint =>
-      'მთელი დღე სამუშაოს გარეშე ფირმის ქვეყნის გარეთ';
+      'სამუშაოს გარეშე, დღის ნაწილი მაინც საზღვარგარეთ';
 
   @override
   String get workDaysWeekendAbroad => 'დასვენების დღე საზღვარგარეთ';
@@ -2637,7 +2632,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get workDaysWeekendsHomeHint =>
-      'მთელი დღე სამუშაოს გარეშე ფირმის ქვეყანაში';
+      'სამუშაოს გარეშე, მთელი დღე ფირმის ქვეყანაში';
 
   @override
   String get workDaysWeekendHome => 'დასვენების დღე ფირმის ქვეყანაში';
@@ -2653,9 +2648,9 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get workDaysNoBase =>
-      'მიუთითეთ ფირმის ქვეყანა: სამუშაო დღეები მის მიხედვით ითვლება.';
+      'მიუთითეთ ფირმის ქვეყანა: მის გარეშე დღეები ვერ დაითვლება.';
 
   @override
   String get workDaysRule =>
-      'სამუშაო დღეა დღე მართვით ან სხვა სამუშაოთი, საზღვარგარეთ კი — მზადყოფნითაც. დღე სამუშაოს გარეშე დასვენების დღეა: საზღვარგარეთ, თუ დღის ნაწილი მაინც ფირმის ქვეყნის გარეთ იყავით, სხვა შემთხვევაში — ფირმის ქვეყანაში. სად იყავით, აპი იგებს მთავარ ეკრანზე ცვლების ქვეყნებიდან. კალენდარში შეღებილია სამუშაო დღეები და დასვენების დღეები საზღვარგარეთ (მწვანე), რგოლით — დასვენების დღეები ფირმის ქვეყანაში, ნაცრისფერი — მონაცემები არ არის.';
+      'სამუშაო დღეა დღე მართვით ან სხვა სამუშაოთი, საზღვარგარეთ კი — მზადყოფნითაც. დანარჩენი დღეები დასვენების დღეებია. ქვეყნებს ვიღებთ მთავარ ეკრანზე ცვლებიდან. შეღებილია სამუშაო დღეები, ნაცრისფერი — მონაცემები არ არის.';
 }

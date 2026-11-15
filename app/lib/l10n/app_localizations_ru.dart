@@ -103,7 +103,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get switchFailed => 'Режим не записан. Попробуйте ещё раз.';
+  String get switchFailed => 'Режим не переключился. Попробуйте ещё раз.';
 
   @override
   String homeShiftSince(String date, String time) {
@@ -138,15 +138,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get heroOffDutyHint =>
-      'Смена завершена. Новая начнётся с первого режима кроме отдыха.';
+      'Смена завершена. Новая начнётся с любого режима, кроме отдыха.';
 
   @override
-  String get bannerBreakNeeded45 =>
-      'Нужен перерыв 45 мин (или раздельный 15 + 30)';
+  String get bannerBreakNeeded45 => 'Нужен перерыв 45 мин или 15 + 30';
 
   @override
-  String get bannerBreakNeeded30 =>
-      'Нужен перерыв 30 мин — вторая часть раздельного 15 + 30';
+  String get bannerBreakNeeded30 => 'Нужна вторая часть перерыва — 30 мин';
 
   @override
   String bannerOnBreak(String time, int required) {
@@ -180,7 +178,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chipExceeded => 'превышено';
 
   @override
-  String get chipLimiting => 'ограничивает';
+  String get chipLimiting => 'кончится раньше';
 
   @override
   String get chipShiftSoon => 'скоро конец';
@@ -340,7 +338,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get workWeekRule =>
-      'Рабочая неделя — время от конца недельного отдыха. Следующий недельный отдых нужно начать не позже чем через шесть периодов по 24 часа — 144 ч (ст. 8(6) Регламента 561/2006).';
+      'Недельный отдых нужно начать не позже чем через 144 ч (6 суток) после конца прошлого. Ст. 8(6) Регламента 561/2006.';
 
   @override
   String get cardTitle => 'Считывание карты';
@@ -363,7 +361,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get cardSheetRule =>
-      'Данные карты водителя нужно считывать не реже раза в 28 дней (Регламент (ЕС) 581/2010).';
+      'Карту нужно считывать хотя бы раз в 28 дней. Регламент (ЕС) 581/2010.';
 
   @override
   String get cardMarkToday => 'Считано сегодня';
@@ -396,7 +394,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get workdayRule =>
-      'Суточный отдых должен закончиться в пределах 24 часов от начала смены. Сокращённый отдых 9 ч можно брать не больше трёх раз между недельными отдыхами.';
+      'Отдых должен закончиться не позже чем через 24 ч после начала смены. Сократить его до 9 ч можно не больше трёх раз между недельными отдыхами.';
 
   @override
   String get dailyRestOngoing => 'Отдых идёт';
@@ -447,11 +445,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get dailyRestInShift =>
-      'Пока отдых короче 9 ч, это перерыв в смене. С 9 ч он станет суточным и завершит смену. Закончили работу — «Завершить день».';
+      'До 9 ч это перерыв в смене, с 9 ч — суточный отдых. Закончили работу — нажмите «Завершить день».';
 
   @override
   String get dailyRestRule =>
-      'Суточный отдых — 11 ч подряд. Сокращённый — 9 ч, не больше трёх раз между недельными отдыхами. Раздельный — сначала от 3 ч, потом от 9 ч. Отдых должен закончиться в пределах 24 часов от начала смены.';
+      'Полный отдых — 11 ч подряд. Сокращённый — 9 ч, до трёх раз между недельными. Раздельный — 3 + 9 ч. Отдых должен закончиться не позже чем через 24 ч после начала смены.';
 
   @override
   String get drivingCorrect => 'Исправить вождение за день';
@@ -465,11 +463,11 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get drivingNoExtensions => 'удлинения на этой неделе использованы';
+  String get drivingNoExtensions => 'продлений на этой неделе не осталось';
 
   @override
   String get drivingDailyRule =>
-      'Суточное вождение — время за рулём между двумя суточными отдыхами: не больше 9 ч, дважды в неделю — до 10 ч. Неделя начинается в понедельник в 00:00.';
+      'Между двумя суточными отдыхами — не больше 9 ч за рулём, дважды в неделю можно 10 ч. Неделя начинается в понедельник в 00:00.';
 
   @override
   String drivingWeekSince(String date) {
@@ -504,7 +502,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get drivingWeekRule =>
-      'Неделя — с понедельника 00:00 до воскресенья 24:00, как на тахографе. За неделю — не больше 56 ч вождения, за две недели подряд — не больше 90 ч.';
+      'За неделю можно ехать до 56 ч, за две недели подряд — до 90 ч. Неделя — с понедельника 00:00 до воскресенья 24:00.';
 
   @override
   String get drivingCanDrive => 'Можно ехать ещё';
@@ -561,7 +559,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get endDayDrivingHint =>
-      'Сколько вы сегодня были за рулём? Точное время режимов не нужно — только сумма.';
+      'Сколько всего вы сегодня были за рулём? Хватит общей суммы.';
 
   @override
   String todayDate(String date) {
@@ -626,7 +624,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String infrShiftSoonText(String time) {
-    return 'Начните суточный отдых через $time.';
+    return 'Начните суточный отдых не позже чем через $time.';
   }
 
   @override
@@ -676,7 +674,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String infrWeeklyRestSoonText(String time) {
-    return 'Начните недельный отдых через $time.';
+    return 'Начните недельный отдых не позже чем через $time.';
   }
 
   @override
@@ -700,7 +698,7 @@ class AppLocalizationsRu extends AppLocalizations {
       few: '$days дня',
       one: '$days день',
     );
-    return 'Присоедините $time к отдыху не короче 9 ч. До срока $_temp0.';
+    return 'Присоедините $time к отдыху от 9 ч. До срока $_temp0.';
   }
 
   @override
@@ -716,7 +714,7 @@ class AppLocalizationsRu extends AppLocalizations {
       few: '$days дня',
       one: '$days день',
     );
-    return 'Не присоединено $time за сокращённый недельный отдых. Просрочка — $_temp0.';
+    return 'Компенсация $time за сокращённый недельный отдых не взята. Просрочка — $_temp0.';
   }
 
   @override
@@ -725,16 +723,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String infrReducedRestsExceededText(int count) {
-    return 'С недельного отдыха сокращённых: $count, допускается 3.';
+    return 'Сокращённых отдыхов после недельного: $count, а можно 3.';
   }
 
   @override
   String get infrReducedWeeklyRestWithoutRightTitle =>
-      'Сокращённый отдых без права';
+      'Сокращать отдых было нельзя';
 
   @override
   String infrReducedWeeklyRestWithoutRightText(String time) {
-    return 'Последний недельный отдых — сокращённый, а права на это не было: нужен был полный 45 ч. Не хватило $time.';
+    return 'Последний недельный отдых должен был быть полным — 45 ч. Не хватило $time.';
   }
 
   @override
@@ -742,7 +740,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String infrFullWeeklyRestRequiredText(String time) {
-    return 'Сокращённый недельный отдых сейчас недоступен — не заканчивайте отдых раньше 45 ч. Осталось $time.';
+    return 'Сейчас сокращать нельзя: отдыхайте все 45 ч. Осталось $time.';
   }
 
   @override
@@ -782,7 +780,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get ferryHint =>
-      'Отдых можно прервать не больше двух раз, всего до 1 ч (ст. 9). Движение парома не включит вождение.';
+      'Отдых можно прервать до двух раз, всего не дольше 1 ч (ст. 9). Пока паром идёт, вождение само не включится.';
 
   @override
   String get ferryOn => 'паром';
@@ -820,7 +818,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get breakSplitText =>
-      'Первая часть не меньше 15 мин, вторая — не меньше 30 мин, именно в таком порядке. Приложение распознаёт его само.';
+      'Сначала от 15 мин, потом от 30 мин — только в таком порядке. Части засчитаются сами.';
 
   @override
   String get breakStart => 'Начать перерыв';
@@ -900,7 +898,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Два сокращённых подряд — один долг $debt: его берут целиком, одним блоком, после второго из них и перед следующим недельным отдыхом; по частям и между ними нельзя. Вместе с полным недельным — $total отдыха подряд.';
+    return 'Два сокращённых подряд — один долг $debt. Его берут целиком, прямо перед следующим недельным отдыхом: вместе это $total отдыха подряд.';
   }
 
   @override
@@ -915,11 +913,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get weeklyMobilityOn =>
-      'Пакет мобильности включён: при международных перевозках можно взять два сокращённых отдыха подряд, если они проходят за пределами страны регистрации. Сокращение компенсируется до конца третьей недели.';
+      'Пакет мобильности: в международном рейсе можно взять два сокращённых недельных отдыха подряд, если оба — вне страны фирмы. Компенсацию берут до конца третьей недели.';
 
   @override
   String get weeklyMobilityOff =>
-      'Сокращённый недельный отдых компенсируется до конца третьей недели: долг присоединяют к отдыху не короче 9 ч.';
+      'Компенсацию за сокращённый недельный отдых присоединяют к отдыху от 9 ч до конца третьей недели.';
 
   @override
   String get weeklyStartRest => 'Начать отдых';
@@ -967,7 +965,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get countryFooter =>
-      'Страну начала и конца смены водитель вводит в тахограф (Регламент (ЕС) 165/2014, ст. 34).';
+      'Страну начала и конца смены вводят и в тахограф — ст. 34 Регламента (ЕС) 165/2014.';
 
   @override
   String countryName(String code) {
@@ -1075,7 +1073,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get journalEmpty =>
-      'Смен пока нет. Они появятся, когда вы начнёте переключать режимы, или добавьте смену вручную.';
+      'Смен пока нет. Переключите режим на главной или добавьте смену вручную.';
 
   @override
   String restStatus(String status) {
@@ -1149,7 +1147,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dayEdit => 'Изменить смену';
 
   @override
-  String get dayNotFound => 'Смены больше нет в журнале.';
+  String get dayNotFound => 'Этой смены уже нет в журнале.';
 
   @override
   String dayRestUntil(String time) {
@@ -1241,8 +1239,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftLiveContinuous => 'считается по перерывам';
 
   @override
-  String get shiftDrivingAfterRest =>
-      'вводится, когда выбран отдых после смены';
+  String get shiftDrivingAfterRest => 'сначала выберите отдых после смены';
 
   @override
   String get shiftRestNone => 'Не начат';
@@ -1280,11 +1277,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftDeleteTitle => 'Удалить смену?';
 
   @override
-  String get shiftDeleteManual => 'Смена будет удалена из журнала.';
+  String get shiftDeleteManual => 'Смена исчезнет из журнала.';
 
   @override
   String get shiftDeleteRecorded =>
-      'Будут удалены все записи режимов этой смены. Отменить это нельзя.';
+      'Все режимы этой смены сотрутся. Вернуть их будет нельзя.';
 
   @override
   String get shiftErrStartCountry => 'Выберите страну начала смены';
@@ -1302,7 +1299,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftErrTooLong => 'Смена длиннее 30 ч — проверьте даты';
 
   @override
-  String get shiftErrDrivingTooLong => 'Вождение больше длительности смены';
+  String get shiftErrDrivingTooLong => 'Вождение дольше самой смены';
 
   @override
   String get shiftErrContinuous => 'Непрерывное вождение больше суточного';
@@ -1314,7 +1311,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get shiftErrNotLast =>
-      'После этой смены есть другие — идти сейчас она не может';
+      'После этой смены уже есть другие — выберите отдых после неё';
 
   @override
   String get shiftSaveFailed => 'Не удалось сохранить. Попробуйте ещё раз.';
@@ -1331,15 +1328,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get shiftLiveHint =>
-      'Смена идёт по записям режимов: изменения начала, конца и вождения сдвинут сами записи.';
+      'Смена собрана из режимов. Измените начало, конец или вождение — режимы сдвинутся.';
 
   @override
   String get shiftConvertHint =>
-      'Время, вождение или отдых изменены — смена сохранится как ручная запись вместо записей режимов.';
+      'Вы изменили время, вождение или отдых — смена сохранится итогами, без режимов по времени.';
 
   @override
   String get shiftLiveConvertHint =>
-      'Вождение за день введено итогом — смена сохранится как ручная запись вместо записей режимов, отдых после неё пойдёт дальше.';
+      'Вождение введено итогом — смена сохранится без режимов по времени. Отдых после неё продолжится.';
 
   @override
   String shiftEndNowHint(String time) {
@@ -1348,18 +1345,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get shiftResumeHint =>
-      'Отдых после смены будет удалён — смена продолжится.';
+      'Отдых после смены удалится, и смена продолжится.';
 
   @override
   String shiftOngoingHint(String time, String mode) {
-    return 'Смена станет текущей и продолжится на главном экране с $time. Режим «$mode» — если сейчас другой, переключите его там.';
+    return 'Смена станет текущей с $time, режим — «$mode». Если сейчас другой, переключите на главной.';
   }
 
   @override
   String get shiftUnsavedTitle => 'Сохранить изменения?';
 
   @override
-  String get shiftUnsavedText => 'Изменения в смене ещё не сохранены.';
+  String get shiftUnsavedText => 'Без сохранения правки пропадут.';
 
   @override
   String get shiftDiscard => 'Не сохранять';
@@ -1369,11 +1366,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String driveEditSubtitle(String date) {
-    return 'Ручная корректировка · $date';
+    return 'Исправление · $date';
   }
 
   @override
-  String get driveEditComputed => 'Посчитано приложением';
+  String get driveEditComputed => 'Посчитано по режимам';
 
   @override
   String driveEditDiff(String diff) {
@@ -1385,14 +1382,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get driveEditHint =>
-      'Используйте, если режим переключили не вовремя — лимиты пересчитаются.';
+      'Переключили режим не вовремя — поправьте здесь, лимиты пересчитаются.';
 
   @override
   String get driveEditNoDrive =>
-      'В текущей смене ещё нет вождения — корректировать нечего.';
+      'В этой смене ещё не было вождения — исправлять нечего.';
 
   @override
-  String get breakCorrection => 'Корректировка';
+  String get breakCorrection => 'Исправление';
 
   @override
   String get breakCurrentDuration => 'Текущий перерыв';
@@ -1402,11 +1399,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get breakNoBreak =>
-      'В смене ещё нет перерыва — корректировать нечего.';
+      'В этой смене ещё не было перерыва — исправлять нечего.';
 
   @override
   String get breakEditHint =>
-      'Время возьмётся у соседней записи — лимиты пересчитаются.';
+      'Разницу возьмёт соседний режим, лимиты пересчитаются.';
 
   @override
   String get workdayChangeStart => 'Изменить начало смены';
@@ -1459,11 +1456,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get exportPdfHint =>
-      'Не официальная запись: отчёт не заменяет данные тахографа и карты водителя.';
+      'Отчёт не заменяет данные тахографа и карты водителя.';
 
   @override
   String get exportCsvHint =>
-      'Записи режимов по строкам, время в UTC — для Excel и программ учёта.';
+      'Режимы по строкам, время в UTC — для Excel и программ учёта.';
 
   @override
   String get exportLanguage => 'Язык отчёта';
@@ -1488,7 +1485,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get exportEmpty => 'За выбранный период смен нет.';
+  String get exportEmpty => 'За этот период смен нет.';
 
   @override
   String get exportFailed => 'Не удалось создать отчёт. Попробуйте ещё раз.';
@@ -1667,14 +1664,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsMobilityHint =>
-      'Два сокращённых недельных отдыха подряд при международных перевозках';
+      'Два сокращённых недельных отдыха подряд в международных рейсах';
 
   @override
   String get settingsCrew => 'Экипаж из двух водителей';
 
   @override
   String get settingsCrewHint =>
-      'Суточный отдых 9 ч в пределах 30 ч от начала смены';
+      'Суточный отдых 9 ч в течение 30 ч с начала смены';
 
   @override
   String get settingsNotifications => 'Уведомления';
@@ -1747,7 +1744,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notifyAllow => 'Разрешить уведомления';
 
   @override
-  String get notifyDenied => 'Сейчас уведомления запрещены в телефоне';
+  String get notifyDenied => 'Уведомления выключены в настройках телефона';
 
   @override
   String get notifyAllowed => 'Уведомления разрешены';
@@ -1771,7 +1768,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String notifyBreakTakenText(int required, String time) {
-    return 'Перерыв $required мин набран. Можно ехать $time до следующего перерыва.';
+    return '$required мин набрано — можно ехать ещё $time.';
   }
 
   @override
@@ -1818,7 +1815,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String serviceSuggestText(String time) {
-    return 'Начать вождение с $time? Отдых будет прерван';
+    return 'Включить вождение с $time? Отдых прервётся';
   }
 
   @override
@@ -1885,7 +1882,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get autoStartFromRestHint =>
-      'Иначе приложение сначала спросит: вы могли ехать пассажиром';
+      'Иначе сначала спросим: вдруг вы едете пассажиром';
 
   @override
   String get autoBattery => 'Экономия батареи';
@@ -1910,7 +1907,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get autoBlockedDenied =>
-      'Без доступа к геолокации вождение не определить. Приложению нужна только скорость, координаты не сохраняются.';
+      'Без доступа к геолокации вождение не определить. Нужна только скорость — координаты не сохраняются.';
 
   @override
   String get autoBlockedForever =>
@@ -1950,7 +1947,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get clearText =>
-      'Журнал режимов, смены, страны, заметки и считывания карты будут удалены. Отменить это нельзя. Настройки останутся.';
+      'Сотрутся журнал режимов, смены, страны, заметки и считывания карты. Вернуть их будет нельзя. Настройки останутся.';
 
   @override
   String get clearConfirm => 'Очистить';
@@ -1964,7 +1961,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get onbWelcomeTitle => 'Время за рулём — под контролем';
+  String get onbWelcomeTitle => 'Знайте, сколько ещё можно ехать';
 
   @override
   String get onbWelcomeText =>
@@ -1984,28 +1981,27 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get onbModesText =>
-      'Переключайте режим кнопками на главном экране. Таймеры считаются сами — даже когда приложение закрыто.';
+      'Переключайте режим кнопками на главном экране. Таймеры идут, даже когда приложение закрыто.';
 
   @override
-  String get onbModeDriving =>
-      'За рулём. Считаем непрерывное, суточное и недельное вождение.';
+  String get onbModeDriving => 'Машина едет, вы за рулём.';
 
   @override
   String get onbModeWork => 'Погрузка, осмотр машины, документы.';
 
   @override
   String get onbModeAvailability =>
-      'Ожидание: очередь на погрузку, граница, второй водитель в пути.';
+      'Ожидание: очередь на погрузку, граница, второй водитель за рулём.';
 
   @override
   String get onbModeRest =>
-      'Перерывы и отдых. «Завершить день» закрывает смену.';
+      'Перерывы и отдых. В конце смены — «Завершить день».';
 
   @override
-  String get onbSetupTitle => 'Настроим под вас';
+  String get onbSetupTitle => 'Пара настроек';
 
   @override
-  String get onbSetupText => 'Всё это можно поменять позже в настройках.';
+  String get onbSetupText => 'Поменять их можно потом в настройках.';
 
   @override
   String get onbMobilityHint => 'Включите, если ездите по международным рейсам';
@@ -2020,12 +2016,12 @@ class AppLocalizationsRu extends AppLocalizations {
       few: '$minutes минуты',
       one: '$minutes минуту',
     );
-    return 'Предупредим за $_temp0 до перерыва и конца рабочего дня — даже когда приложение закрыто.';
+    return 'Предупредим за $_temp0 до перерыва и конца рабочего дня, даже когда приложение закрыто.';
   }
 
   @override
   String get onbAutoText =>
-      'Поехали — приложение включит вождение, остановились — другую работу. После отдыха оно сначала спросит. Нужна только скорость по GPS: координаты не сохраняются и никуда не отправляются.';
+      'Поехали — включим вождение, остановились — другую работу. После отдыха сначала спросим. Берём только скорость по GPS: координаты не сохраняются и никуда не уходят.';
 
   @override
   String get onbAutoLater => 'Можно включить позже в настройках.';
@@ -2042,8 +2038,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get onbRulesTitle => 'Главные правила';
 
   @override
-  String get onbRulesText =>
-      'Одни и те же для грузовиков, автобусов и фургонов. Приложение считает их само и заранее предупреждает.';
+  String get onbRulesText => 'Общие для грузовиков, автобусов и фургонов.';
 
   @override
   String get onbRulesMore =>
@@ -2065,7 +2060,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get guideStep3 =>
-      'Следите за лимитами. Приложение заранее предупредит о перерыве и конце дня. Любое время можно поправить вручную.';
+      'Мы заранее предупредим о перерыве и конце дня. Ошиблись — время можно поправить.';
 
   @override
   String get guideRules => 'Правила ЕС 561/2006 и ЕСТР';
@@ -2099,7 +2094,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String guideDailyRestText(String reduced, String first, String second) {
-    return 'До трёх раз между недельными отдыхами можно сократить до $reduced. Раздельный вариант — $first + $second.';
+    return 'Между недельными отдыхами его можно сократить до $reduced — до трёх раз. Можно и разделить: $first + $second.';
   }
 
   @override
@@ -2107,7 +2102,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String guideWorkdayText(String window, String regular, String reduced) {
-    return 'Отдых должен закончиться в пределах $window от начала смены: $regular при полном отдыхе, $reduced при сокращённом.';
+    return 'Смена вместе с отдыхом укладывается в $window: $regular перед полным отдыхом, $reduced перед сокращённым.';
   }
 
   @override
@@ -2136,7 +2131,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String guideWorkWeekText(String period) {
-    return 'Недельный отдых начинается не позже чем через шесть периодов по $period после предыдущего.';
+    return 'Следующий недельный отдых — не позже чем через 6 × $period после конца прошлого.';
   }
 
   @override
@@ -2144,7 +2139,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String guideCardText(String days) {
-    return 'Данные карты нужно считывать не реже раза в $days.';
+    return 'Карту считывают хотя бы раз в $days.';
   }
 
   @override
@@ -2179,14 +2174,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get guideNewbieRestPlaceText =>
-      'Суточный и сокращённый недельный отдых можно провести в машине, если в ней есть спальное место и она стоит. Регулярный недельный отдых и компенсацию — только вне машины.';
+      'Суточный и сокращённый недельный отдых можно провести в машине, если в ней есть спальное место и она стоит. Полный недельный отдых и компенсацию — только вне машины.';
 
   @override
   String get guideNewbieCountry => 'Страны';
 
   @override
   String get guideNewbieCountryText =>
-      'Страну вводят в тахограф в начале и в конце смены. Пересечение границы умный тахограф второго поколения записывает сам, в старых — страну вводят на первой остановке после границы.';
+      'Страну вводят в тахограф в начале и в конце смены. Границу умный тахограф второго поколения записывает сам, в старых её вводят на первой остановке после границы.';
 
   @override
   String guideVanText(String date) {
@@ -2250,7 +2245,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get guideVanDomesticText =>
-      'Регламент ЕС внутри страны фургоны не касается. Проверьте правила своей страны.';
+      'Внутри страны регламент ЕС фургонов не касается. Проверьте правила своей страны.';
 
   @override
   String get guideVanOwnText =>
@@ -2267,7 +2262,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get guideVanNotes =>
-      'С прицепом тяжелее 3,5 т вместе — правила как у грузовика, и внутри страны. Рейс частично вне ЕС — в Украину, Молдову, Турцию, на Балканы — уточните у перевозчика: единого толкования нет.';
+      'Если фургон с прицепом весит больше 3,5 т, правила как у грузовика, и внутри страны тоже. Рейс частично вне ЕС: в Украину, Молдову, Турцию, на Балканы? Уточните у перевозчика — единого толкования нет.';
 
   @override
   String get guideDisclaimer =>
@@ -2309,7 +2304,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get problemText =>
-      'В отчёт войдут версия приложения, модель телефона, настройки, разрешения, расписание уведомлений и записи журнала за двое суток. Координат в нём нет. Выберите, куда отправить, — почта или мессенджер — и опишите, что случилось.';
+      'В отчёт войдут версия приложения, модель телефона, настройки, разрешения, расписание уведомлений и журнал за двое суток. Координат в нём нет. Выберите почту или мессенджер и опишите, что случилось.';
 
   @override
   String get problemSend => 'Отправить';
@@ -2332,7 +2327,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get transferText =>
-      'На старом телефоне сохраните журнал в файл и отправьте себе — в мессенджер, на почту или в облако. На новом телефоне откройте этот же экран и загрузите файл: журнал, считывания карты и настройки расчёта будут как на старом.';
+      'На старом телефоне сохраните журнал в файл и отправьте себе — в мессенджер, на почту или в облако. На новом откройте этот экран и загрузите файл: журнал, считывания карты и настройки расчёта перенесутся.';
 
   @override
   String get transferSave => 'Сохранить журнал в файл';
@@ -2350,7 +2345,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get transferConfirmReplace =>
-      'Журнал на этом телефоне будет заменён журналом из файла.';
+      'Журнал на этом телефоне заменится журналом из файла.';
 
   @override
   String get transferConfirm => 'Загрузить';
@@ -2375,7 +2370,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get transferFailed =>
-      'Не удалось загрузить журнал. Журнал на телефоне не изменился';
+      'Журнал не загрузился. На телефоне всё осталось как было';
 
   @override
   String get transferSaveFailed =>
@@ -2432,7 +2427,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String notifyCompensationTakenText(String time) {
-    return 'Отдых вместил долг $time за сокращённый недельный отдых — долг погашен.';
+    return 'Долг $time за сокращённый недельный отдых погашен.';
   }
 
   @override
@@ -2524,11 +2519,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get bansNeedsCheck =>
-      'Источники расходятся в деталях — перед рейсом проверьте по официальному источнику.';
+      'Источники расходятся — перед рейсом сверьтесь с официальным.';
 
   @override
   String get bansDisclaimer =>
-      'Справка, не официальный источник: бывают исключения (скоропортящиеся грузы, разрешения) и местные запреты. Проверяйте маршрут по источнику страны.';
+      'Это справка, не официальный источник: бывают исключения (скоропортящиеся грузы, разрешения) и местные запреты. Маршрут сверяйте с источником страны.';
 
   @override
   String get bansProvisional =>
@@ -2614,7 +2609,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get baseCountryCardText =>
-      'Без неё приложение не проверит, можно ли взять два сокращённых недельных отдыха подряд, и не посчитает рабочие дни';
+      'Без неё не проверить, можно ли два сокращённых недельных отдыха подряд, и не посчитать рабочие дни';
 
   @override
   String get onbBaseCountryRequired =>
@@ -2651,7 +2646,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get workDaysWeekendsAbroadHint =>
-      'Весь день без работы вне страны фирмы';
+      'Без работы, хотя бы часть дня за границей';
 
   @override
   String get workDaysWeekendAbroad => 'Выходной за границей';
@@ -2660,7 +2655,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get workDaysWeekendsHome => 'Выходные в стране фирмы';
 
   @override
-  String get workDaysWeekendsHomeHint => 'Весь день без работы в стране фирмы';
+  String get workDaysWeekendsHomeHint => 'Без работы, весь день в стране фирмы';
 
   @override
   String get workDaysWeekendHome => 'Выходной в стране фирмы';
@@ -2676,9 +2671,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get workDaysNoBase =>
-      'Укажите страну фирмы: рабочие дни считаются относительно неё.';
+      'Укажите страну фирмы: без неё дни не посчитать.';
 
   @override
   String get workDaysRule =>
-      'Рабочий день — день с вождением или другой работой, а за границей — и с готовностью. День без работы — выходной: за границей, если хотя бы часть дня вы были вне страны фирмы, иначе — в стране фирмы. Где вы были, приложение знает по странам смен на главной. В календаре закрашены рабочие дни и выходные за границей (зелёные), кольцом — выходные в стране фирмы, серые — нет данных.';
+      'Рабочий день — когда было вождение или другая работа, а за границей ещё и готовность. Остальные дни — выходные. Страны берём из смен на главной. Закрашены рабочие дни, серые — нет данных.';
 }

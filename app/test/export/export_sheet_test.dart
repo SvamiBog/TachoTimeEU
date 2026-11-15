@@ -74,7 +74,7 @@ void main() {
     await open(tester);
     expect(find.text('27.08 — 23.09'), findsOneWidget);
     expect(find.text('13 смен в отчёте'), findsOneWidget);
-    expect(find.textContaining('Не официальная запись'), findsOneWidget);
+    expect(find.textContaining('не заменяет данные тахографа'), findsOneWidget);
     final notes = tester.widget<Switch>(
       find.descendant(
         of: find.byType(ExportSheet),
@@ -167,7 +167,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Готово'));
     await tester.pumpAndSettle();
-    expect(find.text('За выбранный период смен нет.'), findsOneWidget);
+    expect(find.text('За этот период смен нет.'), findsOneWidget);
     final button = tester.widget<FilledButton>(
       find.ancestor(
         of: find.text('Создать отчёт'),

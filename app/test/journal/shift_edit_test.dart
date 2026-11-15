@@ -470,7 +470,7 @@ void main() {
       await tap(tester, find.text('Суточное вождение'));
       expect(find.byType(DrivingScreen), findsOneWidget);
       await tap(tester, find.text('Исправить вождение за день'));
-      expect(find.text('Посчитано приложением'), findsOneWidget);
+      expect(find.text('Посчитано по режимам'), findsOneWidget);
       expect(find.text('Можно от 0:00 до 2:30'), findsOneWidget);
       // Больше предела — ошибка, сохранить нельзя
       await enterHm(tester, '259');
@@ -568,7 +568,7 @@ void main() {
         ], open: true),
       );
       await openFromJournal(tester, span(u(23, 6)));
-      expect(find.textContaining('Смена идёт по записям'), findsOneWidget);
+      expect(find.textContaining('Смена собрана из режимов'), findsOneWidget);
       await tap(tester, find.text('Суточный'));
       expect(
         find.text(
@@ -675,7 +675,7 @@ void main() {
       await tap(tester, find.text('За день'));
       await enterHm(tester, '330');
       await tap(tester, find.text('Сохранить'));
-      expect(find.textContaining('сохранится как ручная'), findsOneWidget);
+      expect(find.textContaining('без режимов по времени'), findsOneWidget);
       await tap(tester, find.byTooltip('Сохранить'));
 
       final saved = (await manual(tester)).single;
@@ -707,15 +707,9 @@ void main() {
         ], open: true),
       );
       await openFromJournal(tester, span(u(23, 6)));
-      expect(
-        find.text('вводится, когда выбран отдых после смены'),
-        findsOneWidget,
-      );
+      expect(find.text('сначала выберите отдых после смены'), findsOneWidget);
       await tap(tester, find.text('Суточный'));
-      expect(
-        find.text('вводится, когда выбран отдых после смены'),
-        findsNothing,
-      );
+      expect(find.text('сначала выберите отдых после смены'), findsNothing);
       await tap(tester, find.text('За день'));
       await enterHm(tester, '445');
       await tap(tester, find.text('Сохранить'));
@@ -844,7 +838,7 @@ void main() {
       await tap(tester, find.text('За день'));
       await enterHm(tester, '700');
       await tap(tester, find.text('Сохранить'));
-      expect(find.textContaining('сохранится как ручная'), findsOneWidget);
+      expect(find.textContaining('без режимов по времени'), findsOneWidget);
       await tap(tester, find.byTooltip('Сохранить'));
 
       final saved = (await manual(tester)).single;
