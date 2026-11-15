@@ -355,8 +355,11 @@ void main() {
         ..notificationPermission = NotificationPermission.denied
         ..notificationAnswer = NotificationPermission.granted;
       await pump(tester);
-      await show(tester, 'Сейчас уведомления запрещены в телефоне');
-      expect(find.text('Сейчас уведомления запрещены в телефоне'), findsOne);
+      await show(tester, 'Уведомления выключены в настройках телефона');
+      expect(
+        find.text('Уведомления выключены в настройках телефона'),
+        findsOne,
+      );
       await tapText(tester, 'Разрешить уведомления');
       expect(platform.calls, contains('requestNotificationPermission'));
       expect(find.text('Разрешить уведомления'), findsNothing);

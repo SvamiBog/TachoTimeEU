@@ -80,7 +80,7 @@ void main() {
     await pump(tester);
 
     // 1. Приветствие (экран 13) и язык
-    expect(find.text('Время за рулём — под контролем'), findsOneWidget);
+    expect(find.text('Знайте, сколько ещё можно ехать'), findsOneWidget);
     expect(find.text('4:30'), findsOneWidget);
     expect(find.bySemanticsLabel('Шаг 1 из 5'), findsOneWidget);
     await tap(tester, 'Русский');
@@ -105,7 +105,7 @@ void main() {
     await tap(tester, 'Далее');
 
     // 4. Настройка (экран 14)
-    expect(find.text('Настроим под вас'), findsOneWidget);
+    expect(find.text('Пара настроек'), findsOneWidget);
     expect(selected(tester, 'Цифровой'), isTrue);
     await tap(tester, 'Аналоговый');
     expect(selected(tester, 'Аналоговый'), isTrue);
@@ -187,7 +187,7 @@ void main() {
     await tap(tester, 'Начать');
     await tap(tester, 'Далее');
     await tap(tester, 'Далее');
-    expect(find.text('Настроим под вас'), findsOneWidget);
+    expect(find.text('Пара настроек'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Назад'));
     await tester.pumpAndSettle();
@@ -199,7 +199,7 @@ void main() {
 
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
-    expect(find.text('Время за рулём — под контролем'), findsOneWidget);
+    expect(find.text('Знайте, сколько ещё можно ехать'), findsOneWidget);
     expect(find.byTooltip('Назад'), findsNothing);
     await unmount(tester);
   });
@@ -255,7 +255,7 @@ void main() {
     for (final step in ['Начать', 'Далее', 'Далее']) {
       await tap(tester, step);
     }
-    expect(find.text('Настроим под вас'), findsOneWidget);
+    expect(find.text('Пара настроек'), findsOneWidget);
     expect(find.text('Выберите страну фирмы, чтобы продолжить'), findsOne);
     FilledButton next() =>
         tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Далее'));

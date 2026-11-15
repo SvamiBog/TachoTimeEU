@@ -103,7 +103,7 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
-  String get switchFailed => 'Režim sa neuložil. Skúste to znova.';
+  String get switchFailed => 'Režim sa neprepol. Skúste to znova.';
 
   @override
   String homeShiftSince(String date, String time) {
@@ -138,15 +138,14 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get heroOffDutyHint =>
-      'Zmena skončila. Ďalšia začne prvým režimom iným ako odpočinok.';
+      'Zmena skončila. Ďalšia začne ľubovoľným režimom okrem odpočinku.';
 
   @override
   String get bannerBreakNeeded45 =>
-      'Je potrebná prestávka 45 min (alebo rozdelená 15 + 30)';
+      'Potrebujete prestávku 45 min alebo 15 + 30';
 
   @override
-  String get bannerBreakNeeded30 =>
-      'Je potrebná prestávka 30 min — druhá časť rozdelenej 15 + 30';
+  String get bannerBreakNeeded30 => 'Potrebujete druhú časť prestávky: 30 min';
 
   @override
   String bannerOnBreak(String time, int required) {
@@ -180,7 +179,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chipExceeded => 'prekročené';
 
   @override
-  String get chipLimiting => 'obmedzuje';
+  String get chipLimiting => 'minie sa skôr';
 
   @override
   String get chipShiftSoon => 'čoskoro koniec';
@@ -341,7 +340,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get workWeekRule =>
-      'Pracovný týždeň je čas od konca týždenného odpočinku. Ďalší týždenný odpočinok treba začať najneskôr po šiestich 24-hodinových obdobiach — 144 h (čl. 8 ods. 6 nariadenia 561/2006).';
+      'Týždenný odpočinok začnite najneskôr 144 h (6 dní) po konci predchádzajúceho. Čl. 8 ods. 6 nariadenia 561/2006.';
 
   @override
   String get cardTitle => 'Stiahnutie karty';
@@ -364,7 +363,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get cardSheetRule =>
-      'Údaje z karty vodiča treba sťahovať aspoň raz za 28 dní (nariadenie (EÚ) č. 581/2010).';
+      'Kartu treba sťahovať aspoň raz za 28 dní. Nariadenie (EÚ) č. 581/2010.';
 
   @override
   String get cardMarkToday => 'Stiahnuté dnes';
@@ -397,7 +396,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get workdayRule =>
-      'Denný odpočinok musí skončiť do 24 hodín od začiatku zmeny. Skrátený odpočinok 9 h je povolený najviac trikrát medzi dvoma týždennými odpočinkami.';
+      'Odpočinok musí skončiť najneskôr 24 h od začiatku zmeny. Skrátiť ho na 9 h môžete najviac trikrát medzi dvoma týždennými odpočinkami.';
 
   @override
   String get dailyRestOngoing => 'Odpočinok prebieha';
@@ -449,11 +448,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get dailyRestInShift =>
-      'Kým je odpočinok kratší ako 9 h, ide o prestávku v zmene. Od 9 h sa stane denným odpočinkom a ukončí zmenu. Skončili ste prácu? „Ukončiť deň“.';
+      'Do 9 h je to prestávka v zmene, od 9 h denný odpočinok. Skončili ste prácu? Ťuknite na „Ukončiť deň“.';
 
   @override
   String get dailyRestRule =>
-      'Denný odpočinok: 11 h v kuse. Skrátený: 9 h, najviac trikrát medzi dvoma týždennými odpočinkami. Rozdelený: najprv aspoň 3 h, potom aspoň 9 h. Odpočinok musí skončiť do 24 hodín od začiatku zmeny.';
+      'Bežný odpočinok: 11 h v kuse. Skrátený: 9 h, až trikrát medzi dvoma týždennými odpočinkami. Rozdelený: 3 + 9 h. Odpočinok musí skončiť najneskôr 24 h od začiatku zmeny.';
 
   @override
   String get drivingCorrect => 'Opraviť jazdu za deň';
@@ -471,7 +470,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get drivingDailyRule =>
-      'Denná jazda je čas za volantom medzi dvoma dennými odpočinkami: najviac 9 h, dvakrát týždenne do 10 h. Týždeň začína v pondelok o 00:00.';
+      'Medzi dvoma dennými odpočinkami najviac 9 h za volantom, dvakrát týždenne 10 h. Týždeň začína v pondelok o 00:00.';
 
   @override
   String drivingWeekSince(String date) {
@@ -506,7 +505,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get drivingWeekRule =>
-      'Týždeň trvá od pondelka 00:00 do nedele 24:00, ako na tachografe. Za týždeň najviac 56 h jazdy, za dva po sebe idúce týždne najviac 90 h.';
+      'Za týždeň do 56 h jazdy, za dva po sebe idúce týždne do 90 h. Týždeň trvá od pondelka 00:00 do nedele 24:00.';
 
   @override
   String get drivingCanDrive => 'Môžete jazdiť ešte';
@@ -563,7 +562,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get endDayDrivingHint =>
-      'Ako dlho ste dnes šoférovali? Presné časy režimov nie sú potrebné — len súčet.';
+      'Ako dlho ste dnes celkovo šoférovali? Stačí súčet.';
 
   @override
   String todayDate(String date) {
@@ -628,7 +627,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String infrShiftSoonText(String time) {
-    return 'Začnite denný odpočinok o $time.';
+    return 'Začnite denný odpočinok najneskôr o $time.';
   }
 
   @override
@@ -677,7 +676,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String infrWeeklyRestSoonText(String time) {
-    return 'Začnite týždenný odpočinok o $time.';
+    return 'Začnite týždenný odpočinok najneskôr o $time.';
   }
 
   @override
@@ -717,7 +716,7 @@ class AppLocalizationsSk extends AppLocalizations {
       few: '$days dni',
       one: '$days deň',
     );
-    return 'Za skrátený týždenný odpočinok nebolo pripojené $time. Omeškanie — $_temp0.';
+    return 'Náhrada $time za skrátený týždenný odpočinok nebola vybraná. Omeškanie — $_temp0.';
   }
 
   @override
@@ -725,16 +724,16 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String infrReducedRestsExceededText(int count) {
-    return 'Skrátených od týždenného odpočinku: $count, povolené 3.';
+    return 'Skrátených odpočinkov od týždenného: $count, povolené sú 3.';
   }
 
   @override
   String get infrReducedWeeklyRestWithoutRightTitle =>
-      'Skrátený odpočinok bez nároku';
+      'Tento odpočinok sa nesmel skrátiť';
 
   @override
   String infrReducedWeeklyRestWithoutRightText(String time) {
-    return 'Posledný týždenný odpočinok bol skrátený bez nároku: bol potrebný bežný 45 h. Chýbalo $time.';
+    return 'Posledný týždenný odpočinok mal byť bežný: 45 h. Chýbalo $time.';
   }
 
   @override
@@ -743,7 +742,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String infrFullWeeklyRestRequiredText(String time) {
-    return 'Skrátený týždenný odpočinok teraz nie je možný — neukončujte odpočinok skôr ako po 45 h. Zostáva $time.';
+    return 'Teraz skracovať nemožno: odpočívajte celých 45 h. Zostáva $time.';
   }
 
   @override
@@ -783,7 +782,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get ferryHint =>
-      'Odpočinok možno prerušiť najviac dvakrát, spolu do 1 h (čl. 9). Pohyb trajektu nezapne jazdu.';
+      'Odpočinok možno prerušiť najviac dvakrát, spolu najdlhšie na 1 h (čl. 9). Kým trajekt pláva, jazda sa sama nezapne.';
 
   @override
   String get ferryOn => 'trajekt';
@@ -822,7 +821,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get breakSplitText =>
-      'Prvá časť aspoň 15 min, druhá aspoň 30 min, práve v tomto poradí. Aplikácia ju rozpozná sama.';
+      'Najprv aspoň 15 min, potom aspoň 30 min, len v tomto poradí. Obe časti sa započítajú samy.';
 
   @override
   String get breakStart => 'Začať prestávku';
@@ -902,7 +901,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Dva skrátené za sebou — jeden dlh $debt: berie sa celý, v jednom bloku, po druhom z nich a pred ďalším týždenným odpočinkom; nie po častiach a nie medzi nimi. Spolu s bežným týždenným odpočinkom — $total odpočinku v kuse.';
+    return 'Dva skrátené za sebou dávajú jeden dlh $debt. Berie sa v jednom bloku tesne pred ďalším týždenným odpočinkom: spolu $total odpočinku v kuse.';
   }
 
   @override
@@ -917,11 +916,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get weeklyMobilityOn =>
-      'Balík mobility zapnutý: v medzinárodnej doprave možno čerpať dva skrátené odpočinky za sebou, ak sú mimo krajiny registrácie. Skrátenie sa nahrádza do konca tretieho týždňa.';
+      'Balík mobility: v medzinárodnej doprave môžete čerpať dva skrátené týždenné odpočinky za sebou, ak sú oba mimo krajiny firmy. Náhradu čerpajte do konca tretieho týždňa.';
 
   @override
   String get weeklyMobilityOff =>
-      'Skrátený týždenný odpočinok sa nahrádza do konca tretieho týždňa: dlh sa pripojí k odpočinku aspoň 9 h.';
+      'Náhradu za skrátený týždenný odpočinok pripojte k odpočinku aspoň 9 h do konca tretieho týždňa.';
 
   @override
   String get weeklyStartRest => 'Začať odpočinok';
@@ -1077,7 +1076,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get journalEmpty =>
-      'Zatiaľ žiadne zmeny. Objavia sa, keď začnete prepínať režimy — alebo pridajte zmenu ručne.';
+      'Zatiaľ žiadne zmeny. Prepnite režim na hlavnej obrazovke alebo pridajte zmenu ručne.';
 
   @override
   String restStatus(String status) {
@@ -1243,7 +1242,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get shiftLiveContinuous => 'počíta sa podľa prestávok';
 
   @override
-  String get shiftDrivingAfterRest => 'zadáva sa po výbere odpočinku po zmene';
+  String get shiftDrivingAfterRest => 'najprv vyberte odpočinok po zmene';
 
   @override
   String get shiftRestNone => 'Nezačal';
@@ -1286,7 +1285,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get shiftDeleteRecorded =>
-      'Vymažú sa všetky záznamy režimov tejto zmeny. Nedá sa to vrátiť.';
+      'Všetky režimy tejto zmeny sa vymažú. Nebude sa dať vrátiť ich späť.';
 
   @override
   String get shiftErrStartCountry => 'Zvoľte krajinu začiatku zmeny';
@@ -1316,7 +1315,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get shiftErrNotLast =>
-      'Po tejto zmene sú ďalšie — nemôže teraz prebiehať';
+      'Po tejto zmene už sú ďalšie — zvoľte odpočinok po nej';
 
   @override
   String get shiftSaveFailed => 'Uloženie zlyhalo. Skúste to znova.';
@@ -1333,15 +1332,15 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get shiftLiveHint =>
-      'Zmena sa riadi záznamami režimov: zmena začiatku, konca a jazdy posunie samotné záznamy.';
+      'Zmena sa skladá z vašich režimov. Zmeňte začiatok, koniec alebo jazdu a režimy sa posunú.';
 
   @override
   String get shiftConvertHint =>
-      'Zmenený čas, jazda alebo odpočinok — zmena sa uloží ako ručný záznam namiesto záznamov režimov.';
+      'Zmenili ste čas, jazdu alebo odpočinok: zmena sa uloží ako súčty, bez režimov s časmi.';
 
   @override
   String get shiftLiveConvertHint =>
-      'Jazda za deň zadaná ako súčet — zmena sa uloží ako ručný záznam namiesto záznamov režimov, odpočinok po nej pokračuje.';
+      'Jazda zadaná ako súčet: zmena sa uloží bez režimov s časmi. Odpočinok po nej pokračuje.';
 
   @override
   String shiftEndNowHint(String time) {
@@ -1350,18 +1349,18 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get shiftResumeHint =>
-      'Odpočinok po zmene sa vymaže — zmena bude pokračovať.';
+      'Odpočinok po zmene sa vymaže a zmena bude pokračovať.';
 
   @override
   String shiftOngoingHint(String time, String mode) {
-    return 'Zmena sa stane aktuálnou a bude pokračovať na hlavnej obrazovke od $time. Režim „$mode“ — ak teraz platí iný, prepnite ho tam.';
+    return 'Zmena bude aktuálna od $time, režim „$mode“. Ak teraz platí iný, prepnite ho na hlavnej obrazovke.';
   }
 
   @override
   String get shiftUnsavedTitle => 'Uložiť zmeny?';
 
   @override
-  String get shiftUnsavedText => 'Úpravy tejto zmeny ešte nie sú uložené.';
+  String get shiftUnsavedText => 'Bez uloženia sa úpravy stratia.';
 
   @override
   String get shiftDiscard => 'Neukladať';
@@ -1371,11 +1370,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String driveEditSubtitle(String date) {
-    return 'Ručná oprava · $date';
+    return 'Oprava · $date';
   }
 
   @override
-  String get driveEditComputed => 'Vypočítané aplikáciou';
+  String get driveEditComputed => 'Vypočítané z režimov';
 
   @override
   String driveEditDiff(String diff) {
@@ -1387,11 +1386,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get driveEditHint =>
-      'Použite, ak bol režim prepnutý v nesprávnu chvíľu — limity sa prepočítajú.';
+      'Prepli ste režim v nesprávnu chvíľu? Opravte to tu — limity sa prepočítajú.';
 
   @override
   String get driveEditNoDrive =>
-      'V aktuálnej zmene zatiaľ nie je jazda — nie je čo opraviť.';
+      'V tejto zmene sa ešte nejazdilo — nie je čo opraviť.';
 
   @override
   String get breakCorrection => 'Oprava';
@@ -1404,11 +1403,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get breakNoBreak =>
-      'V zmene zatiaľ nie je prestávka — nie je čo opraviť.';
+      'V tejto zmene ešte nebola prestávka — nie je čo opraviť.';
 
   @override
   String get breakEditHint =>
-      'Čas sa vezme zo susedného záznamu — limity sa prepočítajú.';
+      'Rozdiel prevezme susedný režim, limity sa prepočítajú.';
 
   @override
   String get workdayChangeStart => 'Zmeniť začiatok zmeny';
@@ -1461,7 +1460,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get exportPdfHint =>
-      'Nie je to úradný záznam: výkaz nenahrádza údaje z tachografu a karty vodiča.';
+      'Výkaz nenahrádza údaje z tachografu a karty vodiča.';
 
   @override
   String get exportCsvHint =>
@@ -1749,7 +1748,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get notifyAllow => 'Povoliť upozornenia';
 
   @override
-  String get notifyDenied => 'Upozornenia sú teraz v telefóne zablokované';
+  String get notifyDenied => 'Upozornenia sú vypnuté v nastaveniach telefónu';
 
   @override
   String get notifyAllowed => 'Upozornenia povolené';
@@ -1773,7 +1772,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String notifyBreakTakenText(int required, String time) {
-    return 'Prestávka $required min započítaná. Do ďalšej prestávky môžete jazdiť $time.';
+    return '$required min splnené — môžete jazdiť ešte $time.';
   }
 
   @override
@@ -1820,7 +1819,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String serviceSuggestText(String time) {
-    return 'Začať jazdu od $time? Odpočinok sa preruší';
+    return 'Zapnúť jazdu od $time? Odpočinok sa preruší';
   }
 
   @override
@@ -1887,7 +1886,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get autoStartFromRestHint =>
-      'Inak sa aplikácia najprv opýta: mohli ste ísť ako spolujazdec';
+      'Inak sa najprv opýtame: možno idete ako spolujazdec';
 
   @override
   String get autoBattery => 'Šetrenie batérie';
@@ -1912,7 +1911,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get autoBlockedDenied =>
-      'Bez prístupu k polohe sa jazda nedá rozpoznať. Aplikácia potrebuje len rýchlosť, súradnice sa neukladajú.';
+      'Bez prístupu k polohe sa jazda nedá rozpoznať. Stačí len rýchlosť — súradnice sa neukladajú.';
 
   @override
   String get autoBlockedForever =>
@@ -1952,7 +1951,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get clearText =>
-      'Vymaže sa denník režimov, zmeny, krajiny, poznámky a stiahnutia karty. Nedá sa to vrátiť. Nastavenia zostanú.';
+      'Vymaže sa denník režimov, zmeny, krajiny, poznámky a stiahnutia karty. Nebude sa dať vrátiť ich späť. Nastavenia zostanú.';
 
   @override
   String get clearConfirm => 'Vymazať';
@@ -1966,7 +1965,7 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
-  String get onbWelcomeTitle => 'Čas za volantom pod kontrolou';
+  String get onbWelcomeTitle => 'Viete, ako dlho ešte smiete jazdiť';
 
   @override
   String get onbWelcomeText =>
@@ -1989,25 +1988,24 @@ class AppLocalizationsSk extends AppLocalizations {
       'Režim prepínajte tlačidlami na hlavnej obrazovke. Počítadlá bežia samy — aj pri zatvorenej aplikácii.';
 
   @override
-  String get onbModeDriving =>
-      'Za volantom. Počítame jazdu bez prestávky, dennú aj týždennú.';
+  String get onbModeDriving => 'Vozidlo ide, šoférujete vy.';
 
   @override
   String get onbModeWork => 'Nakládka, kontrola vozidla, doklady.';
 
   @override
   String get onbModeAvailability =>
-      'Čakanie: rad na nakládku, hranica, druhý vodič na ceste.';
+      'Čakanie: rad na nakládku, hranica, druhý vodič za volantom.';
 
   @override
   String get onbModeRest =>
-      'Prestávky a odpočinok. „Ukončiť deň“ uzavrie zmenu.';
+      'Prestávky a odpočinok. Na konci zmeny: „Ukončiť deň“.';
 
   @override
-  String get onbSetupTitle => 'Nastavíme to pre vás';
+  String get onbSetupTitle => 'Pár nastavení';
 
   @override
-  String get onbSetupText => 'Všetko sa dá neskôr zmeniť v nastaveniach.';
+  String get onbSetupText => 'Neskôr ich môžete zmeniť v nastaveniach.';
 
   @override
   String get onbMobilityHint => 'Zapnite, ak jazdíte medzinárodné trasy';
@@ -2027,7 +2025,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get onbAutoText =>
-      'Pohnete sa — aplikácia zapne jazdu, zastavíte — inú prácu. Po odpočinku sa najprv opýta. Stačí rýchlosť z GPS: súradnice sa neukladajú ani neposielajú.';
+      'Pohnete sa — zapneme jazdu, zastavíte — inú prácu. Po odpočinku sa najprv opýtame. Používame len rýchlosť z GPS: súradnice sa neukladajú ani neposielajú.';
 
   @override
   String get onbAutoLater => 'Môžete zapnúť neskôr v nastaveniach.';
@@ -2045,7 +2043,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get onbRulesText =>
-      'Rovnaké pre nákladné vozidlá, autobusy aj dodávky. Aplikácia ich počíta sama a vopred upozorňuje.';
+      'Rovnaké pre nákladné vozidlá, autobusy aj dodávky.';
 
   @override
   String get onbRulesMore =>
@@ -2067,7 +2065,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideStep3 =>
-      'Sledujte limity. Aplikácia vopred upozorní na prestávku a koniec dňa. Každý čas sa dá opraviť ručne.';
+      'Na prestávku a koniec dňa vás vopred upozorníme. Pomýlili ste sa? Čas sa dá opraviť.';
 
   @override
   String get guideRules => 'Pravidlá EÚ 561/2006 a AETR';
@@ -2101,7 +2099,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String guideDailyRestText(String reduced, String first, String second) {
-    return 'Až trikrát medzi týždennými odpočinkami ho možno skrátiť na $reduced. Rozdelený variant — $first + $second.';
+    return 'Medzi týždennými odpočinkami ho možno skrátiť na $reduced — najviac trikrát. Možno ho aj rozdeliť: $first + $second.';
   }
 
   @override
@@ -2109,7 +2107,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String guideWorkdayText(String window, String regular, String reduced) {
-    return 'Odpočinok musí skončiť do $window od začiatku zmeny: $regular pri bežnom odpočinku, $reduced pri skrátenom.';
+    return 'Zmena aj s odpočinkom sa zmestí do $window: $regular pred bežným odpočinkom, $reduced pred skráteným.';
   }
 
   @override
@@ -2138,7 +2136,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String guideWorkWeekText(String period) {
-    return 'Týždenný odpočinok začína najneskôr po šiestich obdobiach po $period od predchádzajúceho.';
+    return 'Ďalší týždenný odpočinok začína najneskôr 6 × $period po konci predchádzajúceho.';
   }
 
   @override
@@ -2146,7 +2144,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String guideCardText(String days) {
-    return 'Údaje z karty treba sťahovať aspoň raz za $days.';
+    return 'Karta sa sťahuje aspoň raz za $days.';
   }
 
   @override
@@ -2311,7 +2309,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get problemText =>
-      'Správa obsahuje verziu aplikácie, model telefónu, nastavenia, povolenia, plán upozornení a záznamy denníka za posledné dva dni. Súradnice v nej nie sú. Zvoľte, kam ju poslať — e-mail alebo messenger — a opíšte, čo sa stalo.';
+      'Správa obsahuje verziu aplikácie, model telefónu, nastavenia, povolenia, plán upozornení a denník za posledné dva dni. Súradnice v nej nie sú. Zvoľte e-mail alebo messenger a opíšte, čo sa stalo.';
 
   @override
   String get problemSend => 'Odoslať';
@@ -2334,7 +2332,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get transferText =>
-      'V starom telefóne uložte denník do súboru a pošlite si ho — cez messenger, e-mailom alebo do cloudu. V novom telefóne otvorte túto obrazovku a načítajte súbor: denník, stiahnutia karty a nastavenia výpočtu budú rovnaké ako v starom.';
+      'V starom telefóne uložte denník do súboru a pošlite si ho — cez messenger, e-mailom alebo do cloudu. V novom otvorte túto obrazovku a načítajte súbor: denník, stiahnutia karty a nastavenia výpočtu sa prenesú.';
 
   @override
   String get transferSave => 'Uložiť denník do súboru';
@@ -2377,7 +2375,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get transferFailed =>
-      'Denník sa nepodarilo načítať. Denník v telefóne sa nezmenil';
+      'Denník sa nenačítal. V telefóne zostalo všetko ako predtým';
 
   @override
   String get transferSaveFailed =>
@@ -2434,7 +2432,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String notifyCompensationTakenText(String time) {
-    return 'Odpočinok pokryl dlh $time za skrátený týždenný odpočinok — dlh je splatený.';
+    return 'Dlh $time za skrátený týždenný odpočinok je splatený.';
   }
 
   @override
@@ -2526,7 +2524,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get bansNeedsCheck =>
-      'Zdroje sa v detailoch líšia — pred jazdou overte v oficiálnom zdroji.';
+      'Zdroje sa líšia — pred jazdou overte v oficiálnom.';
 
   @override
   String get bansDisclaimer =>
@@ -2616,7 +2614,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get baseCountryCardText =>
-      'Bez nej aplikácia neskontroluje, či možno čerpať dva skrátené týždenné odpočinky za sebou, a nespočíta pracovné dni';
+      'Bez nej sa nedá skontrolovať, či možno čerpať dva skrátené týždenné odpočinky za sebou, ani spočítať pracovné dni';
 
   @override
   String get onbBaseCountryRequired => 'Pre pokračovanie vyberte krajinu firmy';
@@ -2652,7 +2650,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get workDaysWeekendsAbroadHint =>
-      'Celý deň bez práce mimo krajiny firmy';
+      'Bez práce, aspoň časť dňa v zahraničí';
 
   @override
   String get workDaysWeekendAbroad => 'Deň voľna v zahraničí';
@@ -2661,7 +2659,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get workDaysWeekendsHome => 'Dni voľna v krajine firmy';
 
   @override
-  String get workDaysWeekendsHomeHint => 'Celý deň bez práce v krajine firmy';
+  String get workDaysWeekendsHomeHint => 'Bez práce, celý deň v krajine firmy';
 
   @override
   String get workDaysWeekendHome => 'Deň voľna v krajine firmy';
@@ -2677,11 +2675,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get workDaysNoBase =>
-      'Zadajte krajinu firmy: pracovné dni sa počítajú voči nej.';
+      'Zadajte krajinu firmy: bez nej sa dni nedajú spočítať.';
 
   @override
   String get workDaysRule =>
-      'Pracovný deň je deň s jazdou alebo inou prácou, v zahraničí aj s pohotovosťou. Deň bez práce je deň voľna: v zahraničí, ak ste aspoň časť dňa boli mimo krajiny firmy, inak v krajine firmy. Kde ste boli, aplikácia vie podľa krajín zmien na hlavnej obrazovke. V kalendári sú vyplnené pracovné dni a dni voľna v zahraničí (zelené), dni voľna v krajine firmy majú krúžok a sivé znamenajú žiadne údaje.';
+      'Pracovný deň je deň s jazdou alebo inou prácou, v zahraničí aj s pohotovosťou. Ostatné dni sú dni voľna. Krajiny berieme zo zmien na hlavnej obrazovke. Pracovné dni sú vyplnené, sivé znamenajú žiadne údaje.';
 
   @override
   String get violationsTitle => 'Porušenia';
@@ -2712,22 +2710,21 @@ class AppLocalizationsSk extends AppLocalizations {
   String get violationsEmpty => 'Za 56 dní žiadne porušenia';
 
   @override
-  String get violationsEmptyText =>
-      'Keď aplikácia zaznamená porušenie, zobrazí sa tu.';
+  String get violationsEmptyText => 'Porušenia z denníka sa tu zobrazia samy.';
 
   @override
   String get violationsRule =>
-      'Pri cestnej kontrole vodič predkladá záznamy za 56 dní — tak dlho zostáva porušenie v tomto zozname. Pripíšte k nemu vysvetlenie, kým si pamätáte dôvod: kolóna, žiadne miesto na parkovisku, zdržanie pri nakládke. Oficiálne sa dôvod píše rukou na výtlačok z tachografu. Zoznam vychádza z denníka aplikácie, inšpektor kontroluje údaje tachografu.';
+      'Pri cestnej kontrole sa kontrolujú záznamy za 56 dní — tak dlho zostáva porušenie v zozname. Pripíšte vysvetlenie, kým si pamätáte dôvod: kolóna, žiadne miesto na parkovisku, zdržanie pri nakládke. Je to poznámka pre vás: inšpektor kontroluje tachograf a oficiálne sa dôvod píše rukou na výtlačok.';
 
   @override
   String violationsDaysLeft(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'V kontrole ešte $days dní',
-      many: 'V kontrole ešte $days dňa',
-      few: 'V kontrole ešte $days dni',
-      one: 'V kontrole ešte $days deň',
+      other: 'Ešte $days dní v kontrolovanom období',
+      many: 'Ešte $days dňa v kontrolovanom období',
+      few: 'Ešte $days dni v kontrolovanom období',
+      one: 'Ešte $days deň v kontrolovanom období',
     );
     return '$_temp0';
   }

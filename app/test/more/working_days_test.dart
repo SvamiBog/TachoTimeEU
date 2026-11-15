@@ -117,9 +117,12 @@ void main() {
         find.bySemanticsLabel('Пятница, 16 октября: Нет данных'),
         findsOneWidget,
       );
-      expect(find.textContaining('Рабочий день — день с вождением'), findsOne);
       expect(
-        find.textContaining('кольцом — выходные в стране фирмы'),
+        find.textContaining('Рабочий день — когда было вождение'),
+        findsOne,
+      );
+      expect(
+        find.textContaining('Закрашены рабочие дни, серые — нет данных'),
         findsOne,
       );
     });
@@ -191,9 +194,7 @@ void main() {
     testWidgets('без страны фирмы — сначала она', (tester) async {
       await pumpDays(tester, base: null);
       expect(
-        find.text(
-          'Укажите страну фирмы: рабочие дни считаются относительно неё.',
-        ),
+        find.text('Укажите страну фирмы: без неё дни не посчитать.'),
         findsOneWidget,
       );
       expect(find.text('Страна фирмы'), findsOneWidget);

@@ -99,7 +99,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get switchFailed => 'Modus nicht gespeichert. Bitte erneut versuchen.';
+  String get switchFailed =>
+      'Modus wurde nicht umgeschaltet. Bitte erneut versuchen.';
 
   @override
   String homeShiftSince(String date, String time) {
@@ -134,15 +135,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get heroOffDutyHint =>
-      'Schicht beendet. Die nächste beginnt mit dem ersten Modus außer Ruhe.';
+      'Schicht beendet. Die nächste beginnt mit jedem Modus außer Ruhe.';
 
   @override
-  String get bannerBreakNeeded45 =>
-      'Pause von 45 Min. nötig (oder geteilt 15 + 30)';
+  String get bannerBreakNeeded45 => 'Pause von 45 Min. oder 15 + 30 nötig';
 
   @override
-  String get bannerBreakNeeded30 =>
-      'Pause von 30 Min. nötig — zweiter Teil der geteilten 15 + 30';
+  String get bannerBreakNeeded30 => 'Zweiter Teil der Pause nötig: 30 Min.';
 
   @override
   String bannerOnBreak(String time, int required) {
@@ -176,7 +175,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chipExceeded => 'überschritten';
 
   @override
-  String get chipLimiting => 'begrenzt';
+  String get chipLimiting => 'endet zuerst';
 
   @override
   String get chipShiftSoon => 'Ende bald';
@@ -338,7 +337,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get workWeekRule =>
-      'Die Arbeitswoche ist die Zeit seit dem Ende der wöchentlichen Ruhezeit. Die nächste wöchentliche Ruhezeit muss spätestens nach sechs 24-Stunden-Zeiträumen beginnen — 144 Std. (Art. 8 Abs. 6 VO 561/2006).';
+      'Die wöchentliche Ruhezeit muss spätestens 144 Std. (6 Tage) nach dem Ende der letzten beginnen. Art. 8 Abs. 6 VO 561/2006.';
 
   @override
   String get cardTitle => 'Fahrerkarte auslesen';
@@ -361,7 +360,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get cardSheetRule =>
-      'Die Daten der Fahrerkarte müssen mindestens alle 28 Tage heruntergeladen werden (Verordnung (EU) Nr. 581/2010).';
+      'Die Fahrerkarte muss mindestens alle 28 Tage ausgelesen werden. Verordnung (EU) Nr. 581/2010.';
 
   @override
   String get cardMarkToday => 'Heute ausgelesen';
@@ -394,7 +393,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get workdayRule =>
-      'Die tägliche Ruhezeit muss innerhalb von 24 Stunden nach Schichtbeginn enden. Die reduzierte Ruhezeit von 9 Std. ist höchstens dreimal zwischen zwei wöchentlichen Ruhezeiten erlaubt.';
+      'Die Ruhezeit muss spätestens 24 Std. nach Schichtbeginn enden. Auf 9 Std. reduzieren dürfen Sie sie höchstens dreimal zwischen zwei wöchentlichen Ruhezeiten.';
 
   @override
   String get dailyRestOngoing => 'Ruhezeit läuft';
@@ -446,11 +445,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dailyRestInShift =>
-      'Solange die Ruhezeit kürzer als 9 Std. ist, ist sie eine Pause in der Schicht. Ab 9 Std. wird sie zur täglichen Ruhezeit und beendet die Schicht. Arbeit beendet? „Tag beenden“.';
+      'Unter 9 Std. ist es eine Pause in der Schicht, ab 9 Std. tägliche Ruhezeit. Feierabend? Tippen Sie auf „Tag beenden“.';
 
   @override
   String get dailyRestRule =>
-      'Tägliche Ruhezeit: 11 Std. am Stück. Reduziert: 9 Std., höchstens dreimal zwischen zwei wöchentlichen Ruhezeiten. Aufgeteilt: zuerst mindestens 3 Std., dann mindestens 9 Std. Die Ruhezeit muss innerhalb von 24 Stunden nach Schichtbeginn enden.';
+      'Regelmäßige Ruhezeit: 11 Std. am Stück. Reduziert: 9 Std., bis zu dreimal zwischen zwei wöchentlichen Ruhezeiten. Aufgeteilt: 3 + 9 Std. Die Ruhezeit muss spätestens 24 Std. nach Schichtbeginn enden.';
 
   @override
   String get drivingCorrect => 'Tageslenkzeit korrigieren';
@@ -468,7 +467,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get drivingDailyRule =>
-      'Tageslenkzeit ist die Zeit am Steuer zwischen zwei täglichen Ruhezeiten: höchstens 9 Std., zweimal pro Woche bis zu 10 Std. Die Woche beginnt montags um 00:00.';
+      'Zwischen zwei täglichen Ruhezeiten höchstens 9 Std. am Steuer, zweimal pro Woche 10 Std. Die Woche beginnt montags um 00:00.';
 
   @override
   String drivingWeekSince(String date) {
@@ -503,7 +502,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get drivingWeekRule =>
-      'Die Woche läuft von Montag 00:00 bis Sonntag 24:00, wie im Fahrtenschreiber. Pro Woche höchstens 56 Std. Lenkzeit, in zwei aufeinanderfolgenden Wochen höchstens 90 Std.';
+      'Bis zu 56 Std. Lenkzeit pro Woche und 90 Std. in zwei aufeinanderfolgenden Wochen. Die Woche läuft von Montag 00:00 bis Sonntag 24:00.';
 
   @override
   String get drivingCanDrive => 'Verbleibende Lenkzeit';
@@ -560,7 +559,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get endDayDrivingHint =>
-      'Wie lange sind Sie heute gefahren? Genaue Zeiten der Modi sind nicht nötig — nur die Summe.';
+      'Wie lange waren Sie heute insgesamt am Steuer? Die Summe genügt.';
 
   @override
   String todayDate(String date) {
@@ -625,7 +624,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String infrShiftSoonText(String time) {
-    return 'Beginnen Sie die tägliche Ruhezeit in $time.';
+    return 'Beginnen Sie die tägliche Ruhezeit spätestens in $time.';
   }
 
   @override
@@ -675,7 +674,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String infrWeeklyRestSoonText(String time) {
-    return 'Beginnen Sie die wöchentliche Ruhezeit in $time.';
+    return 'Beginnen Sie die wöchentliche Ruhezeit spätestens in $time.';
   }
 
   @override
@@ -711,7 +710,7 @@ class AppLocalizationsDe extends AppLocalizations {
       other: '$days Tage',
       one: '$days Tag',
     );
-    return '$time für die reduzierte wöchentliche Ruhezeit wurden nicht angehängt. Verspätung — $_temp0.';
+    return 'Der Ausgleich von $time für die reduzierte wöchentliche Ruhezeit wurde nicht genommen. Verspätung — $_temp0.';
   }
 
   @override
@@ -719,16 +718,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String infrReducedRestsExceededText(int count) {
-    return 'Reduzierte seit der wöchentlichen Ruhezeit: $count, erlaubt sind 3.';
+    return 'Reduzierte Ruhezeiten seit der wöchentlichen: $count, erlaubt sind 3.';
   }
 
   @override
   String get infrReducedWeeklyRestWithoutRightTitle =>
-      'Reduzierte Ruhezeit ohne Anspruch';
+      'Diese Ruhezeit durfte nicht reduziert werden';
 
   @override
   String infrReducedWeeklyRestWithoutRightText(String time) {
-    return 'Die letzte wöchentliche Ruhezeit war reduziert, ohne Anspruch darauf: Nötig war eine regelmäßige von 45 Std. Es fehlten $time.';
+    return 'Die letzte wöchentliche Ruhezeit hätte regelmäßig sein müssen: 45 Std. Es fehlten $time.';
   }
 
   @override
@@ -737,7 +736,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String infrFullWeeklyRestRequiredText(String time) {
-    return 'Eine reduzierte wöchentliche Ruhezeit ist jetzt nicht möglich — beenden Sie die Ruhezeit nicht vor 45 Std. Noch $time.';
+    return 'Diesmal keine Verkürzung: Ruhen Sie die vollen 45 Std. Noch $time.';
   }
 
   @override
@@ -773,7 +772,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get ferryHint =>
-      'Die Ruhezeit darf höchstens zweimal unterbrochen werden, insgesamt bis zu 1 Std. (Art. 9). Die Bewegung der Fähre schaltet nicht auf Lenken um.';
+      'Die Ruhezeit darf bis zu zweimal unterbrochen werden, insgesamt höchstens 1 Std. (Art. 9). Solange die Fähre fährt, schaltet sich Lenken nicht von selbst ein.';
 
   @override
   String get ferryOn => 'Fähre';
@@ -811,7 +810,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get breakSplitText =>
-      'Erster Teil mindestens 15 Min., zweiter mindestens 30 Min., genau in dieser Reihenfolge. Die App erkennt sie selbst.';
+      'Zuerst mindestens 15 Min., dann mindestens 30 Min., nur in dieser Reihenfolge. Beide Teile werden automatisch angerechnet.';
 
   @override
   String get breakStart => 'Pause beginnen';
@@ -891,7 +890,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String weeklyTwoReducedNote(String debt, String total) {
-    return 'Zwei reduzierte hintereinander — eine Schuld von $debt: Sie wird vollständig, am Stück, nach der zweiten und vor der nächsten wöchentlichen Ruhezeit genommen; nicht in Teilen und nicht dazwischen. Zusammen mit einer regelmäßigen wöchentlichen Ruhezeit — $total Ruhe am Stück.';
+    return 'Zwei reduzierte hintereinander ergeben eine Schuld von $debt. Sie wird am Stück direkt vor der nächsten wöchentlichen Ruhezeit genommen: zusammen $total Ruhe am Stück.';
   }
 
   @override
@@ -906,11 +905,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get weeklyMobilityOn =>
-      'Mobilitätspaket aktiv: Im grenzüberschreitenden Verkehr dürfen zwei reduzierte Ruhezeiten nacheinander genommen werden, wenn sie außerhalb des Zulassungslandes liegen. Die Verkürzung wird bis zum Ende der dritten Woche ausgeglichen.';
+      'Mobilitätspaket: Im grenzüberschreitenden Verkehr dürfen Sie zwei reduzierte wöchentliche Ruhezeiten nacheinander nehmen, wenn beide außerhalb des Unternehmenslandes liegen. Der Ausgleich erfolgt bis zum Ende der dritten Woche.';
 
   @override
   String get weeklyMobilityOff =>
-      'Eine reduzierte wöchentliche Ruhezeit wird bis zum Ende der dritten Woche ausgeglichen: Die Schuld wird an eine Ruhezeit von mindestens 9 Std. angehängt.';
+      'Der Ausgleich für eine reduzierte wöchentliche Ruhezeit wird bis zum Ende der dritten Woche an eine Ruhezeit von mindestens 9 Std. angehängt.';
 
   @override
   String get weeklyStartRest => 'Ruhezeit beginnen';
@@ -1066,7 +1065,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get journalEmpty =>
-      'Noch keine Schichten. Sie erscheinen, wenn Sie Modi umschalten — oder fügen Sie eine Schicht manuell hinzu.';
+      'Noch keine Schichten. Schalten Sie auf dem Startbildschirm einen Modus um oder fügen Sie eine Schicht manuell hinzu.';
 
   @override
   String restStatus(String status) {
@@ -1233,7 +1232,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get shiftDrivingAfterRest =>
-      'wird eingegeben, sobald die Ruhe nach der Schicht gewählt ist';
+      'wählen Sie zuerst die Ruhe nach der Schicht';
 
   @override
   String get shiftRestNone => 'Nicht begonnen';
@@ -1277,7 +1276,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get shiftDeleteRecorded =>
-      'Alle Modus-Einträge dieser Schicht werden gelöscht. Das kann nicht rückgängig gemacht werden.';
+      'Alle Modi dieser Schicht werden gelöscht. Sie lassen sich nicht wiederherstellen.';
 
   @override
   String get shiftErrStartCountry => 'Wählen Sie das Land bei Schichtbeginn';
@@ -1310,7 +1309,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get shiftErrNotLast =>
-      'Nach dieser Schicht gibt es weitere — sie kann jetzt nicht laufen';
+      'Nach dieser Schicht gibt es schon weitere — wählen Sie die Ruhezeit danach';
 
   @override
   String get shiftSaveFailed =>
@@ -1328,15 +1327,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get shiftLiveHint =>
-      'Die Schicht läuft nach Modus-Einträgen: Änderungen an Beginn, Ende und Lenkzeit verschieben die Einträge selbst.';
+      'Die Schicht besteht aus Ihren Modi. Ändern Sie Beginn, Ende oder Lenkzeit, verschieben sich die Modi.';
 
   @override
   String get shiftConvertHint =>
-      'Zeit, Lenkzeit oder Ruhe geändert — die Schicht wird als manueller Eintrag statt der Modus-Einträge gespeichert.';
+      'Sie haben Zeit, Lenkzeit oder Ruhe geändert: Die Schicht wird als Summen gespeichert, ohne Modi mit Uhrzeit.';
 
   @override
   String get shiftLiveConvertHint =>
-      'Tageslenkzeit als Summe eingegeben — die Schicht wird als manueller Eintrag statt der Modus-Einträge gespeichert, die Ruhe danach läuft weiter.';
+      'Lenkzeit als Summe eingegeben: Die Schicht wird ohne Modi mit Uhrzeit gespeichert. Die Ruhe danach läuft weiter.';
 
   @override
   String shiftEndNowHint(String time) {
@@ -1345,11 +1344,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get shiftResumeHint =>
-      'Die Ruhezeit nach der Schicht wird gelöscht — die Schicht läuft weiter.';
+      'Die Ruhezeit nach der Schicht wird gelöscht, und die Schicht läuft weiter.';
 
   @override
   String shiftOngoingHint(String time, String mode) {
-    return 'Die Schicht wird zur aktuellen und läuft auf dem Startbildschirm ab $time weiter. Modus „$mode“ — wenn jetzt ein anderer gilt, schalten Sie ihn dort um.';
+    return 'Die Schicht wird ab $time zur aktuellen, Modus „$mode“. Gilt jetzt ein anderer, schalten Sie auf dem Startbildschirm um.';
   }
 
   @override
@@ -1357,7 +1356,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get shiftUnsavedText =>
-      'Die Änderungen an dieser Schicht sind noch nicht gespeichert.';
+      'Ohne Speichern gehen die Änderungen verloren.';
 
   @override
   String get shiftDiscard => 'Nicht speichern';
@@ -1367,11 +1366,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String driveEditSubtitle(String date) {
-    return 'Manuelle Korrektur · $date';
+    return 'Korrektur · $date';
   }
 
   @override
-  String get driveEditComputed => 'Von der App berechnet';
+  String get driveEditComputed => 'Aus den Modi berechnet';
 
   @override
   String driveEditDiff(String diff) {
@@ -1383,11 +1382,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get driveEditHint =>
-      'Nutzen Sie dies, wenn der Modus zur falschen Zeit umgeschaltet wurde — die Limits werden neu berechnet.';
+      'Modus zur falschen Zeit umgeschaltet? Hier korrigieren — die Limits werden neu berechnet.';
 
   @override
   String get driveEditNoDrive =>
-      'In der aktuellen Schicht gibt es noch keine Lenkzeit — nichts zu korrigieren.';
+      'In dieser Schicht wurde noch nicht gelenkt — nichts zu korrigieren.';
 
   @override
   String get breakCorrection => 'Korrektur';
@@ -1400,11 +1399,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get breakNoBreak =>
-      'In der Schicht gibt es noch keine Pause — nichts zu korrigieren.';
+      'In dieser Schicht gab es noch keine Pause — nichts zu korrigieren.';
 
   @override
   String get breakEditHint =>
-      'Die Zeit wird vom benachbarten Eintrag genommen — die Limits werden neu berechnet.';
+      'Der benachbarte Modus übernimmt die Differenz, die Limits werden neu berechnet.';
 
   @override
   String get workdayChangeStart => 'Schichtbeginn ändern';
@@ -1457,7 +1456,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get exportPdfHint =>
-      'Kein amtliches Dokument: Der Bericht ersetzt nicht die Daten des Fahrtenschreibers und der Fahrerkarte.';
+      'Der Bericht ersetzt nicht die Daten des Fahrtenschreibers und der Fahrerkarte.';
 
   @override
   String get exportCsvHint =>
@@ -1742,7 +1741,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notifyDenied =>
-      'Benachrichtigungen sind im Telefon gerade blockiert';
+      'Benachrichtigungen sind in den Telefoneinstellungen ausgeschaltet';
 
   @override
   String get notifyAllowed => 'Benachrichtigungen erlaubt';
@@ -1766,7 +1765,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String notifyBreakTakenText(int required, String time) {
-    return 'Pause von $required Min. angerechnet. Sie dürfen $time bis zur nächsten Pause lenken.';
+    return '$required Min. angerechnet — Sie dürfen noch $time lenken.';
   }
 
   @override
@@ -1813,7 +1812,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String serviceSuggestText(String time) {
-    return 'Lenken ab $time beginnen? Die Ruhezeit wird unterbrochen';
+    return 'Lenken ab $time einschalten? Die Ruhezeit wird unterbrochen';
   }
 
   @override
@@ -1883,7 +1882,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get autoStartFromRestHint =>
-      'Sonst fragt die App zuerst: Sie könnten Beifahrer gewesen sein';
+      'Sonst fragen wir zuerst: Vielleicht fahren Sie als Beifahrer mit';
 
   @override
   String get autoBattery => 'Energiesparen';
@@ -1908,7 +1907,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get autoBlockedDenied =>
-      'Ohne Standortzugriff lässt sich Lenken nicht erkennen. Die App braucht nur die Geschwindigkeit, Koordinaten werden nicht gespeichert.';
+      'Ohne Standortzugriff lässt sich Lenken nicht erkennen. Gebraucht wird nur die Geschwindigkeit — Koordinaten werden nicht gespeichert.';
 
   @override
   String get autoBlockedForever =>
@@ -1948,7 +1947,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get clearText =>
-      'Modus-Protokoll, Schichten, Länder, Notizen und Kartenauslesungen werden gelöscht. Das kann nicht rückgängig gemacht werden. Die Einstellungen bleiben erhalten.';
+      'Modus-Protokoll, Schichten, Länder, Notizen und Kartenauslesungen werden gelöscht. Sie lassen sich nicht wiederherstellen. Die Einstellungen bleiben erhalten.';
 
   @override
   String get clearConfirm => 'Löschen';
@@ -1962,7 +1961,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get onbWelcomeTitle => 'Zeit am Steuer im Griff';
+  String get onbWelcomeTitle => 'Wissen, wie lange Sie noch fahren dürfen';
 
   @override
   String get onbWelcomeText =>
@@ -1985,26 +1984,25 @@ class AppLocalizationsDe extends AppLocalizations {
       'Schalten Sie den Modus mit den Tasten auf dem Startbildschirm um. Die Zähler laufen von selbst — auch wenn die App geschlossen ist.';
 
   @override
-  String get onbModeDriving =>
-      'Am Steuer. Wir zählen Lenken ohne Pause, pro Tag und pro Woche.';
+  String get onbModeDriving => 'Das Fahrzeug fährt, Sie sind am Steuer.';
 
   @override
   String get onbModeWork => 'Beladen, Fahrzeugkontrolle, Papiere.';
 
   @override
   String get onbModeAvailability =>
-      'Warten: Schlange zur Beladung, Grenze, zweiter Fahrer unterwegs.';
+      'Warten: Schlange zur Beladung, Grenze, zweiter Fahrer am Steuer.';
 
   @override
   String get onbModeRest =>
-      'Pausen und Ruhe. „Tag beenden“ schließt die Schicht.';
+      'Pausen und Ruhe. Am Ende der Schicht: „Tag beenden“.';
 
   @override
-  String get onbSetupTitle => 'Für Sie einrichten';
+  String get onbSetupTitle => 'Ein paar Einstellungen';
 
   @override
   String get onbSetupText =>
-      'Alles lässt sich später in den Einstellungen ändern.';
+      'Sie können sie später in den Einstellungen ändern.';
 
   @override
   String get onbMobilityHint =>
@@ -2023,7 +2021,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get onbAutoText =>
-      'Losfahren — die App schaltet auf Lenken, anhalten — auf andere Arbeit. Nach einer Ruhezeit fragt sie zuerst. Nur die GPS-Geschwindigkeit wird gebraucht: Koordinaten werden weder gespeichert noch gesendet.';
+      'Losfahren — wir schalten auf Lenken, anhalten — auf andere Arbeit. Nach einer Ruhezeit fragen wir zuerst. Wir nutzen nur die GPS-Geschwindigkeit: Koordinaten werden weder gespeichert noch gesendet.';
 
   @override
   String get onbAutoLater =>
@@ -2041,8 +2039,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onbRulesTitle => 'Die wichtigsten Regeln';
 
   @override
-  String get onbRulesText =>
-      'Gleich für Lkw, Busse und Transporter. Die App berechnet sie selbst und warnt rechtzeitig.';
+  String get onbRulesText => 'Gleich für Lkw, Busse und Transporter.';
 
   @override
   String get onbRulesMore =>
@@ -2064,7 +2061,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideStep3 =>
-      'Achten Sie auf die Limits. Die App warnt rechtzeitig vor der Pause und dem Tagesende. Jede Zeit lässt sich manuell korrigieren.';
+      'Wir warnen rechtzeitig vor der Pause und dem Tagesende. Vertippt? Die Zeit lässt sich korrigieren.';
 
   @override
   String get guideRules => 'Regeln EU 561/2006 und AETR';
@@ -2098,7 +2095,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String guideDailyRestText(String reduced, String first, String second) {
-    return 'Bis zu dreimal zwischen wöchentlichen Ruhezeiten auf $reduced reduzierbar. Geteilte Variante — $first + $second.';
+    return 'Zwischen wöchentlichen Ruhezeiten darf sie auf $reduced reduziert werden — bis zu dreimal. Auch teilen ist möglich: $first + $second.';
   }
 
   @override
@@ -2106,7 +2103,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String guideWorkdayText(String window, String regular, String reduced) {
-    return 'Die Ruhezeit muss innerhalb von $window nach Schichtbeginn enden: $regular bei regelmäßiger Ruhezeit, $reduced bei reduzierter.';
+    return 'Schicht und Ruhezeit passen zusammen in $window: $regular vor einer regelmäßigen Ruhezeit, $reduced vor einer reduzierten.';
   }
 
   @override
@@ -2133,7 +2130,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String guideWorkWeekText(String period) {
-    return 'Die wöchentliche Ruhezeit beginnt spätestens nach sechs Zeiträumen von $period nach der vorherigen.';
+    return 'Die nächste wöchentliche Ruhezeit beginnt spätestens 6 × $period nach dem Ende der letzten.';
   }
 
   @override
@@ -2141,7 +2138,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String guideCardText(String days) {
-    return 'Die Kartendaten müssen mindestens alle $days heruntergeladen werden.';
+    return 'Die Karte wird mindestens alle $days ausgelesen.';
   }
 
   @override
@@ -2309,7 +2306,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get problemText =>
-      'Der Bericht enthält die App-Version, das Telefonmodell, Einstellungen, Berechtigungen, den Benachrichtigungsplan und die Protokolleinträge der letzten zwei Tage. Koordinaten sind nicht enthalten. Wählen Sie, wohin er gesendet wird — E-Mail oder Messenger — und beschreiben Sie, was passiert ist.';
+      'Der Bericht enthält die App-Version, das Telefonmodell, Einstellungen, Berechtigungen, den Benachrichtigungsplan und das Protokoll der letzten zwei Tage. Koordinaten sind nicht enthalten. Wählen Sie E-Mail oder Messenger und beschreiben Sie, was passiert ist.';
 
   @override
   String get problemSend => 'Senden';
@@ -2333,7 +2330,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get transferText =>
-      'Speichern Sie auf dem alten Handy das Protokoll in eine Datei und schicken Sie sie sich selbst — per Messenger, E-Mail oder in die Cloud. Öffnen Sie auf dem neuen Handy denselben Bildschirm und laden Sie die Datei: Protokoll, Kartenauslesungen und Berechnungseinstellungen sind dann wie auf dem alten.';
+      'Speichern Sie auf dem alten Handy das Protokoll in eine Datei und schicken Sie sie sich selbst — per Messenger, E-Mail oder in die Cloud. Öffnen Sie auf dem neuen diesen Bildschirm und laden Sie die Datei: Protokoll, Kartenauslesungen und Berechnungseinstellungen werden übernommen.';
 
   @override
   String get transferSave => 'Protokoll in Datei speichern';
@@ -2376,7 +2373,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get transferFailed =>
-      'Das Protokoll konnte nicht geladen werden. Das Protokoll auf dem Handy ist unverändert';
+      'Das Protokoll wurde nicht geladen. Auf dem Handy ist alles unverändert';
 
   @override
   String get transferSaveFailed =>
@@ -2433,7 +2430,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String notifyCompensationTakenText(String time) {
-    return 'Diese Ruhezeit deckt die $time aus der reduzierten wöchentlichen Ruhezeit — ausgeglichen.';
+    return 'Die $time aus der reduzierten wöchentlichen Ruhezeit sind ausgeglichen.';
   }
 
   @override
@@ -2525,7 +2522,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get bansNeedsCheck =>
-      'Quellen weichen im Detail ab — vor der Fahrt in der amtlichen Quelle prüfen.';
+      'Die Quellen weichen voneinander ab — vor der Fahrt in der amtlichen prüfen.';
 
   @override
   String get bansDisclaimer =>
@@ -2615,7 +2612,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get baseCountryCardText =>
-      'Ohne es prüft die App nicht, ob zwei reduzierte wöchentliche Ruhezeiten nacheinander erlaubt sind, und zählt keine Arbeitstage';
+      'Ohne es lässt sich nicht prüfen, ob zwei reduzierte wöchentliche Ruhezeiten nacheinander erlaubt sind, und die Arbeitstage lassen sich nicht zählen';
 
   @override
   String get onbBaseCountryRequired =>
@@ -2651,7 +2648,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get workDaysWeekendsAbroadHint =>
-      'Ganzer Tag ohne Arbeit außerhalb des Unternehmenslandes';
+      'Ohne Arbeit, mindestens zeitweise im Ausland';
 
   @override
   String get workDaysWeekendAbroad => 'Ruhetag im Ausland';
@@ -2661,7 +2658,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get workDaysWeekendsHomeHint =>
-      'Ganzer Tag ohne Arbeit im Unternehmensland';
+      'Ohne Arbeit, den ganzen Tag im Unternehmensland';
 
   @override
   String get workDaysWeekendHome => 'Ruhetag im Unternehmensland';
@@ -2677,11 +2674,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get workDaysNoBase =>
-      'Geben Sie das Land des Unternehmens an: Arbeitstage werden danach gezählt.';
+      'Geben Sie das Land des Unternehmens an: Ohne es lassen sich die Tage nicht zählen.';
 
   @override
   String get workDaysRule =>
-      'Ein Arbeitstag ist ein Tag mit Lenken oder anderer Arbeit, im Ausland auch mit Bereitschaft. Ein Tag ohne Arbeit ist ein Ruhetag: im Ausland, wenn Sie mindestens zeitweise außerhalb des Unternehmenslandes waren, sonst im Unternehmensland. Wo Sie waren, weiß die App aus den Ländern der Schichten auf dem Startbildschirm. Im Kalender sind Arbeitstage und Ruhetage im Ausland (grün) ausgefüllt, Ruhetage im Unternehmensland haben einen Ring, grau heißt keine Daten.';
+      'Ein Arbeitstag hat Lenken oder andere Arbeit, im Ausland auch Bereitschaft. Die übrigen Tage sind Ruhetage. Die Länder kommen aus den Schichten auf dem Startbildschirm. Arbeitstage sind ausgefüllt, grau heißt keine Daten.';
 
   @override
   String get violationsTitle => 'Verstöße';
@@ -2711,11 +2708,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get violationsEmptyText =>
-      'Sobald die App einen Verstoß bemerkt, erscheint er hier.';
+      'Verstöße aus dem Protokoll erscheinen hier von selbst.';
 
   @override
   String get violationsRule =>
-      'Bei einer Straßenkontrolle legt der Fahrer die Aufzeichnungen von 56 Tagen vor — so lange bleibt ein Verstoß in dieser Liste. Notieren Sie eine Erklärung, solange Sie den Grund noch wissen: Stau, kein Parkplatz, Verzögerung beim Beladen. Offiziell wird der Grund handschriftlich auf dem Ausdruck des Tachografen vermerkt. Die Liste beruht auf dem Protokoll der App; der Kontrolleur prüft die Daten des Tachografen.';
+      'Bei einer Straßenkontrolle werden die Aufzeichnungen von 56 Tagen geprüft — so lange bleibt ein Verstoß in der Liste. Fügen Sie eine Erklärung hinzu, solange Sie den Grund noch wissen: Stau, kein Parkplatz, Verzögerung beim Beladen. Das ist eine Notiz für Sie selbst: Der Kontrolleur prüft den Tachografen, offiziell wird der Grund handschriftlich auf einem Ausdruck vermerkt.';
 
   @override
   String violationsDaysLeft(int days) {

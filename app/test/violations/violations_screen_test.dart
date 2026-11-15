@@ -129,9 +129,9 @@ void main() {
       expect(find.text('Превышение 0:30'), findsNWidgets(3));
       expect(find.text('ЕС 561/2006 · ст. 7'), findsNWidgets(2));
       expect(find.text('ЕС 561/2006 · ст. 6(1)'), findsOneWidget);
-      expect(find.text('В проверке ещё 56 дней'), findsOneWidget);
-      expect(find.text('В проверке ещё 55 дней'), findsOneWidget);
-      expect(find.text('В проверке ещё 54 дня'), findsOneWidget);
+      expect(find.text('Ещё 56 дней в периоде проверки'), findsOneWidget);
+      expect(find.text('Ещё 55 дней в периоде проверки'), findsOneWidget);
+      expect(find.text('Ещё 54 дня в периоде проверки'), findsOneWidget);
       expect(find.text('без пояснения'), findsNWidgets(3));
     });
 

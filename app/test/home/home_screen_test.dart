@@ -124,7 +124,7 @@ void main() {
         findsOneWidget,
       );
       expect(
-        inRow('Двухнедельное вождение', 'ограничивает'),
+        inRow('Двухнедельное вождение', 'кончится раньше'),
         s.fortnightLimiting ? findsOneWidget : findsNothing,
       );
       expect(
@@ -348,9 +348,7 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(HeroBanner),
-          matching: find.text(
-            'Нужен перерыв 30 мин — вторая часть раздельного 15 + 30',
-          ),
+          matching: find.text('Нужна вторая часть перерыва — 30 мин'),
         ),
         findsOneWidget,
       );
