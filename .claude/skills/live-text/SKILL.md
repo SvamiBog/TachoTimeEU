@@ -60,7 +60,10 @@ grep -rn "старый текст" test        # tests that look for the old Rus
 flutter test test/l10n test/design/screen_conformance_test.dart test/store
 flutter test                         # widget tests find many strings by literal text
 flutter analyze --fatal-infos
+(cd ../packages/tacho_engine && dart test test/docs_test.dart)   # if docs/domain changed
 ```
+
+`docs/domain/eu-561-rules.md` is not a UI quote: its limits table is checked against the engine by DOC-01 (`packages/tacho_engine/test/docs_test.dart`) and keeps the regulation's wording (“шесть периодов по 24 ч”). Update only the cells that name a UI text.
 
 Tests that `find.text('…')` a changed string are updated to the new text — the test was right about behaviour, the copy changed. Screen conformance draws every screen in every language at 360 dp with font ×2: a string that no longer fits is wrapped, not shortened into nonsense. Store captions (`docs/store/listing/`) and docs that quote UI labels (`docs/beta/tester-guide.md`, `docs/design/README.md`, `docs/site/`) are updated if a quoted label changed; rename labels only when it is worth that.
 
