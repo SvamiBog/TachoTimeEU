@@ -56,16 +56,16 @@ typedef _Driving = ({
 
 _Driving _driving(ComplianceSnapshot s) => (
   now: minuteOf(s.now),
-  shiftStart: s.shift?.start,
+  shiftStart: s.shiftStart,
   atWheel: s.currentMode == DriverMode.driving,
   continuous: minutes(s.continuousDriving),
   untilBreak: minutes(s.drivingUntilBreak),
   // Рабочий день — от начала смены до сейчас, а не до начала перерыва, как
   // в строке «Рабочий день»: здесь — сколько можно ехать, если тронуться
   // сейчас.
-  shiftLeft: switch (s.shift) {
-    final shift? => minutes(
-      atLeastZero(s.shiftLimit - s.now.difference(shift.start)),
+  shiftLeft: switch (s.shiftStart) {
+    final start? => minutes(
+      atLeastZero(s.shiftLimit - s.now.difference(start)),
     ),
     null => null,
   },

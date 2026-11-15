@@ -28,6 +28,8 @@ import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
+import 'package:tachogo/data/violations/violation_notes.dart';
+import 'package:tachogo/data/violations/violation_providers.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 import 'package:tachogo/notifications/alert_providers.dart';
 import 'package:tachogo/notifications/alert_scheduler.dart';
@@ -47,6 +49,12 @@ class TestClock extends Clock {
   DateTime get now => state;
   set now(DateTime t) => state = t;
 }
+
+/// Журнал нарушений без изолята: в тестах время не идёт, и изолят не
+/// вернулся бы.
+Future<List<LoggedViolation>> violationLogInTest(
+  ViolationLogInputs inputs,
+) async => computeViolationLog(inputs);
 
 /// Правила запретов без сайта: скачанных нет или [downloaded], сайт не
 /// спрашивается. [updates] — сколько раз спросили.
@@ -165,6 +173,7 @@ List<Override> journalOverrides({
   defaultCountryProvider.overrideWith((ref) => Stream.value(defaultCountry)),
   shiftCountryAutofillProvider.overrideWith((ref) {}),
   banDataRepositoryProvider.overrideWithValue(bans ?? FakeBanData()),
+  violationLogComputerProvider.overrideWithValue(violationLogInTest),
 ];
 
 /// База в памяти: запись режимов и считываний идёт через настоящие
@@ -199,6 +208,10 @@ List<Override> databaseOverrides(
     ),
     clockProvider.overrideWith(() => TestClock(now())),
     banDataRepositoryProvider.overrideWithValue(FakeBanData()),
+    violationLogComputerProvider.overrideWithValue(violationLogInTest),
+    violationNoteRepositoryProvider.overrideWithValue(
+      ViolationNoteRepository(db, clock: now),
+    ),
     if (notifications != null) ...[
       notificationPlatformProvider.overrideWithValue(notifications),
       alertSchedulerProvider.overrideWithValue(

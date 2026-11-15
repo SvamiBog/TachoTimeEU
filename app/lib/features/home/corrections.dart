@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
+import 'package:tachogo/core/widgets/journal_save.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/journal/pickers.dart';
 
@@ -36,6 +37,7 @@ Future<void> openDrivingCorrection(BuildContext context, WidgetRef ref) async {
   if (c == null) return;
   final bounds = drivingAdjustmentBounds(c.periods, c.shift.start, c.now);
   final messenger = ScaffoldMessenger.of(context);
+  final save = journalSaver(context);
   if (bounds == null) {
     messenger.showSnackBar(SnackBar(content: Text(l.driveEditNoDrive)));
     return;
@@ -58,14 +60,16 @@ Future<void> openDrivingCorrection(BuildContext context, WidgetRef ref) async {
     },
   );
   if (picked == null) return;
-  await ref
-      .read(journalEditRepositoryProvider)
-      .applyLiveEdit(
-        LiveShiftEdit(
-          shiftStart: c.shift.start,
-          drivingDelta: picked - computed,
+  await save(
+    () => ref
+        .read(journalEditRepositoryProvider)
+        .applyLiveEdit(
+          LiveShiftEdit(
+            shiftStart: c.shift.start,
+            drivingDelta: picked - computed,
+          ),
         ),
-      );
+  );
 }
 
 /// Последний перерыв смены для корректировки (экран 8); null — перерывов
@@ -93,6 +97,7 @@ Future<void> openBreakCorrection(BuildContext context, WidgetRef ref) async {
     ref.read(activityPeriodsProvider).value,
   );
   if (info == null) return;
+  final save = journalSaver(context);
   final picked = await showDurationSheet(
     context,
     title: info.open ? l.breakCurrentDuration : l.breakLastDuration,
@@ -102,9 +107,11 @@ Future<void> openBreakCorrection(BuildContext context, WidgetRef ref) async {
     hint: (_) => l.breakEditHint,
   );
   if (picked == null) return;
-  await ref
-      .read(journalEditRepositoryProvider)
-      .setLastBreak(info.shiftStart, picked);
+  await save(
+    () => ref
+        .read(journalEditRepositoryProvider)
+        .setLastBreak(info.shiftStart, picked),
+  );
 }
 
 /// «Изменить начало смены» (экран 6): начало раньше — за счёт отдыха перед
@@ -115,6 +122,7 @@ Future<void> openShiftStartCorrection(
 ) async {
   final c = _current(ref);
   if (c == null) return;
+  final save = journalSaver(context);
   final picked = await showDateTimeSheet(
     context,
     start: floorTimeToMinute(c.shift.start),
@@ -124,9 +132,11 @@ Future<void> openShiftStartCorrection(
   if (picked == null || picked.start == floorTimeToMinute(c.shift.start)) {
     return;
   }
-  await ref
-      .read(journalEditRepositoryProvider)
-      .applyLiveEdit(
-        LiveShiftEdit(shiftStart: c.shift.start, newStart: picked.start),
-      );
+  await save(
+    () => ref
+        .read(journalEditRepositoryProvider)
+        .applyLiveEdit(
+          LiveShiftEdit(shiftStart: c.shift.start, newStart: picked.start),
+        ),
+  );
 }

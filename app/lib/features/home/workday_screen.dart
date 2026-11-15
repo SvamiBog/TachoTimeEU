@@ -38,14 +38,14 @@ typedef _Workday = ({
 _Workday _workday(ComplianceSnapshot s) {
   final local = s.now.toLocal();
   return (
-    start: s.shift?.start,
+    start: s.shiftStart,
     today: DateTime(local.year, local.month, local.day),
     value: minutes(s.shiftDuration),
     limit: minutes(s.shiftLimit),
     regular: minutes(s.shiftRegularLimit),
     extended: minutes(s.shiftExtendedLimit),
     reducedLeft: s.reducedRestsLeft,
-    splitFirstPart: s.shift?.splitFirstPart ?? false,
+    splitFirstPart: s.splitFirstPart,
     tone: toneOf(
       s,
       violation: InfringementType.shiftExceeded,

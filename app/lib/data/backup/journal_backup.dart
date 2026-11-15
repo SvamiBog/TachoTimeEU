@@ -9,6 +9,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/tables.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
+import 'package:tachogo/data/violations/violation_notes.dart';
 
 /// Why a transfer file cannot be loaded.
 enum BackupError {
@@ -45,6 +46,7 @@ class BackupContents {
     required this.manualShifts,
     required this.cardDownloads,
     required this.settings,
+    this.violationNotes = const [],
   });
 
   final List<ActivityPeriodsCompanion> periods;
@@ -52,6 +54,9 @@ class BackupContents {
   final List<ManualShiftsCompanion> manualShifts;
   final List<DateTime> cardDownloads;
   final Map<String, String> settings;
+
+  /// Пояснения водителя к нарушениям; в файлах до 11.11.2026 их нет.
+  final List<ViolationNotesCompanion> violationNotes;
 
   /// Журнал в файле пустой: нет ни записей режимов, ни ручных смен.
   bool get isEmpty => periods.isEmpty && manualShifts.isEmpty;
@@ -81,9 +86,10 @@ class BackupContents {
 /// Moves the journal to another phone as a file (More → "Move to another
 /// phone"). On the old phone [export] builds a file with the whole journal:
 /// activity records, shifts with countries and notes, manual shifts, card
-/// downloads and the transferable settings
-/// (`SettingsRepository.transferableSettings`). On the new phone [parse]
-/// validates the file and [restore] replaces the journal in one transaction.
+/// downloads, the driver's explanations of infringements and the transferable
+/// settings (`SettingsRepository.transferableSettings`). On the new phone
+/// [parse] validates the file and [restore] replaces the journal in one
+/// transaction.
 ///
 /// The format is JSON, times are ISO-8601 UTC, durations are minutes.
 /// [formatVersion] grows when an older app could not read a new file; fields
@@ -142,6 +148,12 @@ class JournalBackup {
     final cards = await (_db.select(
       _db.cardDownloads,
     )..orderBy([(c) => OrderingTerm(expression: c.downloadedAtUtc)])).get();
+    final notes =
+        await (_db.select(_db.violationNotes)..orderBy([
+              (n) => OrderingTerm(expression: n.atUtc),
+              (n) => OrderingTerm(expression: n.id),
+            ]))
+            .get();
     final settings = await SettingsRepository(_db).transferableSettings();
 
     final json = <String, Object?>{
@@ -194,6 +206,17 @@ class JournalBackup {
           },
       ],
       'cardDownloads': [for (final c in cards) _time(c.downloadedAtUtc)],
+      'violationNotes': [
+        for (final n in notes)
+          {
+            'type': n.type,
+            'at': _time(n.atUtc),
+            'until': _time(n.untilUtc),
+            'note': n.note,
+            'createdAt': _time(n.createdAt),
+            'updatedAt': _time(n.updatedAt),
+          },
+      ],
       'settings': settings,
     };
     return utf8.encode(const JsonEncoder.withIndent(' ').convert(json));
@@ -223,7 +246,8 @@ class JournalBackup {
   }
 
   /// Заменяет журнал на телефоне журналом из файла: записи режимов, смены,
-  /// ручные смены и считывания карты — удаляются и пишутся заново,
+  /// ручные смены, считывания карты и пояснения к нарушениям — удаляются и
+  /// пишутся заново,
   /// переносимые настройки — перезаписываются, остальные остаются. Одна
   /// транзакция: при ошибке журнал остаётся прежним.
   Future<void> restore(BackupContents contents) async {
@@ -232,6 +256,7 @@ class JournalBackup {
       await _db.delete(_db.manualShifts).go();
       await _db.delete(_db.shifts).go();
       await _db.delete(_db.cardDownloads).go();
+      await _db.delete(_db.violationNotes).go();
       await _db.batch((b) {
         b
           ..insertAll(_db.activityPeriods, contents.periods)
@@ -240,7 +265,8 @@ class JournalBackup {
           ..insertAll(_db.cardDownloads, [
             for (final t in contents.cardDownloads)
               CardDownloadsCompanion.insert(downloadedAtUtc: t),
-          ]);
+          ])
+          ..insertAll(_db.violationNotes, contents.violationNotes);
       });
       await SettingsRepository(_db)
           .importTransferableSettings(contents.settings);
@@ -323,14 +349,32 @@ class JournalBackup {
       }
     }
 
+    // С 11.11.2026; в файлах прежних версий списка нет. Вид нарушения —
+    // текстом, как в БД: неизвестный этой версии приложения не мешает.
+    final notes = [
+      for (final n in file.optList('violationNotes'))
+        ViolationNotesCompanion.insert(
+          type: n.text('type', max: _maxTypeLength),
+          atUtc: n.time('at'),
+          untilUtc: n.time('until'),
+          note: n.text('note', max: ViolationNoteRepository.maxLength),
+          createdAt: n.time('createdAt'),
+          updatedAt: n.time('updatedAt'),
+        ),
+    ];
+
     return BackupContents(
       periods: periods,
       shifts: shifts,
       manualShifts: manual,
       cardDownloads: file.timeList('cardDownloads'),
       settings: file.stringMap('settings'),
+      violationNotes: notes,
     );
   }
+
+  /// Длиннее имён видов нарушений не бывает.
+  static const _maxTypeLength = 64;
 
   static String _time(DateTime t) => t.toUtc().toIso8601String();
 
@@ -356,6 +400,15 @@ class _Fields {
         else
           _bad('$key[$i]'),
     ],
+    _ => _bad(key),
+  };
+
+  /// Список, которого нет в файлах прежних версий приложения: нет — пусто.
+  List<_Fields> optList(String key) => _map[key] == null ? const [] : list(key);
+
+  /// Непустой текст не длиннее [max] знаков.
+  String text(String key, {required int max}) => switch (_map[key]) {
+    final String s when s.trim().isNotEmpty && s.length <= max => s,
     _ => _bad(key),
   };
 

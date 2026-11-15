@@ -14,6 +14,9 @@ import 'helpers.dart';
 
 const limit = Duration(milliseconds: 500);
 
+/// Журнал нарушений пересчитывает снимок в каждой контрольной точке.
+const violationLogLimit = Duration(seconds: 5);
+
 /// Медиана из пяти прогонов после разогрева.
 Duration median(void Function() run) {
   run();
@@ -51,6 +54,19 @@ void main() {
       () => calculateCompliance(periods: log.periods, now: log.now),
     );
     expect(time, lessThan(limit));
+  });
+
+  // Первый замер 2026-11-11: окно 56 дней на журнале за 2 года (около
+  // 1,5 тыс. контрольных точек) — см. PERF-04 в docs/testing.md. Приложение
+  // считает его в отдельном изоляте.
+  test('violationLog за 56 дней быстрее $violationLogLimit', () {
+    final from = log.now.subtract(const Duration(days: 56));
+    final time = median(
+      () => violationLog(periods: log.periods, from: from, now: log.now),
+    );
+    // Замер виден в выводе: порог — запас для CI, а не цель
+    printOnFailure('violationLog: ${time.inMilliseconds} мс');
+    expect(time, lessThan(violationLogLimit));
   });
 
   test('buildJournal быстрее $limit', () {

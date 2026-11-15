@@ -16,10 +16,18 @@ import 'package:tachogo/data/db/utc_date_time_converter.dart';
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [ActivityPeriods, Shifts, ManualShifts, CardDownloads, Settings],
+  tables: [
+    ActivityPeriods,
+    Shifts,
+    ManualShifts,
+    CardDownloads,
+    Settings,
+    ViolationNotes,
+  ],
 )
 /// The local database: activity records, shifts with countries, manual shifts,
-/// card downloads and settings. All dates are UTC.
+/// card downloads, settings and the driver's explanations of infringements.
+/// All dates are UTC.
 class AppDatabase extends _$AppDatabase {
   new([QueryExecutor? executor])
     : super(
@@ -74,7 +82,7 @@ class AppDatabase extends _$AppDatabase {
   // При изменении схемы: увеличить версию, затем
   // `dart run drift_dev make-migrations` и дописать шаг в onUpgrade.
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -95,6 +103,10 @@ class AppDatabase extends _$AppDatabase {
         // Недельный отдых, объявленный водителем (отзыв 01.10.2026).
         final periods = schema.activityPeriods;
         await m.addColumn(periods, periods.weeklyRest);
+      },
+      from4To5: (m, schema) async {
+        // Пояснения водителя к нарушениям («Ещё» → «Нарушения»).
+        await m.createTable(schema.violationNotes);
       },
     ),
     beforeOpen: (details) async {

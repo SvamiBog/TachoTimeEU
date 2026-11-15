@@ -20,8 +20,10 @@ import 'package:tachogo/features/more/about_screen.dart';
 import 'package:tachogo/features/more/problem_report.dart';
 import 'package:tachogo/features/more/transfer_sheet.dart';
 import 'package:tachogo/features/more/working_days_screen.dart';
+import 'package:tachogo/features/violations/violations_screen.dart';
 
-/// "More" (screen 4): driving bans, report export, working days for pay,
+/// "More" (screen 4): driving bans, the infringements of the last 56 days with
+/// the driver's explanations, report export, working days for pay,
 /// moving the journal to another phone, guide and rules, about (with the
 /// licenses), the privacy policy (Google Play requires the link inside the app
 /// too, `docs/store/play-audit.md`). In the beta — "Report a problem" (Phase
@@ -70,6 +72,12 @@ class MoreScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.betweenCardsMax),
             CardGroup(
               children: [
+                NavRow(
+                  icon: Icons.warning_amber_rounded,
+                  title: l.violationsTitle,
+                  subtitle: l.violationsHint,
+                  onTap: () => openViolations(context),
+                ),
                 NavRow(
                   icon: Icons.file_download_outlined,
                   title: l.settingsExport,

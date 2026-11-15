@@ -114,8 +114,17 @@ void main() {
         [utc('2026-09-22 03:00')],
         now,
       );
-      expect(short?.kind, RestKind.weekly, reason: 'отмечен недельный');
+      // Законченный отдых короче 24 ч объявление теряет (ENG-28), идущий —
+      // недельный, пока идёт
+      expect(short?.kind, RestKind.daily, reason: 'прерван раньше 24 ч');
       expect(short?.duration, dur('11:00'));
+      final ongoing = manualRestAfter(
+        manualShift(utc('2026-09-23 00:00'), restKind: RestKind.weekly),
+        const [],
+        now,
+      );
+      expect(ongoing?.duration, dur('2:00'));
+      expect(ongoing?.kind, RestKind.weekly, reason: 'отмечен недельный');
     });
 
     test('смена идёт или отдых не начат — отдыха нет', () {

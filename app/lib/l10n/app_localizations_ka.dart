@@ -2653,4 +2653,82 @@ class AppLocalizationsKa extends AppLocalizations {
   @override
   String get workDaysRule =>
       'სამუშაო დღეა დღე მართვით ან სხვა სამუშაოთი, საზღვარგარეთ კი — მზადყოფნითაც. დანარჩენი დღეები დასვენების დღეებია. ქვეყნებს ვიღებთ მთავარ ეკრანზე ცვლებიდან. შეღებილია სამუშაო დღეები, ნაცრისფერი — მონაცემები არ არის.';
+
+  @override
+  String get violationsTitle => 'დარღვევები';
+
+  @override
+  String get violationsHint => '56 დღის, თქვენი განმარტებებით';
+
+  @override
+  String violationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'დარღვევა 56 დღეში',
+      one: 'დარღვევა 56 დღეში',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsPeriod => 'შემოწმების პერიოდი';
+
+  @override
+  String get violationsUnexplained => 'განმარტების გარეშე';
+
+  @override
+  String get violationsEmpty => '56 დღეში დარღვევები არ არის';
+
+  @override
+  String get violationsEmptyText =>
+      'როცა აპლიკაცია დარღვევას შეამჩნევს, ის აქ გამოჩნდება.';
+
+  @override
+  String get violationsRule =>
+      'გზაზე შემოწმებისას მძღოლი წარადგენს 56 დღის ჩანაწერებს — ამდენ ხანს რჩება დარღვევა ამ სიაში. დაურთეთ განმარტება, სანამ მიზეზი გახსოვთ: საცობი, სადგომზე ადგილი არ იყო, დატვირთვა დაგვიანდა. ოფიციალურად მიზეზს ხელით წერენ ტაქოგრაფის ამონაბეჭდზე. სია აპლიკაციის ჟურნალის მიხედვითაა, ინსპექტორი ტაქოგრაფის მონაცემებს ამოწმებს.';
+
+  @override
+  String violationsDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'შემოწმებაში კიდევ $days დღე',
+      one: 'შემოწმებაში კიდევ $days დღე',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get violationsActive => 'ახლა';
+
+  @override
+  String violationsOver(String time) {
+    return 'გადაჭარბება $time';
+  }
+
+  @override
+  String violationsLate(String time) {
+    return 'დაგვიანება $time';
+  }
+
+  @override
+  String violationsShort(String time) {
+    return 'დასვენება დააკლდა: $time';
+  }
+
+  @override
+  String get violationsNoNote => 'განმარტების გარეშე';
+
+  @override
+  String get violationsNoteAdd => 'განმარტების დამატება';
+
+  @override
+  String get violationsNoteTitle => 'დარღვევის განმარტება';
+
+  @override
+  String get violationsNoteHint => 'მაგალითად: საცობი, სადგომზე ადგილი არ იყო';
+
+  @override
+  String get violationsNote => 'განმარტება';
 }

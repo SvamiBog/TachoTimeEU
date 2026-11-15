@@ -290,6 +290,47 @@ void main() {
       expect(declareWeeklyRest(const [], [r.manual!], now).manual, isNull);
     });
 
+    test('ENG-28: недельный отдых ручной смены прерван через 12 ч — '
+        'суточный полный, рабочая неделя не начинается заново', () {
+      // Полный недельный отдых, смена итогами с отдыхом «недельный»,
+      // а через 12 ч — следующая смена.
+      final weekly = manualShift(
+        start.subtract(day * 3),
+        restKind: RestKind.weekly,
+      );
+      final declared = manualShift(start, restKind: RestKind.weekly);
+      final next = manualShift(declared.end!.add(hour * 12));
+      final now = next.end!.add(hour);
+      final manual = [weekly, declared, next];
+
+      final m = calc(const [], now, manual: manual);
+      expect(m.lastWeeklyRest?.start, weekly.end);
+      expect(m.workWeekStart, start, reason: '144 ч — от конца недельного');
+
+      final shift = journalShifts(
+        const [],
+        now,
+        manual: manual,
+      ).firstWhere((s) => s.start == start);
+      expect(shift.rest.kind, RestKind.daily);
+      expect(shift.rest.status, RestStatus.full);
+      final weeks = buildJournal(
+        timeline: m.timeline,
+        now: now,
+        manualShifts: manual,
+      );
+      expect(weeks.expand((w) => w.weeklyRests), hasLength(1));
+    });
+
+    test('ENG-28: недельный отдых ручной смены прерван через 30 ч — '
+        'сокращённый недельный', () {
+      final declared = manualShift(start, restKind: RestKind.weekly);
+      final next = manualShift(declared.end!.add(hour * 30));
+      final m = calc(const [], next.end!.add(hour), manual: [declared, next]);
+      expect(m.lastWeeklyRest?.start, declared.end);
+      expect(m.lastWeeklyRest?.status, RestStatus.reduced);
+    });
+
     test('ручная смена раньше смены по записям — отметка у записи', () {
       final early = manualShift(start.subtract(day * 2));
       final periods = dayThenRest(weekly: false);
