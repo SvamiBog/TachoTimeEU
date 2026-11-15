@@ -41,6 +41,7 @@ import 'package:tachogo/features/more/more_screen.dart';
 import 'package:tachogo/features/more/working_days_screen.dart';
 import 'package:tachogo/features/onboarding/onboarding_screen.dart';
 import 'package:tachogo/features/settings/settings_screen.dart';
+import 'package:tachogo/features/violations/violations_screen.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 
 import '../store/store_frame.dart' show encodeRgbPng;
@@ -144,6 +145,11 @@ final _screens = <String, _Screen>{
   'problem': (build: MoreScreen.new, open: _tap((l) => l.problemTitle)),
   'transfer': (build: MoreScreen.new, open: _tap((l) => l.transferTitle)),
   'work-days': (build: WorkingDaysScreen.new, open: null),
+  'violations': (build: ViolationsScreen.new, open: null),
+  'violation-note': (
+    build: ViolationsScreen.new,
+    open: _tap((l) => l.violationsNoteAdd),
+  ),
   'guide': (build: GuideScreen.new, open: null),
   'bans': (build: DrivingBansScreen.new, open: null),
   'bans-de': (build: () => const CountryBansScreen('D'), open: null),

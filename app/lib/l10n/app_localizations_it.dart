@@ -2689,11 +2689,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get violationsEmptyText =>
-      'Quando l’app rileva un’infrazione, comparirà qui.';
+      'Le infrazioni del registro compariranno qui da sole.';
 
   @override
   String get violationsRule =>
-      'Durante un controllo su strada il conducente presenta le registrazioni di 56 giorni: per questo tempo un’infrazione resta in questo elenco. Aggiungi una spiegazione finché ricordi il motivo: coda, nessun posto nel parcheggio, ritardo al carico. Ufficialmente il motivo si scrive a mano sulla stampa del tachigrafo. L’elenco si basa sul registro dell’app; l’ispettore controlla i dati del tachigrafo.';
+      'In un controllo su strada si guardano le registrazioni di 56 giorni: per questo tempo un’infrazione resta nell’elenco. Aggiungi una spiegazione finché ricordi il motivo: coda, nessun posto nel parcheggio, ritardo al carico. È un promemoria per te: l’ispettore controlla il tachigrafo, e il motivo ufficiale si scrive a mano su una stampa.';
 
   @override
   String violationsDaysLeft(int days) {

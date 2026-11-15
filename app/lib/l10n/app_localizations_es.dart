@@ -2698,11 +2698,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get violationsEmptyText =>
-      'Cuando la aplicación detecte una infracción, aparecerá aquí.';
+      'Las infracciones del registro aparecerán aquí solas.';
 
   @override
   String get violationsRule =>
-      'En un control en carretera el conductor presenta los registros de 56 días: ese es el tiempo que una infracción permanece en esta lista. Añada una explicación mientras recuerde el motivo: atasco, sin plaza de aparcamiento, retraso en la carga. Oficialmente, el motivo se escribe a mano en la impresión del tacógrafo. La lista se basa en el registro de la aplicación; el inspector comprueba los datos del tacógrafo.';
+      'En un control en carretera se revisan los registros de 56 días: ese es el tiempo que una infracción sigue en la lista. Añada una explicación mientras recuerde el motivo: atasco, sin plaza de aparcamiento, retraso en la carga. Es una nota para usted: el inspector revisa el tacógrafo y el motivo oficial se escribe a mano en una impresión.';
 
   @override
   String violationsDaysLeft(int days) {

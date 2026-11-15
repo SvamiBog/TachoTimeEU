@@ -2693,11 +2693,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get violationsEmptyText =>
-      'Zodra de app een overtreding opmerkt, verschijnt die hier.';
+      'Overtredingen uit het logboek verschijnen hier vanzelf.';
 
   @override
   String get violationsRule =>
-      'Bij een wegcontrole toont de chauffeur de registraties van 56 dagen — zo lang blijft een overtreding in deze lijst staan. Voeg een toelichting toe zolang u de reden nog weet: file, geen parkeerplaats, vertraging bij het laden. Officieel wordt de reden met de hand op een afdruk van de tachograaf geschreven. De lijst is gebaseerd op het logboek van de app; de inspecteur controleert de gegevens van de tachograaf.';
+      'Bij een wegcontrole worden de registraties van 56 dagen bekeken — zo lang blijft een overtreding in de lijst. Voeg een toelichting toe zolang u de reden nog weet: file, geen parkeerplaats, vertraging bij het laden. Dit is een geheugensteun voor uzelf: de inspecteur controleert de tachograaf, en officieel wordt de reden met de hand op een afdruk geschreven.';
 
   @override
   String violationsDaysLeft(int days) {

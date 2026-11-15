@@ -2695,19 +2695,19 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get violationsEmptyText =>
-      'Ilova qoidabuzarlikni sezsa, u shu yerda paydo boʻladi.';
+      'Jurnaldagi qoidabuzarliklar shu yerda oʻzi paydo boʻladi.';
 
   @override
   String get violationsRule =>
-      'Yoʻldagi tekshiruvda haydovchi 56 kunlik yozuvlarni koʻrsatadi — qoidabuzarlik shu roʻyxatda shuncha vaqt turadi. Sababi esingizda ekan, unga izoh yozing: tirbandlik, toʻxtash joyida joy yoʻq edi, yuklashda kechikish. Rasman sabab taxograf chiqargan qogʻozga qoʻlda yoziladi. Roʻyxat ilova jurnali boʻyicha tuzilgan, inspektor taxograf maʼlumotlarini tekshiradi.';
+      'Yoʻldagi tekshiruvda 56 kunlik yozuvlar koʻriladi — qoidabuzarlik roʻyxatda shuncha turadi. Sababi esingizda ekan, izoh qoʻshing: tirbandlik, toʻxtash joyida joy yoʻq edi, yuklashda kechikish. Bu oʻzingiz uchun eslatma: inspektor taxografni tekshiradi, rasman esa sabab taxograf chiqargan qogʻozga qoʻlda yoziladi.';
 
   @override
   String violationsDaysLeft(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'Tekshiruvda yana $days kun',
-      one: 'Tekshiruvda yana $days kun',
+      other: 'Tekshiruv davrida yana $days kun',
+      one: 'Tekshiruv davrida yana $days kun',
     );
     return '$_temp0';
   }

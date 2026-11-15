@@ -2708,11 +2708,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get violationsEmptyText =>
-      'Sobald die App einen Verstoß bemerkt, erscheint er hier.';
+      'Verstöße aus dem Protokoll erscheinen hier von selbst.';
 
   @override
   String get violationsRule =>
-      'Bei einer Straßenkontrolle legt der Fahrer die Aufzeichnungen von 56 Tagen vor — so lange bleibt ein Verstoß in dieser Liste. Notieren Sie eine Erklärung, solange Sie den Grund noch wissen: Stau, kein Parkplatz, Verzögerung beim Beladen. Offiziell wird der Grund handschriftlich auf dem Ausdruck des Tachografen vermerkt. Die Liste beruht auf dem Protokoll der App; der Kontrolleur prüft die Daten des Tachografen.';
+      'Bei einer Straßenkontrolle werden die Aufzeichnungen von 56 Tagen geprüft — so lange bleibt ein Verstoß in der Liste. Fügen Sie eine Erklärung hinzu, solange Sie den Grund noch wissen: Stau, kein Parkplatz, Verzögerung beim Beladen. Das ist eine Notiz für Sie selbst: Der Kontrolleur prüft den Tachografen, offiziell wird der Grund handschriftlich auf einem Ausdruck vermerkt.';
 
   @override
   String violationsDaysLeft(int days) {

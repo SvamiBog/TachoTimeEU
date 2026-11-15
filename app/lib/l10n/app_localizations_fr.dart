@@ -2705,11 +2705,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get violationsEmptyText =>
-      'Dès que l’application remarque une infraction, elle apparaît ici.';
+      'Les infractions du journal apparaîtront ici d’elles-mêmes.';
 
   @override
   String get violationsRule =>
-      'Lors d’un contrôle routier, le conducteur présente les enregistrements de 56 jours — c’est la durée pendant laquelle une infraction reste dans cette liste. Ajoutez une explication tant que vous vous souvenez de la raison : embouteillage, pas de place de stationnement, retard au chargement. Officiellement, la raison s’écrit à la main sur un ticket du tachygraphe. La liste repose sur le journal de l’application ; le contrôleur vérifie les données du tachygraphe.';
+      'Lors d’un contrôle routier, on vérifie les enregistrements de 56 jours — c’est le temps qu’une infraction reste dans la liste. Ajoutez une explication tant que vous vous souvenez de la raison : embouteillage, pas de place de stationnement, retard au chargement. C’est un pense-bête pour vous : le contrôleur vérifie le tachygraphe, et la raison officielle s’écrit à la main sur un ticket imprimé.';
 
   @override
   String violationsDaysLeft(int days) {

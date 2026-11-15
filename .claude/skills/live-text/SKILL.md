@@ -75,7 +75,7 @@ flutter test --no-pub test/l10n/live_text_screens_test.dart --dart-define=LIVE_T
 rm test/l10n/live_text_screens_test.dart
 ```
 
-It writes one PNG per screen and sheet (home, limits screens, sheets, journal, shift form, settings, onboarding steps, More, guide, bans, work days) at 412 dp. Open them and read every text as the driver: does it say what to do, is anything said twice, does anything sound like a lawyer or a robot. Notifications have no screen: read `notify*`, `service*` and `infr*` strings as a lock-screen line. On a real phone, the debug APK from CI shows the same.
+It writes one PNG per screen and sheet (home, limits screens, sheets, journal, shift form, settings, onboarding steps, More, guide, bans, work days, infringements and the explanation sheet) at 412 dp. Open them and read every text as the driver: does it say what to do, is anything said twice, does anything sound like a lawyer or a robot. Notifications have no screen: read `notify*`, `service*` and `infr*` strings as a lock-screen line. On a real phone, the debug APK from CI shows the same.
 
 ### 7. Report
 

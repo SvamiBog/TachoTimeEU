@@ -2706,22 +2706,21 @@ class AppLocalizationsCs extends AppLocalizations {
   String get violationsEmpty => 'Za 56 dní žádná porušení';
 
   @override
-  String get violationsEmptyText =>
-      'Jakmile aplikace zaznamená porušení, objeví se zde.';
+  String get violationsEmptyText => 'Porušení z deníku se tu objeví sama.';
 
   @override
   String get violationsRule =>
-      'Při silniční kontrole řidič předkládá záznamy za 56 dní — tak dlouho zůstává porušení v tomto seznamu. Připište k němu vysvětlení, dokud si pamatujete důvod: kolona, žádné místo na parkovišti, zdržení při nakládce. Oficiálně se důvod píše ručně na výtisk z tachografu. Seznam vychází z deníku aplikace, inspektor kontroluje data tachografu.';
+      'Při silniční kontrole se kontrolují záznamy za 56 dní — tak dlouho zůstává porušení v seznamu. Připište vysvětlení, dokud si pamatujete důvod: kolona, žádné místo na parkovišti, zdržení při nakládce. Je to poznámka pro vás: inspektor kontroluje tachograf a oficiálně se důvod píše ručně na výtisk.';
 
   @override
   String violationsDaysLeft(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'V kontrole ještě $days dní',
-      many: 'V kontrole ještě $days dne',
-      few: 'V kontrole ještě $days dny',
-      one: 'V kontrole ještě $days den',
+      other: 'Ještě $days dní v kontrolovaném období',
+      many: 'Ještě $days dne v kontrolovaném období',
+      few: 'Ještě $days dny v kontrolovaném období',
+      one: 'Ještě $days den v kontrolovaném období',
     );
     return '$_temp0';
   }

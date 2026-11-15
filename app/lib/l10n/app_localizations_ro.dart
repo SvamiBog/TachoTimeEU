@@ -2703,21 +2703,20 @@ class AppLocalizationsRo extends AppLocalizations {
   String get violationsEmpty => 'Nicio încălcare în 56 de zile';
 
   @override
-  String get violationsEmptyText =>
-      'Când aplicația observă o încălcare, aceasta apare aici.';
+  String get violationsEmptyText => 'Încălcările din jurnal apar aici automat.';
 
   @override
   String get violationsRule =>
-      'La controlul în trafic, șoferul prezintă înregistrările din 56 de zile — atât rămâne o încălcare în această listă. Adăugați o explicație cât vă amintiți motivul: ambuteiaj, niciun loc în parcare, întârziere la încărcare. Oficial, motivul se scrie de mână pe imprimarea tahografului. Lista se bazează pe jurnalul aplicației; inspectorul verifică datele tahografului.';
+      'La controlul în trafic se verifică înregistrările din 56 de zile — atât rămâne o încălcare în listă. Adăugați o explicație cât vă amintiți motivul: ambuteiaj, niciun loc în parcare, întârziere la încărcare. Este o notiță pentru dvs.: inspectorul verifică tahograful, iar oficial motivul se scrie de mână pe o imprimare.';
 
   @override
   String violationsDaysLeft(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'În control încă $days de zile',
-      few: 'În control încă $days zile',
-      one: 'În control încă $days zi',
+      other: 'Încă $days de zile în perioada de control',
+      few: 'Încă $days zile în perioada de control',
+      one: 'Încă $days zi în perioada de control',
     );
     return '$_temp0';
   }

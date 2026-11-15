@@ -2713,21 +2713,21 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get violationsEmptyText =>
-      'Gdy aplikacja zauważy naruszenie, pojawi się ono tutaj.';
+      'Naruszenia z dziennika pojawią się tu same.';
 
   @override
   String get violationsRule =>
-      'Podczas kontroli drogowej kierowca okazuje zapisy z 56 dni — tak długo naruszenie pozostaje na tej liście. Dopisz do niego wyjaśnienie, póki pamiętasz przyczynę: korek, brak miejsca na parkingu, opóźniony załadunek. Oficjalnie przyczynę wpisuje się odręcznie na wydruku z tachografu. Lista powstaje z dziennika aplikacji, inspektor sprawdza dane tachografu.';
+      'Podczas kontroli drogowej sprawdza się zapisy z 56 dni — tyle naruszenie zostaje na liście. Dodaj wyjaśnienie, póki pamiętasz przyczynę: korek, brak miejsca na parkingu, opóźniony załadunek. To notatka dla Ciebie: inspektor sprawdza tachograf, a oficjalnie przyczynę wpisuje się odręcznie na wydruku.';
 
   @override
   String violationsDaysLeft(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'W kontroli jeszcze $days dnia',
-      many: 'W kontroli jeszcze $days dni',
-      few: 'W kontroli jeszcze $days dni',
-      one: 'W kontroli jeszcze $days dzień',
+      other: 'Jeszcze $days dnia w okresie kontroli',
+      many: 'Jeszcze $days dni w okresie kontroli',
+      few: 'Jeszcze $days dni w okresie kontroli',
+      one: 'Jeszcze $days dzień w okresie kontroli',
     );
     return '$_temp0';
   }

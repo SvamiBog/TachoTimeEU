@@ -2681,11 +2681,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get violationsEmptyText =>
-      'When the app notices an infringement, it will appear here.';
+      'Infringements from your log will appear here by themselves.';
 
   @override
   String get violationsRule =>
-      'At a roadside check a driver presents the records for 56 days — that is how long an infringement stays in this list. Add an explanation while you remember the reason: traffic jam, no parking space, delayed loading. Officially the reason is written by hand on a tachograph printout. The list is based on the app’s log; an inspector checks the tachograph data.';
+      'At a roadside check, records for 56 days are examined — that is how long an infringement stays on this list. Add an explanation while you remember the reason: traffic jam, no parking space, delayed loading. This is a note for yourself: the inspector checks the tachograph, and the official reason is written by hand on a printout.';
 
   @override
   String violationsDaysLeft(int days) {
