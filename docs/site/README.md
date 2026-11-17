@@ -10,6 +10,7 @@
 | Генератор: шаблон, стили, карта сайта | `app/tool/site_build.dart` |
 | Шрифты (Unbounded, Onest, JetBrains Mono — латиница, подмножества в WOFF2) и их лицензии OFL | `site/fonts/` |
 | Политика конфиденциальности — пишется руками | `site/privacy/index.html` |
+| Условия использования — пишутся руками, ссылка в футере и в Play Console | `site/terms/index.html` |
 | Сервер на Railway: Caddy отдаёт собранную папку, заголовки безопасности, `www` → `tachogo.eu`, без журналов посещений | `deploy/site/Dockerfile`, `deploy/site/Caddyfile` |
 | Значки, картинка для соцсетей | `site/favicon.svg`, `site/favicon-32.png`, `site/icon-512.png` |
 
@@ -56,7 +57,7 @@
 
 ## Railway
 
-Сервис `site` в проекте Railway (регион EU West). Railway сам из git ничего не собирает: workflow «Сайт» подписывает файл правил (секрет `BANS_SIGNING_KEY`), собирает лендинг, кладёт `site/` в папку `public/` рядом с `Dockerfile` и `Caddyfile` и выкладывает её командой `railway up --path-as-root --service site` (секрет `RAILWAY_TOKEN` — токен проекта: Railway → Project Settings → Tokens). После выкладки проверяет, что `tachogo.eu`, политика и `bans/v1.json` отвечают (если нет — предупреждение).
+Сервис `site` в проекте Railway (регион EU West). Railway сам из git ничего не собирает: workflow «Сайт» подписывает файл правил (секрет `BANS_SIGNING_KEY`), собирает лендинг, кладёт `site/` в папку `public/` рядом с `Dockerfile` и `Caddyfile` и выкладывает её командой `railway up --path-as-root --service site` (секрет `RAILWAY_TOKEN` — токен проекта: Railway → Project Settings → Tokens). После выкладки проверяет, что `tachogo.eu`, политика, условия использования и `bans/v1.json` отвечают (если нет — предупреждение).
 
 Настроить один раз:
 
