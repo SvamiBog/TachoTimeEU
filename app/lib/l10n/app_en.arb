@@ -574,6 +574,7 @@
   "aboutLicensesHint": "Libraries and fonts the app is built with",
   "moreDisclaimer": "TachoGo helps plan driving and rest times but does not replace the tachograph and is not legal advice. The app is not affiliated with the EU or the authorities of any European country.",
   "morePrivacy": "Privacy policy",
+  "moreTerms": "Terms of use",
   "linkFailed": "Could not open the browser. Page address: {url}",
   "problemTitle": "Report a problem",
   "problemHint": "Beta version: the report goes to the app developers",

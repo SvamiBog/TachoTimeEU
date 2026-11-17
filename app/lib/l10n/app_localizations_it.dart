@@ -2278,6 +2278,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get morePrivacy => 'Informativa sulla privacy';
 
   @override
+  String get moreTerms => 'Condizioni d’uso';
+
+  @override
   String linkFailed(String url) {
     return 'Impossibile aprire il browser. Indirizzo della pagina: $url';
   }

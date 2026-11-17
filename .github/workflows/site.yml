@@ -102,7 +102,7 @@ jobs:
       - name: Сайт отвечает
         run: |
           sleep 20
-          for path in "" privacy/ bans/v1.json; do
+          for path in "" privacy/ terms/ bans/v1.json; do
             if ! curl -fsS -o /dev/null "https://tachogo.eu/$path"; then
               echo "::warning::https://tachogo.eu/$path не отвечает — проверить домен в Railway и DNS (docs/site/README.md)"
             fi

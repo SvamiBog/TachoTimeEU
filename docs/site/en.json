@@ -67,5 +67,6 @@
   "mail_body": "Google account on my phone:\nPhone model:\nApp language: English",
   "disclaimer": "TachoGo is an independent app: it is not affiliated with and does not represent the EU or the authorities of any European country. Limits follow {regulation} and the AETR Agreement. TachoGo does not replace the tachograph.",
   "regulation": "Regulation (EC) No 561/2006",
-  "privacy": "Privacy policy"
+  "privacy": "Privacy policy",
+  "terms": "Terms of use"
 }

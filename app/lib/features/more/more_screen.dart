@@ -26,7 +26,7 @@ import 'package:tachogo/features/violations/violations_screen.dart';
 /// the driver's explanations, report export, working days for pay,
 /// moving the journal to another phone, guide and rules, about (with the
 /// licenses), the privacy policy (Google Play requires the link inside the app
-/// too, `docs/store/play-audit.md`). In the beta — "Report a problem" (Phase
+/// too, `docs/store/play-audit.md`) and the terms of use. In the beta — "Report a problem" (Phase
 /// 4). The Premium banner comes with purchases (Phase 5), the account with sync
 /// (Phase 6), feedback and "Share" with the release (Phase 7).
 class MoreScreen extends ConsumerWidget {
@@ -130,6 +130,11 @@ class MoreScreen extends ConsumerWidget {
                   title: l.morePrivacy,
                   onTap: () => unawaited(openPrivacyPolicy(context, ref)),
                 ),
+                NavRow(
+                  icon: Icons.gavel_outlined,
+                  title: l.moreTerms,
+                  onTap: () => unawaited(openTermsOfUse(context, ref)),
+                ),
               ],
             ),
             Padding(
@@ -161,4 +166,13 @@ Future<void> openPrivacyPolicy(BuildContext context, WidgetRef ref) => openLink(
   ref,
   privacyPolicyUri(Localizations.localeOf(context).languageCode),
   address: privacyPolicyPage,
+);
+
+/// Условия использования в браузере, на языке интерфейса. Открыть нечем —
+/// адрес страницы в плашке.
+Future<void> openTermsOfUse(BuildContext context, WidgetRef ref) => openLink(
+  context,
+  ref,
+  termsOfUseUri(Localizations.localeOf(context).languageCode),
+  address: termsOfUsePage,
 );

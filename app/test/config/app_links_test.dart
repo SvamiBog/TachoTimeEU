@@ -1,6 +1,6 @@
-// Ссылка на политику конфиденциальности и страница, которую публикует
-// сайт (`site/`, workflow «Сайт»), ссылка на официальный текст
-// правил. План тестов: UI-21, UI-26 в docs/testing.md.
+// Ссылки на политику конфиденциальности и условия использования и страницы,
+// которые публикует сайт (`site/`, workflow «Сайт»), ссылка на официальный
+// текст правил. План тестов: UI-21, UI-26 в docs/testing.md.
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +19,18 @@ void main() {
     expect(page, contains('<section id="ru" lang="ru">'));
     expect(page, contains('<section id="en" lang="en">'));
     expect(privacyPolicyPage, endsWith('/privacy/'));
+  });
+
+  test('условия использования: русский интерфейс — русский текст, '
+      'остальные — английский, оба есть на странице', () {
+    expect(termsOfUseUri('ru').toString(), 'https://tachogo.eu/terms/#ru');
+    for (final code in ['uk', 'pl', 'ro', 'ka', 'uz', 'en', 'de']) {
+      expect(termsOfUseUri(code).fragment, 'en', reason: code);
+    }
+    final page = File('../site/terms/index.html').readAsStringSync();
+    expect(page, contains('<section id="ru" lang="ru">'));
+    expect(page, contains('<section id="en" lang="en">'));
+    expect(page, isNot(contains('TODO')));
   });
 
   test('в политике — ответственный и почта для связи, без заглушек', () {

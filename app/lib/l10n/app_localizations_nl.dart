@@ -2278,6 +2278,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get morePrivacy => 'Privacybeleid';
 
   @override
+  String get moreTerms => 'Gebruiksvoorwaarden';
+
+  @override
   String linkFailed(String url) {
     return 'De browser kon niet worden geopend. Adres van de pagina: $url';
   }

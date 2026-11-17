@@ -574,6 +574,7 @@
   "aboutLicensesHint": "Bibliotecas y fuentes con las que está hecha la aplicación",
   "moreDisclaimer": "TachoGo ayuda a planificar los tiempos de conducción y descanso, pero no sustituye al tacógrafo ni es asesoramiento jurídico. La aplicación no está vinculada a las autoridades de la UE ni de los países europeos.",
   "morePrivacy": "Política de privacidad",
+  "moreTerms": "Condiciones de uso",
   "linkFailed": "No se pudo abrir el navegador. Dirección de la página: {url}",
   "problemTitle": "Informar de un problema",
   "problemHint": "Versión beta: el informe llega a los desarrolladores",

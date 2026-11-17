@@ -574,6 +574,7 @@
   "aboutLicensesHint": "Bibliotheken en lettertypen waarmee de app is gemaakt",
   "moreDisclaimer": "TachoGo helpt rij- en rusttijden te plannen, maar vervangt de tachograaf niet en is geen juridisch advies. De app is niet verbonden met de overheden van de EU of van Europese landen.",
   "morePrivacy": "Privacybeleid",
+  "moreTerms": "Gebruiksvoorwaarden",
   "linkFailed": "De browser kon niet worden geopend. Adres van de pagina: {url}",
   "problemTitle": "Probleem melden",
   "problemHint": "Bètaversie: het rapport gaat naar de makers van de app",

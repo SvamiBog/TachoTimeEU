@@ -2272,6 +2272,9 @@ class AppLocalizationsKa extends AppLocalizations {
   String get morePrivacy => 'კონფიდენციალურობის პოლიტიკა';
 
   @override
+  String get moreTerms => 'გამოყენების პირობები';
+
+  @override
   String linkFailed(String url) {
     return 'ბრაუზერის გახსნა ვერ მოხერხდა. გვერდის მისამართი: $url';
   }

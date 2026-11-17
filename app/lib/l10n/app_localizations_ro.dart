@@ -2290,6 +2290,9 @@ class AppLocalizationsRo extends AppLocalizations {
   String get morePrivacy => 'Politica de confidențialitate';
 
   @override
+  String get moreTerms => 'Condiții de utilizare';
+
+  @override
   String linkFailed(String url) {
     return 'Browserul nu a putut fi deschis. Adresa paginii: $url';
   }

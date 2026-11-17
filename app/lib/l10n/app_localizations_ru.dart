@@ -2292,6 +2292,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get morePrivacy => 'Политика конфиденциальности';
 
   @override
+  String get moreTerms => 'Условия использования';
+
+  @override
   String linkFailed(String url) {
     return 'Не удалось открыть браузер. Адрес страницы: $url';
   }

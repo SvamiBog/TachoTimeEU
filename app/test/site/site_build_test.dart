@@ -1,6 +1,7 @@
 // SITE-01 (docs/testing.md): лендинг сайта собирается на английском,
 // польском и немецком (`tool/site_build.dart`, тексты — `docs/site/`): в
-// текстах все строки, ссылки ведут туда же, куда приложение, файлы на месте,
+// текстах все строки, ссылки ведут туда же, куда приложение, и на условия
+// использования (`site/terms/`), файлы на месте,
 // на странице нет незаполненных подстановок, сайт ничего не грузит с других
 // сайтов, а сервер на Railway (`deploy/site/`) не ведёт журналов посещений.
 
@@ -60,6 +61,7 @@ void main() {
 
   test('адрес сайта, политика, регламент и дата — как в приложении', () {
     expect('${siteBase}privacy/', privacyPolicyPage);
+    expect('${siteBase}terms/', termsOfUsePage);
     for (final l in siteLanguages) {
       expect(regulationUrl(l), regulationUri(l).toString(), reason: l);
       expect(
@@ -67,11 +69,34 @@ void main() {
         privacyPolicyUri(l).toString(),
         reason: l,
       );
+      expect(
+        '$siteBase${'terms/'}#${privacyAnchor(l)}',
+        termsOfUseUri(l).toString(),
+        reason: l,
+      );
       final date = DateTime(2026, 9, 23);
       expect(weekdayDate(date, l), formatWeekdayDate(date, l), reason: l);
     }
     final privacy = File('../site/privacy/index.html').readAsStringSync();
     expect(privacy, contains('mailto:$contactEmail'));
+  });
+
+  test('условия использования: русский и английский текст, почта и ссылка '
+      'на политику, без заглушек', () {
+    final terms = File('../site/terms/index.html').readAsStringSync();
+    expect(terms, contains('mailto:$contactEmail'));
+    expect(terms, isNot(contains('TODO')));
+    for (final anchor in ['ru', 'en']) {
+      expect(terms, contains('<section id="$anchor" lang="$anchor">'));
+      expect(terms, contains('href="../privacy/#$anchor"'));
+    }
+  });
+
+  test('политика ссылается на условия использования на своём языке', () {
+    final privacy = File('../site/privacy/index.html').readAsStringSync();
+    for (final anchor in ['ru', 'en']) {
+      expect(privacy, contains('href="../terms/#$anchor"'));
+    }
   });
 
   test('сервер Railway: один адрес сайта, без журналов посещений', () {
@@ -103,6 +128,8 @@ void main() {
     for (final l in siteLanguages) {
       expect(sitemap, contains('<loc>$siteBase${pagePath(l)}</loc>'));
     }
+    expect(sitemap, contains('<loc>${siteBase}privacy/</loc>'));
+    expect(sitemap, contains('<loc>${siteBase}terms/</loc>'));
     expect(files['robots.txt'], contains('${siteBase}sitemap.xml'));
   });
 
@@ -142,6 +169,7 @@ void main() {
         page,
         contains('href="${root}privacy/#${privacyAnchor(language)}"'),
       );
+      expect(page, contains('href="${root}terms/#${privacyAnchor(language)}"'));
       expect(page, contains('href="mailto:$contactEmail?subject='));
       for (final c in europeBans.keys) {
         expect(page, contains('<span aria-hidden="true">$c</span>'));

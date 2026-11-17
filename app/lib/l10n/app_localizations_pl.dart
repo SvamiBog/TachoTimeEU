@@ -2300,6 +2300,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get morePrivacy => 'Polityka prywatności';
 
   @override
+  String get moreTerms => 'Warunki korzystania';
+
+  @override
   String linkFailed(String url) {
     return 'Nie udało się otworzyć przeglądarki. Adres strony: $url';
   }

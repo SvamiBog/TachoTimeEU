@@ -574,6 +574,7 @@
   "aboutLicensesHint": "Biblioteki i czcionki, z których korzysta aplikacja",
   "moreDisclaimer": "TachoGo pomaga planować czas jazdy i odpoczynek, ale nie zastępuje tachografu i nie jest poradą prawną. Aplikacja nie jest powiązana z organami władzy UE ani państw Europy.",
   "morePrivacy": "Polityka prywatności",
+  "moreTerms": "Warunki korzystania",
   "linkFailed": "Nie udało się otworzyć przeglądarki. Adres strony: {url}",
   "problemTitle": "Zgłoś problem",
   "problemHint": "Wersja beta: raport trafi do twórców aplikacji",

@@ -574,6 +574,7 @@
   "aboutLicensesHint": "Ilova asosidagi kutubxonalar va shriftlar",
   "moreDisclaimer": "TachoGo rul ortidagi vaqt va dam olishni rejalashtirishga yordam beradi, lekin taxograf oʻrnini bosmaydi va yuridik maslahat emas. Ilova YeI va Yevropa davlatlari hokimiyat organlari bilan bogʻliq emas.",
   "morePrivacy": "Maxfiylik siyosati",
+  "moreTerms": "Foydalanish shartlari",
   "linkFailed": "Brauzerni ochib boʻlmadi. Sahifa manzili: {url}",
   "problemTitle": "Muammo haqida xabar berish",
   "problemHint": "Beta versiya: hisobot ishlab chiquvchilarga yuboriladi",

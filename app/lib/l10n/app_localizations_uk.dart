@@ -2295,6 +2295,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get morePrivacy => 'Політика конфіденційності';
 
   @override
+  String get moreTerms => 'Умови використання';
+
+  @override
   String linkFailed(String url) {
     return 'Не вдалося відкрити браузер. Адреса сторінки: $url';
   }

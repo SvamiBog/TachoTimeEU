@@ -574,6 +574,7 @@
   "aboutLicensesHint": "Knihovny a písma, na kterých je aplikace postavená",
   "moreDisclaimer": "TachoGo pomáhá plánovat dobu řízení a odpočinku, ale nenahrazuje tachograf a není právní poradou. Aplikace není spojena s orgány EU ani evropských států.",
   "morePrivacy": "Zásady ochrany osobních údajů",
+  "moreTerms": "Podmínky používání",
   "linkFailed": "Prohlížeč se nepodařilo otevřít. Adresa stránky: {url}",
   "problemTitle": "Nahlásit problém",
   "problemHint": "Beta verze: zpráva půjde vývojářům aplikace",

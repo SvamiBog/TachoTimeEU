@@ -82,7 +82,8 @@ String regulationUrl(String language) {
   return code == null ? page : '$page/$code';
 }
 
-/// Политика на языке страницы: на ней русский и английский текст.
+/// Политика и условия использования на языке страницы: на обеих
+/// страницах русский и английский текст.
 String privacyAnchor(String language) => language == 'ru' ? 'ru' : 'en';
 
 /// Все файлы сайта, которые собирает генератор: путь от корня сайта →
@@ -459,6 +460,7 @@ $features
 <p>${t['disclaimer'].replaceAll('{regulation}', regulation)}</p>
 <ul class="foot-links">
 <li><a href="${root}privacy/#${privacyAnchor(language)}">${t['privacy']}</a></li>
+<li><a href="${root}terms/#${privacyAnchor(language)}">${t['terms']}</a></li>
 <li><a href="mailto:$contactEmail">$contactEmail</a></li>
 <li>© 2026 TachoGo</li>
 </ul>
@@ -493,6 +495,7 @@ String _sitemap() {
     for (final l in siteLanguages)
       '<url><loc>$siteBase${pagePath(l)}</loc>$links</url>',
     '<url><loc>${siteBase}privacy/</loc></url>',
+    '<url><loc>${siteBase}terms/</loc></url>',
   ].join('\n');
   return '<?xml version="1.0" encoding="UTF-8"?>\n'
       '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
