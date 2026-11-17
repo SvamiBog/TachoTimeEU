@@ -92,6 +92,13 @@ void main() {
     }
   });
 
+  test('политика ссылается на условия использования на своём языке', () {
+    final privacy = File('../site/privacy/index.html').readAsStringSync();
+    for (final anchor in ['ru', 'en']) {
+      expect(privacy, contains('href="../terms/#$anchor"'));
+    }
+  });
+
   test('сервер Railway: один адрес сайта, без журналов посещений', () {
     final caddy = File('../deploy/site/Caddyfile').readAsStringSync();
     final host = Uri.parse(siteBase).host;
