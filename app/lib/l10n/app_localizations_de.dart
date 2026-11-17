@@ -2293,6 +2293,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get morePrivacy => 'Datenschutzerklärung';
 
   @override
+  String get moreTerms => 'Nutzungsbedingungen';
+
+  @override
   String linkFailed(String url) {
     return 'Der Browser konnte nicht geöffnet werden. Adresse der Seite: $url';
   }

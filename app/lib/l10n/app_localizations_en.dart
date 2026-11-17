@@ -2271,6 +2271,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get morePrivacy => 'Privacy policy';
 
   @override
+  String get moreTerms => 'Terms of use';
+
+  @override
   String linkFailed(String url) {
     return 'Could not open the browser. Page address: $url';
   }

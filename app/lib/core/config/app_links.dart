@@ -1,8 +1,8 @@
 /// External web pages the app links to, and how it opens them.
 ///
-/// Google Play requires the privacy policy link inside the app, and the
-/// policy on government information asks for a source the driver can check
-/// the rules against (`docs/store/play-audit.md`).
+/// Google Play requires the privacy policy link inside the app, the terms of
+/// use sit next to it, and the policy on government information asks for a
+/// source the driver can check the rules against (`docs/store/play-audit.md`).
 library;
 
 import 'package:flutter/material.dart';
@@ -21,7 +21,19 @@ const privacyPolicyPage = 'https://tachogo.eu/privacy/';
 /// Политика на языке интерфейса: на странице русский и английский текст,
 /// остальным языкам — английский.
 Uri privacyPolicyUri(String languageCode) =>
-    Uri.parse('$privacyPolicyPage#${languageCode == 'ru' ? 'ru' : 'en'}');
+    Uri.parse('$privacyPolicyPage#${_legalAnchor(languageCode)}');
+
+/// Условия использования — страница `site/terms/index.html` на том же сайте.
+/// Тот же адрес — в Play Console (`docs/beta/play-console.md`) и в футере
+/// лендинга (проверяет SITE-01). При смене адреса — как у политики.
+const termsOfUsePage = 'https://tachogo.eu/terms/';
+
+/// Условия на языке интерфейса — как политика: русский или английский текст.
+Uri termsOfUseUri(String languageCode) =>
+    Uri.parse('$termsOfUsePage#${_legalAnchor(languageCode)}');
+
+/// Раздел страницы политики или условий: русский — `ru`, остальные — `en`.
+String _legalAnchor(String languageCode) => languageCode == 'ru' ? 'ru' : 'en';
 
 /// Регламент (ЕС) 561/2006 на EUR-Lex — официальный текст правил. Тот же
 /// адрес — в описании приложения в Google Play (`docs/store/listing/`).

@@ -574,6 +574,7 @@
   "aboutLicensesHint": "Bibliotheken und Schriften, mit denen die App gebaut ist",
   "moreDisclaimer": "TachoGo hilft bei der Planung von Lenk- und Ruhezeiten, ersetzt aber nicht den Fahrtenschreiber und ist keine Rechtsberatung. Die App steht in keiner Verbindung zu Behörden der EU oder europäischer Staaten.",
   "morePrivacy": "Datenschutzerklärung",
+  "moreTerms": "Nutzungsbedingungen",
   "linkFailed": "Der Browser konnte nicht geöffnet werden. Adresse der Seite: {url}",
   "problemTitle": "Problem melden",
   "problemHint": "Beta-Version: Der Bericht geht an die Entwickler der App",

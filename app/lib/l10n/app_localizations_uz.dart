@@ -2281,6 +2281,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get morePrivacy => 'Maxfiylik siyosati';
 
   @override
+  String get moreTerms => 'Foydalanish shartlari';
+
+  @override
   String linkFailed(String url) {
     return 'Brauzerni ochib boʻlmadi. Sahifa manzili: $url';
   }

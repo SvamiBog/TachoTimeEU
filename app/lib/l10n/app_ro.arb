@@ -574,6 +574,7 @@
   "aboutLicensesHint": "Bibliotecile și fonturile folosite în aplicație",
   "moreDisclaimer": "TachoGo ajută la planificarea timpului la volan și a repausului, dar nu înlocuiește tahograful și nu este consultanță juridică. Aplicația nu este afiliată autorităților UE sau ale statelor europene.",
   "morePrivacy": "Politica de confidențialitate",
+  "moreTerms": "Condiții de utilizare",
   "linkFailed": "Browserul nu a putut fi deschis. Adresa paginii: {url}",
   "problemTitle": "Raportați o problemă",
   "problemHint": "Versiune beta: raportul ajunge la dezvoltatori",

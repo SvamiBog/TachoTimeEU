@@ -2283,6 +2283,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get morePrivacy => 'Política de privacidad';
 
   @override
+  String get moreTerms => 'Condiciones de uso';
+
+  @override
   String linkFailed(String url) {
     return 'No se pudo abrir el navegador. Dirección de la página: $url';
   }

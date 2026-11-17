@@ -3573,6 +3573,12 @@ abstract class AppLocalizations {
   /// **'Политика конфиденциальности'**
   String get morePrivacy;
 
+  /// Строка «Ещё»: условия использования, открываются в браузере
+  ///
+  /// In ru, this message translates to:
+  /// **'Условия использования'**
+  String get moreTerms;
+
   /// Плашка, если ссылку нечем открыть: на телефоне нет браузера
   ///
   /// In ru, this message translates to:

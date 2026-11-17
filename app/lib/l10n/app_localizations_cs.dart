@@ -2294,6 +2294,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get morePrivacy => 'Zásady ochrany osobních údajů';
 
   @override
+  String get moreTerms => 'Podmínky používání';
+
+  @override
   String linkFailed(String url) {
     return 'Prohlížeč se nepodařilo otevřít. Adresa stránky: $url';
   }

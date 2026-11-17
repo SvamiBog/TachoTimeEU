@@ -61,11 +61,17 @@ void main() {
 
   test('адрес сайта, политика, регламент и дата — как в приложении', () {
     expect('${siteBase}privacy/', privacyPolicyPage);
+    expect('${siteBase}terms/', termsOfUsePage);
     for (final l in siteLanguages) {
       expect(regulationUrl(l), regulationUri(l).toString(), reason: l);
       expect(
         '$siteBase${'privacy/'}#${privacyAnchor(l)}',
         privacyPolicyUri(l).toString(),
+        reason: l,
+      );
+      expect(
+        '$siteBase${'terms/'}#${privacyAnchor(l)}',
+        termsOfUseUri(l).toString(),
         reason: l,
       );
       final date = DateTime(2026, 9, 23);

@@ -1,5 +1,6 @@
 // «Ещё» (экран 4): экспорт, инструкция и правила, о приложении (лицензии
-// пакетов и шрифтов — строкой на нём), политика конфиденциальности, в бете —
+// пакетов и шрифтов — строкой на нём), политика конфиденциальности и условия
+// использования, в бете —
 // «Сообщить о проблеме». План тестов: UI-21, BETA-02 в docs/testing.md.
 
 import 'package:flutter/foundation.dart';
@@ -160,6 +161,45 @@ void main() {
         find.text(
           'Не удалось открыть браузер. Адрес страницы: '
           'https://tachogo.eu/privacy/',
+        ),
+        findsOneWidget,
+      );
+    });
+  });
+
+  group('UI-21: условия использования', () {
+    Future<void> openTerms(WidgetTester tester, String title) async {
+      await tester.scrollUntilVisible(
+        find.text(title),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text(title));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('открываются в браузере на русском', (tester) async {
+      final links = _FakeLinks();
+      await pump(tester, links: links);
+      await openTerms(tester, 'Условия использования');
+      expect(links.opened, [Uri.parse('https://tachogo.eu/terms/#ru')]);
+    });
+
+    testWidgets('у остальных языков — английский текст', (tester) async {
+      final links = _FakeLinks();
+      await pump(tester, links: links, locale: const Locale('pl'));
+      await openTerms(tester, 'Warunki korzystania');
+      expect(links.opened.single.fragment, 'en');
+    });
+
+    testWidgets('браузера нет — адрес страницы в плашке', (tester) async {
+      final links = _FakeLinks()..canOpen = false;
+      await pump(tester, links: links);
+      await openTerms(tester, 'Условия использования');
+      expect(
+        find.text(
+          'Не удалось открыть браузер. Адрес страницы: '
+          'https://tachogo.eu/terms/',
         ),
         findsOneWidget,
       );

@@ -2289,6 +2289,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get morePrivacy => 'Politique de confidentialité';
 
   @override
+  String get moreTerms => 'Conditions d’utilisation';
+
+  @override
   String linkFailed(String url) {
     return 'Impossible d’ouvrir le navigateur. Adresse de la page : $url';
   }

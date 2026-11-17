@@ -10,7 +10,7 @@
 | Генератор: шаблон, стили, карта сайта | `app/tool/site_build.dart` |
 | Шрифты (Unbounded, Onest, JetBrains Mono — латиница, подмножества в WOFF2) и их лицензии OFL | `site/fonts/` |
 | Политика конфиденциальности — пишется руками | `site/privacy/index.html` |
-| Условия использования — пишутся руками, ссылка в футере и в Play Console | `site/terms/index.html` |
+| Условия использования — пишутся руками, ссылка в футере, в «Ещё» приложения и в Play Console | `site/terms/index.html` |
 | Сервер на Railway: Caddy отдаёт собранную папку, заголовки безопасности, `www` → `tachogo.eu`, без журналов посещений | `deploy/site/Dockerfile`, `deploy/site/Caddyfile` |
 | Значки, картинка для соцсетей | `site/favicon.svg`, `site/favicon-32.png`, `site/icon-512.png` |
 
@@ -72,7 +72,7 @@
    - старые записи A/AAAA/CNAME на `@` и `www` от парковки — удалить; записи почты (MX, SPF, DKIM от Spacemail) не трогать.
 6. Подождать, пока Railway покажет у доменов зелёную галочку и выпустит сертификат (минуты — до суток). Если корень так и не проверяется: Railway пишет, что ALIAS не у всех регистраторов работает — тогда перенести DNS домена в Cloudflare (бесплатно) и там завести те же записи.
 
-Адрес сайта — `siteBase` в генераторе и `privacyPolicyPage` в `app/lib/core/config/app_links.dart` (SITE-01 сверяет), файл правил — `banDataUri` (`app/lib/data/bans/ban_data_file.dart`). Тот же адрес политики — в Play Console (`docs/beta/play-console.md`). Если адрес когда-нибудь сменится — по старому оставить переадресацию: установленные версии приложения ходят по нему.
+Адрес сайта — `siteBase` в генераторе и `privacyPolicyPage`, `termsOfUsePage` в `app/lib/core/config/app_links.dart` (SITE-01 сверяет), файл правил — `banDataUri` (`app/lib/data/bans/ban_data_file.dart`). Тот же адрес политики — в Play Console (`docs/beta/play-console.md`). Если адрес когда-нибудь сменится — по старому оставить переадресацию: установленные версии приложения ходят по нему.
 
 ## Дальше
 

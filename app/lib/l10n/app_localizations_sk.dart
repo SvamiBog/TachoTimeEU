@@ -2297,6 +2297,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get morePrivacy => 'Zásady ochrany osobných údajov';
 
   @override
+  String get moreTerms => 'Podmienky používania';
+
+  @override
   String linkFailed(String url) {
     return 'Prehliadač sa nepodarilo otvoriť. Adresa stránky: $url';
   }
