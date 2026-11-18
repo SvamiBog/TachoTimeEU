@@ -30,7 +30,7 @@
 
 ## Дизайн
 - Спецификация: `docs/design/README.md`, скриншоты: `docs/design/screens/`.
-- Цвета, шрифты и радиусы брать только из `app/lib/core/theme/` (`context.colors`, `AppTextStyles`, `AppRadius`, `AppSize`, `AppSpacing`), не хардкодить hex в виджетах. Источник значений — `docs/design/tokens.json`, при изменении обновлять оба места.
+- Цвета, шрифты, радиусы и отступы брать только из `app/lib/core/theme/` (`context.colors`, `AppTextStyles`, `AppRadius`, `AppSize`, `AppSpacing`), не хардкодить hex в виджетах. Источник значений — `docs/design/tokens.json`, при изменении обновлять оба места.
 - Тёмная тема по умолчанию, светлая — по настройке.
 - Шрифты: Onest (интерфейс), JetBrains Mono (всё время и цифры), Noto Sans Georgian — запасной для грузинского.
 - Цвет = режим: вождение — янтарный, отдых — зелёный, работа — оранжевый, готовность — голубой.
