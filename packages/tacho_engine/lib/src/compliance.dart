@@ -370,7 +370,7 @@ class ComplianceSnapshot {
   final Duration breakRequired;
 
   /// Взято в счёт перерыва: первая часть, идущий отдых или обе, если он
-  /// вторая часть ([BreakState.taken]).
+  /// вторая часть, — и после того, как 15 + 30 засчитан ([BreakState.taken]).
   final Duration breakTaken;
 
   /// Перерыв раздельный, 15 + 30: первая часть взята или идёт вторая.
@@ -597,7 +597,7 @@ ComplianceSnapshot calculateCompliance({
       : CurrentBreak(
           start: currentRest.start,
           duration: currentRest.duration,
-          required: currentRest.firstPartBefore
+          required: currentRest.firstPartBefore != null
               ? EuLimits.breakSplitSecond
               : EuLimits.breakFull,
           needed: continuousDriving > Duration.zero,
