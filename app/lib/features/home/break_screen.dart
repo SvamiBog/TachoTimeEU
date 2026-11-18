@@ -115,78 +115,58 @@ class _Summary extends StatelessWidget {
             formatClock(firstStart.add(Duration(minutes: first))),
           )
         : l.breakNone;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        8,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.heroCard),
+    return HeroCard(
+      children: [
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 12,
+          runSpacing: 4,
+          children: [
+            Text(
+              l.breakHero(formatHm(EuLimits.continuousDriving)),
+              style: AppTextStyles.rowTitle,
+            ),
+            DurationText(
+              '${formatHm(taken)} / ${formatHm(EuLimits.breakFull)}',
+              spoken: l.ofLimit(spokenDuration(l, taken)),
+              style: AppTextStyles.value.copyWith(
+                color: s.counted ? colors.rest : null,
+              ),
+            ),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 12,
-                runSpacing: 4,
-                children: [
-                  Text(
-                    l.breakHero(formatHm(EuLimits.continuousDriving)),
-                    style: AppTextStyles.rowTitle,
-                  ),
-                  DurationText(
-                    '${formatHm(taken)} / ${formatHm(EuLimits.breakFull)}',
-                    spoken: l.ofLimit(spokenDuration(l, taken)),
-                    style: AppTextStyles.value.copyWith(
-                      color: s.counted ? colors.rest : null,
-                    ),
-                  ),
-                ],
+        const SizedBox(height: 14),
+        Row(
+          children: [
+            Expanded(
+              child: _Part(
+                firstDone
+                    ? l.breakPartDone(splitFirst.inMinutes)
+                    : l.breakPart(splitFirst.inMinutes),
+                done: firstDone,
               ),
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  Expanded(
-                    child: _Part(
-                      firstDone
-                          ? l.breakPartDone(splitFirst.inMinutes)
-                          : l.breakPart(splitFirst.inMinutes),
-                      done: firstDone,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 2,
-                    child: _Part(
-                      s.counted
-                          ? l.breakPartDone(splitSecond.inMinutes)
-                          : firstDone
-                          ? l.breakPartLeft(splitSecond.inMinutes)
-                          : l.breakPart(splitSecond.inMinutes),
-                      done: s.counted,
-                    ),
-                  ),
-                ],
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              flex: 2,
+              child: _Part(
+                s.counted
+                    ? l.breakPartDone(splitSecond.inMinutes)
+                    : firstDone
+                    ? l.breakPartLeft(splitSecond.inMinutes)
+                    : l.breakPart(splitSecond.inMinutes),
+                done: s.counted,
               ),
-              const SizedBox(height: 14),
-              Text(
-                caption,
-                style: AppTextStyles.caption.copyWith(
-                  color: colors.textSecondary,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
+        const SizedBox(height: 14),
+        Text(
+          caption,
+          style: AppTextStyles.caption.copyWith(color: colors.textSecondary),
+        ),
+      ],
     );
   }
 }
@@ -310,38 +290,26 @@ class _Correction extends ConsumerWidget {
               MergeSemantics(
                 child: InkWell(
                   onTap: () => unawaited(openBreakCorrection(context, ref)),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minHeight: AppSize.listRow,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.cardPadding,
-                        vertical: 10,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              info.open
-                                  ? l.breakCurrentDuration
-                                  : l.breakLastDuration,
-                              style: AppTextStyles.rowTitle,
-                            ),
+                  child: CardRow(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            info.open
+                                ? l.breakCurrentDuration
+                                : l.breakLastDuration,
+                            style: AppTextStyles.rowTitle,
                           ),
-                          const SizedBox(width: 8),
-                          DurationText(
-                            formatHm(info.duration),
-                            spoken: spokenDuration(l, info.duration),
-                            style: AppTextStyles.value,
-                          ),
-                          const SizedBox(width: 4),
-                          Icon(
-                            Icons.chevron_right,
-                            color: colors.textSecondary,
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 8),
+                        DurationText(
+                          formatHm(info.duration),
+                          spoken: spokenDuration(l, info.duration),
+                          style: AppTextStyles.value,
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(Icons.chevron_right, color: colors.textSecondary),
+                      ],
                     ),
                   ),
                 ),

@@ -1131,36 +1131,29 @@ class _TimesCard extends StatelessWidget {
           ),
         ),
         MergeSemantics(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: AppSize.listRow),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.cardPadding,
-                vertical: 10,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(l.shiftDuration, style: AppTextStyles.rowTitle),
+          child: CardRow(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(l.shiftDuration, style: AppTextStyles.rowTitle),
+                ),
+                if (end == null) ...[
+                  Text(
+                    l.shiftNowSuffix,
+                    style: AppTextStyles.label.copyWith(color: colors.drive),
                   ),
-                  if (end == null) ...[
-                    Text(
-                      l.shiftNowSuffix,
-                      style: AppTextStyles.label.copyWith(color: colors.drive),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                  DurationText(
-                    formatHm(span),
-                    spoken: spokenDuration(l, span),
-                    style: AppTextStyles.value.copyWith(
-                      color: span > maxManualShiftSpan
-                          ? colors.errorText
-                          : colors.textSecondary,
-                    ),
-                  ),
+                  const SizedBox(width: 8),
                 ],
-              ),
+                DurationText(
+                  formatHm(span),
+                  spoken: spokenDuration(l, span),
+                  style: AppTextStyles.value.copyWith(
+                    color: span > maxManualShiftSpan
+                        ? colors.errorText
+                        : colors.textSecondary,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -1390,43 +1383,36 @@ class _ValueRow extends StatelessWidget {
     final colors = context.colors;
     final caption = this.caption;
     final chip = this.chip;
-    final body = ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: AppSize.listRow),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.cardPadding,
-          vertical: 10,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(label, style: AppTextStyles.rowTitle),
-                  if (caption != null)
-                    Text(
-                      caption,
-                      style: AppTextStyles.small.copyWith(
-                        color: colors.textSecondary,
-                      ),
+    final body = CardRow(
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: AppTextStyles.rowTitle),
+                if (caption != null)
+                  Text(
+                    caption,
+                    style: AppTextStyles.small.copyWith(
+                      color: colors.textSecondary,
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-            if (chip != null) ...[const SizedBox(width: 8), chip],
-            const SizedBox(width: 8),
-            DurationText(
-              formatHm(value),
-              spoken: spokenDuration(l, value),
-              style: AppTextStyles.value,
-            ),
-            if (onTap != null) ...[
-              const SizedBox(width: 4),
-              Icon(Icons.chevron_right, color: colors.textSecondary),
-            ],
+          ),
+          if (chip != null) ...[const SizedBox(width: 8), chip],
+          const SizedBox(width: 8),
+          DurationText(
+            formatHm(value),
+            spoken: spokenDuration(l, value),
+            style: AppTextStyles.value,
+          ),
+          if (onTap != null) ...[
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right, color: colors.textSecondary),
           ],
-        ),
+        ],
       ),
     );
     return MergeSemantics(

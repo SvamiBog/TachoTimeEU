@@ -53,22 +53,7 @@ class SettingsScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.only(bottom: 24),
           children: [
-            ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 64),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.screenPadding + 4,
-                  vertical: 8,
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Semantics(
-                    header: true,
-                    child: Text(l.navSettings, style: AppTextStyles.header),
-                  ),
-                ),
-              ),
-            ),
+            TabTitle(l.navSettings),
             SectionTitle(l.settingsGeneral, top: 12),
             const _GeneralCard(),
             SectionTitle(l.settingsRules, top: AppSpacing.beforeSectionMin),
@@ -322,30 +307,18 @@ class NotificationPermissionRow extends ConsumerStatefulWidget {
       _NotificationPermissionRowState();
 }
 
-/// Whether the system request was already shown.
+/// Asks for the permission through [NotificationPermissionAsking].
 class _NotificationPermissionRowState
-    extends ConsumerState<NotificationPermissionRow> {
-  bool _asked = false;
-
-  Future<void> _allow() async {
-    final service = ref.read(trackingServiceProvider);
-    if (_asked) {
-      await service.openAppSettings();
-    } else {
-      await service.requestNotifications();
-      if (mounted) setState(() => _asked = true);
-    }
-    if (mounted) ref.invalidate(trackingHealthProvider);
-  }
-
+    extends ConsumerState<NotificationPermissionRow>
+    with NotificationPermissionAsking {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
     return NavRow(
       icon: Icons.notifications_off_outlined,
-      title: _asked ? l.openSystemSettings : l.notifyAllow,
+      title: notificationsAsked ? l.openSystemSettings : l.notifyAllow,
       subtitle: l.notifyDenied,
-      onTap: () => unawaited(_allow()),
+      onTap: () => unawaited(allowNotifications()),
     );
   }
 }
@@ -408,25 +381,18 @@ class _ClearDataRow extends ConsumerWidget {
       button: true,
       child: InkWell(
         onTap: () => unawaited(_clear(context, ref)),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AppSize.listRow),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.cardPadding,
-              vertical: 10,
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.delete_outline, size: 22, color: color),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    context.l10n.settingsClear,
-                    style: AppTextStyles.rowTitle.copyWith(color: color),
-                  ),
+        child: CardRow(
+          child: Row(
+            children: [
+              Icon(Icons.delete_outline, size: 22, color: color),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  context.l10n.settingsClear,
+                  style: AppTextStyles.rowTitle.copyWith(color: color),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

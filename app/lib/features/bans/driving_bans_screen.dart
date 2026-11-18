@@ -228,41 +228,34 @@ class _CountryRow extends StatelessWidget {
       type: MaterialType.transparency,
       child: InkWell(
         onTap: () => openCountryBans(context, code),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AppSize.listRow),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.cardPadding,
-              vertical: 10,
-            ),
-            child: Row(
-              children: [
-                _Dot(banColor(colors, status.level), size: 12),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        here
-                            ? '${l.countryName(code)} · ${l.bansCurrentCountry}'
-                            : l.countryName(code),
-                        style: AppTextStyles.rowTitle,
+        child: CardRow(
+          child: Row(
+            children: [
+              _Dot(banColor(colors, status.level), size: 12),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      here
+                          ? '${l.countryName(code)} · ${l.bansCurrentCountry}'
+                          : l.countryName(code),
+                      style: AppTextStyles.rowTitle,
+                    ),
+                    Text(
+                      text,
+                      style: AppTextStyles.caption.copyWith(
+                        color: status.level == BanLevel.active
+                            ? colors.errorText
+                            : colors.textSecondary,
                       ),
-                      Text(
-                        text,
-                        style: AppTextStyles.caption.copyWith(
-                          color: status.level == BanLevel.active
-                              ? colors.errorText
-                              : colors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Icon(Icons.chevron_right, color: colors.textSecondary),
-              ],
-            ),
+              ),
+              Icon(Icons.chevron_right, color: colors.textSecondary),
+            ],
           ),
         ),
       ),

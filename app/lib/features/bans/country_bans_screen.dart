@@ -215,32 +215,25 @@ class _Line extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: AppSize.listRow),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.cardPadding,
-          vertical: 10,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+    return CardRow(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: AppTextStyles.rowTitle.copyWith(
+              color: warn ? colors.errorText : null,
+            ),
+          ),
+          if (subtitle case final subtitle?)
             Text(
-              title,
-              style: AppTextStyles.rowTitle.copyWith(
-                color: warn ? colors.errorText : null,
+              subtitle,
+              style: AppTextStyles.caption.copyWith(
+                color: colors.textSecondary,
               ),
             ),
-            if (subtitle case final subtitle?)
-              Text(
-                subtitle,
-                style: AppTextStyles.caption.copyWith(
-                  color: colors.textSecondary,
-                ),
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }

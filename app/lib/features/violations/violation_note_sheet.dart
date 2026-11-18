@@ -13,6 +13,7 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/journal_save.dart';
+import 'package:tachogo/core/widgets/sheet_body.dart';
 import 'package:tachogo/data/violations/violation_notes.dart';
 import 'package:tachogo/data/violations/violation_providers.dart';
 
@@ -80,96 +81,81 @@ class _NoteSheetState extends ConsumerState<_NoteSheet> {
     final colors = context.colors;
     final violation = widget.entry.violation;
     final existing = widget.entry.note;
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(
-          AppSpacing.screenPadding + 4,
-          0,
-          AppSpacing.screenPadding + 4,
-          24 + MediaQuery.viewInsetsOf(context).bottom,
+    return SheetBody(
+      label: l.violationsNoteTitle,
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.screenPadding + 4,
+        0,
+        AppSpacing.screenPadding + 4,
+        24 + MediaQuery.viewInsetsOf(context).bottom,
+      ),
+      children: [
+        Text(l.violationsNoteTitle, style: AppTextStyles.header),
+        const SizedBox(height: 8),
+        Text(
+          l.infringement(violation.infringement).title,
+          style: AppTextStyles.body.copyWith(color: colors.textSecondary),
         ),
-        child: Semantics(
-          scopesRoute: true,
-          namesRoute: true,
-          label: l.violationsNoteTitle,
-          explicitChildNodes: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(l.violationsNoteTitle, style: AppTextStyles.header),
-              const SizedBox(height: 8),
-              Text(
-                l.infringement(violation.infringement).title,
-                style: AppTextStyles.body.copyWith(color: colors.textSecondary),
-              ),
-              Text(
-                formatDeadline(violation.at, context.localeTag),
-                style: AppTextStyles.numericCaption.copyWith(
-                  color: colors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _text,
-                autofocus: existing == null,
-                enabled: !_saving,
-                minLines: 3,
-                maxLines: 6,
-                maxLength: ViolationNoteRepository.maxLength,
-                style: AppTextStyles.body,
-                textCapitalization: TextCapitalization.sentences,
-                onChanged: (_) => setState(() {}),
-                decoration: InputDecoration(
-                  hintText: l.violationsNoteHint,
-                  counterStyle: AppTextStyles.numericCaption.copyWith(
-                    color: colors.textSecondary,
-                  ),
-                  hintStyle: AppTextStyles.body.copyWith(
-                    color: colors.textSecondary,
-                  ),
-                  filled: true,
-                  fillColor: colors.surface2,
-                  contentPadding: const EdgeInsets.all(AppSpacing.cardPadding),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.modeButton),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: existing == null
-                        ? SecondaryButton(
-                            label: l.cancel,
-                            onPressed: _saving
-                                ? null
-                                : () => Navigator.of(context).pop(),
-                          )
-                        : DangerButton(
-                            label: l.delete,
-                            onPressed: _saving
-                                ? null
-                                : () => unawaited(_write('')),
-                          ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: PrimaryButton(
-                      label: l.save,
-                      onPressed: _saving || _text.text.trim().isEmpty
-                          ? null
-                          : () => unawaited(_write(_text.text)),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+        Text(
+          formatDeadline(violation.at, context.localeTag),
+          style: AppTextStyles.numericCaption.copyWith(
+            color: colors.textSecondary,
           ),
         ),
-      ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: _text,
+          autofocus: existing == null,
+          enabled: !_saving,
+          minLines: 3,
+          maxLines: 6,
+          maxLength: ViolationNoteRepository.maxLength,
+          style: AppTextStyles.body,
+          textCapitalization: TextCapitalization.sentences,
+          onChanged: (_) => setState(() {}),
+          decoration: InputDecoration(
+            hintText: l.violationsNoteHint,
+            counterStyle: AppTextStyles.numericCaption.copyWith(
+              color: colors.textSecondary,
+            ),
+            hintStyle: AppTextStyles.body.copyWith(color: colors.textSecondary),
+            filled: true,
+            fillColor: colors.surface2,
+            contentPadding: const EdgeInsets.all(AppSpacing.cardPadding),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.modeButton),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: existing == null
+                  ? SecondaryButton(
+                      label: l.cancel,
+                      onPressed: _saving
+                          ? null
+                          : () => Navigator.of(context).pop(),
+                    )
+                  : DangerButton(
+                      label: l.delete,
+                      onPressed: _saving ? null : () => unawaited(_write('')),
+                    ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: PrimaryButton(
+                label: l.save,
+                onPressed: _saving || _text.text.trim().isEmpty
+                    ? null
+                    : () => unawaited(_write(_text.text)),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

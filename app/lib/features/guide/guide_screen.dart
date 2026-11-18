@@ -394,10 +394,7 @@ class _ModesLegend extends StatelessWidget {
                 color: colors.mode(mode),
                 borderRadius: BorderRadius.circular(AppRadius.chip),
               ),
-              child: IconTheme(
-                data: IconThemeData(color: colors.onAccent),
-                child: ModeIcon(mode, size: 22),
-              ),
+              child: ModeIcon(mode, size: 22, color: colors.onAccent),
             ),
             const SizedBox(width: 12),
             Expanded(

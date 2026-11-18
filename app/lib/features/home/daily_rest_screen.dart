@@ -229,27 +229,7 @@ class _Summary extends StatelessWidget {
     } else {
       children = [Text(l.workdayNoShift, style: caption)];
     }
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        8,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.heroCard),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children,
-          ),
-        ),
-      ),
-    );
+    return HeroCard(children: children);
   }
 }
 

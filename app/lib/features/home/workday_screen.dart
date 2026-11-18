@@ -9,7 +9,6 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
-import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
@@ -147,67 +146,43 @@ class _Summary extends StatelessWidget {
     final value = Duration(minutes: s.value);
     final regular = Duration(minutes: s.regular);
     final extended = Duration(minutes: s.extended);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        8,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.heroCard),
+    return HeroCard(
+      children: [
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.end,
+          spacing: 10,
+          children: [
+            DurationText(
+              formatHm(value),
+              spoken: spokenDuration(l, value),
+              style: AppTextStyles.timer.copyWith(
+                color: s.tone == Tone.violation ? colors.errorText : null,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                l.ofLimit(formatHm(Duration(minutes: s.limit))),
+                style: AppTextStyles.body.copyWith(color: colors.textSecondary),
+              ),
+            ),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.end,
-                spacing: 10,
-                children: [
-                  DurationText(
-                    formatHm(value),
-                    spoken: spokenDuration(l, value),
-                    style: AppTextStyles.timer.copyWith(
-                      color: s.tone == Tone.violation ? colors.errorText : null,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Text(
-                      l.ofLimit(formatHm(Duration(minutes: s.limit))),
-                      style: AppTextStyles.body.copyWith(
-                        color: colors.textSecondary,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              LimitBar(
-                value: value,
-                max: extended,
-                ticks: [if (regular < extended) regular],
-                color: s.tone == Tone.violation
-                    ? colors.errorText
-                    : colors.text,
-              ),
-              if (s.start == null) ...[
-                const SizedBox(height: 14),
-                Text(
-                  l.workdayNoShift,
-                  style: AppTextStyles.body.copyWith(
-                    color: colors.textSecondary,
-                  ),
-                ),
-              ],
-            ],
+        const SizedBox(height: 14),
+        LimitBar(
+          value: value,
+          max: extended,
+          ticks: [if (regular < extended) regular],
+          color: s.tone == Tone.violation ? colors.errorText : colors.text,
+        ),
+        if (s.start == null) ...[
+          const SizedBox(height: 14),
+          Text(
+            l.workdayNoShift,
+            style: AppTextStyles.body.copyWith(color: colors.textSecondary),
           ),
-        ),
-      ),
+        ],
+      ],
     );
   }
 }

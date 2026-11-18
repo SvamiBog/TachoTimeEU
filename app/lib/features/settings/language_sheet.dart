@@ -11,6 +11,7 @@ import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/sections.dart';
+import 'package:tachogo/core/widgets/sheet_body.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 
 /// Шторка «Язык» (экраны 3 и 13): «Как в телефоне» и переводы из ARB.
@@ -48,48 +49,23 @@ class LanguageSheet extends ConsumerWidget {
       Navigator.of(context).pop();
     }
 
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 24),
-        child: Semantics(
-          scopesRoute: true,
-          namesRoute: true,
-          label: l.settingsLanguage,
-          explicitChildNodes: true,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.screenPadding + 4,
-                  0,
-                  AppSpacing.screenPadding + 4,
-                  16,
-                ),
-                child: Text(l.settingsLanguage, style: AppTextStyles.header),
-              ),
-              CardGroup(
-                children: [
-                  _LanguageRow(
-                    title: l.settingsLanguageSystem,
-                    selected: current == null,
-                    onTap: () => pick(null),
-                  ),
-                  for (final locale in languagesInOrder(
-                    AppLocalizations.supportedLocales,
-                  ))
-                    _LanguageRow(
-                      title: languageName(locale),
-                      selected: current == locale.languageCode,
-                      onTap: () => pick(locale.languageCode),
-                    ),
-                ],
-              ),
-            ],
-          ),
+    return _LanguageList(
+      title: l.settingsLanguage,
+      rows: [
+        _LanguageRow(
+          title: l.settingsLanguageSystem,
+          selected: current == null,
+          onTap: () => pick(null),
         ),
-      ),
+        for (final locale in languagesInOrder(
+          AppLocalizations.supportedLocales,
+        ))
+          _LanguageRow(
+            title: languageName(locale),
+            selected: current == locale.languageCode,
+            onTap: () => pick(locale.languageCode),
+          ),
+      ],
     );
   }
 }
@@ -106,47 +82,48 @@ Future<String?> showReportLanguageSheet(
   isScrollControlled: true,
   builder: (context) {
     final l = context.l10n;
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 24),
-        child: Semantics(
-          scopesRoute: true,
-          namesRoute: true,
-          label: l.exportLanguage,
-          explicitChildNodes: true,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.screenPadding + 4,
-                  0,
-                  AppSpacing.screenPadding + 4,
-                  16,
-                ),
-                child: Text(l.exportLanguage, style: AppTextStyles.header),
-              ),
-              CardGroup(
-                children: [
-                  for (final locale in languagesInOrder(
-                    AppLocalizations.supportedLocales,
-                  ))
-                    _LanguageRow(
-                      title: languageName(locale),
-                      selected: selected == locale.languageCode,
-                      onTap: () =>
-                          Navigator.of(context).pop(locale.languageCode),
-                    ),
-                ],
-              ),
-            ],
+    return _LanguageList(
+      title: l.exportLanguage,
+      rows: [
+        for (final locale in languagesInOrder(
+          AppLocalizations.supportedLocales,
+        ))
+          _LanguageRow(
+            title: languageName(locale),
+            selected: selected == locale.languageCode,
+            onTap: () => Navigator.of(context).pop(locale.languageCode),
           ),
-        ),
-      ),
+      ],
     );
   },
 );
+
+/// A language sheet: the title and the languages in one card.
+class _LanguageList extends StatelessWidget {
+  const new({required this.title, required this.rows});
+
+  final String title;
+  final List<Widget> rows;
+
+  @override
+  Widget build(BuildContext context) => SheetBody(
+    label: title,
+    // Карточка со своими полями — по бокам шторки полей нет
+    padding: const EdgeInsets.only(bottom: 24),
+    children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.screenPadding + 4,
+          0,
+          AppSpacing.screenPadding + 4,
+          16,
+        ),
+        child: Text(title, style: AppTextStyles.header),
+      ),
+      CardGroup(children: rows),
+    ],
+  );
+}
 
 /// A language row with a check mark when selected.
 class _LanguageRow extends StatelessWidget {
@@ -163,19 +140,14 @@ class _LanguageRow extends StatelessWidget {
     button: true,
     child: InkWell(
       onTap: onTap,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: AppSize.listRow),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.cardPadding,
-          ),
-          child: Row(
-            children: [
-              Expanded(child: Text(title, style: AppTextStyles.rowTitle)),
-              if (selected)
-                Icon(Icons.check, size: 22, color: context.colors.text),
-            ],
-          ),
+      child: CardRow(
+        vertical: 0,
+        child: Row(
+          children: [
+            Expanded(child: Text(title, style: AppTextStyles.rowTitle)),
+            if (selected)
+              Icon(Icons.check, size: 22, color: context.colors.text),
+          ],
         ),
       ),
     ),

@@ -33,19 +33,22 @@ extension ModeNames on AppLocalizations {
 }
 
 /// The activity symbol as on a tachograph: steering wheel, bed, crossed
-/// hammers, square with a diagonal. Drawn on a 24 × 24 grid in the [IconTheme]
-/// colour.
+/// hammers, square with a diagonal. Drawn on a 24 × 24 grid in [color] or,
+/// like [Icon], in the [IconTheme] colour.
 class ModeIcon extends StatelessWidget {
-  const new(this.mode, {super.key, this.size = 28});
+  const new(this.mode, {super.key, this.size = 28, this.color});
 
   final DriverMode mode;
   final double size;
+
+  /// Цвет символа; по умолчанию — цвет [IconTheme].
+  final Color? color;
 
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
     child: CustomPaint(
       size: Size.square(size),
-      painter: _ModeIconPainter(mode, IconTheme.of(context).color!),
+      painter: _ModeIconPainter(mode, color ?? IconTheme.of(context).color!),
     ),
   );
 }

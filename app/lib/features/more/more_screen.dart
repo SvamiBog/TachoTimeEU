@@ -42,22 +42,7 @@ class MoreScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.only(bottom: 24),
           children: [
-            ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 64),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.screenPadding + 4,
-                  vertical: 8,
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Semantics(
-                    header: true,
-                    child: Text(l.navMore, style: AppTextStyles.header),
-                  ),
-                ),
-              ),
-            ),
+            TabTitle(l.navMore),
             const SizedBox(height: 12),
             CardGroup(
               children: [

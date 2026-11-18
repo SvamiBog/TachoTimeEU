@@ -410,9 +410,10 @@ class _Modes extends StatelessWidget {
                           borderRadius: BorderRadius.circular(AppRadius.icon),
                         ),
                         alignment: Alignment.center,
-                        child: IconTheme(
-                          data: IconThemeData(color: colors.mode(mode)),
-                          child: ModeIcon(mode, size: 24),
+                        child: ModeIcon(
+                          mode,
+                          size: 24,
+                          color: colors.mode(mode),
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -646,23 +647,9 @@ class _NotificationsCard extends ConsumerStatefulWidget {
   ConsumerState<_NotificationsCard> createState() => _NotificationsCardState();
 }
 
-/// Whether the system request was already shown: after that, the button opens
-/// the app's system settings.
-class _NotificationsCardState extends ConsumerState<_NotificationsCard> {
-  bool _asked = false;
-
-  Future<void> _allow() async {
-    final service = ref.read(trackingServiceProvider);
-    // Телефон больше не показывает запрос — только настройки системы
-    if (_asked) {
-      await service.openAppSettings();
-    } else {
-      await service.requestNotifications();
-      if (mounted) setState(() => _asked = true);
-    }
-    if (mounted) ref.invalidate(trackingHealthProvider);
-  }
-
+/// Asks for the permission through [NotificationPermissionAsking].
+class _NotificationsCardState extends ConsumerState<_NotificationsCard>
+    with NotificationPermissionAsking {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
@@ -708,8 +695,10 @@ class _NotificationsCardState extends ConsumerState<_NotificationsCard> {
                 DoneMark(l.notifyAllowed)
               else
                 SecondaryButton(
-                  label: _asked ? l.openSystemSettings : l.notifyAllow,
-                  onPressed: () => unawaited(_allow()),
+                  label: notificationsAsked
+                      ? l.openSystemSettings
+                      : l.notifyAllow,
+                  onPressed: () => unawaited(allowNotifications()),
                 ),
             ],
           ),

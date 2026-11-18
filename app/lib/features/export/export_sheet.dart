@@ -14,6 +14,7 @@ import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/choice_pill.dart';
 import 'package:tachogo/core/widgets/segmented_tabs.dart';
+import 'package:tachogo/core/widgets/sheet_body.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/report/report.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
@@ -88,140 +89,123 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
     final section = AppTextStyles.section.copyWith(color: colors.textSecondary);
     final caption = AppTextStyles.caption.copyWith(color: colors.textSecondary);
 
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenPadding + 4,
-          0,
-          AppSpacing.screenPadding + 4,
-          24,
+    return SheetBody(
+      label: l.journalExport,
+      children: [
+        Semantics(
+          header: true,
+          child: Text(l.journalExport, style: AppTextStyles.header),
         ),
-        child: Semantics(
-          scopesRoute: true,
-          namesRoute: true,
-          label: l.journalExport,
-          explicitChildNodes: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+        const SizedBox(height: 16),
+        Text(l.exportPeriod.toUpperCase(), style: section),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final (p, label) in [
+              (ReportPeriod.week, l.exportWeek),
+              (ReportPeriod.twoWeeks, l.exportTwoWeeks),
+              (ReportPeriod.days28, l.exportDays28),
+              (ReportPeriod.days56, l.exportDays56),
+              (ReportPeriod.custom, l.exportCustom),
+            ])
+              ChoicePill(
+                label,
+                selected: _period == p,
+                onTap: () => setState(() => _period = p),
+              ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        if (_period == ReportPeriod.custom)
+          Row(
             children: [
-              Semantics(
-                header: true,
-                child: Text(l.journalExport, style: AppTextStyles.header),
-              ),
-              const SizedBox(height: 16),
-              Text(l.exportPeriod.toUpperCase(), style: section),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final (p, label) in [
-                    (ReportPeriod.week, l.exportWeek),
-                    (ReportPeriod.twoWeeks, l.exportTwoWeeks),
-                    (ReportPeriod.days28, l.exportDays28),
-                    (ReportPeriod.days56, l.exportDays56),
-                    (ReportPeriod.custom, l.exportCustom),
-                  ])
-                    ChoicePill(
-                      label,
-                      selected: _period == p,
-                      onTap: () => setState(() => _period = p),
+              Expanded(
+                child: _RangeButton(
+                  label: l.exportFromDay(utcDay(range.start)),
+                  onTap: () => unawaited(
+                    _pickDay(
+                      title: l.exportFrom,
+                      initial: first,
+                      max: now,
+                      onPicked: (d) => _first = d,
                     ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              if (_period == ReportPeriod.custom)
-                Row(
-                  children: [
-                    Expanded(
-                      child: _RangeButton(
-                        label: l.exportFromDay(utcDay(range.start)),
-                        onTap: () => unawaited(
-                          _pickDay(
-                            title: l.exportFrom,
-                            initial: first,
-                            max: now,
-                            onPicked: (d) => _first = d,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _RangeButton(
-                        label: l.exportToDay(utcDay(lastDayOf(range))),
-                        onTap: () => unawaited(
-                          _pickDay(
-                            title: l.exportTo,
-                            initial: last,
-                            max: now,
-                            onPicked: (d) => _last = d,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              else
-                _RangeBox(range),
-              const SizedBox(height: 8),
-              Text(
-                count > 0 ? l.exportCount(count) : l.exportEmpty,
-                style: count > 0
-                    ? caption
-                    : caption.copyWith(color: colors.warningText),
-              ),
-              const SizedBox(height: 20),
-              Text(l.exportFormat.toUpperCase(), style: section),
-              const SizedBox(height: 10),
-              SegmentedTabs<ReportFormat>(
-                options: [
-                  (value: ReportFormat.pdf, label: l.exportPdf, detail: null),
-                  (value: ReportFormat.csv, label: l.exportCsv, detail: null),
-                ],
-                value: _format,
-                onChanged: (f) => setState(() => _format = f),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _format == ReportFormat.pdf ? l.exportPdfHint : l.exportCsvHint,
-                style: caption,
-              ),
-              if (_format == ReportFormat.pdf) ...[
-                const SizedBox(height: 8),
-                _LanguageButton(
-                  language: language,
-                  onTap: () => unawaited(_pickLanguage(language)),
-                ),
-              ],
-              const SizedBox(height: 8),
-              MergeSemantics(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(l.exportNotes, style: AppTextStyles.rowTitle),
-                    ),
-                    const SizedBox(width: 12),
-                    Switch(
-                      value: _notes,
-                      onChanged: (v) => setState(() => _notes = v),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 16),
-              PrimaryButton(
-                label: l.exportCreate,
-                icon: Icons.file_download_outlined,
-                onPressed: count == 0 || _busy
-                    ? null
-                    : () => unawaited(_export(journal, range, language)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _RangeButton(
+                  label: l.exportToDay(utcDay(lastDayOf(range))),
+                  onTap: () => unawaited(
+                    _pickDay(
+                      title: l.exportTo,
+                      initial: last,
+                      max: now,
+                      onPicked: (d) => _last = d,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        else
+          _RangeBox(range),
+        const SizedBox(height: 8),
+        Text(
+          count > 0 ? l.exportCount(count) : l.exportEmpty,
+          style: count > 0
+              ? caption
+              : caption.copyWith(color: colors.warningText),
+        ),
+        const SizedBox(height: 20),
+        Text(l.exportFormat.toUpperCase(), style: section),
+        const SizedBox(height: 10),
+        SegmentedTabs<ReportFormat>(
+          options: [
+            (value: ReportFormat.pdf, label: l.exportPdf, detail: null),
+            (value: ReportFormat.csv, label: l.exportCsv, detail: null),
+          ],
+          value: _format,
+          onChanged: (f) => setState(() => _format = f),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          _format == ReportFormat.pdf ? l.exportPdfHint : l.exportCsvHint,
+          style: caption,
+        ),
+        if (_format == ReportFormat.pdf) ...[
+          const SizedBox(height: 8),
+          _LanguageButton(
+            language: language,
+            onTap: () => unawaited(_pickLanguage(language)),
+          ),
+        ],
+        const SizedBox(height: 8),
+        MergeSemantics(
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(l.exportNotes, style: AppTextStyles.rowTitle),
+              ),
+              const SizedBox(width: 12),
+              Switch(
+                value: _notes,
+                onChanged: (v) => setState(() => _notes = v),
               ),
             ],
           ),
         ),
-      ),
+        const SizedBox(height: 16),
+        PrimaryButton(
+          label: l.exportCreate,
+          icon: Icons.file_download_outlined,
+          onPressed: count == 0 || _busy
+              ? null
+              : () => unawaited(_export(journal, range, language)),
+        ),
+      ],
     );
   }
 
@@ -305,29 +289,19 @@ class _RangeBox extends StatelessWidget {
       container: true,
       label: context.l10n.exportRangeSpoken(from, to),
       excludeSemantics: true,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.badge),
-        ),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AppSize.minTouch),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.calendar_today_outlined,
-                  size: 18,
-                  color: colors.textSecondary,
-                ),
-                const SizedBox(width: 10),
-                Flexible(
-                  child: Text('$from — $to', style: AppTextStyles.valueSmall),
-                ),
-              ],
+      child: _Field(
+        child: Row(
+          children: [
+            Icon(
+              Icons.calendar_today_outlined,
+              size: 18,
+              color: colors.textSecondary,
             ),
-          ),
+            const SizedBox(width: 10),
+            Flexible(
+              child: Text('$from — $to', style: AppTextStyles.valueSmall),
+            ),
+          ],
         ),
       ),
     );
@@ -349,39 +323,26 @@ class _LanguageButton extends StatelessWidget {
       button: true,
       label: '${context.l10n.exportLanguage}: $name',
       excludeSemantics: true,
-      child: Material(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.badge),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: AppSize.minTouch),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              child: Row(
-                children: [
-                  Icon(Icons.translate, size: 18, color: colors.textSecondary),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      context.l10n.exportLanguage,
-                      style: AppTextStyles.rowTitle,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    name,
-                    style: AppTextStyles.body.copyWith(
-                      color: colors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Icon(Icons.chevron_right, color: colors.textSecondary),
-                ],
+      child: _Field(
+        onTap: onTap,
+        child: Row(
+          children: [
+            Icon(Icons.translate, size: 18, color: colors.textSecondary),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                context.l10n.exportLanguage,
+                style: AppTextStyles.rowTitle,
               ),
             ),
-          ),
+            const SizedBox(width: 8),
+            Text(
+              name,
+              style: AppTextStyles.body.copyWith(color: colors.textSecondary),
+            ),
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right, color: colors.textSecondary),
+          ],
         ),
       ),
     );
@@ -396,38 +357,65 @@ class _RangeButton extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
+  Widget build(BuildContext context) => _Field(
+    onTap: onTap,
+    horizontal: 12,
+    child: Row(
+      children: [
+        Icon(
+          Icons.calendar_today_outlined,
+          size: 18,
+          color: context.colors.textSecondary,
+        ),
+        const SizedBox(width: 8),
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(label, style: AppTextStyles.valueSmall),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+/// A field of the sheet: a rounded surface at least 44 dp tall; with [onTap]
+/// it is pressed like a button.
+class _Field extends StatelessWidget {
+  const new({required this.child, this.onTap, this.horizontal = 14});
+
+  final VoidCallback? onTap;
+
+  /// Поля по бокам: у кнопок «С» и «По» в один ряд — уже.
+  final double horizontal;
+  final Widget child;
+
+  @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final onTap = this.onTap;
+    final body = ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: AppSize.minTouch),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: horizontal, vertical: 10),
+        child: child,
+      ),
+    );
+    if (onTap == null) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(AppRadius.badge),
+        ),
+        child: body,
+      );
+    }
     return Material(
       color: colors.surface,
       borderRadius: BorderRadius.circular(AppRadius.badge),
       clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AppSize.minTouch),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.calendar_today_outlined,
-                  size: 18,
-                  color: colors.textSecondary,
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(label, style: AppTextStyles.valueSmall),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      child: InkWell(onTap: onTap, child: body),
     );
   }
 }

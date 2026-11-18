@@ -161,7 +161,8 @@ class WeeklyRestScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-              if (mobility != null) _Info(mobility: mobility),
+              if (mobility != null)
+                InfoNote(mobility ? l.weeklyMobilityOn : l.weeklyMobilityOff),
             ],
     );
   }
@@ -248,27 +249,7 @@ class _Deadline extends StatelessWidget {
     } else {
       children = [Text(l.weeklyUnknown, style: caption)];
     }
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        8,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.heroCard),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children,
-          ),
-        ),
-      ),
-    );
+    return HeroCard(children: children);
   }
 }
 
@@ -456,10 +437,7 @@ class _History extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.cardPadding),
             child: Row(
               children: [
-                IconTheme(
-                  data: IconThemeData(color: colors.rest),
-                  child: const ModeIcon(DriverMode.rest, size: 24),
-                ),
+                ModeIcon(DriverMode.rest, size: 24, color: colors.rest),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
@@ -489,41 +467,35 @@ class _History extends StatelessWidget {
               ],
             ),
           ),
-        ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AppSize.listRow),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.cardPadding,
-              vertical: 12,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l.weeklyCompensation,
-                    style: AppTextStyles.rowTitle,
+        CardRow(
+          vertical: 12,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l.weeklyCompensation,
+                  style: AppTextStyles.rowTitle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              // «15:00 antes del 12.10» на крупном шрифте переносится, а не
+              // выталкивает название
+              Flexible(
+                child: Text(
+                  switch (debts) {
+                    [] => l.weeklyCompensationNone,
+                    [final c] => debtValue(c),
+                    // Несколько долгов — сколько всего, ниже каждый
+                    _ => formatHm(debt),
+                  },
+                  textAlign: TextAlign.end,
+                  style: AppTextStyles.body.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: debts.isEmpty ? colors.restText : colors.drive,
                   ),
                 ),
-                const SizedBox(width: 8),
-                // «15:00 antes del 12.10» на крупном шрифте переносится, а не
-                // выталкивает название
-                Flexible(
-                  child: Text(
-                    switch (debts) {
-                      [] => l.weeklyCompensationNone,
-                      [final c] => debtValue(c),
-                      // Несколько долгов — сколько всего, ниже каждый
-                      _ => formatHm(debt),
-                    },
-                    textAlign: TextAlign.end,
-                    style: AppTextStyles.body.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: debts.isEmpty ? colors.restText : colors.drive,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         if (debts.length > 1)
@@ -558,49 +530,6 @@ class _History extends StatelessWidget {
               ),
             ),
       ],
-    );
-  }
-}
-
-/// Explanation of the rules, with or without the Mobility Package.
-class _Info extends StatelessWidget {
-  const new({required this.mobility});
-
-  final bool mobility;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final l = context.l10n;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        AppSpacing.betweenCardsMax,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.badge),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.info_outline, size: 20, color: colors.textSecondary),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  mobility ? l.weeklyMobilityOn : l.weeklyMobilityOff,
-                  style: AppTextStyles.body.copyWith(color: colors.chipText),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

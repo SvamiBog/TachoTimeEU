@@ -1,5 +1,5 @@
-/// Turning automatic driving detection on from a screen, and the "Automatic
-/// detection" settings card.
+/// Turning automatic driving detection on from a screen, asking for the
+/// notification permission, and the "Automatic detection" settings card.
 library;
 
 import 'dart:async';
@@ -74,6 +74,28 @@ mixin AutoDetectEnabling<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   Future<void> disableAutoDetect() async {
     setState(() => blocker = null);
     await ref.read(trackingServiceProvider).disable();
+  }
+}
+
+/// Asking for the notification permission from a screen (onboarding and
+/// settings): the system request the first time; after a permanent refusal
+/// the phone no longer shows it, so the next tap opens the app's system
+/// settings.
+mixin NotificationPermissionAsking<T extends ConsumerStatefulWidget>
+    on ConsumerState<T> {
+  /// Системный запрос уже показан: дальше — только настройки системы.
+  bool notificationsAsked = false;
+
+  Future<void> allowNotifications() async {
+    final service = ref.read(trackingServiceProvider);
+    // Телефон больше не показывает запрос — только настройки системы
+    if (notificationsAsked) {
+      await service.openAppSettings();
+    } else {
+      await service.requestNotifications();
+      if (mounted) setState(() => notificationsAsked = true);
+    }
+    if (mounted) ref.invalidate(trackingHealthProvider);
   }
 }
 

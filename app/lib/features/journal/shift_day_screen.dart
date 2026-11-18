@@ -228,42 +228,35 @@ class _ValueRow extends StatelessWidget {
     final l = context.l10n;
     final value = this.value;
     return MergeSemantics(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: AppSize.listRow),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.cardPadding,
-            vertical: 10,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(label, style: AppTextStyles.rowTitle),
-                    if (caption case final caption?)
-                      Text(
-                        caption,
-                        style: AppTextStyles.caption.copyWith(
-                          color: context.colors.textSecondary,
-                        ),
+      child: CardRow(
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: AppTextStyles.rowTitle),
+                  if (caption case final caption?)
+                    Text(
+                      caption,
+                      style: AppTextStyles.caption.copyWith(
+                        color: context.colors.textSecondary,
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
-              if (chip case final chip?) ...[const SizedBox(width: 8), chip],
-              const SizedBox(width: 8),
-              if (value == null)
-                const Text('—', style: AppTextStyles.value)
-              else
-                DurationText(
-                  formatHm(value),
-                  spoken: spokenDuration(l, value),
-                  style: AppTextStyles.value,
-                ),
-            ],
-          ),
+            ),
+            if (chip case final chip?) ...[const SizedBox(width: 8), chip],
+            const SizedBox(width: 8),
+            if (value == null)
+              const Text('—', style: AppTextStyles.value)
+            else
+              DurationText(
+                formatHm(value),
+                spoken: spokenDuration(l, value),
+                style: AppTextStyles.value,
+              ),
+          ],
         ),
       ),
     );

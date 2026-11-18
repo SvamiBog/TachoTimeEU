@@ -116,29 +116,10 @@ class _Summary extends StatelessWidget {
     final unexplained = list.unexplained;
     return CardGroup(
       children: [
-        MergeSemantics(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  '$count',
-                  style: AppTextStyles.valueLarge.copyWith(
-                    color: count > 0 ? colors.errorText : null,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    l.violationsCount(count),
-                    style: AppTextStyles.rowTitle,
-                  ),
-                ),
-              ],
-            ),
-          ),
+        CountRow(
+          count: count,
+          label: l.violationsCount(count),
+          color: count > 0 ? colors.errorText : null,
         ),
         _ValueRow(
           title: l.violationsPeriod,
@@ -166,25 +147,18 @@ class _ValueRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MergeSemantics(
-    child: ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: AppSize.listRow),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.cardPadding,
-          vertical: 10,
-        ),
-        child: Row(
-          children: [
-            Expanded(child: Text(title, style: AppTextStyles.rowTitle)),
-            const SizedBox(width: 12),
-            Text(
-              value,
-              style: AppTextStyles.valueSmall.copyWith(
-                color: valueColor ?? context.colors.textSecondary,
-              ),
+    child: CardRow(
+      child: Row(
+        children: [
+          Expanded(child: Text(title, style: AppTextStyles.rowTitle)),
+          const SizedBox(width: 12),
+          Text(
+            value,
+            style: AppTextStyles.valueSmall.copyWith(
+              color: valueColor ?? context.colors.textSecondary,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     ),
   );

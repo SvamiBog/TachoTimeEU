@@ -163,25 +163,7 @@ class _Summary extends StatelessWidget {
     final working = kinds.where((k) => k.working).length;
     return CardGroup(
       children: [
-        MergeSemantics(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text('$working', style: AppTextStyles.valueLarge),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    l.workDaysCount(working),
-                    style: AppTextStyles.rowTitle,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        CountRow(count: working, label: l.workDaysCount(working)),
         MilestoneRow(
           dot: MilestoneDot.solid,
           dotColor: colors.rest,

@@ -11,7 +11,6 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
-import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
@@ -234,44 +233,26 @@ class _Summary extends StatelessWidget {
       color: colors.textSecondary,
       letterSpacing: AppTextStyles.label.fontSize! * 0.08,
     );
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        8,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.heroCard),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(l.drivingCanDrive.toUpperCase(), style: label),
-              const SizedBox(height: 4),
-              DurationText(
-                formatHm(left),
-                spoken: spokenDuration(l, left),
-                style: AppTextStyles.timer.copyWith(
-                  color: stopped ? colors.errorText : colors.drive,
-                ),
-              ),
-              Text(
-                !stopped && s.atWheel
-                    ? '$reason → ${formatClock(s.now.add(left))}'
-                    : reason,
-                style: AppTextStyles.body.copyWith(
-                  color: stopped ? colors.errorText : colors.textSecondary,
-                ),
-              ),
-            ],
+    return HeroCard(
+      children: [
+        Text(l.drivingCanDrive.toUpperCase(), style: label),
+        const SizedBox(height: 4),
+        DurationText(
+          formatHm(left),
+          spoken: spokenDuration(l, left),
+          style: AppTextStyles.timer.copyWith(
+            color: stopped ? colors.errorText : colors.drive,
           ),
         ),
-      ),
+        Text(
+          !stopped && s.atWheel
+              ? '$reason → ${formatClock(s.now.add(left))}'
+              : reason,
+          style: AppTextStyles.body.copyWith(
+            color: stopped ? colors.errorText : colors.textSecondary,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -7,7 +7,6 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
-import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/limit_bar.dart';
@@ -111,67 +110,47 @@ class _Summary extends StatelessWidget {
     final value = Duration(minutes: s.value);
     final violation = s.tone == Tone.violation;
     final caption = AppTextStyles.body.copyWith(color: colors.textSecondary);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        8,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.heroCard),
+    return HeroCard(
+      children: [
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.end,
+          spacing: 10,
+          children: [
+            DurationText(
+              since == null ? '—' : formatHm(value),
+              spoken: since == null ? '—' : spokenDuration(l, value),
+              style: AppTextStyles.timer.copyWith(
+                color: violation ? colors.errorText : null,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                l.ofLimit(formatLimit(l, EuLimits.maxBetweenWeeklyRests)),
+                style: caption,
+              ),
+            ),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.end,
-                spacing: 10,
-                children: [
-                  DurationText(
-                    since == null ? '—' : formatHm(value),
-                    spoken: since == null ? '—' : spokenDuration(l, value),
-                    style: AppTextStyles.timer.copyWith(
-                      color: violation ? colors.errorText : null,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Text(
-                      l.ofLimit(formatLimit(l, EuLimits.maxBetweenWeeklyRests)),
-                      style: caption,
-                    ),
-                  ),
-                ],
-              ),
-              if (since != null && !s.onWeeklyRest)
-                Text(
-                  l.workWeekSince(
-                    formatWeekdayDayClock(since, context.localeTag),
-                  ),
-                  style: caption,
-                ),
-              const SizedBox(height: 14),
-              LimitBar(
-                value: since == null ? Duration.zero : value,
-                max: EuLimits.maxBetweenWeeklyRests,
-                color: violation ? colors.errorText : colors.text,
-              ),
-              if (since == null || s.onWeeklyRest) ...[
-                const SizedBox(height: 14),
-                Text(
-                  since == null ? l.weeklyUnknown : l.workWeekOnRest,
-                  style: caption,
-                ),
-              ],
-            ],
+        if (since != null && !s.onWeeklyRest)
+          Text(
+            l.workWeekSince(formatWeekdayDayClock(since, context.localeTag)),
+            style: caption,
           ),
+        const SizedBox(height: 14),
+        LimitBar(
+          value: since == null ? Duration.zero : value,
+          max: EuLimits.maxBetweenWeeklyRests,
+          color: violation ? colors.errorText : colors.text,
         ),
-      ),
+        if (since == null || s.onWeeklyRest) ...[
+          const SizedBox(height: 14),
+          Text(
+            since == null ? l.weeklyUnknown : l.workWeekOnRest,
+            style: caption,
+          ),
+        ],
+      ],
     );
   }
 }

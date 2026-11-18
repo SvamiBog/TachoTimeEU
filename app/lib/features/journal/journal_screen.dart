@@ -11,6 +11,7 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/limit_bar.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
+import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
@@ -380,49 +381,43 @@ class _CollapsedWeek extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onToggle,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: AppSize.listRow),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.cardPadding,
-                vertical: 8,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      range,
-                      style: AppTextStyles.rowTitle.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+          child: CardRow(
+            vertical: 8,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    range,
+                    style: AppTextStyles.rowTitle.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Text.rich(
-                    TextSpan(
-                      style: AppTextStyles.caption.copyWith(
-                        color: colors.textSecondary,
-                      ),
-                      children: [
-                        TextSpan(text: '${l.journalCollapsedDriving} '),
-                        TextSpan(
-                          text: formatHm(week.driving),
-                          style: AppTextStyles.numericCaption.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: colors.text,
-                          ),
+                ),
+                const SizedBox(width: 8),
+                Text.rich(
+                  TextSpan(
+                    style: AppTextStyles.caption.copyWith(
+                      color: colors.textSecondary,
+                    ),
+                    children: [
+                      TextSpan(text: '${l.journalCollapsedDriving} '),
+                      TextSpan(
+                        text: formatHm(week.driving),
+                        style: AppTextStyles.numericCaption.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: colors.text,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    size: 20,
-                    color: colors.textSecondary,
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  size: 20,
+                  color: colors.textSecondary,
+                ),
+              ],
             ),
           ),
         ),
@@ -585,10 +580,7 @@ class _WeeklyRestRow extends ConsumerWidget {
           ),
           child: Row(
             children: [
-              IconTheme(
-                data: IconThemeData(color: colors.rest),
-                child: const ModeIcon(DriverMode.rest, size: 22),
-              ),
+              ModeIcon(DriverMode.rest, size: 22, color: colors.rest),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
