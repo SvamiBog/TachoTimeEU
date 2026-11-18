@@ -6,6 +6,7 @@ import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
+import 'package:tachogo/core/widgets/sheet_body.dart';
 
 /// Шторка подтверждения: вопрос, пояснение и два действия. true — водитель
 /// подтвердил, false — выбрал [cancel], null — закрыл шторку.
@@ -22,56 +23,39 @@ Future<bool?> showConfirmSheet(
   isScrollControlled: true,
   builder: (context) {
     final colors = context.colors;
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenPadding + 4,
-          0,
-          AppSpacing.screenPadding + 4,
-          24,
+    return SheetBody(
+      label: title,
+      children: [
+        Text(title, style: AppTextStyles.header),
+        const SizedBox(height: AppSpacing.s8),
+        Text(
+          text,
+          style: AppTextStyles.body.copyWith(color: colors.textSecondary),
         ),
-        child: Semantics(
-          scopesRoute: true,
-          namesRoute: true,
-          label: title,
-          explicitChildNodes: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(title, style: AppTextStyles.header),
-              const SizedBox(height: 8),
-              Text(
-                text,
-                style: AppTextStyles.body.copyWith(color: colors.textSecondary),
+        const SizedBox(height: AppSpacing.s20),
+        Row(
+          children: [
+            Expanded(
+              child: SecondaryButton(
+                label: cancel,
+                onPressed: () => Navigator.of(context).pop(false),
               ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: SecondaryButton(
-                      label: cancel,
-                      onPressed: () => Navigator.of(context).pop(false),
+            ),
+            const SizedBox(width: AppSpacing.s8),
+            Expanded(
+              child: danger
+                  ? DangerButton(
+                      label: confirm,
+                      onPressed: () => Navigator.of(context).pop(true),
+                    )
+                  : PrimaryButton(
+                      label: confirm,
+                      onPressed: () => Navigator.of(context).pop(true),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: danger
-                        ? DangerButton(
-                            label: confirm,
-                            onPressed: () => Navigator.of(context).pop(true),
-                          )
-                        : PrimaryButton(
-                            label: confirm,
-                            onPressed: () => Navigator.of(context).pop(true),
-                          ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
+      ],
     );
   },
 );
@@ -89,58 +73,41 @@ Future<void> showNoticeSheet(
   isScrollControlled: true,
   builder: (context) {
     final colors = context.colors;
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenPadding + 4,
-          0,
-          AppSpacing.screenPadding + 4,
-          24,
+    return SheetBody(
+      label: title,
+      children: [
+        Text(title, style: AppTextStyles.header),
+        const SizedBox(height: AppSpacing.s8),
+        Text(
+          text,
+          style: AppTextStyles.body.copyWith(color: colors.textSecondary),
         ),
-        child: Semantics(
-          scopesRoute: true,
-          namesRoute: true,
-          label: title,
-          explicitChildNodes: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(title, style: AppTextStyles.header),
-              const SizedBox(height: 8),
-              Text(
-                text,
-                style: AppTextStyles.body.copyWith(color: colors.textSecondary),
-              ),
-              const SizedBox(height: 12),
-              for (final item in items)
+        const SizedBox(height: AppSpacing.s12),
+        for (final item in items)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.s6),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Icon(
-                          Icons.error_outline,
-                          size: 18,
-                          color: colors.errorText,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(child: Text(item, style: AppTextStyles.body)),
-                    ],
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Icon(
+                    Icons.error_outline,
+                    size: 18,
+                    color: colors.errorText,
                   ),
                 ),
-              const SizedBox(height: 20),
-              PrimaryButton(
-                label: button,
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
+                const SizedBox(width: AppSpacing.s10),
+                Expanded(child: Text(item, style: AppTextStyles.body)),
+              ],
+            ),
           ),
+        const SizedBox(height: AppSpacing.s20),
+        PrimaryButton(
+          label: button,
+          onPressed: () => Navigator.of(context).pop(),
         ),
-      ),
+      ],
     );
   },
 );

@@ -22,38 +22,37 @@ void openBreakScreen(BuildContext context) =>
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const BreakScreen()));
 
-/// The break state the screen shows, in whole minutes.
-typedef _Break = ({
+/// The break as the "Break" screen and its row on the home screen show it, in
+/// whole minutes. Every value is the engine's: the UI does not count the break.
+typedef BreakView = ({
   bool shift,
   bool resting,
   int taken,
+  bool split,
+  bool firstDone,
+  bool counted,
   int? first,
   DateTime? firstStart,
   int? current,
   int? required,
-  bool counted,
 });
 
-_Break _break(ComplianceSnapshot s) {
+BreakView breakViewOf(ComplianceSnapshot s) {
   final first = s.breakFirstPart;
   final current = s.currentBreak;
-  final secondPart = current?.required == EuLimits.breakSplitSecond;
-  final taken = current == null
-      ? first?.duration ?? Duration.zero
-      : (secondPart ? first?.duration ?? Duration.zero : Duration.zero) +
-            current.duration;
   return (
     shift: s.shift != null,
     resting: s.currentMode == DriverMode.rest,
-    taken: minutes(taken),
+    taken: minutes(s.breakTaken),
+    split: s.breakSplit,
+    firstDone: s.breakFirstPartDone,
+    // Зелёным перерыв становится, когда он уже не нужен: засчитан или с
+    // прошлого перерыва не было вождения
+    counted: current != null && !current.needed,
     first: first == null ? null : minutes(first.duration),
     firstStart: first?.start,
     current: current == null ? null : minutes(current.duration),
     required: current == null ? null : minutes(current.required),
-    counted:
-        s.shift != null &&
-        current != null &&
-        s.continuousDriving == Duration.zero,
   );
 }
 
@@ -65,7 +64,7 @@ class BreakScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
-    final s = watchSnapshot(ref, _break);
+    final s = watchSnapshot(ref, breakViewOf);
     final resting = s?.resting ?? false;
     return DetailScaffold(
       title: l.rowBreak,
@@ -93,7 +92,7 @@ class BreakScreen extends ConsumerWidget {
 class _Summary extends StatelessWidget {
   const new(this.s);
 
-  final _Break s;
+  final BreakView s;
 
   @override
   Widget build(BuildContext context) {
@@ -101,9 +100,7 @@ class _Summary extends StatelessWidget {
     final colors = context.colors;
     const splitFirst = EuLimits.breakSplitFirst;
     const splitSecond = EuLimits.breakSplitSecond;
-    final firstDone =
-        s.first != null ||
-        (s.current ?? 0) >= splitFirst.inMinutes && s.required == 45;
+    final firstDone = s.firstDone;
     final taken = Duration(minutes: s.taken);
     final (current, required) = (s.current, s.required);
     final (first, firstStart) = (s.first, s.firstStart);
@@ -115,78 +112,58 @@ class _Summary extends StatelessWidget {
             formatClock(firstStart.add(Duration(minutes: first))),
           )
         : l.breakNone;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        8,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.heroCard),
+    return HeroCard(
+      children: [
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: AppSpacing.s12,
+          runSpacing: AppSpacing.s4,
+          children: [
+            Text(
+              l.breakHero(formatHm(EuLimits.continuousDriving)),
+              style: AppTextStyles.rowTitle,
+            ),
+            DurationText(
+              '${formatHm(taken)} / ${formatHm(EuLimits.breakFull)}',
+              spoken: l.ofLimit(spokenDuration(l, taken)),
+              style: AppTextStyles.value.copyWith(
+                color: s.counted ? colors.rest : null,
+              ),
+            ),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 12,
-                runSpacing: 4,
-                children: [
-                  Text(
-                    l.breakHero(formatHm(EuLimits.continuousDriving)),
-                    style: AppTextStyles.rowTitle,
-                  ),
-                  DurationText(
-                    '${formatHm(taken)} / ${formatHm(EuLimits.breakFull)}',
-                    spoken: l.ofLimit(spokenDuration(l, taken)),
-                    style: AppTextStyles.value.copyWith(
-                      color: s.counted ? colors.rest : null,
-                    ),
-                  ),
-                ],
+        const SizedBox(height: AppSpacing.s14),
+        Row(
+          children: [
+            Expanded(
+              child: _Part(
+                firstDone
+                    ? l.breakPartDone(splitFirst.inMinutes)
+                    : l.breakPart(splitFirst.inMinutes),
+                done: firstDone,
               ),
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  Expanded(
-                    child: _Part(
-                      firstDone
-                          ? l.breakPartDone(splitFirst.inMinutes)
-                          : l.breakPart(splitFirst.inMinutes),
-                      done: firstDone,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 2,
-                    child: _Part(
-                      s.counted
-                          ? l.breakPartDone(splitSecond.inMinutes)
-                          : firstDone
-                          ? l.breakPartLeft(splitSecond.inMinutes)
-                          : l.breakPart(splitSecond.inMinutes),
-                      done: s.counted,
-                    ),
-                  ),
-                ],
+            ),
+            const SizedBox(width: AppSpacing.s8),
+            Expanded(
+              flex: 2,
+              child: _Part(
+                s.counted
+                    ? l.breakPartDone(splitSecond.inMinutes)
+                    : firstDone
+                    ? l.breakPartLeft(splitSecond.inMinutes)
+                    : l.breakPart(splitSecond.inMinutes),
+                done: s.counted,
               ),
-              const SizedBox(height: 14),
-              Text(
-                caption,
-                style: AppTextStyles.caption.copyWith(
-                  color: colors.textSecondary,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
+        const SizedBox(height: AppSpacing.s14),
+        Text(
+          caption,
+          style: AppTextStyles.caption.copyWith(color: colors.textSecondary),
+        ),
+      ],
     );
   }
 }
@@ -203,7 +180,10 @@ class _Part extends StatelessWidget {
     final colors = context.colors;
     final radius = BorderRadius.circular(AppRadius.chip);
     final label = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s8,
+        vertical: AppSpacing.s12,
+      ),
       child: Center(
         child: Text(
           text,
@@ -310,38 +290,26 @@ class _Correction extends ConsumerWidget {
               MergeSemantics(
                 child: InkWell(
                   onTap: () => unawaited(openBreakCorrection(context, ref)),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minHeight: AppSize.listRow,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.cardPadding,
-                        vertical: 10,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              info.open
-                                  ? l.breakCurrentDuration
-                                  : l.breakLastDuration,
-                              style: AppTextStyles.rowTitle,
-                            ),
+                  child: CardRow(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            info.open
+                                ? l.breakCurrentDuration
+                                : l.breakLastDuration,
+                            style: AppTextStyles.rowTitle,
                           ),
-                          const SizedBox(width: 8),
-                          DurationText(
-                            formatHm(info.duration),
-                            spoken: spokenDuration(l, info.duration),
-                            style: AppTextStyles.value,
-                          ),
-                          const SizedBox(width: 4),
-                          Icon(
-                            Icons.chevron_right,
-                            color: colors.textSecondary,
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: AppSpacing.s8),
+                        DurationText(
+                          formatHm(info.duration),
+                          spoken: spokenDuration(l, info.duration),
+                          style: AppTextStyles.value,
+                        ),
+                        const SizedBox(width: AppSpacing.s4),
+                        Icon(Icons.chevron_right, color: colors.textSecondary),
+                      ],
                     ),
                   ),
                 ),
@@ -379,13 +347,13 @@ class _SplitRule extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.info_outline, size: 20, color: colors.textSecondary),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(l.breakSplitTitle, style: AppTextStyles.rowTitle),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.s4),
                     Text(
                       l.breakSplitText,
                       style: AppTextStyles.body.copyWith(

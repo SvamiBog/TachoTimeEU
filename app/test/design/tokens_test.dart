@@ -125,12 +125,30 @@ void main() {
           AppSpacing.beforeSectionMax,
         ],
         'cardPadding': AppSpacing.cardPadding,
+        'textInset': AppSpacing.textInset,
+        'rowVertical': AppSpacing.rowVertical,
+        'rowTrailing': AppSpacing.rowTrailing,
+        'heroPadding': AppSpacing.heroPadding,
+        'screenBottom': AppSpacing.screenBottom,
+        'scale': [
+          AppSpacing.s3,
+          AppSpacing.s4,
+          AppSpacing.s6,
+          AppSpacing.s8,
+          AppSpacing.s10,
+          AppSpacing.s12,
+          AppSpacing.s14,
+          AppSpacing.s16,
+          AppSpacing.s20,
+          AppSpacing.s24,
+        ],
       });
     });
 
     test('размеры', () {
       expect(section(tokens, 'size'), {
         'minTouch': AppSize.minTouch,
+        'header': AppSize.header,
         'listRow': AppSize.listRow,
         'button': AppSize.button,
         'modeButton': AppSize.modeButton,
@@ -304,8 +322,15 @@ void main() {
           'betweenCards',
           'beforeSection',
           'cardPadding',
+          'textInset',
+          'rowVertical',
+          'rowTrailing',
+          'heroPadding',
+          'screenBottom',
         ]),
       );
+      expect(numbersOf('- Шкала отступов'), tokensOf('spacing', ['scale']));
+      expect(numbersOf('- Шапка экрана:'), tokensOf('size', ['header']));
       expect(
         numbersOf('- Касание:'),
         tokensOf('size', ['minTouch', 'listRow', 'button', 'modeButton']),

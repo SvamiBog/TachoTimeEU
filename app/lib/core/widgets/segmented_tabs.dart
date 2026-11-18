@@ -47,8 +47,8 @@ class SegmentedTabs<T> extends StatelessWidget {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 6,
+                      horizontal: AppSpacing.s6,
+                      vertical: AppSpacing.s6,
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -87,7 +87,7 @@ class SegmentedTabs<T> extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.badge),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(AppSpacing.s4),
         child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,

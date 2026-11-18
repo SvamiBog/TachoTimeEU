@@ -94,7 +94,10 @@ class MetricCell extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.chip),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s8,
+          vertical: AppSpacing.s6,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -158,7 +161,7 @@ class ShiftMetrics extends StatelessWidget {
             tone: toneOfLevel(s.driveLevel),
           ),
         ),
-        const SizedBox(width: 6),
+        const SizedBox(width: AppSpacing.s6),
         Expanded(
           child: MetricCell(
             label: l.journalShift,
@@ -166,7 +169,7 @@ class ShiftMetrics extends StatelessWidget {
             tone: toneOfLevel(s.spanLevel),
           ),
         ),
-        const SizedBox(width: 6),
+        const SizedBox(width: AppSpacing.s6),
         Expanded(
           child: MetricCell(
             label: l.modeRest,

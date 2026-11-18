@@ -15,6 +15,7 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/confirm_sheet.dart';
+import 'package:tachogo/core/widgets/sheet_body.dart';
 import 'package:tachogo/data/backup/journal_backup.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/export/report_exporter.dart';
@@ -72,50 +73,33 @@ class _TransferSheetState extends ConsumerState<TransferSheet> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenPadding + 4,
-          0,
-          AppSpacing.screenPadding + 4,
-          24,
+    return SheetBody(
+      label: l.transferTitle,
+      children: [
+        Semantics(
+          header: true,
+          child: Text(l.transferTitle, style: AppTextStyles.header),
         ),
-        child: Semantics(
-          scopesRoute: true,
-          namesRoute: true,
-          label: l.transferTitle,
-          explicitChildNodes: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Semantics(
-                header: true,
-                child: Text(l.transferTitle, style: AppTextStyles.header),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l.transferText,
-                style: AppTextStyles.body.copyWith(
-                  color: context.colors.textSecondary,
-                  height: 1.45,
-                ),
-              ),
-              const SizedBox(height: 20),
-              PrimaryButton(
-                label: l.transferSave,
-                icon: Icons.ios_share,
-                onPressed: _busy ? null : () => unawaited(_save()),
-              ),
-              const SizedBox(height: 8),
-              SecondaryButton(
-                label: l.transferLoad,
-                onPressed: _busy ? null : () => unawaited(_load()),
-              ),
-            ],
+        const SizedBox(height: AppSpacing.s8),
+        Text(
+          l.transferText,
+          style: AppTextStyles.body.copyWith(
+            color: context.colors.textSecondary,
+            height: 1.45,
           ),
         ),
-      ),
+        const SizedBox(height: AppSpacing.s20),
+        PrimaryButton(
+          label: l.transferSave,
+          icon: Icons.ios_share,
+          onPressed: _busy ? null : () => unawaited(_save()),
+        ),
+        const SizedBox(height: AppSpacing.s8),
+        SecondaryButton(
+          label: l.transferLoad,
+          onPressed: _busy ? null : () => unawaited(_load()),
+        ),
+      ],
     );
   }
 

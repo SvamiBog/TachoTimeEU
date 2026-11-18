@@ -43,7 +43,7 @@ class MilestoneRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.cardPadding,
-          vertical: 12,
+          vertical: AppSpacing.s12,
         ),
         child: Row(
           children: [
@@ -57,7 +57,7 @@ class MilestoneRow extends StatelessWidget {
               ),
               child: const SizedBox.square(dimension: 10),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: AppSpacing.s14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +73,7 @@ class MilestoneRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.s8),
             Text(
               value,
               style: AppTextStyles.value.copyWith(
@@ -109,12 +109,15 @@ class InfoNote extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.badge),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s16,
+            vertical: AppSpacing.s14,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.info_outline, size: 20, color: colors.textSecondary),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: Text(
                   text,

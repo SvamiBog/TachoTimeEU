@@ -118,7 +118,7 @@ class WeeklyRestScreen extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.s8),
           Expanded(
             child: PrimaryButton(
               label: l.weeklyStartRest,
@@ -161,7 +161,8 @@ class WeeklyRestScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-              if (mobility != null) _Info(mobility: mobility),
+              if (mobility != null)
+                InfoNote(mobility ? l.weeklyMobilityOn : l.weeklyMobilityOff),
             ],
     );
   }
@@ -198,7 +199,7 @@ class _Deadline extends StatelessWidget {
       final start = s.onWeeklyStart;
       children = [
         Text(l.weeklyOngoing.toUpperCase(), style: label),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         DurationText(
           formatHm(d),
           spoken: spokenDuration(l, d),
@@ -213,7 +214,7 @@ class _Deadline extends StatelessWidget {
             l.modeSince(formatWeekdayClock(start, context.localeTag)),
             style: caption,
           ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.s14),
         LimitBar(
           value: d,
           max: EuLimits.weeklyRestRegular,
@@ -225,7 +226,7 @@ class _Deadline extends StatelessWidget {
       final overdue = s.overdue > 0;
       children = [
         Text(l.weeklyStartBy.toUpperCase(), style: label),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         FittedBox(
           fit: BoxFit.scaleDown,
           alignment: AlignmentDirectional.centerStart,
@@ -237,7 +238,7 @@ class _Deadline extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         Text(
           overdue
               ? l.weeklyOverdue(formatHm(Duration(minutes: s.overdue)))
@@ -248,27 +249,7 @@ class _Deadline extends StatelessWidget {
     } else {
       children = [Text(l.weeklyUnknown, style: caption)];
     }
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        8,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.heroCard),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children,
-          ),
-        ),
-      ),
-    );
+    return HeroCard(children: children);
   }
 }
 
@@ -342,7 +323,7 @@ class _Options extends StatelessWidget {
                 highlighted: true,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.s8),
             Expanded(
               child: _Option(
                 title: l.weeklyReduced,
@@ -402,14 +383,14 @@ class _Option extends StatelessWidget {
                 color: highlighted ? colors.restText : colors.chipText,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.s6),
             Text(
               l.hoursShort(hours),
               style: AppTextStyles.valueLarge.copyWith(
                 color: muted ? colors.textSecondary : null,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.s6),
             Text(
               hint,
               style: AppTextStyles.caption.copyWith(
@@ -456,11 +437,8 @@ class _History extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.cardPadding),
             child: Row(
               children: [
-                IconTheme(
-                  data: IconThemeData(color: colors.rest),
-                  child: const ModeIcon(DriverMode.rest, size: 24),
-                ),
-                const SizedBox(width: 14),
+                ModeIcon(DriverMode.rest, size: 24, color: colors.rest),
+                const SizedBox(width: AppSpacing.s14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -480,7 +458,7 @@ class _History extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.s8),
                 DurationText(
                   formatHm(Duration(minutes: last.duration)),
                   spoken: spokenDuration(l, Duration(minutes: last.duration)),
@@ -489,41 +467,35 @@ class _History extends StatelessWidget {
               ],
             ),
           ),
-        ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AppSize.listRow),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.cardPadding,
-              vertical: 12,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l.weeklyCompensation,
-                    style: AppTextStyles.rowTitle,
+        CardRow(
+          vertical: AppSpacing.s12,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l.weeklyCompensation,
+                  style: AppTextStyles.rowTitle,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.s8),
+              // «15:00 antes del 12.10» на крупном шрифте переносится, а не
+              // выталкивает название
+              Flexible(
+                child: Text(
+                  switch (debts) {
+                    [] => l.weeklyCompensationNone,
+                    [final c] => debtValue(c),
+                    // Несколько долгов — сколько всего, ниже каждый
+                    _ => formatHm(debt),
+                  },
+                  textAlign: TextAlign.end,
+                  style: AppTextStyles.body.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: debts.isEmpty ? colors.restText : colors.drive,
                   ),
                 ),
-                const SizedBox(width: 8),
-                // «15:00 antes del 12.10» на крупном шрифте переносится, а не
-                // выталкивает название
-                Flexible(
-                  child: Text(
-                    switch (debts) {
-                      [] => l.weeklyCompensationNone,
-                      [final c] => debtValue(c),
-                      // Несколько долгов — сколько всего, ниже каждый
-                      _ => formatHm(debt),
-                    },
-                    textAlign: TextAlign.end,
-                    style: AppTextStyles.body.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: debts.isEmpty ? colors.restText : colors.drive,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         if (debts.length > 1)
@@ -531,7 +503,7 @@ class _History extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.cardPadding,
-                vertical: 12,
+                vertical: AppSpacing.s12,
               ),
               child: Row(
                 children: [
@@ -546,7 +518,7 @@ class _History extends StatelessWidget {
                       ),
                     }, style: caption),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                   Flexible(
                     child: Text(
                       debtValue(c),
@@ -558,49 +530,6 @@ class _History extends StatelessWidget {
               ),
             ),
       ],
-    );
-  }
-}
-
-/// Explanation of the rules, with or without the Mobility Package.
-class _Info extends StatelessWidget {
-  const new({required this.mobility});
-
-  final bool mobility;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final l = context.l10n;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        AppSpacing.betweenCardsMax,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.badge),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.info_outline, size: 20, color: colors.textSecondary),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  mobility ? l.weeklyMobilityOn : l.weeklyMobilityOff,
-                  style: AppTextStyles.body.copyWith(color: colors.chipText),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

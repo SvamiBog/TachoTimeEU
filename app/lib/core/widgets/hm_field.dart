@@ -163,7 +163,7 @@ class _HmFieldState extends State<HmField> {
         fillColor: colors.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.cardPadding,
-          vertical: 14,
+          vertical: AppSpacing.s14,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.modeButton),

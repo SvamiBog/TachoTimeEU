@@ -147,7 +147,7 @@ class AlertCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.badge),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(AppSpacing.s14),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -161,7 +161,7 @@ class AlertCard extends StatelessWidget {
                     size: 20,
                     color: c.foreground,
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.s12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +180,7 @@ class AlertCard extends StatelessWidget {
                             color: c.foreground,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.s4),
                         Text(
                           text.article,
                           style: AppTextStyles.small.copyWith(
@@ -191,7 +191,7 @@ class AlertCard extends StatelessWidget {
                     ),
                   ),
                   if (onTap != null) ...[
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.s8),
                     Icon(Icons.chevron_right, size: 20, color: c.foreground),
                   ],
                 ],

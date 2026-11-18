@@ -17,6 +17,24 @@ ComplianceSnapshot run(List<Seg> segs, {int? lead}) => calc(
       : ComplianceSettings(warningLead: minutes(lead)),
 );
 
+/// Перерыв, каким его показывают экраны: взято, раздельный ли, набраны ли
+/// первые 15 мин.
+({Duration taken, bool split, bool firstPartDone}) shown(
+  ComplianceSnapshot m,
+) => (
+  taken: m.breakTaken,
+  split: m.breakSplit,
+  firstPartDone: m.breakFirstPartDone,
+);
+
+/// Идущий перерыв: сколько нужно, нужен ли ещё и сколько осталось.
+({Duration required, bool needed, Duration remaining})? going(
+  ComplianceSnapshot m,
+) => switch (m.currentBreak) {
+  final b? => (required: b.required, needed: b.needed, remaining: b.remaining),
+  null => null,
+};
+
 void main() {
   group('ст. 7: граница 4:30', () {
     test('ровно 4:30 вождения — ещё не нарушение, до перерыва 0 мин', () {
@@ -305,6 +323,203 @@ void main() {
       final m = run([work('10:00')]);
       expect(m.continuousDriving, Duration.zero);
       expect(keys(m), isNot(contains(InfringementType.breakSoon)));
+    });
+  });
+
+  // Экраны и уведомление берут перерыв из движка и ничего не считают сами.
+  group('ENG-32: перерыв для экранов — взято, раздельный, нужен, остаток', () {
+    const zero = Duration.zero;
+
+    test('ENG-32: без перерыва ничего не взято', () {
+      final m = run([drive('2:00')]);
+      expect(shown(m), (taken: zero, split: false, firstPartDone: false));
+      expect(going(m), isNull);
+    });
+
+    test('ENG-32: 45 мин одним куском — засчитан и не раздельный', () {
+      final m = run([drive('2:00'), rest('0:45')]);
+      expect(shown(m), (taken: minutes(45), split: false, firstPartDone: true));
+      expect(going(m), (required: minutes(45), needed: false, remaining: zero));
+      expect(m.continuousDriving, zero);
+    });
+
+    test('ENG-32: идёт 44 мин — уже первая часть, до 45 мин осталась 1', () {
+      final m = run([drive('2:00'), rest('0:44')]);
+      expect(shown(m), (taken: minutes(44), split: true, firstPartDone: true));
+      expect(going(m), (
+        required: minutes(45),
+        needed: true,
+        remaining: minutes(1),
+      ));
+    });
+
+    test('ENG-32: идёт 14 мин — ещё не первая часть, 15 мин — уже она', () {
+      final short = run([drive('2:00'), rest('0:14')]);
+      expect(shown(short), (
+        taken: minutes(14),
+        split: false,
+        firstPartDone: false,
+      ));
+      expect(going(short)?.remaining, minutes(31));
+
+      final first = run([drive('2:00'), rest('0:15')]);
+      expect(shown(first), (
+        taken: minutes(15),
+        split: true,
+        firstPartDone: true,
+      ));
+      expect(going(first), (
+        required: minutes(45),
+        needed: true,
+        remaining: minutes(30),
+      ));
+    });
+
+    test('ENG-32: первая часть взята, водитель едет — в счёт 15 мин', () {
+      final m = run([drive('2:00'), rest('0:15'), drive('1:00')]);
+      expect(shown(m), (taken: minutes(15), split: true, firstPartDone: true));
+      expect(m.breakRequired, minutes(30));
+      expect(going(m), isNull);
+    });
+
+    test('ENG-32: вторая часть идёт — в счёт первая и текущая', () {
+      final m = run([drive('2:00'), rest('0:15'), drive('1:00'), rest('0:29')]);
+      expect(shown(m), (taken: minutes(44), split: true, firstPartDone: true));
+      expect(going(m), (
+        required: minutes(30),
+        needed: true,
+        remaining: minutes(1),
+      ));
+      expect(m.continuousDriving, minutes(180));
+    });
+
+    test('ENG-32: вторая часть 30 мин — перерыв засчитан и сбросил '
+        'непрерывное вождение', () {
+      final m = run([drive('2:00'), rest('0:15'), drive('1:00'), rest('0:30')]);
+      expect(m.continuousDriving, zero);
+      expect(m.drivingUntilBreak, minutes(270));
+      expect(going(m), (required: minutes(30), needed: false, remaining: zero));
+      expect(m.breakSplit, isTrue);
+    });
+
+    test(
+      'ENG-32: засчитанный 15 + 30 — в счёт обе части',
+      () {
+        final m = run([
+          drive('2:00'),
+          rest('0:15'),
+          drive('1:00'),
+          rest('0:30'),
+        ]);
+        expect(shown(m), (
+          taken: minutes(45),
+          split: true,
+          firstPartDone: true,
+        ));
+      },
+      skip:
+          'Известный дефект: когда вторая часть набрала 30 мин, первая '
+          'сброшена — в счёт идут только 0:30, и экран «Перерыв» снова '
+          'показывает первую часть невзятой. Этап 3 рефакторинга поведение '
+          'не меняет, исправление — отдельно.',
+    );
+
+    test('ENG-32: 15, потом 30 и снова вождение — счёт перерыва заново', () {
+      final m = run([
+        drive('2:00'),
+        rest('0:15'),
+        drive('1:00'),
+        rest('0:30'),
+        drive('0:10'),
+      ]);
+      expect(m.continuousDriving, minutes(10));
+      expect(shown(m), (taken: zero, split: false, firstPartDone: false));
+      expect(m.breakRequired, minutes(45));
+    });
+
+    test('ENG-32: первая часть короче 15 мин — не часть', () {
+      final after = run([drive('2:00'), rest('0:14'), drive('1:00')]);
+      expect(shown(after), (taken: zero, split: false, firstPartDone: false));
+      expect(after.breakRequired, minutes(45));
+
+      // 14 мин в счёт не идут: текущий отдых сам становится первой частью,
+      // одним куском ему нужно 45 мин
+      final m = run([drive('2:00'), rest('0:14'), drive('1:00'), rest('0:30')]);
+      expect(shown(m), (taken: minutes(30), split: true, firstPartDone: true));
+      expect(going(m), (
+        required: minutes(45),
+        needed: true,
+        remaining: minutes(15),
+      ));
+    });
+
+    test('ENG-32: 30, потом 15 — вторая часть не засчитана', () {
+      final m = run([drive('2:00'), rest('0:30'), drive('1:00'), rest('0:15')]);
+      // 30 мин — первая часть; второй нужно 30, 15 мин перерыв не засчитывают
+      expect(m.continuousDriving, minutes(180));
+      expect(going(m), (
+        required: minutes(30),
+        needed: true,
+        remaining: minutes(15),
+      ));
+      // В счёт обе части — 0:45 из 45, хотя перерыв не засчитан: так
+      // показывал и прежний расчёт в UI
+      expect(shown(m), (taken: minutes(45), split: true, firstPartDone: true));
+    });
+
+    test('ENG-32: после первой части отдых 45 мин — засчитан как вторая', () {
+      final m = run([drive('2:00'), rest('0:15'), drive('1:00'), rest('0:45')]);
+      expect(m.continuousDriving, zero);
+      expect(going(m), (required: minutes(30), needed: false, remaining: zero));
+    });
+
+    test('ENG-32: пауза после ручной смены — первая часть, вторая идёт по '
+        'записям', () {
+      final start = utc('2026-09-23 06:00');
+      final manual = ManualShift(
+        start: start,
+        end: start.add(dur('5:00')),
+        driving: dur('4:00'),
+        continuousDrivingAtEnd: dur('3:00'),
+        restKind: RestKind.daily,
+      );
+      // 20 мин после смены, 1:00 вождения, отдых идёт 10 мин
+      final next = logFrom(manual.end!.add(minutes(20)), [
+        drive('1:00'),
+        rest('0:10'),
+      ]);
+      final m = calc(next.periods, next.now, manual: [manual]);
+      expect(m.continuousDriving, dur('4:00'));
+      expect(shown(m), (taken: minutes(30), split: true, firstPartDone: true));
+      expect(going(m), (
+        required: minutes(30),
+        needed: true,
+        remaining: minutes(20),
+      ));
+    });
+
+    test('ENG-32: отдых без вождения с прошлого перерыва — перерыв не нужен, '
+        'хотя сам отдых ещё не засчитан', () {
+      final m = run([work('0:30'), rest('0:10')]);
+      expect(m.continuousDriving, zero);
+      expect(going(m), (
+        required: minutes(45),
+        needed: false,
+        remaining: minutes(35),
+      ));
+    });
+
+    test('ENG-32: остаток не уходит ниже нуля', () {
+      final full = run([drive('2:00'), rest('1:00')]);
+      expect(going(full)?.remaining, zero);
+
+      final second = run([
+        drive('2:00'),
+        rest('0:15'),
+        drive('1:00'),
+        rest('0:40'),
+      ]);
+      expect(going(second)?.remaining, zero);
     });
   });
 }

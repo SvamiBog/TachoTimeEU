@@ -40,7 +40,7 @@ class ChoicePill extends StatelessWidget {
               minWidth: AppSize.minTouch + 12,
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
               child: Center(
                 widthFactor: 1,
                 child: Text(

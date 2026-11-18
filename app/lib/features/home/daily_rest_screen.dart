@@ -159,10 +159,10 @@ class _Summary extends StatelessWidget {
           (s.weekly ? l.weeklyOngoing : l.dailyRestOngoing).toUpperCase(),
           style: label,
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.end,
-          spacing: 10,
+          spacing: AppSpacing.s10,
           children: [
             DurationText(
               formatHm(rest),
@@ -170,13 +170,13 @@ class _Summary extends StatelessWidget {
               style: AppTextStyles.timer.copyWith(color: colors.rest),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: AppSpacing.s10),
               child: Text(l.ofLimit(formatLimit(l, target)), style: caption),
             ),
           ],
         ),
         Text(l.modeSince(formatClock(restStart)), style: caption),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.s14),
         LimitBar(
           value: rest,
           max: target,
@@ -197,7 +197,7 @@ class _Summary extends StatelessWidget {
       final latest = s.reducedLeft > 0 || s.splitFirstPart ? extended : regular;
       children = [
         Text(l.dailyRestStartBy.toUpperCase(), style: label),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         Text(
           formatClock(late ? latest : regular),
           style: AppTextStyles.timer.copyWith(
@@ -208,7 +208,7 @@ class _Summary extends StatelessWidget {
                 : null,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         Text(
           overdue
               ? l.weeklyOverdue(formatHm(s.now.difference(latest)))
@@ -229,27 +229,7 @@ class _Summary extends StatelessWidget {
     } else {
       children = [Text(l.workdayNoShift, style: caption)];
     }
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        8,
-        AppSpacing.screenPadding,
-        0,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.heroCard),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children,
-          ),
-        ),
-      ),
-    );
+    return HeroCard(children: children);
   }
 }
 

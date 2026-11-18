@@ -11,6 +11,7 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/limit_bar.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
+import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
@@ -87,9 +88,9 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
         if (empty)
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.screenPadding + 4,
-              8,
-              AppSpacing.screenPadding + 4,
+              AppSpacing.textInset,
+              AppSpacing.s8,
+              AppSpacing.textInset,
               0,
             ),
             child: Text(
@@ -103,7 +104,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(
               AppSpacing.screenPadding,
-              i == 0 ? 8 : 12,
+              i == 0 ? AppSpacing.betweenCardsMin : AppSpacing.s12,
               AppSpacing.screenPadding,
               0,
             ),
@@ -139,13 +140,13 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 64),
+      constraints: const BoxConstraints(minHeight: AppSize.header),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenPadding + 4,
-          8,
-          AppSpacing.screenPadding - 8,
-          8,
+          AppSpacing.textInset,
+          AppSpacing.s8,
+          AppSpacing.screenPadding - AppSpacing.s8,
+          AppSpacing.s8,
         ),
         child: Row(
           children: [
@@ -300,7 +301,7 @@ class _WeekHeader extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                   if (week.isCurrent)
                     StatusChip(l.journalCurrent, tone: Tone.warning)
                   else
@@ -311,16 +312,16 @@ class _WeekHeader extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.s10),
               LimitBar(
                 value: week.driving,
                 max: EuLimits.weeklyDriving,
                 color: weekOver ? colors.errorText : colors.drive,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.s10),
               Wrap(
                 alignment: WrapAlignment.spaceBetween,
-                spacing: 12,
+                spacing: AppSpacing.s12,
                 runSpacing: 2,
                 children: [
                   Text.rich(
@@ -380,49 +381,43 @@ class _CollapsedWeek extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onToggle,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: AppSize.listRow),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.cardPadding,
-                vertical: 8,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      range,
-                      style: AppTextStyles.rowTitle.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+          child: CardRow(
+            vertical: AppSpacing.s8,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    range,
+                    style: AppTextStyles.rowTitle.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Text.rich(
-                    TextSpan(
-                      style: AppTextStyles.caption.copyWith(
-                        color: colors.textSecondary,
-                      ),
-                      children: [
-                        TextSpan(text: '${l.journalCollapsedDriving} '),
-                        TextSpan(
-                          text: formatHm(week.driving),
-                          style: AppTextStyles.numericCaption.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: colors.text,
-                          ),
+                ),
+                const SizedBox(width: AppSpacing.s8),
+                Text.rich(
+                  TextSpan(
+                    style: AppTextStyles.caption.copyWith(
+                      color: colors.textSecondary,
+                    ),
+                    children: [
+                      TextSpan(text: '${l.journalCollapsedDriving} '),
+                      TextSpan(
+                        text: formatHm(week.driving),
+                        style: AppTextStyles.numericCaption.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: colors.text,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    size: 20,
-                    color: colors.textSecondary,
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(width: AppSpacing.s8),
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  size: 20,
+                  color: colors.textSecondary,
+                ),
+              ],
             ),
           ),
         ),
@@ -463,7 +458,7 @@ class _ShiftRow extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.cardPadding,
-            vertical: 14,
+            vertical: AppSpacing.s14,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -485,7 +480,7 @@ class _ShiftRow extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -493,7 +488,7 @@ class _ShiftRow extends StatelessWidget {
                     Wrap(
                       alignment: WrapAlignment.spaceBetween,
                       crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 8,
+                      spacing: AppSpacing.s8,
                       runSpacing: 2,
                       children: [
                         Text.rich(
@@ -521,7 +516,7 @@ class _ShiftRow extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.s8),
                     ShiftMetrics(s),
                   ],
                 ),
@@ -581,15 +576,12 @@ class _WeeklyRestRow extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.cardPadding,
-            vertical: 14,
+            vertical: AppSpacing.s14,
           ),
           child: Row(
             children: [
-              IconTheme(
-                data: IconThemeData(color: colors.rest),
-                child: const ModeIcon(DriverMode.rest, size: 22),
-              ),
-              const SizedBox(width: 12),
+              ModeIcon(DriverMode.rest, size: 22, color: colors.rest),
+              const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -620,7 +612,7 @@ class _WeeklyRestRow extends ConsumerWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.s8),
               Text(
                 formatHm(rest.duration),
                 style: AppTextStyles.value.copyWith(color: colors.restText),

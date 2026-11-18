@@ -16,10 +16,10 @@ import 'package:tachogo/core/widgets/segmented_tabs.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 
 const _sheetPadding = EdgeInsets.fromLTRB(
-  AppSpacing.screenPadding + 4,
+  AppSpacing.textInset,
   0,
-  AppSpacing.screenPadding + 4,
-  24,
+  AppSpacing.textInset,
+  AppSpacing.screenBottom,
 );
 
 /// "Cancel" and the main action at the bottom of a sheet.
@@ -38,7 +38,7 @@ class _SheetButtons extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      const SizedBox(width: 8),
+      const SizedBox(width: AppSpacing.s8),
       Expanded(
         child: PrimaryButton(label: label, onPressed: onPressed),
       ),
@@ -135,7 +135,7 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
                 _invalid = false;
               }),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.s16),
           ],
           if (_editEnd && end != null)
             DateTimeField(
@@ -153,7 +153,7 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
               onChanged: (t) => setState(() => _start = t),
               onValidChanged: (v) => setState(() => _invalid = !v),
             ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.s16),
           _SheetButtons(
             label: l.done,
             onPressed: _invalid
@@ -311,7 +311,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         ExcludeSemantics(
           child: Row(
             children: [
@@ -333,7 +333,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
             ],
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         for (var row = 0; row < cells.length; row += 7)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 2),
@@ -411,7 +411,7 @@ class _DaySheetState extends State<_DaySheet> {
             withTime: false,
             onChanged: (t) => setState(() => _value = t),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.s16),
           _SheetButtons(
             label: l.done,
             onPressed: () {
@@ -528,14 +528,14 @@ class _DurationSheetState extends State<_DurationSheet> {
         children: [
           Text(widget.title, style: AppTextStyles.header),
           if (subtitle != null) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.s4),
             Text(
               subtitle,
               style: AppTextStyles.body.copyWith(color: colors.textSecondary),
             ),
           ],
           if (computed != null) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.s16),
             DecoratedBox(
               decoration: BoxDecoration(
                 color: colors.surface,
@@ -543,8 +543,8 @@ class _DurationSheetState extends State<_DurationSheet> {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
+                  horizontal: AppSpacing.s16,
+                  vertical: AppSpacing.s14,
                 ),
                 child: Row(
                   children: [
@@ -556,14 +556,14 @@ class _DurationSheetState extends State<_DurationSheet> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.s8),
                     Text(formatHm(computed), style: AppTextStyles.valueSmall),
                   ],
                 ),
               ),
             ),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.s16),
           HmField(
             label: widget.label ?? widget.title,
             value: _clamped(widget.initial),
@@ -578,7 +578,7 @@ class _DurationSheetState extends State<_DurationSheet> {
             onChanged: (v) => setState(() => _value = v),
           ),
           if (max != null && (value == null || valid)) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.s12),
             Text(
               l.pickerRange(formatHm(widget.min), formatHm(max)),
               style: AppTextStyles.caption.copyWith(
@@ -587,10 +587,10 @@ class _DurationSheetState extends State<_DurationSheet> {
             ),
           ],
           if (hint != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.s12),
             StatusBanner(hint, tone: Tone.warning),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.s16),
           _SheetButtons(
             label: widget.action ?? l.save,
             onPressed:

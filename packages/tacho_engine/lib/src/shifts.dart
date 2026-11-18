@@ -213,6 +213,35 @@ class BreakState {
   final CurrentRest? currentRest;
 
   bool get firstPartTaken => firstPart != null;
+
+  /// Идущий отдых — вторая часть раздельного перерыва: до него взята первая.
+  bool get _secondPartGoing => currentRest?.firstPartBefore ?? false;
+
+  /// Взято в счёт перерыва. Без отдыха — первая часть; во время отдыха — он
+  /// сам, а если он вторая часть, то и первая перед ним.
+  ///
+  /// Вторая часть, набравшая 30 мин, первую уже сбросила, и в счёт идёт
+  /// только она — известный дефект (ENG-32, тест со `skip`).
+  Duration get taken {
+    final rest = currentRest;
+    final first = firstPart?.duration ?? Duration.zero;
+    if (rest == null) return first;
+    return _secondPartGoing ? first + rest.duration : rest.duration;
+  }
+
+  /// Раздельный перерыв 15 + 30: первая часть взята (идущий отдых от 15 мин
+  /// — тоже она) или идёт вторая.
+  bool get split => firstPartTaken || _secondPartGoing;
+
+  /// Первые 15 мин набраны: первая часть взята или идущий отдых — не вторая
+  /// часть — длится от 15 мин (отдых от 45 мин первую часть уже не хранит).
+  bool get firstPartDone {
+    final rest = currentRest;
+    return firstPartTaken ||
+        (rest != null &&
+            !_secondPartGoing &&
+            rest.duration >= EuLimits.breakSplitFirst);
+  }
 }
 
 /// Перерыв по ст. 7: 45 мин подряд или 15 + 30 именно в таком порядке.

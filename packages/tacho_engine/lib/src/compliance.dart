@@ -103,6 +103,7 @@ class CurrentBreak {
     required this.start,
     required this.duration,
     required this.required,
+    required this.needed,
   });
 
   final DateTime start;
@@ -111,6 +112,16 @@ class CurrentBreak {
   /// Сколько нужно, чтобы перерыв засчитался: 45 мин или 30 после первой
   /// части.
   final Duration required;
+
+  /// Перерыв ещё нужен: есть непрерывное вождение, которое отдых пока не
+  /// обнулил. Не нужен, если этот отдых уже засчитан ([remaining] — ноль) или
+  /// с прошлого засчитанного перерыва водитель не ездил: тогда отдых может
+  /// быть и не засчитан, он копится к суточному.
+  final bool needed;
+
+  /// Сколько ещё отдыхать, чтобы этот отдых засчитался перерывом; ноль —
+  /// засчитан.
+  Duration get remaining => clampToZero(required - duration);
 }
 
 /// Debt for a reduced weekly rest (Art. 8(6)) and the rest it was attached to
@@ -277,6 +288,9 @@ class ComplianceSnapshot {
     required this.drivingUntilBreak,
     required this.breakFirstPart,
     required this.breakRequired,
+    required this.breakTaken,
+    required this.breakSplit,
+    required this.breakFirstPartDone,
     required this.currentBreak,
     required this.dailyDriving,
     required this.dailyDrivingLimit,
@@ -354,6 +368,16 @@ class ComplianceSnapshot {
 
   /// Сколько перерыва нужно взять сейчас: 45 мин или 30 после первой части.
   final Duration breakRequired;
+
+  /// Взято в счёт перерыва: первая часть, идущий отдых или обе, если он
+  /// вторая часть ([BreakState.taken]).
+  final Duration breakTaken;
+
+  /// Перерыв раздельный, 15 + 30: первая часть взята или идёт вторая.
+  final bool breakSplit;
+
+  /// Первые 15 мин перерыва набраны ([BreakState.firstPartDone]).
+  final bool breakFirstPartDone;
   final CurrentBreak? currentBreak;
 
   // Суточное вождение (ст. 6(1))
@@ -576,6 +600,7 @@ ComplianceSnapshot calculateCompliance({
           required: currentRest.firstPartBefore
               ? EuLimits.breakSplitSecond
               : EuLimits.breakFull,
+          needed: continuousDriving > Duration.zero,
         );
 
   // Недели: понедельник 00:00 UTC, как на тахографе
@@ -1132,6 +1157,9 @@ ComplianceSnapshot calculateCompliance({
     drivingUntilBreak: drivingUntilBreak,
     breakFirstPart: breakState.firstPart,
     breakRequired: breakRequired,
+    breakTaken: breakState.taken,
+    breakSplit: breakState.split,
+    breakFirstPartDone: breakState.firstPartDone,
     currentBreak: currentBreak,
     dailyDriving: dailyDriving,
     dailyDrivingLimit: dailyDrivingLimit,

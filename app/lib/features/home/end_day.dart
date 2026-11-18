@@ -79,7 +79,7 @@ class EndDayButton extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.screenPadding,
-        12,
+        AppSpacing.s12,
         AppSpacing.screenPadding,
         0,
       ),

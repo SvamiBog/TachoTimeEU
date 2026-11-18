@@ -38,7 +38,7 @@ class GuideScreen extends StatelessWidget {
     return DetailScaffold(
       title: l.guideTitle,
       children: [
-        SectionTitle(l.guideHowTo, top: 12),
+        SectionTitle(l.guideHowTo, top: AppSpacing.s12),
         const _HowTo(),
         SectionTitle(l.guideRules),
         CardGroup(children: [for (final r in GuideRule.values) RuleRow(r)]),
@@ -52,9 +52,9 @@ class GuideScreen extends StatelessWidget {
         const _OfficialText(),
         Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.screenPadding + 4,
+            AppSpacing.textInset,
             AppSpacing.beforeSectionMin,
-            AppSpacing.screenPadding + 4,
+            AppSpacing.textInset,
             0,
           ),
           child: Text(
@@ -107,7 +107,7 @@ class _HowTo extends StatelessWidget {
         color: colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.card),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.s8),
           child: Column(
             children: [
               for (final (i, text) in [
@@ -119,7 +119,7 @@ class _HowTo extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.cardPadding,
-                      vertical: 12,
+                      vertical: AppSpacing.s12,
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +139,7 @@ class _HowTo extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 14),
+                        const SizedBox(width: AppSpacing.s14),
                         Expanded(
                           child: Text(
                             text,
@@ -309,13 +309,13 @@ class RuleRow extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: AppSpacing.s14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(r.title, style: AppTextStyles.rowTitle),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.s4),
                   Text(
                     r.text,
                     style: AppTextStyles.body.copyWith(
@@ -358,7 +358,7 @@ class _Newbie extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: AppTextStyles.rowTitle),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.s4),
                   Text(
                     text,
                     style: AppTextStyles.body.copyWith(
@@ -394,12 +394,9 @@ class _ModesLegend extends StatelessWidget {
                 color: colors.mode(mode),
                 borderRadius: BorderRadius.circular(AppRadius.chip),
               ),
-              child: IconTheme(
-                data: IconThemeData(color: colors.onAccent),
-                child: ModeIcon(mode, size: 22),
-              ),
+              child: ModeIcon(mode, size: 22, color: colors.onAccent),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.s12),
             Expanded(
               child: Text(
                 context.l10n.modeName(mode),
@@ -422,15 +419,15 @@ class _ModesLegend extends StatelessWidget {
               Row(
                 children: [
                   item(DriverMode.driving),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.s12),
                   item(DriverMode.rest),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.s12),
               Row(
                 children: [
                   item(DriverMode.otherWork),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.s12),
                   item(DriverMode.availability),
                 ],
               ),
@@ -489,10 +486,10 @@ class _VanRulesCheckState extends ConsumerState<VanRulesCheck> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.screenPadding + 4,
+            AppSpacing.textInset,
             0,
-            AppSpacing.screenPadding + 4,
-            12,
+            AppSpacing.textInset,
+            AppSpacing.s12,
           ),
           child: Text(
             l.guideVanText(date),
@@ -570,9 +567,9 @@ class _VanRulesCheckState extends ConsumerState<VanRulesCheck> {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.screenPadding + 4,
-            12,
-            AppSpacing.screenPadding + 4,
+            AppSpacing.textInset,
+            AppSpacing.s12,
+            AppSpacing.textInset,
             0,
           ),
           child: Text(l.guideVanNotes, style: captionStyle),
@@ -612,9 +609,9 @@ class _VanResult extends StatelessWidget {
               applies ? l.guideVanApplies : l.guideVanNotApply,
               tone: applies ? Tone.warning : Tone.rest,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.s8),
             Text(text, style: AppTextStyles.body.copyWith(height: 1.45)),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.s4),
             Text(
               l.guideArticle(result.article),
               style: AppTextStyles.caption.copyWith(

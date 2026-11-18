@@ -31,45 +31,27 @@ class AboutScreen extends ConsumerWidget {
     return DetailScaffold(
       title: l.moreAbout,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.screenPadding,
-            8,
-            AppSpacing.screenPadding,
-            0,
-          ),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: colors.surface,
-              borderRadius: BorderRadius.circular(AppRadius.heroCard),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(l.appTitle, style: AppTextStyles.header),
-                  if (version != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      version,
-                      style: AppTextStyles.numericCaption.copyWith(
-                        color: colors.textSecondary,
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 14),
-                  Text(
-                    l.moreDisclaimer,
-                    style: AppTextStyles.body.copyWith(
-                      color: colors.chipText,
-                      height: 1.45,
-                    ),
-                  ),
-                ],
+        HeroCard(
+          children: [
+            Text(l.appTitle, style: AppTextStyles.header),
+            if (version != null) ...[
+              const SizedBox(height: AppSpacing.s4),
+              Text(
+                version,
+                style: AppTextStyles.numericCaption.copyWith(
+                  color: colors.textSecondary,
+                ),
+              ),
+            ],
+            const SizedBox(height: AppSpacing.s14),
+            Text(
+              l.moreDisclaimer,
+              style: AppTextStyles.body.copyWith(
+                color: colors.chipText,
+                height: 1.45,
               ),
             ),
-          ),
+          ],
         ),
         const SizedBox(height: AppSpacing.betweenCardsMax),
         CardGroup(

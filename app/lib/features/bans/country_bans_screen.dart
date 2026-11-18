@@ -69,7 +69,7 @@ class CountryBansScreen extends ConsumerWidget {
       title: l.countryName(code),
       subtitle: l.bansForTrucks,
       children: [
-        SectionTitle(l.bansNowTitle, top: 8),
+        SectionTitle(l.bansNowTitle, top: AppSpacing.s8),
         _Now(country: country, status: status, now: now),
         if (country.coverage == BanCoverage.rules) ...[
           SectionTitle(l.bansRules),
@@ -156,7 +156,7 @@ class _Now extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.heroCard),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.heroPadding),
           child: Row(
             children: [
               DecoratedBox(
@@ -166,7 +166,7 @@ class _Now extends StatelessWidget {
                 ),
                 child: const SizedBox.square(dimension: 16),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: AppSpacing.s14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,32 +215,25 @@ class _Line extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: AppSize.listRow),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.cardPadding,
-          vertical: 10,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+    return CardRow(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: AppTextStyles.rowTitle.copyWith(
+              color: warn ? colors.errorText : null,
+            ),
+          ),
+          if (subtitle case final subtitle?)
             Text(
-              title,
-              style: AppTextStyles.rowTitle.copyWith(
-                color: warn ? colors.errorText : null,
+              subtitle,
+              style: AppTextStyles.caption.copyWith(
+                color: colors.textSecondary,
               ),
             ),
-            if (subtitle case final subtitle?)
-              Text(
-                subtitle,
-                style: AppTextStyles.caption.copyWith(
-                  color: colors.textSecondary,
-                ),
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }

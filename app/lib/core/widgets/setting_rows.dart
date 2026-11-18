@@ -74,9 +74,9 @@ class SwitchRow extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.cardPadding,
-              10,
-              AppSpacing.cardPadding - 4,
-              10,
+              AppSpacing.rowVertical,
+              AppSpacing.rowTrailing,
+              AppSpacing.rowVertical,
             ),
             child: Row(
               children: [
@@ -87,7 +87,7 @@ class SwitchRow extends StatelessWidget {
                     strong: strong,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.s12),
                 Switch(value: value, onChanged: onChanged),
               ],
             ),
@@ -153,21 +153,21 @@ class NavRow extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.cardPadding,
-                10,
-                AppSpacing.cardPadding - 4,
-                10,
+                AppSpacing.rowVertical,
+                AppSpacing.rowTrailing,
+                AppSpacing.rowVertical,
               ),
               child: Row(
                 children: [
                   if (icon != null) ...[
                     Icon(icon, size: 22, color: iconColor ?? colors.text),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.s12),
                   ],
                   Expanded(
                     child: _Titles(title: title, subtitle: subtitle),
                   ),
                   if (value != null) ...[
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.s12),
                     // Значение прижато к «›» и не шире половины строки:
                     // длинное переносится, а не вытесняет название
                     ConstrainedBox(
@@ -188,7 +188,7 @@ class NavRow extends StatelessWidget {
                     ),
                   ],
                   if (chevron) ...[
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.s4),
                     Icon(
                       Icons.chevron_right,
                       size: 22,
@@ -225,7 +225,7 @@ class ChoiceBlock extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(
       AppSpacing.cardPadding,
-      14,
+      AppSpacing.s14,
       AppSpacing.cardPadding,
       AppSpacing.cardPadding,
     ),
@@ -233,7 +233,7 @@ class ChoiceBlock extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _Titles(title: title, subtitle: subtitle, strong: strong),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.s10),
         child,
       ],
     ),
@@ -247,6 +247,9 @@ class PillWrap extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) =>
-      Wrap(spacing: 8, runSpacing: 8, children: children);
+  Widget build(BuildContext context) => Wrap(
+    spacing: AppSpacing.s8,
+    runSpacing: AppSpacing.s8,
+    children: children,
+  );
 }

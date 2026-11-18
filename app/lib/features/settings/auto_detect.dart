@@ -1,5 +1,5 @@
-/// Turning automatic driving detection on from a screen, and the "Automatic
-/// detection" settings card.
+/// Turning automatic driving detection on from a screen, asking for the
+/// notification permission, and the "Automatic detection" settings card.
 library;
 
 import 'dart:async';
@@ -77,6 +77,28 @@ mixin AutoDetectEnabling<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   }
 }
 
+/// Asking for the notification permission from a screen (onboarding and
+/// settings): the system request the first time; after a permanent refusal
+/// the phone no longer shows it, so the next tap opens the app's system
+/// settings.
+mixin NotificationPermissionAsking<T extends ConsumerStatefulWidget>
+    on ConsumerState<T> {
+  /// Системный запрос уже показан: дальше — только настройки системы.
+  bool notificationsAsked = false;
+
+  Future<void> allowNotifications() async {
+    final service = ref.read(trackingServiceProvider);
+    // Телефон больше не показывает запрос — только настройки системы
+    if (notificationsAsked) {
+      await service.openAppSettings();
+    } else {
+      await service.requestNotifications();
+      if (mounted) setState(() => notificationsAsked = true);
+    }
+    if (mounted) ref.invalidate(trackingHealthProvider);
+  }
+}
+
 /// A warning banner and, if the cause can be fixed in the phone settings, a
 /// button to go there.
 class SystemSettingsNotice extends StatelessWidget {
@@ -95,7 +117,7 @@ class SystemSettingsNotice extends StatelessWidget {
         children: [
           StatusBanner(text, tone: Tone.warning),
           if (onOpen != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.s8),
             SecondaryButton(
               label: context.l10n.openSystemSettings,
               onPressed: onOpen,
@@ -259,7 +281,7 @@ class DoneMark extends StatelessWidget {
       child: Row(
         children: [
           Icon(Icons.check_circle, size: 22, color: colors.rest),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.s10),
           Expanded(child: Text(text, style: AppTextStyles.rowTitle)),
         ],
       ),

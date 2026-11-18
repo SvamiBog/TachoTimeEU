@@ -77,7 +77,7 @@ class CardReadingTile extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: AppSpacing.s14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -90,7 +90,7 @@ class CardReadingTile extends ConsumerWidget {
                               style: AppTextStyles.rowTitle,
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.s8),
                           Text(
                             daysLeft == null ? '—' : l.daysShort(daysLeft),
                             style: AppTextStyles.value.copyWith(
@@ -99,7 +99,7 @@ class CardReadingTile extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: AppSpacing.s6),
                       LimitBar(
                         value: daysLeft == null
                             ? Duration.zero
@@ -109,7 +109,7 @@ class CardReadingTile extends ConsumerWidget {
                             ? colors.errorText
                             : colors.text,
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: AppSpacing.s6),
                       Text(
                         last == null
                             ? l.cardNever
@@ -155,10 +155,10 @@ class CardSheet extends ConsumerWidget {
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenPadding + 4,
+          AppSpacing.textInset,
           0,
-          AppSpacing.screenPadding + 4,
-          24,
+          AppSpacing.textInset,
+          AppSpacing.screenBottom,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -167,23 +167,23 @@ class CardSheet extends ConsumerWidget {
             Row(
               children: [
                 Icon(Icons.credit_card, color: colors.drive),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.s10),
                 Expanded(child: Text(l.cardTitle, style: AppTextStyles.header)),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.s16),
             Text(
               last == null
                   ? l.cardSheetNever
                   : l.cardSheetLast(formatDayMonthYear(last)),
               style: AppTextStyles.rowTitle,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.s12),
             Text(
               l.cardSheetRule,
               style: AppTextStyles.body.copyWith(color: colors.textSecondary),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.s16),
             Row(
               children: [
                 Expanded(
@@ -192,7 +192,7 @@ class CardSheet extends ConsumerWidget {
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.s8),
                 Expanded(
                   child: PrimaryButton(
                     label: l.cardMarkToday,

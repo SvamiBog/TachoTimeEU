@@ -72,7 +72,7 @@ class _DrivingBansScreenState extends ConsumerState<DrivingBansScreen> {
       title: l.bansTitle,
       subtitle: l.bansForTrucks,
       children: [
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         _MapCard(statuses: statuses, current: current),
         SectionTitle(l.bansCountries),
         _CountryList(
@@ -126,17 +126,17 @@ class _MapCard extends StatelessWidget {
                 current: current,
                 onCountry: (code) => openCountryBans(context, code),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.s12),
               Wrap(
-                spacing: 14,
-                runSpacing: 8,
+                spacing: AppSpacing.s14,
+                runSpacing: AppSpacing.s8,
                 children: [
                   for (final (level, label) in legend)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         _Dot(banColor(colors, level)),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: AppSpacing.s6),
                         Flexible(
                           child: Text(
                             label,
@@ -228,41 +228,34 @@ class _CountryRow extends StatelessWidget {
       type: MaterialType.transparency,
       child: InkWell(
         onTap: () => openCountryBans(context, code),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AppSize.listRow),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.cardPadding,
-              vertical: 10,
-            ),
-            child: Row(
-              children: [
-                _Dot(banColor(colors, status.level), size: 12),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        here
-                            ? '${l.countryName(code)} · ${l.bansCurrentCountry}'
-                            : l.countryName(code),
-                        style: AppTextStyles.rowTitle,
+        child: CardRow(
+          child: Row(
+            children: [
+              _Dot(banColor(colors, status.level), size: 12),
+              const SizedBox(width: AppSpacing.s14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      here
+                          ? '${l.countryName(code)} · ${l.bansCurrentCountry}'
+                          : l.countryName(code),
+                      style: AppTextStyles.rowTitle,
+                    ),
+                    Text(
+                      text,
+                      style: AppTextStyles.caption.copyWith(
+                        color: status.level == BanLevel.active
+                            ? colors.errorText
+                            : colors.textSecondary,
                       ),
-                      Text(
-                        text,
-                        style: AppTextStyles.caption.copyWith(
-                          color: status.level == BanLevel.active
-                              ? colors.errorText
-                              : colors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Icon(Icons.chevron_right, color: colors.textSecondary),
-              ],
-            ),
+              ),
+              Icon(Icons.chevron_right, color: colors.textSecondary),
+            ],
           ),
         ),
       ),
