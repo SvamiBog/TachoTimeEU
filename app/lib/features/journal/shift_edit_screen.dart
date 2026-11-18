@@ -243,7 +243,7 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
                   AppSpacing.screenPadding,
                   0,
                   AppSpacing.screenPadding,
-                  8,
+                  AppSpacing.betweenCardsMin,
                 ),
                 child: Semantics(
                   liveRegion: true,
@@ -593,9 +593,9 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.cardPadding,
-                12,
-                AppSpacing.cardPadding - 4,
-                12,
+                AppSpacing.s12,
+                AppSpacing.rowTrailing,
+                AppSpacing.s12,
               ),
               child: Row(
                 children: [
@@ -613,7 +613,7 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.s12),
                   Switch(
                     value: f.split,
                     onChanged: (v) => setState(() => f.split = v),
@@ -1048,7 +1048,7 @@ class _Hint extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.screenPadding,
-        8,
+        AppSpacing.betweenCardsMin,
         AppSpacing.screenPadding,
         0,
       ),
@@ -1058,12 +1058,15 @@ class _Hint extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.badge),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s14,
+            vertical: AppSpacing.s12,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.info_outline, size: 18, color: colors.textSecondary),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.s10),
               Expanded(
                 child: Text(
                   text,
@@ -1142,7 +1145,7 @@ class _TimesCard extends StatelessWidget {
                     l.shiftNowSuffix,
                     style: AppTextStyles.label.copyWith(color: colors.drive),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                 ],
                 DurationText(
                   formatHm(span),
@@ -1198,8 +1201,8 @@ class _Side extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Wrap(
-            spacing: 8,
-            runSpacing: 4,
+            spacing: AppSpacing.s8,
+            runSpacing: AppSpacing.s4,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Text(
@@ -1211,7 +1214,7 @@ class _Side extends StatelessWidget {
               if (onRoad) StatusChip(l.shiftOnRoad, tone: Tone.warning),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.s10),
           Semantics(
             button: true,
             label: l.shiftCountrySpoken(title, country ?? l.shiftChoose),
@@ -1228,7 +1231,9 @@ class _Side extends StatelessWidget {
                     minWidth: AppSize.minTouch,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.s14,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -1240,7 +1245,7 @@ class _Side extends StatelessWidget {
                                 : colors.text,
                           ),
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: AppSpacing.s6),
                         Icon(
                           Icons.keyboard_arrow_down,
                           size: 18,
@@ -1253,7 +1258,7 @@ class _Side extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.s10),
           if (at == null)
             _FieldButton(
               icon: Icons.schedule,
@@ -1273,7 +1278,7 @@ class _Side extends StatelessWidget {
               ),
               onTap: onDate,
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.s6),
             _FieldButton(
               icon: Icons.schedule,
               text: formatClock(at),
@@ -1329,11 +1334,14 @@ class _FieldButton extends StatelessWidget {
               minWidth: double.infinity,
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s12,
+                vertical: AppSpacing.s8,
+              ),
               child: Row(
                 children: [
                   Icon(icon, size: 18, color: color ?? colors.textSecondary),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                   Flexible(
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
@@ -1401,15 +1409,15 @@ class _ValueRow extends StatelessWidget {
               ],
             ),
           ),
-          if (chip != null) ...[const SizedBox(width: 8), chip],
-          const SizedBox(width: 8),
+          if (chip != null) ...[const SizedBox(width: AppSpacing.s8), chip],
+          const SizedBox(width: AppSpacing.s8),
           DurationText(
             formatHm(value),
             spoken: spokenDuration(l, value),
             style: AppTextStyles.value,
           ),
           if (onTap != null) ...[
-            const SizedBox(width: 4),
+            const SizedBox(width: AppSpacing.s4),
             Icon(Icons.chevron_right, color: colors.textSecondary),
           ],
         ],

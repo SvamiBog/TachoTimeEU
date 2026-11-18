@@ -79,9 +79,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 64),
+                constraints: const BoxConstraints(minHeight: AppSize.header),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 8, 24, 8),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.s4,
+                    AppSpacing.s8,
+                    AppSpacing.s24,
+                    AppSpacing.s8,
+                  ),
                   child: Row(
                     children: [
                       if (!first)
@@ -106,12 +111,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 },
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.s24,
+                  AppSpacing.s20,
+                  AppSpacing.s24,
+                  AppSpacing.s20,
+                ),
                 child: _StepDots(step: _step.index),
               ),
               if (blocked)
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.s24,
+                    0,
+                    AppSpacing.s24,
+                    AppSpacing.s12,
+                  ),
                   child: Text(
                     l.onbBaseCountryRequired,
                     textAlign: TextAlign.center,
@@ -125,7 +140,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   AppSpacing.screenPadding,
                   0,
                   AppSpacing.screenPadding,
-                  24,
+                  AppSpacing.screenBottom,
                 ),
                 child: PrimaryButton(
                   label: switch (_step) {
@@ -165,14 +180,14 @@ class _LanguageButton extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: AppSize.minTouch),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s14),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.language, size: 20),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                   Text(name, style: AppTextStyles.rowTitle),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: AppSpacing.s6),
                   Icon(
                     Icons.expand_more,
                     size: 20,
@@ -203,7 +218,7 @@ class _StepDots extends StatelessWidget {
       child: Row(
         children: [
           for (var i = 0; i < count; i++) ...[
-            if (i > 0) const SizedBox(width: 6),
+            if (i > 0) const SizedBox(width: AppSpacing.s6),
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               width: i == step ? 24 : 6,
@@ -229,7 +244,7 @@ class _Intro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 24),
+    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -237,7 +252,7 @@ class _Intro extends StatelessWidget {
           header: true,
           child: Text(title, style: AppTextStyles.screenTitle),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         Text(
           text,
           style: AppTextStyles.body.copyWith(
@@ -269,7 +284,9 @@ class _Welcome extends StatelessWidget {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.s16,
+                    ),
                     child: Center(
                       child: _ModesRing(size: math.min(260, box.maxWidth - 48)),
                     ),
@@ -384,7 +401,7 @@ class _Modes extends StatelessWidget {
       DriverMode.rest => l.onbModeRest,
     };
     return ListView(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.s8),
       children: [
         _Intro(title: l.onbModesTitle, text: l.onbModesText),
         const SizedBox(height: AppSpacing.beforeSectionMin),
@@ -416,7 +433,7 @@ class _Modes extends StatelessWidget {
                           color: colors.mode(mode),
                         ),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: AppSpacing.s14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,7 +474,7 @@ class _Rules extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     return ListView(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.s8),
       children: [
         _Intro(title: l.onbRulesTitle, text: l.onbRulesText),
         const SizedBox(height: AppSpacing.beforeSectionMin),
@@ -471,9 +488,9 @@ class _Rules extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.screenPadding + 4,
-            12,
-            AppSpacing.screenPadding + 4,
+            AppSpacing.textInset,
+            AppSpacing.s12,
+            AppSpacing.textInset,
             0,
           ),
           child: Text(
@@ -506,7 +523,7 @@ class _Setup extends ConsumerWidget {
         const ComplianceSettings();
     final consent = ref.watch(analyticsConsentProvider).value ?? false;
     return ListView(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.s8),
       children: [
         _Intro(title: l.onbSetupTitle, text: l.onbSetupText),
         SectionTitle(l.settingsTachograph, top: AppSpacing.beforeSectionMin),
@@ -581,7 +598,7 @@ class _Options extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (final (i, option) in options.indexed) ...[
-            if (i > 0) const SizedBox(width: 8),
+            if (i > 0) const SizedBox(width: AppSpacing.s8),
             Expanded(child: _OptionCard(option)),
           ],
         ],
@@ -624,7 +641,7 @@ class _OptionCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Icon(option.icon, size: 28),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.s16),
                   Text(option.label, style: AppTextStyles.header),
                 ],
               ),
@@ -678,7 +695,7 @@ class _NotificationsCardState extends ConsumerState<_NotificationsCard>
                       size: 22,
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: AppSpacing.s14),
                   Expanded(
                     child: Text(
                       l.onbNotifyText(widget.lead.inMinutes),
@@ -690,7 +707,7 @@ class _NotificationsCardState extends ConsumerState<_NotificationsCard>
                   ),
                 ],
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpacing.s14),
               if (allowed ?? false)
                 DoneMark(l.notifyAllowed)
               else
@@ -731,7 +748,7 @@ class _AutoDetectState extends ConsumerState<_AutoDetect>
         ? backgroundHints(context, ref)
         : const <Widget>[];
     return ListView(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.s8),
       children: [
         _Intro(title: l.autoTitle, text: l.onbAutoText),
         const SizedBox(height: AppSpacing.beforeSectionMin),
@@ -757,9 +774,9 @@ class _AutoDetectState extends ConsumerState<_AutoDetect>
         ],
         Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.screenPadding + 4,
-            12,
-            AppSpacing.screenPadding + 4,
+            AppSpacing.textInset,
+            AppSpacing.s12,
+            AppSpacing.textInset,
             0,
           ),
           child: Text(

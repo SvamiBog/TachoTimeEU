@@ -120,7 +120,7 @@ class _MonthBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s4),
       child: Row(
         children: [
           IconButton(
@@ -211,7 +211,12 @@ class _Calendar extends StatelessWidget {
     return CardGroup(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(8, 12, 8, 8),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.s8,
+            AppSpacing.s12,
+            AppSpacing.s8,
+            AppSpacing.s8,
+          ),
           child: Column(
             children: [
               ExcludeSemantics(
@@ -232,7 +237,7 @@ class _Calendar extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.s4),
               for (var r = 0; r < rows; r++)
                 Row(
                   children: [

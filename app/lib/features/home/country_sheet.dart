@@ -48,18 +48,18 @@ class CountryChip extends ConsumerWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: AppSize.minTouch),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s14),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(start ?? '—', style: code),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                   Icon(
                     Icons.arrow_forward,
                     size: 16,
                     color: colors.textSecondary,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                   Text(
                     end ?? '—',
                     style: code.copyWith(
@@ -326,13 +326,13 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
             l.countryName(code).toLowerCase().contains(q))
           code,
     ];
-    const pad = AppSpacing.screenPadding + 4;
+    const pad = AppSpacing.textInset;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(pad, 0, pad, 12),
+          padding: const EdgeInsets.fromLTRB(pad, 0, pad, AppSpacing.s12),
           child: hasShift
               ? SegmentedTabs<CountryTarget>(
                   options: [
@@ -380,7 +380,12 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
         if (frequent.isNotEmpty ||
             (hasShift && _target == CountryTarget.end)) ...[
           Padding(
-            padding: const EdgeInsets.fromLTRB(pad, 16, pad, 8),
+            padding: const EdgeInsets.fromLTRB(
+              pad,
+              AppSpacing.s16,
+              pad,
+              AppSpacing.s8,
+            ),
             child: Text(
               l.countryFrequent.toUpperCase(),
               style: AppTextStyles.section.copyWith(
@@ -389,10 +394,10 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(pad, 0, pad, 12),
+            padding: const EdgeInsets.fromLTRB(pad, 0, pad, AppSpacing.s12),
             child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: AppSpacing.s8,
+              runSpacing: AppSpacing.s8,
               children: [
                 for (final code in frequent)
                   ChoicePill(
@@ -422,13 +427,18 @@ class _CountryPickerState extends ConsumerState<CountryPicker> {
                   ),
                 )
               : ListView.separated(
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.s16),
                   itemCount: list.length + 1,
                   separatorBuilder: (_, _) =>
                       Divider(height: 1, color: colors.surface2),
                   itemBuilder: (context, i) => i == list.length
                       ? Padding(
-                          padding: const EdgeInsets.fromLTRB(pad, 16, pad, 0),
+                          padding: const EdgeInsets.fromLTRB(
+                            pad,
+                            AppSpacing.s16,
+                            pad,
+                            0,
+                          ),
                           child: Text(
                             l.countryFooter,
                             style: AppTextStyles.caption.copyWith(
@@ -471,8 +481,8 @@ class _CountryRow extends StatelessWidget {
           constraints: const BoxConstraints(minHeight: AppSize.listRow),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.screenPadding + 4,
-              vertical: 8,
+              horizontal: AppSpacing.textInset,
+              vertical: AppSpacing.s8,
             ),
             child: Row(
               children: [
@@ -492,7 +502,7 @@ class _CountryRow extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.s16),
                 Expanded(child: Text(name, style: AppTextStyles.body)),
                 if (selected) Icon(Icons.check, color: colors.drive),
               ],

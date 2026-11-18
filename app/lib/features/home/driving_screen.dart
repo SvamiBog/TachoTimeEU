@@ -11,6 +11,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
@@ -236,7 +237,7 @@ class _Summary extends StatelessWidget {
     return HeroCard(
       children: [
         Text(l.drivingCanDrive.toUpperCase(), style: label),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         DurationText(
           formatHm(left),
           spoken: spokenDuration(l, left),

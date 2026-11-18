@@ -9,6 +9,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
@@ -80,7 +81,7 @@ class WorkdayScreen extends ConsumerWidget {
                 color: context.colors.textSecondary,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.s12),
           ],
           Row(
             children: [
@@ -92,7 +93,7 @@ class WorkdayScreen extends ConsumerWidget {
                       : () => unawaited(openShiftStartCorrection(context, ref)),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.s8),
               Expanded(
                 child: PrimaryButton(
                   label: l.workdayEndDay,
@@ -150,7 +151,7 @@ class _Summary extends StatelessWidget {
       children: [
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.end,
-          spacing: 10,
+          spacing: AppSpacing.s10,
           children: [
             DurationText(
               formatHm(value),
@@ -160,7 +161,7 @@ class _Summary extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: AppSpacing.s10),
               child: Text(
                 l.ofLimit(formatHm(Duration(minutes: s.limit))),
                 style: AppTextStyles.body.copyWith(color: colors.textSecondary),
@@ -168,7 +169,7 @@ class _Summary extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.s14),
         LimitBar(
           value: value,
           max: extended,
@@ -176,7 +177,7 @@ class _Summary extends StatelessWidget {
           color: s.tone == Tone.violation ? colors.errorText : colors.text,
         ),
         if (s.start == null) ...[
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpacing.s14),
           Text(
             l.workdayNoShift,
             style: AppTextStyles.body.copyWith(color: colors.textSecondary),

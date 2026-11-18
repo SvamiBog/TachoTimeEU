@@ -84,14 +84,14 @@ class _NoteSheetState extends ConsumerState<_NoteSheet> {
     return SheetBody(
       label: l.violationsNoteTitle,
       padding: EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding + 4,
+        AppSpacing.textInset,
         0,
-        AppSpacing.screenPadding + 4,
-        24 + MediaQuery.viewInsetsOf(context).bottom,
+        AppSpacing.textInset,
+        AppSpacing.screenBottom + MediaQuery.viewInsetsOf(context).bottom,
       ),
       children: [
         Text(l.violationsNoteTitle, style: AppTextStyles.header),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         Text(
           l.infringement(violation.infringement).title,
           style: AppTextStyles.body.copyWith(color: colors.textSecondary),
@@ -102,7 +102,7 @@ class _NoteSheetState extends ConsumerState<_NoteSheet> {
             color: colors.textSecondary,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.s16),
         TextField(
           controller: _text,
           autofocus: existing == null,
@@ -128,7 +128,7 @@ class _NoteSheetState extends ConsumerState<_NoteSheet> {
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.s12),
         Row(
           children: [
             Expanded(
@@ -144,7 +144,7 @@ class _NoteSheetState extends ConsumerState<_NoteSheet> {
                       onPressed: _saving ? null : () => unawaited(_write('')),
                     ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.s8),
             Expanded(
               child: PrimaryButton(
                 label: l.save,

@@ -118,7 +118,7 @@ class WeeklyRestScreen extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.s8),
           Expanded(
             child: PrimaryButton(
               label: l.weeklyStartRest,
@@ -199,7 +199,7 @@ class _Deadline extends StatelessWidget {
       final start = s.onWeeklyStart;
       children = [
         Text(l.weeklyOngoing.toUpperCase(), style: label),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         DurationText(
           formatHm(d),
           spoken: spokenDuration(l, d),
@@ -214,7 +214,7 @@ class _Deadline extends StatelessWidget {
             l.modeSince(formatWeekdayClock(start, context.localeTag)),
             style: caption,
           ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.s14),
         LimitBar(
           value: d,
           max: EuLimits.weeklyRestRegular,
@@ -226,7 +226,7 @@ class _Deadline extends StatelessWidget {
       final overdue = s.overdue > 0;
       children = [
         Text(l.weeklyStartBy.toUpperCase(), style: label),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         FittedBox(
           fit: BoxFit.scaleDown,
           alignment: AlignmentDirectional.centerStart,
@@ -238,7 +238,7 @@ class _Deadline extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.s4),
         Text(
           overdue
               ? l.weeklyOverdue(formatHm(Duration(minutes: s.overdue)))
@@ -323,7 +323,7 @@ class _Options extends StatelessWidget {
                 highlighted: true,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.s8),
             Expanded(
               child: _Option(
                 title: l.weeklyReduced,
@@ -383,14 +383,14 @@ class _Option extends StatelessWidget {
                 color: highlighted ? colors.restText : colors.chipText,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.s6),
             Text(
               l.hoursShort(hours),
               style: AppTextStyles.valueLarge.copyWith(
                 color: muted ? colors.textSecondary : null,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.s6),
             Text(
               hint,
               style: AppTextStyles.caption.copyWith(
@@ -438,7 +438,7 @@ class _History extends StatelessWidget {
             child: Row(
               children: [
                 ModeIcon(DriverMode.rest, size: 24, color: colors.rest),
-                const SizedBox(width: 14),
+                const SizedBox(width: AppSpacing.s14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -458,7 +458,7 @@ class _History extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.s8),
                 DurationText(
                   formatHm(Duration(minutes: last.duration)),
                   spoken: spokenDuration(l, Duration(minutes: last.duration)),
@@ -468,7 +468,7 @@ class _History extends StatelessWidget {
             ),
           ),
         CardRow(
-          vertical: 12,
+          vertical: AppSpacing.s12,
           child: Row(
             children: [
               Expanded(
@@ -477,7 +477,7 @@ class _History extends StatelessWidget {
                   style: AppTextStyles.rowTitle,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.s8),
               // «15:00 antes del 12.10» на крупном шрифте переносится, а не
               // выталкивает название
               Flexible(
@@ -503,7 +503,7 @@ class _History extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.cardPadding,
-                vertical: 12,
+                vertical: AppSpacing.s12,
               ),
               child: Row(
                 children: [
@@ -518,7 +518,7 @@ class _History extends StatelessWidget {
                       ),
                     }, style: caption),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                   Flexible(
                     child: Text(
                       debtValue(c),

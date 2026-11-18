@@ -35,7 +35,7 @@ class AboutScreen extends ConsumerWidget {
           children: [
             Text(l.appTitle, style: AppTextStyles.header),
             if (version != null) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.s4),
               Text(
                 version,
                 style: AppTextStyles.numericCaption.copyWith(
@@ -43,7 +43,7 @@ class AboutScreen extends ConsumerWidget {
                 ),
               ),
             ],
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpacing.s14),
             Text(
               l.moreDisclaimer,
               style: AppTextStyles.body.copyWith(

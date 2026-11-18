@@ -16,11 +16,11 @@ class TabTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ConstrainedBox(
-    constraints: const BoxConstraints(minHeight: 64),
+    constraints: const BoxConstraints(minHeight: AppSize.header),
     child: Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.screenPadding + 4,
-        vertical: 8,
+        horizontal: AppSpacing.textInset,
+        vertical: AppSpacing.s8,
       ),
       child: Align(
         alignment: Alignment.centerLeft,
@@ -44,7 +44,7 @@ class HeroCard extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(
       AppSpacing.screenPadding,
-      8,
+      AppSpacing.betweenCardsMin,
       AppSpacing.screenPadding,
       0,
     ),
@@ -54,7 +54,7 @@ class HeroCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.heroCard),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.heroPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: children,
@@ -70,16 +70,17 @@ class SectionTitle extends StatelessWidget {
 
   final String text;
 
-  /// Отступ сверху: перед разделом 24–28 dp, первый раздел под шапкой — 12.
+  /// Отступ сверху: перед разделом 24–28 dp, первый раздел под шапкой —
+  /// [AppSpacing.s12].
   final double top;
 
   @override
   Widget build(BuildContext context) => Padding(
     padding: EdgeInsets.fromLTRB(
-      AppSpacing.screenPadding + 4,
+      AppSpacing.textInset,
       top,
-      AppSpacing.screenPadding + 4,
-      10,
+      AppSpacing.textInset,
+      AppSpacing.s10,
     ),
     child: Semantics(
       header: true,
@@ -127,9 +128,13 @@ class CardGroup extends StatelessWidget {
 /// The frame of a list row: at least 56 dp tall, with the card's side
 /// padding. The row's content and its tap handling stay with the caller.
 class CardRow extends StatelessWidget {
-  const new({required this.child, this.vertical = 10, super.key});
+  const new({
+    required this.child,
+    this.vertical = AppSpacing.rowVertical,
+    super.key,
+  });
 
-  /// Поля сверху и снизу: у строк с подписью — 10 dp.
+  /// Поля сверху и снизу: обычно [AppSpacing.rowVertical].
   final double vertical;
   final Widget child;
 
@@ -169,7 +174,7 @@ class CountRow extends StatelessWidget {
             '$count',
             style: AppTextStyles.valueLarge.copyWith(color: color),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.s12),
           Expanded(child: Text(label, style: AppTextStyles.rowTitle)),
         ],
       ),

@@ -7,6 +7,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/limit_bar.dart';
@@ -114,7 +115,7 @@ class _Summary extends StatelessWidget {
       children: [
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.end,
-          spacing: 10,
+          spacing: AppSpacing.s10,
           children: [
             DurationText(
               since == null ? '—' : formatHm(value),
@@ -124,7 +125,7 @@ class _Summary extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: AppSpacing.s10),
               child: Text(
                 l.ofLimit(formatLimit(l, EuLimits.maxBetweenWeeklyRests)),
                 style: caption,
@@ -137,14 +138,14 @@ class _Summary extends StatelessWidget {
             l.workWeekSince(formatWeekdayDayClock(since, context.localeTag)),
             style: caption,
           ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.s14),
         LimitBar(
           value: since == null ? Duration.zero : value,
           max: EuLimits.maxBetweenWeeklyRests,
           color: violation ? colors.errorText : colors.text,
         ),
         if (since == null || s.onWeeklyRest) ...[
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpacing.s14),
           Text(
             since == null ? l.weeklyUnknown : l.workWeekOnRest,
             style: caption,

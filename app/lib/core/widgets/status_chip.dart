@@ -36,7 +36,10 @@ class StatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.chip),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s8,
+          vertical: AppSpacing.s3,
+        ),
         child: Text(
           text,
           maxLines: 1,
@@ -66,7 +69,10 @@ class StatusBanner extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.badge),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s14,
+            vertical: AppSpacing.s12,
+          ),
           child: Row(
             children: [
               Icon(
@@ -76,7 +82,7 @@ class StatusBanner extends StatelessWidget {
                 size: 20,
                 color: c.foreground,
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.s10),
               Expanded(
                 child: Text(
                   text,

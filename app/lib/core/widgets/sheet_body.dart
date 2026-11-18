@@ -18,10 +18,10 @@ class SheetBody extends StatelessWidget {
   /// Поля шторки: по бокам — как у заголовков разделов, снизу — над краем
   /// экрана.
   static const defaultPadding = EdgeInsets.fromLTRB(
-    AppSpacing.screenPadding + 4,
+    AppSpacing.textInset,
     0,
-    AppSpacing.screenPadding + 4,
-    24,
+    AppSpacing.textInset,
+    AppSpacing.screenBottom,
   );
 
   /// Название шторки для диктора: обычно её заголовок.

@@ -44,16 +44,16 @@ class DetailScaffold extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 64),
+            constraints: const BoxConstraints(minHeight: AppSize.header),
             child: Row(
               children: [
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.s4),
                 IconButton(
                   onPressed: onBack ?? () => Navigator.of(context).maybePop(),
                   tooltip: context.l10n.back,
                   icon: const Icon(Icons.arrow_back_ios_new, size: 22),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.s8),
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -82,7 +82,7 @@ class DetailScaffold extends StatelessWidget {
                 ),
                 if (action case final action?)
                   Padding(
-                    padding: const EdgeInsets.only(right: 4),
+                    padding: const EdgeInsets.only(right: AppSpacing.s4),
                     child: action,
                   )
                 else
@@ -93,7 +93,7 @@ class DetailScaffold extends StatelessWidget {
           ?banner,
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.only(bottom: 24),
+              padding: const EdgeInsets.only(bottom: AppSpacing.screenBottom),
               children: children,
             ),
           ),
@@ -101,9 +101,9 @@ class DetailScaffold extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.screenPadding,
-                8,
+                AppSpacing.s8,
                 AppSpacing.screenPadding,
-                24,
+                AppSpacing.screenBottom,
               ),
               child: bottom,
             ),

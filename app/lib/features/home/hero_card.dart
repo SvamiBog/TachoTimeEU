@@ -30,7 +30,7 @@ class HeroCard extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(
       AppSpacing.screenPadding,
-      8,
+      AppSpacing.betweenCardsMin,
       AppSpacing.screenPadding,
       0,
     ),
@@ -40,12 +40,17 @@ class HeroCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.heroCard),
       ),
       child: const Padding(
-        padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.cardPadding,
+          AppSpacing.s24,
+          AppSpacing.cardPadding,
+          AppSpacing.cardPadding,
+        ),
         child: Column(
           children: [
             HeroRing(),
             HeroBanner(),
-            SizedBox(height: 16),
+            SizedBox(height: AppSpacing.s16),
             CurrentModeRow(),
           ],
         ),
@@ -171,13 +176,13 @@ class HeroRing extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.s4),
                   DurationText(
                     formatHm(big),
                     spoken: '$label, ${spokenDuration(l, big)}',
                     style: AppTextStyles.timer.copyWith(color: color),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.s4),
                   Text(caption, style: AppTextStyles.body),
                 ],
               ),
@@ -290,7 +295,7 @@ class HeroBanner extends ConsumerWidget {
       _Banner.offDuty => (l.heroOffDutyHint, Tone.rest),
     };
     return Padding(
-      padding: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.only(top: AppSpacing.s16),
       child: StatusBanner(text, tone: tone),
     );
   }
@@ -325,7 +330,7 @@ class CurrentModeRow extends ConsumerWidget {
       return Align(
         alignment: AlignmentDirectional.centerStart,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s4),
           child: Text(
             l.modeNone,
             style: AppTextStyles.body.copyWith(color: colors.textSecondary),
@@ -336,7 +341,12 @@ class CurrentModeRow extends ConsumerWidget {
     final duration = Duration(minutes: state.duration);
     final name = l.modeName(mode);
     final row = Padding(
-      padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.s4,
+        AppSpacing.s4,
+        AppSpacing.s4,
+        0,
+      ),
       child: Row(
         children: [
           DecoratedBox(
@@ -346,7 +356,7 @@ class CurrentModeRow extends ConsumerWidget {
             ),
             child: const SizedBox.square(dimension: 10),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.s12),
           Expanded(
             child: Text.rich(
               TextSpan(
@@ -370,13 +380,13 @@ class CurrentModeRow extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.s8),
           DurationText(
             formatHm(duration),
             spoken: '$name, ${spokenDuration(l, duration)}',
             style: AppTextStyles.modeTimer,
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.s4),
           Icon(Icons.chevron_right, size: 20, color: colors.textSecondary),
         ],
       ),

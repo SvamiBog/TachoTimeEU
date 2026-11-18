@@ -26,9 +26,7 @@ class ShiftRows extends StatelessWidget {
     final l = context.l10n;
     if (shifts.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.screenPadding + 4,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.textInset),
         child: Text(
           empty,
           style: AppTextStyles.body.copyWith(

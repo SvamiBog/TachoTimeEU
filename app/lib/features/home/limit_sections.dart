@@ -178,7 +178,7 @@ class WorkdayRow extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 for (final (i, limit) in [regular, extended].indexed) ...[
-                  if (i > 0) const SizedBox(width: 12),
+                  if (i > 0) const SizedBox(width: AppSpacing.s12),
                   Expanded(
                     child: _WorkdayLeft(
                       limit: limit,
@@ -228,7 +228,7 @@ class _WorkdayLeft extends StatelessWidget {
         Text(l.workdayLeftTo(limit.inHours), style: caption),
         const SizedBox(height: 2),
         Wrap(
-          spacing: 6,
+          spacing: AppSpacing.s6,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             DurationText(
@@ -614,9 +614,9 @@ class FerryRow extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.cardPadding,
-          12,
-          AppSpacing.cardPadding - 4,
-          12,
+          AppSpacing.s12,
+          AppSpacing.rowTrailing,
+          AppSpacing.s12,
         ),
         child: Row(
           children: [
@@ -635,7 +635,7 @@ class FerryRow extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.s12),
             Switch(
               value: s.on,
               onChanged: s.canToggle

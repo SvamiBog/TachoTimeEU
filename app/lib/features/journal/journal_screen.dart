@@ -88,9 +88,9 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
         if (empty)
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.screenPadding + 4,
-              8,
-              AppSpacing.screenPadding + 4,
+              AppSpacing.textInset,
+              AppSpacing.s8,
+              AppSpacing.textInset,
               0,
             ),
             child: Text(
@@ -104,7 +104,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(
               AppSpacing.screenPadding,
-              i == 0 ? 8 : 12,
+              i == 0 ? AppSpacing.betweenCardsMin : AppSpacing.s12,
               AppSpacing.screenPadding,
               0,
             ),
@@ -140,13 +140,13 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 64),
+      constraints: const BoxConstraints(minHeight: AppSize.header),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenPadding + 4,
-          8,
-          AppSpacing.screenPadding - 8,
-          8,
+          AppSpacing.textInset,
+          AppSpacing.s8,
+          AppSpacing.screenPadding - AppSpacing.s8,
+          AppSpacing.s8,
         ),
         child: Row(
           children: [
@@ -301,7 +301,7 @@ class _WeekHeader extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                   if (week.isCurrent)
                     StatusChip(l.journalCurrent, tone: Tone.warning)
                   else
@@ -312,16 +312,16 @@ class _WeekHeader extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.s10),
               LimitBar(
                 value: week.driving,
                 max: EuLimits.weeklyDriving,
                 color: weekOver ? colors.errorText : colors.drive,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.s10),
               Wrap(
                 alignment: WrapAlignment.spaceBetween,
-                spacing: 12,
+                spacing: AppSpacing.s12,
                 runSpacing: 2,
                 children: [
                   Text.rich(
@@ -382,7 +382,7 @@ class _CollapsedWeek extends StatelessWidget {
         child: InkWell(
           onTap: onToggle,
           child: CardRow(
-            vertical: 8,
+            vertical: AppSpacing.s8,
             child: Row(
               children: [
                 Expanded(
@@ -393,7 +393,7 @@ class _CollapsedWeek extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.s8),
                 Text.rich(
                   TextSpan(
                     style: AppTextStyles.caption.copyWith(
@@ -411,7 +411,7 @@ class _CollapsedWeek extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.s8),
                 Icon(
                   Icons.keyboard_arrow_down,
                   size: 20,
@@ -458,7 +458,7 @@ class _ShiftRow extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.cardPadding,
-            vertical: 14,
+            vertical: AppSpacing.s14,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -480,7 +480,7 @@ class _ShiftRow extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -488,7 +488,7 @@ class _ShiftRow extends StatelessWidget {
                     Wrap(
                       alignment: WrapAlignment.spaceBetween,
                       crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 8,
+                      spacing: AppSpacing.s8,
                       runSpacing: 2,
                       children: [
                         Text.rich(
@@ -516,7 +516,7 @@ class _ShiftRow extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.s8),
                     ShiftMetrics(s),
                   ],
                 ),
@@ -576,12 +576,12 @@ class _WeeklyRestRow extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.cardPadding,
-            vertical: 14,
+            vertical: AppSpacing.s14,
           ),
           child: Row(
             children: [
               ModeIcon(DriverMode.rest, size: 22, color: colors.rest),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -612,7 +612,7 @@ class _WeeklyRestRow extends ConsumerWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.s8),
               Text(
                 formatHm(rest.duration),
                 style: AppTextStyles.value.copyWith(color: colors.restText),

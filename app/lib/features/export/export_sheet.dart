@@ -96,12 +96,12 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
           header: true,
           child: Text(l.journalExport, style: AppTextStyles.header),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.s16),
         Text(l.exportPeriod.toUpperCase(), style: section),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.s10),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppSpacing.s8,
+          runSpacing: AppSpacing.s8,
           children: [
             for (final (p, label) in [
               (ReportPeriod.week, l.exportWeek),
@@ -117,7 +117,7 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
               ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.s12),
         if (_period == ReportPeriod.custom)
           Row(
             children: [
@@ -134,7 +134,7 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.s8),
               Expanded(
                 child: _RangeButton(
                   label: l.exportToDay(utcDay(lastDayOf(range))),
@@ -152,16 +152,16 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
           )
         else
           _RangeBox(range),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         Text(
           count > 0 ? l.exportCount(count) : l.exportEmpty,
           style: count > 0
               ? caption
               : caption.copyWith(color: colors.warningText),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.s20),
         Text(l.exportFormat.toUpperCase(), style: section),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.s10),
         SegmentedTabs<ReportFormat>(
           options: [
             (value: ReportFormat.pdf, label: l.exportPdf, detail: null),
@@ -170,26 +170,26 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
           value: _format,
           onChanged: (f) => setState(() => _format = f),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         Text(
           _format == ReportFormat.pdf ? l.exportPdfHint : l.exportCsvHint,
           style: caption,
         ),
         if (_format == ReportFormat.pdf) ...[
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.s8),
           _LanguageButton(
             language: language,
             onTap: () => unawaited(_pickLanguage(language)),
           ),
         ],
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         MergeSemantics(
           child: Row(
             children: [
               Expanded(
                 child: Text(l.exportNotes, style: AppTextStyles.rowTitle),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.s12),
               Switch(
                 value: _notes,
                 onChanged: (v) => setState(() => _notes = v),
@@ -197,7 +197,7 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.s16),
         PrimaryButton(
           label: l.exportCreate,
           icon: Icons.file_download_outlined,
@@ -297,7 +297,7 @@ class _RangeBox extends StatelessWidget {
               size: 18,
               color: colors.textSecondary,
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpacing.s10),
             Flexible(
               child: Text('$from — $to', style: AppTextStyles.valueSmall),
             ),
@@ -328,19 +328,19 @@ class _LanguageButton extends StatelessWidget {
         child: Row(
           children: [
             Icon(Icons.translate, size: 18, color: colors.textSecondary),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpacing.s10),
             Expanded(
               child: Text(
                 context.l10n.exportLanguage,
                 style: AppTextStyles.rowTitle,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.s8),
             Text(
               name,
               style: AppTextStyles.body.copyWith(color: colors.textSecondary),
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: AppSpacing.s4),
             Icon(Icons.chevron_right, color: colors.textSecondary),
           ],
         ),
@@ -359,7 +359,7 @@ class _RangeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => _Field(
     onTap: onTap,
-    horizontal: 12,
+    horizontal: AppSpacing.s12,
     child: Row(
       children: [
         Icon(
@@ -367,7 +367,7 @@ class _RangeButton extends StatelessWidget {
           size: 18,
           color: context.colors.textSecondary,
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.s8),
         Flexible(
           child: FittedBox(
             fit: BoxFit.scaleDown,
@@ -383,7 +383,11 @@ class _RangeButton extends StatelessWidget {
 /// A field of the sheet: a rounded surface at least 44 dp tall; with [onTap]
 /// it is pressed like a button.
 class _Field extends StatelessWidget {
-  const new({required this.child, this.onTap, this.horizontal = 14});
+  const new({
+    required this.child,
+    this.onTap,
+    this.horizontal = AppSpacing.s14,
+  });
 
   final VoidCallback? onTap;
 
@@ -398,7 +402,10 @@ class _Field extends StatelessWidget {
     final body = ConstrainedBox(
       constraints: const BoxConstraints(minHeight: AppSize.minTouch),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: horizontal, vertical: 10),
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontal,
+          vertical: AppSpacing.s10,
+        ),
         child: child,
       ),
     );

@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/confirm_sheet.dart';
@@ -79,7 +80,7 @@ class _TransferSheetState extends ConsumerState<TransferSheet> {
           header: true,
           child: Text(l.transferTitle, style: AppTextStyles.header),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         Text(
           l.transferText,
           style: AppTextStyles.body.copyWith(
@@ -87,13 +88,13 @@ class _TransferSheetState extends ConsumerState<TransferSheet> {
             height: 1.45,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.s20),
         PrimaryButton(
           label: l.transferSave,
           icon: Icons.ios_share,
           onPressed: _busy ? null : () => unawaited(_save()),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         SecondaryButton(
           label: l.transferLoad,
           onPressed: _busy ? null : () => unawaited(_load()),

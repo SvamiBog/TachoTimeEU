@@ -33,14 +33,14 @@ class ModeButtons extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.screenPadding,
-        12,
+        AppSpacing.s12,
         AppSpacing.screenPadding,
         0,
       ),
       child: Row(
         children: [
           for (final (i, mode) in _modes.indexed) ...[
-            if (i > 0) const SizedBox(width: 8),
+            if (i > 0) const SizedBox(width: AppSpacing.s8),
             Expanded(
               child: _ModeButton(
                 mode: mode,
@@ -112,12 +112,12 @@ class _ModeButton extends StatelessWidget {
             child: IconTheme(
               data: IconThemeData(color: foreground),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s4),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ModeIcon(mode),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.s6),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(

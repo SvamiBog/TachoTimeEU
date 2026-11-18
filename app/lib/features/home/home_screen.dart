@@ -48,7 +48,7 @@ class HomeScreen extends ConsumerWidget {
           _Load.loading => const Center(child: CircularProgressIndicator()),
           _Load.failed => const _LoadError(),
           _Load.ready => ListView(
-            padding: const EdgeInsets.only(bottom: 24),
+            padding: const EdgeInsets.only(bottom: AppSpacing.screenBottom),
             children: const [
               HomeHeader(),
               HeroCard(),
@@ -85,13 +85,13 @@ class HomeHeader extends ConsumerWidget {
     final date = s == null ? '' : formatWeekdayDate(s.day, context.localeTag);
     final shiftStart = s?.shiftStart;
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 64),
+      constraints: const BoxConstraints(minHeight: AppSize.header),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenPadding + 4,
-          8,
-          AppSpacing.screenPadding - 4,
-          8,
+          AppSpacing.textInset,
+          AppSpacing.s8,
+          AppSpacing.screenPadding - AppSpacing.s4,
+          AppSpacing.s8,
         ),
         child: Row(
           children: [
@@ -115,7 +115,7 @@ class HomeHeader extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.s8),
             const CountryChip(),
           ],
         ),

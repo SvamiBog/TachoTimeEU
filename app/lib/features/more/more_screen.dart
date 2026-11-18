@@ -40,10 +40,10 @@ class MoreScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.only(bottom: 24),
+          padding: const EdgeInsets.only(bottom: AppSpacing.screenBottom),
           children: [
             TabTitle(l.navMore),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.s12),
             CardGroup(
               children: [
                 NavRow(
@@ -124,9 +124,9 @@ class MoreScreen extends ConsumerWidget {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                AppSpacing.screenPadding + 4,
+                AppSpacing.textInset,
                 AppSpacing.beforeSectionMin,
-                AppSpacing.screenPadding + 4,
+                AppSpacing.textInset,
                 0,
               ),
               child: Text(

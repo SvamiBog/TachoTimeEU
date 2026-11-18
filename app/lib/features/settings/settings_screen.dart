@@ -51,10 +51,10 @@ class SettingsScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.only(bottom: 24),
+          padding: const EdgeInsets.only(bottom: AppSpacing.screenBottom),
           children: [
             TabTitle(l.navSettings),
-            SectionTitle(l.settingsGeneral, top: 12),
+            SectionTitle(l.settingsGeneral, top: AppSpacing.s12),
             const _GeneralCard(),
             SectionTitle(l.settingsRules, top: AppSpacing.beforeSectionMin),
             const _RulesCard(),
@@ -267,7 +267,7 @@ class _NotificationsCard extends ConsumerWidget {
                       color: context.colors.textSecondary,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.s8),
                   Semantics(
                     container: true,
                     label: l.notifyCardLeadGroup,
@@ -385,7 +385,7 @@ class _ClearDataRow extends ConsumerWidget {
           child: Row(
             children: [
               Icon(Icons.delete_outline, size: 22, color: color),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: Text(
                   context.l10n.settingsClear,

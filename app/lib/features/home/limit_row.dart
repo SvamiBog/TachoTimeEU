@@ -70,14 +70,14 @@ class LimitRow extends StatelessWidget {
               children: [
                 Expanded(child: Text(title, style: AppTextStyles.rowTitle)),
                 if (chip case final chip?) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                   // Чип не отнимает у названия больше половины строки
                   ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: box.maxWidth * 0.45),
                     child: chip,
                   ),
                 ],
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.s8),
                 switch (value) {
                   DurationValue(:final text, :final spoken, :final color) =>
                     DurationText(
@@ -111,18 +111,18 @@ class LimitRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.s10),
           bar,
           if (footer case final footer?) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.s10),
             footer,
           ] else if (left != null || right != null) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.s10),
             // Обе подписи в одну строку, если помещаются, иначе правая —
             // строкой ниже.
             Wrap(
               alignment: WrapAlignment.spaceBetween,
-              spacing: 12,
+              spacing: AppSpacing.s12,
               runSpacing: 2,
               children: [
                 Text(left ?? '', style: caption),

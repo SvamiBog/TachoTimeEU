@@ -109,14 +109,14 @@ class _LanguageList extends StatelessWidget {
   Widget build(BuildContext context) => SheetBody(
     label: title,
     // Карточка со своими полями — по бокам шторки полей нет
-    padding: const EdgeInsets.only(bottom: 24),
+    padding: const EdgeInsets.only(bottom: AppSpacing.screenBottom),
     children: [
       Padding(
         padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenPadding + 4,
+          AppSpacing.textInset,
           0,
-          AppSpacing.screenPadding + 4,
-          16,
+          AppSpacing.textInset,
+          AppSpacing.s16,
         ),
         child: Text(title, style: AppTextStyles.header),
       ),

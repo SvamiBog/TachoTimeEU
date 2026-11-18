@@ -72,7 +72,7 @@ class _DrivingBansScreenState extends ConsumerState<DrivingBansScreen> {
       title: l.bansTitle,
       subtitle: l.bansForTrucks,
       children: [
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         _MapCard(statuses: statuses, current: current),
         SectionTitle(l.bansCountries),
         _CountryList(
@@ -126,17 +126,17 @@ class _MapCard extends StatelessWidget {
                 current: current,
                 onCountry: (code) => openCountryBans(context, code),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.s12),
               Wrap(
-                spacing: 14,
-                runSpacing: 8,
+                spacing: AppSpacing.s14,
+                runSpacing: AppSpacing.s8,
                 children: [
                   for (final (level, label) in legend)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         _Dot(banColor(colors, level)),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: AppSpacing.s6),
                         Flexible(
                           child: Text(
                             label,
@@ -232,7 +232,7 @@ class _CountryRow extends StatelessWidget {
           child: Row(
             children: [
               _Dot(banColor(colors, status.level), size: 12),
-              const SizedBox(width: 14),
+              const SizedBox(width: AppSpacing.s14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

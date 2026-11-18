@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
+import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/sheet_body.dart';
@@ -26,12 +27,12 @@ Future<bool?> showConfirmSheet(
       label: title,
       children: [
         Text(title, style: AppTextStyles.header),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         Text(
           text,
           style: AppTextStyles.body.copyWith(color: colors.textSecondary),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.s20),
         Row(
           children: [
             Expanded(
@@ -40,7 +41,7 @@ Future<bool?> showConfirmSheet(
                 onPressed: () => Navigator.of(context).pop(false),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.s8),
             Expanded(
               child: danger
                   ? DangerButton(
@@ -76,15 +77,15 @@ Future<void> showNoticeSheet(
       label: title,
       children: [
         Text(title, style: AppTextStyles.header),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.s8),
         Text(
           text,
           style: AppTextStyles.body.copyWith(color: colors.textSecondary),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.s12),
         for (final item in items)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.s6),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -96,12 +97,12 @@ Future<void> showNoticeSheet(
                     color: colors.errorText,
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.s10),
                 Expanded(child: Text(item, style: AppTextStyles.body)),
               ],
             ),
           ),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.s20),
         PrimaryButton(
           label: button,
           onPressed: () => Navigator.of(context).pop(),

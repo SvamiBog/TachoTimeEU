@@ -83,7 +83,7 @@ class ViolationsScreen extends ConsumerWidget {
         ],
         AsyncError() => [
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.screenPadding + 4),
+            padding: const EdgeInsets.all(AppSpacing.textInset),
             child: Text(
               l.journalLoadError,
               style: AppTextStyles.body.copyWith(color: colors.errorText),
@@ -151,7 +151,7 @@ class _ValueRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Text(title, style: AppTextStyles.rowTitle)),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.s12),
           Text(
             value,
             style: AppTextStyles.valueSmall.copyWith(
@@ -172,9 +172,9 @@ class _Empty extends StatelessWidget {
     final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding + 4,
+        AppSpacing.textInset,
         AppSpacing.beforeSectionMin,
-        AppSpacing.screenPadding + 4,
+        AppSpacing.textInset,
         0,
       ),
       child: Column(
@@ -183,13 +183,13 @@ class _Empty extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.check_circle_outline, size: 22, color: colors.rest),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.s10),
               Expanded(
                 child: Text(l.violationsEmpty, style: AppTextStyles.rowTitle),
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpacing.s6),
           Text(
             l.violationsEmptyText,
             style: AppTextStyles.body.copyWith(color: colors.textSecondary),
@@ -243,16 +243,16 @@ class _ViolationCard extends StatelessWidget {
                           color: colors.errorText,
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: AppSpacing.s10),
                       Expanded(
                         child: Text(text.title, style: AppTextStyles.rowTitle),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.s6),
                   Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
+                    spacing: AppSpacing.s8,
+                    runSpacing: AppSpacing.s4,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text(
@@ -266,19 +266,19 @@ class _ViolationCard extends StatelessWidget {
                     ],
                   ),
                   if (detail != null) ...[
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.s6),
                     Text(detail, style: AppTextStyles.body),
                   ],
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.s4),
                   Text(text.article, style: secondary),
                   Text(l.violationsDaysLeft(entry.daysLeft), style: secondary),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.s12),
                   Divider(height: 1, thickness: 1, color: colors.surface2),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.s12),
                   if (note == null)
                     Wrap(
-                      spacing: 12,
-                      runSpacing: 8,
+                      spacing: AppSpacing.s12,
+                      runSpacing: AppSpacing.s8,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         StatusChip(l.violationsNoNote, tone: Tone.warning),

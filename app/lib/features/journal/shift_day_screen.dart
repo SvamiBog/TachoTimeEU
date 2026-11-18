@@ -42,7 +42,7 @@ class ShiftDayScreen extends ConsumerWidget {
             const Center(child: CircularProgressIndicator())
           else
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.screenPadding + 4),
+              padding: const EdgeInsets.all(AppSpacing.textInset),
               child: Text(
                 l.dayNotFound,
                 style: AppTextStyles.body.copyWith(
@@ -96,7 +96,7 @@ class _Summary extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.screenPadding,
-        8,
+        AppSpacing.betweenCardsMin,
         AppSpacing.screenPadding,
         0,
       ),
@@ -113,8 +113,8 @@ class _Summary extends StatelessWidget {
               Wrap(
                 alignment: WrapAlignment.spaceBetween,
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8,
-                runSpacing: 4,
+                spacing: AppSpacing.s8,
+                runSpacing: AppSpacing.s4,
                 children: [
                   Text.rich(
                     TextSpan(
@@ -141,7 +141,7 @@ class _Summary extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.s12),
               ExcludeSemantics(child: ShiftMetrics(shift)),
             ],
           ),
@@ -246,8 +246,11 @@ class _ValueRow extends StatelessWidget {
                 ],
               ),
             ),
-            if (chip case final chip?) ...[const SizedBox(width: 8), chip],
-            const SizedBox(width: 8),
+            if (chip case final chip?) ...[
+              const SizedBox(width: AppSpacing.s8),
+              chip,
+            ],
+            const SizedBox(width: AppSpacing.s8),
             if (value == null)
               const Text('—', style: AppTextStyles.value)
             else

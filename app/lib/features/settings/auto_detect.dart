@@ -117,7 +117,7 @@ class SystemSettingsNotice extends StatelessWidget {
         children: [
           StatusBanner(text, tone: Tone.warning),
           if (onOpen != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.s8),
             SecondaryButton(
               label: context.l10n.openSystemSettings,
               onPressed: onOpen,
@@ -281,7 +281,7 @@ class DoneMark extends StatelessWidget {
       child: Row(
         children: [
           Icon(Icons.check_circle, size: 22, color: colors.rest),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.s10),
           Expanded(child: Text(text, style: AppTextStyles.rowTitle)),
         ],
       ),

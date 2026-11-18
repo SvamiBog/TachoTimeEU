@@ -120,8 +120,8 @@ class _Summary extends StatelessWidget {
         Wrap(
           alignment: WrapAlignment.spaceBetween,
           crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 12,
-          runSpacing: 4,
+          spacing: AppSpacing.s12,
+          runSpacing: AppSpacing.s4,
           children: [
             Text(
               l.breakHero(formatHm(EuLimits.continuousDriving)),
@@ -136,7 +136,7 @@ class _Summary extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.s14),
         Row(
           children: [
             Expanded(
@@ -147,7 +147,7 @@ class _Summary extends StatelessWidget {
                 done: firstDone,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.s8),
             Expanded(
               flex: 2,
               child: _Part(
@@ -161,7 +161,7 @@ class _Summary extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.s14),
         Text(
           caption,
           style: AppTextStyles.caption.copyWith(color: colors.textSecondary),
@@ -183,7 +183,10 @@ class _Part extends StatelessWidget {
     final colors = context.colors;
     final radius = BorderRadius.circular(AppRadius.chip);
     final label = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s8,
+        vertical: AppSpacing.s12,
+      ),
       child: Center(
         child: Text(
           text,
@@ -301,13 +304,13 @@ class _Correction extends ConsumerWidget {
                             style: AppTextStyles.rowTitle,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.s8),
                         DurationText(
                           formatHm(info.duration),
                           spoken: spokenDuration(l, info.duration),
                           style: AppTextStyles.value,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.s4),
                         Icon(Icons.chevron_right, color: colors.textSecondary),
                       ],
                     ),
@@ -347,13 +350,13 @@ class _SplitRule extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.info_outline, size: 20, color: colors.textSecondary),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(l.breakSplitTitle, style: AppTextStyles.rowTitle),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.s4),
                     Text(
                       l.breakSplitText,
                       style: AppTextStyles.body.copyWith(
