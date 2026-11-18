@@ -1920,6 +1920,10 @@ class AppLocalizationsUk extends AppLocalizations {
       'Немає доступу до геолокації — автовизначення не працює. Дозвольте його в налаштуваннях телефона.';
 
   @override
+  String get autoApproximate =>
+      'Геолокація лише приблизна — за нею керування не визначити. Увімкніть точну в налаштуваннях телефона.';
+
+  @override
   String get autoEnable => 'Увімкнути автовизначення';
 
   @override

@@ -473,6 +473,7 @@
   "autoBlockedDenied": "Senza accesso alla posizione la guida non può essere rilevata. Serve solo la velocità — le coordinate non vengono salvate.",
   "autoBlockedForever": "L’accesso alla posizione è bloccato. Consentilo nelle impostazioni del telefono: Posizione → «Mentre usi l’app».",
   "autoNoAccess": "Nessun accesso alla posizione — il rilevamento non funziona. Consentilo nelle impostazioni del telefono.",
+  "autoApproximate": "La posizione è solo approssimativa — la guida non può essere rilevata. Attiva la posizione esatta nelle impostazioni del telefono.",
   "autoEnable": "Attiva il rilevamento della guida",
   "autoEnabled": "Rilevamento della guida attivo",
   "settingsData": "Dati",

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:drift/native.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/background/auto_tracker.dart';
@@ -168,26 +169,27 @@ void main() {
   });
 
   group('BG-03: ошибки, остановка, экипаж, паром', () {
-    test('ошибка GPS уходит в onError, трекер работает дальше', () async {
-      final errors = <Object>[];
-      await tracker.stop();
-      tracker = AutoTracker(
-        journal: journal,
-        settings: settings,
-        source: source,
-        clock: () => now,
-        onError: (e, _) => errors.add(e),
-      );
-      await journalWith([DriverMode.otherWork]);
-      await tracker.start();
+    test(
+      'ошибка GPS уходит в onError, поток бросаем (дальше — BG-11)',
+      () async {
+        final errors = <Object>[];
+        await tracker.stop();
+        tracker = AutoTracker(
+          journal: journal,
+          settings: settings,
+          source: source,
+          clock: () => now,
+          onError: (e, _) => errors.add(e),
+        );
+        await journalWith([DriverMode.otherWork]);
+        await tracker.start();
 
-      gps.addError(StateError('GPS'));
-      await pumpEventQueue();
-      expect(errors, [isA<StateError>()]);
-
-      await drive(repeat(5, 50));
-      expect((await journal.periods()).last.mode, DriverMode.driving);
-    });
+        final dead = gps..addError(StateError('GPS'));
+        await pumpEventQueue();
+        expect(errors, [isA<StateError>()]);
+        expect(dead.hasListener, isFalse);
+      },
+    );
 
     test('stop() дожидается событий и закрывает поток предложений', () async {
       await journal.switchMode(DriverMode.rest);
@@ -298,4 +300,193 @@ void main() {
       expect((await journal.periods()).last.mode, DriverMode.otherWork);
     });
   });
+
+  group('BG-11: поток GPS восстанавливается сам', () {
+    /// Трекер в поддельном времени: пауза перед новой подпиской и сторож
+    /// тишины идут по `async.elapse`. Поток — как у geolocator_android:
+    /// после ошибки он открыт, но отметок больше не даёт.
+    void fake(
+      void Function(
+        FakeAsync async,
+        _Gps gps,
+        ActivityRepository journal,
+        List<Object> errors,
+        void Function(List<double> speeds) feed,
+      )
+      body,
+    ) {
+      fakeAsync((async) {
+        final db = AppDatabase(NativeDatabase.memory());
+        final journal = ActivityRepository(
+          db,
+          clock: () => t0.add(async.elapsed),
+        );
+        final settings = SettingsRepository(db);
+        final gps = _Gps();
+        final errors = <Object>[];
+        final tracker = AutoTracker(
+          journal: journal,
+          settings: settings,
+          source: gps.call,
+          clock: () => t0.add(async.elapsed),
+          onError: (e, _) => errors.add(e),
+        );
+        unawaited(
+          settings.setAutoDetect(const AutoDetectSettings(enabled: true)),
+        );
+        unawaited(journal.switchMode(DriverMode.otherWork));
+        async.flushMicrotasks();
+        unawaited(tracker.start());
+        async.flushMicrotasks();
+
+        /// Отметки каждые 10 с в текущий поток.
+        void feed(List<double> speeds) {
+          for (final v in speeds) {
+            gps.current.add(
+              MotionSample(time: t0.add(async.elapsed), speedKmh: v),
+            );
+            async
+              ..flushMicrotasks()
+              ..elapse(const Duration(seconds: 10));
+          }
+        }
+
+        body(async, gps, journal, errors, feed);
+
+        unawaited(tracker.stop());
+        // Нулевой таймер — Drift при отписке от журнала
+        async
+          ..flushMicrotasks()
+          ..elapse(Duration.zero);
+        expect(async.pendingTimers, isEmpty, reason: 'stop() снял таймеры');
+        unawaited(db.close());
+        async.flushMicrotasks();
+      }, initialTime: t0);
+    }
+
+    DriverMode? lastMode(FakeAsync async, ActivityRepository journal) {
+      DriverMode? mode;
+      unawaited(journal.periods().then((p) => mode = p.last.mode));
+      async.flushMicrotasks();
+      return mode;
+    }
+
+    test('ошибка — в отчёт, поток бросаем, через паузу подписка заново; '
+        'поездка на новом потоке — вождение', () {
+      fake((async, gps, journal, errors, feed) {
+        gps.current.addError(StateError('GPS'));
+        async.flushMicrotasks();
+        expect(errors, [isA<StateError>()]);
+        expect(gps.listening, 0, reason: 'мёртвый поток отпущен');
+
+        async.elapse(AutoTracker.gpsRetry - const Duration(seconds: 1));
+        expect(gps.requests, [false]);
+        async.elapse(const Duration(seconds: 1));
+        expect(gps.requests, [false, false]);
+        expect(gps.listening, 1);
+
+        feed(repeat(5, 50));
+        expect(lastMode(async, journal), DriverMode.driving);
+      });
+    });
+
+    test('поток закрылся — через паузу подписка заново', () {
+      fake((async, gps, journal, errors, feed) {
+        unawaited(gps.current.close());
+        async
+          ..flushMicrotasks()
+          ..elapse(AutoTracker.gpsRetry);
+        expect(gps.requests, [false, false]);
+        expect(errors, isEmpty);
+      });
+    });
+
+    test('ошибки подряд — в отчёте одна, пока не придёт отметка', () {
+      fake((async, gps, journal, errors, feed) {
+        for (var i = 0; i < 3; i++) {
+          gps.current.addError(StateError('GPS $i'));
+          async
+            ..flushMicrotasks()
+            ..elapse(AutoTracker.gpsRetry);
+        }
+        expect(gps.requests, hasLength(4));
+        expect(errors, hasLength(1));
+
+        feed([0]);
+        gps.current.addError(StateError('снова'));
+        async.flushMicrotasks();
+        expect(errors, hasLength(2));
+      });
+    });
+
+    test('после подписки ни одной отметки — подписка заново', () {
+      fake((async, gps, journal, errors, feed) {
+        async.elapse(AutoTracker.gpsSilence - const Duration(seconds: 1));
+        expect(gps.requests, [false]);
+        async.elapse(const Duration(seconds: 1));
+        expect(gps.requests, [false, false]);
+        expect(gps.listening, 1, reason: 'молчащий поток отпущен');
+
+        feed(repeat(5, 50));
+        expect(lastMode(async, journal), DriverMode.driving);
+      });
+    });
+
+    test('в пути отметки пропали — подписка заново на частые', () {
+      fake((async, gps, journal, errors, feed) {
+        feed(repeat(5, 50));
+        final before = gps.requests.length;
+        async.elapse(AutoTracker.gpsSilence);
+        expect(gps.requests.skip(before), [true]);
+
+        // Остановка ловится и на новом потоке
+        feed(repeat(20, 0));
+        expect(lastMode(async, journal), DriverMode.otherWork);
+      });
+    });
+
+    test('на стоянке после первой отметки тишина — норма, поток тот же', () {
+      fake((async, gps, journal, errors, feed) {
+        feed([0]);
+        async.elapse(AutoTracker.gpsSilence * 5);
+        expect(gps.requests, [false]);
+      });
+    });
+
+    test('водитель сам включил вождение во время паузы — подписка сразу, '
+        'без второй после паузы; остановка — другая работа', () {
+      fake((async, gps, journal, errors, feed) {
+        gps.current.addError(StateError('GPS'));
+        async.flushMicrotasks();
+        unawaited(journal.switchMode(DriverMode.driving));
+        async.flushMicrotasks();
+        expect(gps.requests, [false, true]);
+
+        async.elapse(AutoTracker.gpsRetry);
+        expect(gps.requests, [false, true]);
+
+        feed(repeat(20, 0));
+        expect(lastMode(async, journal), DriverMode.otherWork);
+      });
+    });
+  });
+}
+
+/// Отметки GPS, как их отдаёт geolocator_android: каждая подписка — новый
+/// поток, после ошибки он открыт, но молчит.
+class _Gps {
+  final requests = <bool>[];
+  final _streams = <StreamController<MotionSample>>[];
+
+  StreamController<MotionSample> get current => _streams.last;
+
+  /// Сколько потоков сейчас слушает трекер.
+  int get listening => _streams.where((s) => s.hasListener).length;
+
+  Stream<MotionSample> call({required bool fast}) {
+    requests.add(fast);
+    final stream = StreamController<MotionSample>();
+    _streams.add(stream);
+    return stream.stream;
+  }
 }

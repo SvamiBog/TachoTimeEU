@@ -473,6 +473,7 @@
   "autoBlockedDenied": "Driving cannot be detected without location access. Only the speed is needed — coordinates are not saved.",
   "autoBlockedForever": "Location access is blocked. Allow it in the phone settings: Location → “While using the app”.",
   "autoNoAccess": "No location access — detection does not work. Allow it in the phone settings.",
+  "autoApproximate": "Location is only approximate — driving cannot be detected with it. Turn on precise location in the phone settings.",
   "autoEnable": "Turn on driving detection",
   "autoEnabled": "Driving detection is on",
   "settingsData": "Data",

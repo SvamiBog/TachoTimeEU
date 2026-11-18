@@ -1918,6 +1918,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Kein Standortzugriff — die Erkennung funktioniert nicht. Erlauben Sie ihn in den Telefoneinstellungen.';
 
   @override
+  String get autoApproximate =>
+      'Der Standort ist nur ungefähr — damit lässt sich Lenken nicht erkennen. Schalten Sie in den Telefoneinstellungen den genauen Standort ein.';
+
+  @override
   String get autoEnable => 'Lenkerkennung einschalten';
 
   @override

@@ -473,6 +473,7 @@
   "autoBlockedDenied": "Ohne Standortzugriff lässt sich Lenken nicht erkennen. Gebraucht wird nur die Geschwindigkeit — Koordinaten werden nicht gespeichert.",
   "autoBlockedForever": "Der Standortzugriff ist blockiert. Erlauben Sie ihn in den Telefoneinstellungen: Standort → „Während der Nutzung der App“.",
   "autoNoAccess": "Kein Standortzugriff — die Erkennung funktioniert nicht. Erlauben Sie ihn in den Telefoneinstellungen.",
+  "autoApproximate": "Der Standort ist nur ungefähr — damit lässt sich Lenken nicht erkennen. Schalten Sie in den Telefoneinstellungen den genauen Standort ein.",
   "autoEnable": "Lenkerkennung einschalten",
   "autoEnabled": "Lenkerkennung eingeschaltet",
   "settingsData": "Daten",

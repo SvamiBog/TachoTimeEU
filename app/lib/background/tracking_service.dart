@@ -21,12 +21,22 @@ enum TrackingBlocker {
 
   /// Доступ запрещён навсегда — только через настройки системы.
   locationDeniedForever,
+
+  /// Разрешена только приблизительная геолокация (Android 12+): точность —
+  /// километры, скорости нет, детектор отбрасывает все отметки.
+  approximateLocation,
 }
 
 /// OS permissions and restrictions automatic detection depends on, for the
-/// hints in onboarding and settings. `battery` means the app is excluded from
-/// battery optimisation (iOS has no such list — always true).
-typedef TrackingHealth = ({bool location, bool notifications, bool battery});
+/// hints in onboarding and settings. `preciseLocation` is false without
+/// location access too; `battery` means the app is excluded from battery
+/// optimisation (iOS has no such list — always true).
+typedef TrackingHealth = ({
+  bool location,
+  bool preciseLocation,
+  bool notifications,
+  bool battery,
+});
 
 /// Starts and stops automatic driving detection from the app.
 ///
@@ -106,11 +116,15 @@ class TrackingService {
 
   /// Состояние разрешений сейчас. Ничего не запрашивает — вызывать можно
   /// при каждом возврате в приложение из настроек системы.
-  Future<TrackingHealth> health() async => (
-    location: await _hasLocationAccess(),
-    notifications: await notificationsAllowed,
-    battery: await isIgnoringBatteryOptimizations,
-  );
+  Future<TrackingHealth> health() async {
+    final location = await _hasLocationAccess();
+    return (
+      location: location,
+      preciseLocation: location && await _platform.hasPreciseLocation(),
+      notifications: await notificationsAllowed,
+      battery: await isIgnoringBatteryOptimizations,
+    );
+  }
 
   /// Android: есть экономия батареи и экраны автозапуска оболочек.
   bool get hasBackgroundRestrictions => _platform.isAndroid;
@@ -166,7 +180,9 @@ class TrackingService {
     if (!await _platform.isLocationServiceEnabled()) {
       return TrackingBlocker.locationServiceDisabled;
     }
-    return _blockerOf(await _platform.checkPermission());
+    final blocker = _blockerOf(await _platform.checkPermission());
+    if (blocker != null || await _platform.hasPreciseLocation()) return blocker;
+    return TrackingBlocker.approximateLocation;
   }
 
   Future<TrackingBlocker?> _requestLocation() async {
@@ -177,7 +193,14 @@ class TrackingService {
     if (permission == LocationPermission.denied) {
       permission = await _platform.requestPermission();
     }
-    return _blockerOf(permission);
+    final blocker = _blockerOf(permission);
+    if (blocker != null || await _platform.hasPreciseLocation()) return blocker;
+    // Android 12+: повторный запрос предлагает сменить приблизительную
+    // геолокацию на точную.
+    await _platform.requestPermission();
+    return await _platform.hasPreciseLocation()
+        ? null
+        : TrackingBlocker.approximateLocation;
   }
 
   static TrackingBlocker? _blockerOf(LocationPermission permission) =>

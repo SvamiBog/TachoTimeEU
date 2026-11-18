@@ -473,6 +473,7 @@
   "autoBlockedDenied": "Bez přístupu k poloze nelze řízení rozpoznat. Stačí jen rychlost — souřadnice se neukládají.",
   "autoBlockedForever": "Přístup k poloze je zablokován. Povolte ho v nastavení telefonu: Poloha → „Při používání aplikace“.",
   "autoNoAccess": "Bez přístupu k poloze — rozpoznání nefunguje. Povolte ho v nastavení telefonu.",
+  "autoApproximate": "Poloha je jen přibližná — řízení podle ní nelze rozpoznat. Zapněte přesnou polohu v nastavení telefonu.",
   "autoEnable": "Zapnout rozpoznání řízení",
   "autoEnabled": "Rozpoznání řízení zapnuto",
   "settingsData": "Data",

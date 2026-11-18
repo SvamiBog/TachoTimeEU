@@ -473,6 +473,7 @@
   "autoBlockedDenied": "Geolokatsiyaga ruxsatsiz haydashni aniqlab boʻlmaydi. Faqat tezlik kerak — koordinatalar saqlanmaydi.",
   "autoBlockedForever": "Geolokatsiyaga ruxsat taqiqlangan. Uni telefon sozlamalarida bering: Geolokatsiya → «Ilovadan foydalanganda».",
   "autoNoAccess": "Geolokatsiyaga ruxsat yoʻq — avtoaniqlash ishlamaydi. Uni telefon sozlamalarida bering.",
+  "autoApproximate": "Geolokatsiya faqat taxminiy — u bilan haydashni aniqlab boʻlmaydi. Telefon sozlamalarida aniq joylashuvni yoqing.",
   "autoEnable": "Avtoaniqlashni yoqish",
   "autoEnabled": "Avtoaniqlash yoqilgan",
   "settingsData": "Maʼlumotlar",

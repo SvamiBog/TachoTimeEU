@@ -1907,6 +1907,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Nessun accesso alla posizione — il rilevamento non funziona. Consentilo nelle impostazioni del telefono.';
 
   @override
+  String get autoApproximate =>
+      'La posizione è solo approssimativa — la guida non può essere rilevata. Attiva la posizione esatta nelle impostazioni del telefono.';
+
+  @override
   String get autoEnable => 'Attiva il rilevamento della guida';
 
   @override

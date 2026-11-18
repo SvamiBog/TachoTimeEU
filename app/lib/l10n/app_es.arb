@@ -473,6 +473,7 @@
   "autoBlockedDenied": "Sin acceso a la ubicación no se puede detectar la conducción. Solo se necesita la velocidad: las coordenadas no se guardan.",
   "autoBlockedForever": "El acceso a la ubicación está bloqueado. Permítalo en los ajustes del teléfono: Ubicación → «Mientras se usa la aplicación».",
   "autoNoAccess": "Sin acceso a la ubicación: la detección no funciona. Permítalo en los ajustes del teléfono.",
+  "autoApproximate": "La ubicación es solo aproximada: así no se puede detectar la conducción. Active la ubicación precisa en los ajustes del teléfono.",
   "autoEnable": "Activar la detección de la conducción",
   "autoEnabled": "Detección de la conducción activada",
   "settingsData": "Datos",

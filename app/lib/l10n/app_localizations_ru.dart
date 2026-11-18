@@ -1918,6 +1918,10 @@ class AppLocalizationsRu extends AppLocalizations {
       'Нет доступа к геолокации — автоопределение не работает. Разрешите его в настройках телефона.';
 
   @override
+  String get autoApproximate =>
+      'Геолокация только приблизительная — по ней вождение не определить. Включите точную в настройках телефона.';
+
+  @override
   String get autoEnable => 'Включить автоопределение';
 
   @override

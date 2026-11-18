@@ -1912,6 +1912,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Sin acceso a la ubicación: la detección no funciona. Permítalo en los ajustes del teléfono.';
 
   @override
+  String get autoApproximate =>
+      'La ubicación es solo aproximada: así no se puede detectar la conducción. Active la ubicación precisa en los ajustes del teléfono.';
+
+  @override
   String get autoEnable => 'Activar la detección de la conducción';
 
   @override

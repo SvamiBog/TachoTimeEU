@@ -473,6 +473,7 @@
   "autoBlockedDenied": "Fără acces la localizare conducerea nu poate fi detectată. E nevoie doar de viteză — coordonatele nu se salvează.",
   "autoBlockedForever": "Accesul la localizare este blocat. Permiteți-l în setările telefonului: Localizare → „În timp ce folosiți aplicația”.",
   "autoNoAccess": "Fără acces la localizare — detectarea nu funcționează. Permiteți-l în setările telefonului.",
+  "autoApproximate": "Localizarea este doar aproximativă — după ea conducerea nu poate fi detectată. Activați localizarea exactă în setările telefonului.",
   "autoEnable": "Activează detectarea",
   "autoEnabled": "Detectarea este activă",
   "settingsData": "Date",

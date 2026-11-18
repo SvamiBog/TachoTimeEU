@@ -1926,6 +1926,10 @@ class AppLocalizationsPl extends AppLocalizations {
       'Brak dostępu do lokalizacji — wykrywanie nie działa. Zezwól na niego w ustawieniach telefonu.';
 
   @override
+  String get autoApproximate =>
+      'Lokalizacja jest tylko przybliżona — po niej nie da się wykryć jazdy. Włącz dokładną lokalizację w ustawieniach telefonu.';
+
+  @override
   String get autoEnable => 'Włącz wykrywanie jazdy';
 
   @override

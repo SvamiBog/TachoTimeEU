@@ -105,6 +105,7 @@ Map<String, CountryBans> downloadedBans(
 /// Разрешения и экономия батареи для экранов без БД: всё разрешено.
 const TrackingHealth allowed = (
   location: true,
+  preciseLocation: true,
   notifications: true,
   battery: true,
 );

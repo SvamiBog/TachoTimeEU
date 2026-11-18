@@ -473,6 +473,7 @@
   "autoBlockedDenied": "Bez prístupu k polohe sa jazda nedá rozpoznať. Stačí len rýchlosť — súradnice sa neukladajú.",
   "autoBlockedForever": "Prístup k polohe je zablokovaný. Povoľte ho v nastaveniach telefónu: Poloha → „Počas používania aplikácie“.",
   "autoNoAccess": "Bez prístupu k polohe — rozpoznanie nefunguje. Povoľte ho v nastaveniach telefónu.",
+  "autoApproximate": "Poloha je len približná — jazda sa podľa nej nedá rozpoznať. Zapnite presnú polohu v nastaveniach telefónu.",
   "autoEnable": "Zapnúť rozpoznanie jazdy",
   "autoEnabled": "Rozpoznanie jazdy zapnuté",
   "settingsData": "Údaje",

@@ -98,8 +98,8 @@ void main() {
       expect(
         text,
         contains(
-          'Permissions: location on, notifications on, battery optimisation '
-          'ignored on, exact alarms off, service running',
+          'Permissions: location on, precise location on, notifications on, '
+          'battery optimisation ignored on, exact alarms off, service running',
         ),
       );
       expect(text, contains('Status: driving, driving since 2026-09-23 08:00'));

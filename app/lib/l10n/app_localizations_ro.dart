@@ -1917,6 +1917,10 @@ class AppLocalizationsRo extends AppLocalizations {
       'Fără acces la localizare — detectarea nu funcționează. Permiteți-l în setările telefonului.';
 
   @override
+  String get autoApproximate =>
+      'Localizarea este doar aproximativă — după ea conducerea nu poate fi detectată. Activați localizarea exactă în setările telefonului.';
+
+  @override
   String get autoEnable => 'Activează detectarea';
 
   @override

@@ -2967,6 +2967,12 @@ abstract class AppLocalizations {
   /// **'Нет доступа к геолокации — автоопределение не работает. Разрешите его в настройках телефона.'**
   String get autoNoAccess;
 
+  /// No description provided for @autoApproximate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геолокация только приблизительная — по ней вождение не определить. Включите точную в настройках телефона.'**
+  String get autoApproximate;
+
   /// No description provided for @autoEnable.
   ///
   /// In ru, this message translates to:

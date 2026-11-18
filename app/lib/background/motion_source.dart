@@ -4,6 +4,7 @@ library;
 
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:geolocator/geolocator.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 
@@ -20,22 +21,7 @@ import 'package:tacho_engine/tacho_engine.dart';
 /// остался бы на редких отметках с фильтром 50 м, и на стоянке их нет
 /// совсем — остановка не определилась бы никогда (INT-03).
 Stream<MotionSample> gpsSamples({required bool fast}) {
-  final distanceFilter = fast ? 0 : 50;
-  // iOS не приостанавливает обновления на стоянке (по умолчанию в
-  // geolocator): иначе приложение не проснётся, когда машина поедет.
-  final settings = Platform.isAndroid
-      ? AndroidSettings(
-          distanceFilter: distanceFilter,
-          intervalDuration: fast
-              ? const Duration(seconds: 5)
-              : const Duration(seconds: 30),
-        )
-      : AppleSettings(
-          accuracy: LocationAccuracy.bestForNavigation,
-          activityType: ActivityType.automotiveNavigation,
-          distanceFilter: distanceFilter,
-          showBackgroundLocationIndicator: true,
-        );
+  final settings = gpsSettings(fast: fast, android: Platform.isAndroid);
   Position? previous;
   return Stream<void>.fromFuture(Future<void>.delayed(Duration.zero))
       .asyncExpand(
@@ -46,6 +32,40 @@ Stream<MotionSample> gpsSamples({required bool fast}) {
         previous = p;
         return sample;
       });
+}
+
+/// Настройки потока отметок [gpsSamples].
+///
+/// Android — системный `LocationManager` (`forceLocationManager`), а не
+/// Google Fused. Fused перед стартом проверяет настройки геолокации Google
+/// (например, «Точность определения местоположения») и, если они не те,
+/// просит экран показать системный запрос. У сервиса автоопределения экрана
+/// нет: geolocator_android 5.0.3 отвечает ошибкой «геолокация выключена», и
+/// поток больше не даёт отметок — на телефоне вождение не определялось ни
+/// в начале, ни в конце поездки, хотя на эмуляторе (настройки Google
+/// включены) всё работало. `LocationManager` этой проверки не делает: на
+/// Android 12+ берёт системный fused-провайдер, раньше — GPS, скорость
+/// в отметках есть в обоих случаях.
+@visibleForTesting
+LocationSettings gpsSettings({required bool fast, required bool android}) {
+  final distanceFilter = fast ? 0 : 50;
+  if (android) {
+    return AndroidSettings(
+      distanceFilter: distanceFilter,
+      intervalDuration: fast
+          ? const Duration(seconds: 5)
+          : const Duration(seconds: 30),
+      forceLocationManager: true,
+    );
+  }
+  // iOS не приостанавливает обновления на стоянке (по умолчанию в
+  // geolocator): иначе приложение не проснётся, когда машина поедет.
+  return AppleSettings(
+    accuracy: LocationAccuracy.bestForNavigation,
+    activityType: ActivityType.automotiveNavigation,
+    distanceFilter: distanceFilter,
+    showBackgroundLocationIndicator: true,
+  );
 }
 
 /// Скорость по смещению — только между близкими по времени отметками:

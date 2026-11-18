@@ -149,6 +149,50 @@ void main() {
       });
     });
 
+    group('BG-11: только приблизительная геолокация — точность в км, '
+        'скорости нет, детектор отбрасывает все отметки', () {
+      setUp(
+        () => platform
+          ..permission = LocationPermission.whileInUse
+          ..precise = false,
+      );
+
+      test('просим точную ещё раз; дали — включено', () async {
+        expect(await service().enable(), isNull);
+        expect(platform.calls, contains('requestPermission'));
+        expect((await settings.autoDetect()).enabled, isTrue);
+      });
+
+      test('не дали — причина, настройка не включается, сервиса нет', () async {
+        platform.preciseAnswer = false;
+        expect(await service().enable(), TrackingBlocker.approximateLocation);
+        expect((await settings.autoDetect()).enabled, isFalse);
+        expect(platform.calls, isNot(contains('startService')));
+      });
+
+      test('причина для экрана и состояние — без запросов', () async {
+        expect(
+          await service().locationBlocker(),
+          TrackingBlocker.approximateLocation,
+        );
+        final health = await service().health();
+        expect(health.location, isTrue);
+        expect(health.preciseLocation, isFalse);
+        expect(platform.calls, isEmpty);
+
+        platform.precise = true;
+        expect(await service().locationBlocker(), isNull);
+        expect((await service().health()).preciseLocation, isTrue);
+      });
+
+      test('без доступа точность не спрашиваем', () async {
+        platform.permission = LocationPermission.denied;
+        final health = await service().health();
+        expect(health.location, isFalse);
+        expect(health.preciseLocation, isFalse);
+      });
+    });
+
     test('iOS: трекер в процессе приложения', () async {
       platform = FakeTrackingPlatform(isAndroid: false, isIOS: true);
       final s = service();

@@ -31,6 +31,12 @@ class TrackingPlatform {
   Future<LocationPermission> requestPermission() =>
       Geolocator.requestPermission();
 
+  /// Геолокация точная. На Android 12+ водитель может разрешить только
+  /// приблизительную: точность — километры, скорости нет. Спрашивать только
+  /// при выданном доступе, иначе geolocator бросает ошибку.
+  Future<bool> hasPreciseLocation() async =>
+      await Geolocator.getLocationAccuracy() == LocationAccuracyStatus.precise;
+
   /// Системные настройки геолокации: включить её в телефоне.
   Future<bool> openLocationSettings() => Geolocator.openLocationSettings();
 

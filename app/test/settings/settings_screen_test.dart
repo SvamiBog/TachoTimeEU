@@ -335,6 +335,44 @@ void main() {
       await unmount(tester);
     });
 
+    testWidgets('BG-11: только приблизительная геолокация, точную не дали — '
+        'причина и кнопка в настройки приложения; вернулся с точной — '
+        'причина пропадает', (tester) async {
+      platform
+        ..permission = LocationPermission.whileInUse
+        ..precise = false
+        ..preciseAnswer = false;
+      await pump(tester);
+      await enable(tester);
+      expect(find.textContaining('только приблизительная'), findsOneWidget);
+      expect(await isEnabled(tester), isFalse);
+      await tapText(tester, 'Открыть настройки');
+      expect(platform.calls, contains('openAppSettings'));
+
+      platform.precise = true;
+      tester.binding
+        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await settle(tester);
+      expect(find.textContaining('только приблизительная'), findsNothing);
+      await unmount(tester);
+    });
+
+    testWidgets('BG-11: включено, но геолокация стала приблизительной — '
+        'предупреждение', (tester) async {
+      platform
+        ..permission = LocationPermission.whileInUse
+        ..precise = false;
+      await tester.runAsync(
+        () => settings.setAutoDetect(const AutoDetectSettings(enabled: true)),
+      );
+      await pump(tester);
+      await show(tester, 'Определять вождение по GPS');
+      expect(find.textContaining('только приблизительная'), findsOneWidget);
+      expect(find.textContaining('Нет доступа к геолокации'), findsNothing);
+      await unmount(tester);
+    });
+
     testWidgets('включено, но доступ к геолокации отозван — предупреждение', (
       tester,
     ) async {

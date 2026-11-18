@@ -1922,6 +1922,10 @@ class AppLocalizationsSk extends AppLocalizations {
       'Bez prístupu k polohe — rozpoznanie nefunguje. Povoľte ho v nastaveniach telefónu.';
 
   @override
+  String get autoApproximate =>
+      'Poloha je len približná — jazda sa podľa nej nedá rozpoznať. Zapnite presnú polohu v nastaveniach telefónu.';
+
+  @override
   String get autoEnable => 'Zapnúť rozpoznanie jazdy';
 
   @override

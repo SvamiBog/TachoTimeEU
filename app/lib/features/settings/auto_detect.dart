@@ -130,6 +130,10 @@ class BlockerNotice extends ConsumerWidget {
         text: l.autoBlockedForever,
         onOpen: () => unawaited(service.openAppSettings()),
       ),
+      TrackingBlocker.approximateLocation => SystemSettingsNotice(
+        text: l.autoApproximate,
+        onOpen: () => unawaited(service.openAppSettings()),
+      ),
     };
   }
 }
@@ -209,6 +213,12 @@ class _AutoDetectCardState extends ConsumerState<AutoDetectCard>
         else if (auto.enabled && health?.location == false)
           SystemSettingsNotice(
             text: l.autoNoAccess,
+            onOpen: () =>
+                unawaited(ref.read(trackingServiceProvider).openAppSettings()),
+          )
+        else if (auto.enabled && health?.preciseLocation == false)
+          SystemSettingsNotice(
+            text: l.autoApproximate,
             onOpen: () =>
                 unawaited(ref.read(trackingServiceProvider).openAppSettings()),
           ),

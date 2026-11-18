@@ -473,6 +473,7 @@
   "autoBlockedDenied": "Zonder toegang tot de locatie kan rijden niet worden herkend. Alleen de snelheid is nodig — coördinaten worden niet opgeslagen.",
   "autoBlockedForever": "Toegang tot de locatie is geblokkeerd. Sta die toe in de telefooninstellingen: Locatie → ‘Tijdens gebruik van de app’.",
   "autoNoAccess": "Geen toegang tot de locatie — de herkenning werkt niet. Sta die toe in de telefooninstellingen.",
+  "autoApproximate": "De locatie is alleen bij benadering — zo kan rijden niet worden herkend. Zet de exacte locatie aan in de telefooninstellingen.",
   "autoEnable": "Rijherkenning inschakelen",
   "autoEnabled": "Rijherkenning ingeschakeld",
   "settingsData": "Gegevens",

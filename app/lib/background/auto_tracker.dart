@@ -19,6 +19,11 @@ typedef MotionSource = Stream<MotionSample> Function({required bool fast});
 ///
 /// Platform-independent: on Android it runs in the foreground service isolate,
 /// on iOS in the main isolate with the location background mode.
+///
+/// The GPS stream heals itself. After an error the geolocator stream stays
+/// open but gives no more fixes, so the tracker drops it and subscribes again
+/// after [gpsRetry]; a stream that gives no fix for [gpsSilence] (right after
+/// subscribing, or on the move) is replaced at once.
 class AutoTracker {
   new({
     required this._journal,
@@ -29,6 +34,17 @@ class AutoTracker {
     this._onError,
   }) : _clock = clock ?? DateTime.now,
        _detector = MotionDetector(thresholds: thresholds);
+
+  /// Пауза перед новой подпиской после ошибки или конца потока GPS:
+  /// геолокацию выключили, отозвали доступ — пробуем снова, пока не
+  /// заработает, но не дёргаем систему без остановки.
+  static const gpsRetry = Duration(seconds: 30);
+
+  /// Сколько ждать отметку, прежде чем открыть поток заново: первую после
+  /// подписки — поток мог не начаться (у плагина это бывает молча), и
+  /// следующую в пути — там они идут каждые 5 с. На стоянке отметки
+  /// редкие, тишина после первой — норма.
+  static const gpsSilence = Duration(minutes: 2);
 
   final ActivityRepository _journal;
   final SettingsRepository _settings;
@@ -42,6 +58,14 @@ class AutoTracker {
   StreamSubscription<MotionSample>? _samples;
   StreamSubscription<List<ActivityPeriod>>? _journalWatch;
   bool? _fast;
+
+  /// Пауза перед новой подпиской или сторож тишины потока.
+  Timer? _gpsTimer;
+
+  /// Ошибка GPS уже в отчёте, отметок с тех пор не было: повторы той же
+  /// беды каждые [gpsRetry] отчёт о падениях не засоряют.
+  bool _gpsFailing = false;
+  bool _stopped = false;
   (DriverMode, DateTime)? _open;
   Future<void> _queue = Future.value();
 
@@ -61,6 +85,8 @@ class AutoTracker {
   }
 
   Future<void> stop() async {
+    _stopped = true;
+    _gpsTimer?.cancel();
     await _samples?.cancel();
     await _journalWatch?.cancel();
     await _queue;
@@ -91,19 +117,55 @@ class AutoTracker {
     _listen();
   }
 
-  void _listen() {
+  /// Подписывается на отметки с частотой по состоянию детектора; [restart]
+  /// — заново и при той же частоте: прежний поток молчит. Возвращает true,
+  /// если открыт новый поток.
+  bool _listen({bool restart = false}) {
+    if (_stopped) return false;
     final fast = _detector.isMoving || _detector.pendingStart != null;
-    if (fast == _fast && _samples != null) return;
+    if (!restart && fast == _fast && _samples != null) return false;
     _fast = fast;
     unawaited(_samples?.cancel());
-    _samples = _source(fast: fast).listen(_onSample, onError: _report);
+    _samples = _source(fast: fast)
+        .listen(_onSample, onError: _onGpsError, onDone: _retryGps);
+    _watchGps(on: true);
+    return true;
   }
 
   void _onSample(MotionSample sample) {
+    _gpsFailing = false;
     final event = _detector.add(sample);
-    _listen();
+    // Новый поток сторож уже ждёт. В том же: в пути ждём следующую
+    // отметку, на стоянке — нет.
+    if (!_listen()) _watchGps(on: _fast ?? false);
     if (event == null) return;
     _queue = _queue.then((_) => _handle(event)).catchError(_report);
+  }
+
+  /// Сторож тишины: нет отметки за [gpsSilence] — поток открывается заново.
+  void _watchGps({required bool on}) {
+    _gpsTimer?.cancel();
+    _gpsTimer = on && !_stopped
+        ? Timer(gpsSilence, () => _listen(restart: true))
+        : null;
+  }
+
+  /// Поток geolocator после ошибки открыт, но отметок больше не даёт
+  /// (геолокацию выключили, в фоне нечем показать системный запрос
+  /// настроек): бросаем его и через паузу подписываемся заново. Если раньше
+  /// поменяется журнал, подписка будет сразу.
+  void _onGpsError(Object error, StackTrace stack) {
+    final first = !_gpsFailing;
+    _gpsFailing = true;
+    _retryGps();
+    if (first) _report(error, stack);
+  }
+
+  void _retryGps() {
+    unawaited(_samples?.cancel());
+    _samples = null;
+    _gpsTimer?.cancel();
+    _gpsTimer = _stopped ? null : Timer(gpsRetry, _listen);
   }
 
   Future<void> _handle(MotionEvent event) async {

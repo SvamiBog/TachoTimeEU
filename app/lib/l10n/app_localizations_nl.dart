@@ -1907,6 +1907,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'Geen toegang tot de locatie — de herkenning werkt niet. Sta die toe in de telefooninstellingen.';
 
   @override
+  String get autoApproximate =>
+      'De locatie is alleen bij benadering — zo kan rijden niet worden herkend. Zet de exacte locatie aan in de telefooninstellingen.';
+
+  @override
   String get autoEnable => 'Rijherkenning inschakelen';
 
   @override

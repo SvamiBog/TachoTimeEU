@@ -315,6 +315,7 @@ class DiagnosticsCollector {
         ? _onOff(await _notifications.canScheduleExact())
         : 'n/a';
     return 'location ${_onOff(health.location)}, '
+        'precise location ${_onOff(health.preciseLocation)}, '
         'notifications ${_onOff(health.notifications)}, '
         'battery optimisation ignored ${_onOff(health.battery)}, '
         'exact alarms $exact, '

@@ -291,7 +291,12 @@ Future<void> _pump(
       // Настройки и онбординг со всеми строками: автоопределение включено,
       // уведомления запрещены, экономия батареи мешает (Android).
       autoDetect: const AutoDetectSettings(enabled: true),
-      health: (location: true, notifications: false, battery: false),
+      health: (
+        location: true,
+        preciseLocation: true,
+        notifications: false,
+        battery: false,
+      ),
     ),
     brightness: brightness,
     viewport: viewport,

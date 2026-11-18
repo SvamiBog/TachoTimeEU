@@ -22,6 +22,13 @@ class FakeTrackingPlatform implements TrackingPlatform {
 
   /// Ответ водителя на системный запрос доступа к геолокации.
   LocationPermission permissionAnswer = LocationPermission.whileInUse;
+
+  /// Геолокация точная: на Android 12+ водитель может разрешить только
+  /// приблизительную.
+  bool precise = true;
+
+  /// Выбор водителя в системном запросе: точная или приблизительная.
+  bool preciseAnswer = true;
   NotificationPermission notificationPermission =
       NotificationPermission.granted;
   bool running = false;
@@ -46,7 +53,18 @@ class FakeTrackingPlatform implements TrackingPlatform {
   @override
   Future<LocationPermission> requestPermission() async {
     calls.add('requestPermission');
+    precise = preciseAnswer;
     return permission = permissionAnswer;
+  }
+
+  @override
+  Future<bool> hasPreciseLocation() async {
+    if (permission
+        case LocationPermission.denied || LocationPermission.deniedForever) {
+      // Как geolocator: без доступа точность не узнать
+      throw StateError('нет доступа к геолокации');
+    }
+    return precise;
   }
 
   @override

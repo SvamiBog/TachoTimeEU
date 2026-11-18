@@ -1900,6 +1900,10 @@ class AppLocalizationsKa extends AppLocalizations {
       'გეოლოკაციაზე წვდომა არ არის — ავტოგანსაზღვრა არ მუშაობს. დაუშვით ტელეფონის პარამეტრებში.';
 
   @override
+  String get autoApproximate =>
+      'გეოლოკაცია მხოლოდ მიახლოებითია — მისით მართვის განსაზღვრა შეუძლებელია. ჩართეთ ზუსტი მდებარეობა ტელეფონის პარამეტრებში.';
+
+  @override
   String get autoEnable => 'ავტოგანსაზღვრის ჩართვა';
 
   @override

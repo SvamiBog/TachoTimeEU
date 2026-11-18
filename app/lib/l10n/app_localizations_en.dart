@@ -1900,6 +1900,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'No location access — detection does not work. Allow it in the phone settings.';
 
   @override
+  String get autoApproximate =>
+      'Location is only approximate — driving cannot be detected with it. Turn on precise location in the phone settings.';
+
+  @override
   String get autoEnable => 'Turn on driving detection';
 
   @override

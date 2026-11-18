@@ -81,6 +81,39 @@ void main() {
     expect(seen, [false, true]);
   });
 
+  group('BG-11: настройки потока', () {
+    test('Android — системный LocationManager, а не Google Fused: сервису '
+        'без экрана нечем показать запрос настроек Google, и поток умирал '
+        'с ошибкой', () {
+      for (final fast in [false, true]) {
+        final s = gpsSettings(fast: fast, android: true);
+        expect(s, isA<AndroidSettings>());
+        expect((s as AndroidSettings).forceLocationManager, isTrue);
+        expect(s.accuracy, LocationAccuracy.best);
+      }
+    });
+
+    test('Android: в пути — раз в 5 с без фильтра, на стоянке — после 50 м, '
+        'не чаще раза в 30 с', () {
+      final fast = gpsSettings(fast: true, android: true) as AndroidSettings;
+      expect(fast.distanceFilter, 0);
+      expect(fast.intervalDuration, const Duration(seconds: 5));
+      final slow = gpsSettings(fast: false, android: true) as AndroidSettings;
+      expect(slow.distanceFilter, 50);
+      expect(slow.intervalDuration, const Duration(seconds: 30));
+    });
+
+    test('iOS — навигация для машины, без паузы на стоянке', () {
+      final s = gpsSettings(fast: false, android: false);
+      expect(s, isA<AppleSettings>());
+      expect(
+        (s as AppleSettings).activityType,
+        ActivityType.automotiveNavigation,
+      );
+      expect(s.pauseLocationUpdatesAutomatically, isFalse);
+    });
+  });
+
   test('скорость в м/с переводится в км/ч', () {
     expect(sampleOf(position(speed: 10)).speedKmh, closeTo(36, 1e-9));
     expect(sampleOf(position(speed: 0)).speedKmh, 0);

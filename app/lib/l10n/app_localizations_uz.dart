@@ -1908,6 +1908,10 @@ class AppLocalizationsUz extends AppLocalizations {
       'Geolokatsiyaga ruxsat yoʻq — avtoaniqlash ishlamaydi. Uni telefon sozlamalarida bering.';
 
   @override
+  String get autoApproximate =>
+      'Geolokatsiya faqat taxminiy — u bilan haydashni aniqlab boʻlmaydi. Telefon sozlamalarida aniq joylashuvni yoqing.';
+
+  @override
   String get autoEnable => 'Avtoaniqlashni yoqish';
 
   @override

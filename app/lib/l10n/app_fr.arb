@@ -473,6 +473,7 @@
   "autoBlockedDenied": "Sans accès à la position, la conduite ne peut pas être détectée. Seule la vitesse est utilisée — les coordonnées ne sont pas enregistrées.",
   "autoBlockedForever": "L’accès à la position est bloqué. Autorisez-le dans les réglages du téléphone : Position → « Pendant l’utilisation de l’application ».",
   "autoNoAccess": "Pas d’accès à la position — la détection ne fonctionne pas. Autorisez-le dans les réglages du téléphone.",
+  "autoApproximate": "La position n’est qu’approximative — la conduite ne peut pas être détectée. Activez la position exacte dans les réglages du téléphone.",
   "autoEnable": "Activer la détection de la conduite",
   "autoEnabled": "Détection de la conduite activée",
   "settingsData": "Données",

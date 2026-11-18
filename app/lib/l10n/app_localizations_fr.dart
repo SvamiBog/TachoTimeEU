@@ -1913,6 +1913,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Pas d’accès à la position — la détection ne fonctionne pas. Autorisez-le dans les réglages du téléphone.';
 
   @override
+  String get autoApproximate =>
+      'La position n’est qu’approximative — la conduite ne peut pas être détectée. Activez la position exacte dans les réglages du téléphone.';
+
+  @override
   String get autoEnable => 'Activer la détection de la conduite';
 
   @override

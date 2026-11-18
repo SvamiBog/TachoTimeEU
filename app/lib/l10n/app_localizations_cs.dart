@@ -1920,6 +1920,10 @@ class AppLocalizationsCs extends AppLocalizations {
       'Bez přístupu k poloze — rozpoznání nefunguje. Povolte ho v nastavení telefonu.';
 
   @override
+  String get autoApproximate =>
+      'Poloha je jen přibližná — řízení podle ní nelze rozpoznat. Zapněte přesnou polohu v nastavení telefonu.';
+
+  @override
   String get autoEnable => 'Zapnout rozpoznání řízení';
 
   @override
