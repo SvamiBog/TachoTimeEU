@@ -90,7 +90,8 @@ _Ring _ring(ComplianceSnapshot s) {
     );
   }
   if (s.currentBreak case final b? when s.shift != null) {
-    final counted = s.continuousDriving == Duration.zero;
+    // Перерыв уже не нужен: отдых копится к суточному
+    final counted = !b.needed;
     return (
       kind: counted ? _RingKind.resting : _RingKind.onBreak,
       big: minutes(b.duration),
@@ -244,13 +245,13 @@ _BannerState _banner(ComplianceSnapshot s) {
     return (kind: _Banner.offDuty, breakMinutes: 0, required: 0);
   }
   if (b != null && s.shift != null) {
-    return s.continuousDriving == Duration.zero
-        ? (kind: _Banner.breakCounted, breakMinutes: 0, required: 0)
-        : (
+    return b.needed
+        ? (
             kind: _Banner.onBreak,
             breakMinutes: minutes(b.duration),
             required: minutes(b.required),
-          );
+          )
+        : (kind: _Banner.breakCounted, breakMinutes: 0, required: 0);
   }
   if (s.has(InfringementType.continuousExceeded)) {
     return (kind: _Banner.exceeded, breakMinutes: 0, required: 0);

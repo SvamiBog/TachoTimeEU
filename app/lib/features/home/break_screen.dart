@@ -22,38 +22,37 @@ void openBreakScreen(BuildContext context) =>
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const BreakScreen()));
 
-/// The break state the screen shows, in whole minutes.
-typedef _Break = ({
+/// The break as the "Break" screen and its row on the home screen show it, in
+/// whole minutes. Every value is the engine's: the UI does not count the break.
+typedef BreakView = ({
   bool shift,
   bool resting,
   int taken,
+  bool split,
+  bool firstDone,
+  bool counted,
   int? first,
   DateTime? firstStart,
   int? current,
   int? required,
-  bool counted,
 });
 
-_Break _break(ComplianceSnapshot s) {
+BreakView breakViewOf(ComplianceSnapshot s) {
   final first = s.breakFirstPart;
   final current = s.currentBreak;
-  final secondPart = current?.required == EuLimits.breakSplitSecond;
-  final taken = current == null
-      ? first?.duration ?? Duration.zero
-      : (secondPart ? first?.duration ?? Duration.zero : Duration.zero) +
-            current.duration;
   return (
     shift: s.shift != null,
     resting: s.currentMode == DriverMode.rest,
-    taken: minutes(taken),
+    taken: minutes(s.breakTaken),
+    split: s.breakSplit,
+    firstDone: s.breakFirstPartDone,
+    // Зелёным перерыв становится, когда он уже не нужен: засчитан или с
+    // прошлого перерыва не было вождения
+    counted: current != null && !current.needed,
     first: first == null ? null : minutes(first.duration),
     firstStart: first?.start,
     current: current == null ? null : minutes(current.duration),
     required: current == null ? null : minutes(current.required),
-    counted:
-        s.shift != null &&
-        current != null &&
-        s.continuousDriving == Duration.zero,
   );
 }
 
@@ -65,7 +64,7 @@ class BreakScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
-    final s = watchSnapshot(ref, _break);
+    final s = watchSnapshot(ref, breakViewOf);
     final resting = s?.resting ?? false;
     return DetailScaffold(
       title: l.rowBreak,
@@ -93,7 +92,7 @@ class BreakScreen extends ConsumerWidget {
 class _Summary extends StatelessWidget {
   const new(this.s);
 
-  final _Break s;
+  final BreakView s;
 
   @override
   Widget build(BuildContext context) {
@@ -101,9 +100,7 @@ class _Summary extends StatelessWidget {
     final colors = context.colors;
     const splitFirst = EuLimits.breakSplitFirst;
     const splitSecond = EuLimits.breakSplitSecond;
-    final firstDone =
-        s.first != null ||
-        (s.current ?? 0) >= splitFirst.inMinutes && s.required == 45;
+    final firstDone = s.firstDone;
     final taken = Duration(minutes: s.taken);
     final (current, required) = (s.current, s.required);
     final (first, firstStart) = (s.first, s.firstStart);

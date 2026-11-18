@@ -39,8 +39,7 @@ import 'package:tachogo/core/l10n/l10n.dart';
               ),
       );
     case DriverStatus.onBreak:
-      final b = m.currentBreak;
-      final left = b == null ? Duration.zero : b.required - b.duration;
+      final left = m.currentBreak?.remaining ?? Duration.zero;
       return (
         title: title(l.heroBreak),
         text: left > Duration.zero

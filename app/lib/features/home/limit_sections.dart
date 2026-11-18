@@ -300,52 +300,19 @@ class DailyDrivingRow extends ConsumerWidget {
   }
 }
 
-/// The break for its row, in whole minutes.
-typedef _Break = ({
-  int taken,
-  bool split,
-  bool counted,
-  int? current,
-  int? required,
-  int? firstPart,
-  DateTime? firstAt,
-});
-
-_Break _break(ComplianceSnapshot s) {
-  final first = s.breakFirstPart;
-  final current = s.currentBreak;
-  final secondPart = current?.required == EuLimits.breakSplitSecond;
-  final taken = current == null
-      ? first?.duration ?? Duration.zero
-      : (secondPart ? first?.duration ?? Duration.zero : Duration.zero) +
-            current.duration;
-  return (
-    taken: minutes(taken),
-    split: first != null || secondPart,
-    counted:
-        s.shift != null &&
-        current != null &&
-        s.continuousDriving == Duration.zero,
-    current: current == null ? null : minutes(current.duration),
-    required: current == null ? null : minutes(current.required),
-    firstPart: first == null ? null : minutes(first.duration),
-    firstAt: first?.start,
-  );
-}
-
 /// "Break": what is taken of 45 min or 15 + 30; opens the break screen.
 class BreakRow extends ConsumerWidget {
   const new({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final s = watchSnapshot(ref, _break);
+    final s = watchSnapshot(ref, breakViewOf);
     if (s == null) return const SizedBox.shrink();
     final l = context.l10n;
     final colors = context.colors;
     final taken = _m(s.taken);
     final (current, required) = (s.current, s.required);
-    final (first, firstAt) = (s.firstPart, s.firstAt);
+    final (first, firstAt) = (s.first, s.firstStart);
     final (String left, String? right) = current != null && required != null
         ? (l.breakResting(formatHm(_m(current)), required), null)
         : first != null && firstAt != null
