@@ -164,28 +164,11 @@ class HeroRing extends ConsumerWidget {
             padding: const EdgeInsets.all(28),
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Диктор читает подпись вместе с таймером
-                  ExcludeSemantics(
-                    child: Text(
-                      label.toUpperCase(),
-                      style: AppTextStyles.label.copyWith(
-                        color: colors.textSecondary,
-                        letterSpacing: AppTextStyles.label.fontSize! * 0.08,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.s4),
-                  DurationText(
-                    formatHm(big),
-                    spoken: '$label, ${spokenDuration(l, big)}',
-                    style: AppTextStyles.timer.copyWith(color: color),
-                  ),
-                  const SizedBox(height: AppSpacing.s4),
-                  Text(caption, style: AppTextStyles.body),
-                ],
+              child: _RingText(
+                label: label,
+                big: big,
+                caption: caption,
+                color: color,
               ),
             ),
           ),
@@ -193,6 +176,46 @@ class HeroRing extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// The text inside the ring: what it counts, the big timer, the limit.
+class _RingText extends StatelessWidget {
+  const new({
+    required this.label,
+    required this.big,
+    required this.caption,
+    required this.color,
+  });
+
+  final String label;
+  final Duration big;
+  final String caption;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      // Диктор читает подпись вместе с таймером
+      ExcludeSemantics(
+        child: Text(
+          label.toUpperCase(),
+          style: AppTextStyles.label.copyWith(
+            color: context.colors.textSecondary,
+            letterSpacing: AppTextStyles.label.fontSize! * 0.08,
+          ),
+        ),
+      ),
+      const SizedBox(height: AppSpacing.s4),
+      DurationText(
+        formatHm(big),
+        spoken: '$label, ${spokenDuration(context.l10n, big)}',
+        style: AppTextStyles.timer.copyWith(color: color),
+      ),
+      const SizedBox(height: AppSpacing.s4),
+      Text(caption, style: AppTextStyles.body),
+    ],
+  );
 }
 
 /// Paints the ring track and its filled arc.
@@ -324,24 +347,75 @@ class CurrentModeRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = watchSnapshot(ref, _mode);
-    final l = context.l10n;
-    final colors = context.colors;
     final mode = state?.mode;
-    if (state == null || mode == null) {
-      return Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s4),
-          child: Text(
-            l.modeNone,
-            style: AppTextStyles.body.copyWith(color: colors.textSecondary),
+    if (state == null || mode == null) return const _NoMode();
+    // Карточка — не Material: рябь рисует свой прозрачный слой
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadius.badge),
+        onTap: () => switch (mode) {
+          DriverMode.driving => openDrivingScreen(context),
+          DriverMode.rest => openDailyRestScreen(context),
+          DriverMode.otherWork ||
+          DriverMode.availability => openWorkdayScreen(context),
+        },
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: AppSize.minTouch),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: _ModeLine(
+              mode: mode,
+              since: state.since,
+              duration: Duration(minutes: state.duration),
+              ferry: state.ferry,
+            ),
           ),
         ),
-      );
-    }
-    final duration = Duration(minutes: state.duration);
+      ),
+    );
+  }
+}
+
+/// No activity yet: the journal is empty.
+class _NoMode extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) => Align(
+    alignment: AlignmentDirectional.centerStart,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s4),
+      child: Text(
+        context.l10n.modeNone,
+        style: AppTextStyles.body.copyWith(color: context.colors.textSecondary),
+      ),
+    ),
+  );
+}
+
+/// The activity line: its colour dot, name, since when, the ferry mark, how
+/// long and "›".
+class _ModeLine extends StatelessWidget {
+  const new({
+    required this.mode,
+    required this.since,
+    required this.duration,
+    required this.ferry,
+  });
+
+  final DriverMode mode;
+  final DateTime? since;
+  final Duration duration;
+  final bool ferry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final colors = context.colors;
     final name = l.modeName(mode);
-    final row = Padding(
+    final secondary = AppTextStyles.body.copyWith(color: colors.textSecondary);
+    return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.s4,
         AppSpacing.s4,
@@ -363,20 +437,13 @@ class CurrentModeRow extends ConsumerWidget {
               TextSpan(
                 children: [
                   TextSpan(text: name, style: AppTextStyles.rowTitle),
-                  if (state.since case final since?)
+                  if (since case final since?)
                     TextSpan(
                       text: ' ${l.modeSince(formatClock(since))}',
-                      style: AppTextStyles.body.copyWith(
-                        color: colors.textSecondary,
-                      ),
+                      style: secondary,
                     ),
-                  if (state.ferry)
-                    TextSpan(
-                      text: ' · ${l.ferryOn}',
-                      style: AppTextStyles.body.copyWith(
-                        color: colors.textSecondary,
-                      ),
-                    ),
+                  if (ferry)
+                    TextSpan(text: ' · ${l.ferryOn}', style: secondary),
                 ],
               ),
             ),
@@ -390,23 +457,6 @@ class CurrentModeRow extends ConsumerWidget {
           const SizedBox(width: AppSpacing.s4),
           Icon(Icons.chevron_right, size: 20, color: colors.textSecondary),
         ],
-      ),
-    );
-    // Карточка — не Material: рябь рисует свой прозрачный слой
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.badge),
-        onTap: () => switch (mode) {
-          DriverMode.driving => openDrivingScreen(context),
-          DriverMode.rest => openDailyRestScreen(context),
-          DriverMode.otherWork ||
-          DriverMode.availability => openWorkdayScreen(context),
-        },
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AppSize.minTouch),
-          child: Align(alignment: Alignment.centerLeft, child: row),
-        ),
       ),
     );
   }

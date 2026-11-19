@@ -14,13 +14,11 @@ import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
-import 'package:tachogo/core/widgets/choice_pill.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/setting_rows.dart';
-import 'package:tachogo/core/widgets/status_chip.dart';
-import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/features/guide/van_rules_check.dart';
 
 void openGuide(BuildContext context) =>
     Navigator.of(context)
@@ -380,246 +378,64 @@ class _ModesLegend extends StatelessWidget {
   const new();
 
   @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    Widget item(DriverMode mode) => Expanded(
-      child: MergeSemantics(
-        child: Row(
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: colors.mode(mode),
-                borderRadius: BorderRadius.circular(AppRadius.chip),
-              ),
-              child: ModeIcon(mode, size: 22, color: colors.onAccent),
-            ),
-            const SizedBox(width: AppSpacing.s12),
-            Expanded(
-              child: Text(
-                context.l10n.modeName(mode),
-                style: AppTextStyles.body,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
-      child: Material(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.card),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.cardPadding),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  item(DriverMode.driving),
-                  const SizedBox(width: AppSpacing.s12),
-                  item(DriverMode.rest),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.s12),
-              Row(
-                children: [
-                  item(DriverMode.otherWork),
-                  const SizedBox(width: AppSpacing.s12),
-                  item(DriverMode.availability),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// "Do the rules apply to your trip" for a 2.5–3.5 t van: three questions, the
-/// answer is the engine's `vanRules` with the article of the regulation.
-/// Answers are not saved: one driver has different trips.
-class VanRulesCheck extends ConsumerStatefulWidget {
-  const new({super.key});
-
-  @override
-  ConsumerState<VanRulesCheck> createState() => _VanRulesCheckState();
-}
-
-/// The three answers of the van check.
-class _VanRulesCheckState extends ConsumerState<VanRulesCheck> {
-  bool _crossBorder = true;
-  VanCarriage _carriage = VanCarriage.hireOrReward;
-  bool _mainActivity = true;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-    final date = formatUtcDate(vanRulesFrom);
-    // Часы тикают раз в секунду, экран перестраивается, только когда
-    // меняется ответ.
-    final result = ref.watch(
-      clockProvider.select(
-        (now) => vanRules(
-          at: now,
-          crossBorder: _crossBorder,
-          carriage: _carriage,
-          drivingMainActivity: _mainActivity,
-        ),
-      ),
-    );
-    Widget pills(String label, List<Widget> children) => Semantics(
-      container: true,
-      label: label,
-      child: PillWrap(children: children),
-    );
-    final captionStyle = AppTextStyles.caption.copyWith(
-      color: colors.textSecondary,
-      height: 1.45,
-    );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.textInset,
-            0,
-            AppSpacing.textInset,
-            AppSpacing.s12,
-          ),
-          child: Text(
-            l.guideVanText(date),
-            style: AppTextStyles.body.copyWith(
-              color: colors.textSecondary,
-              height: 1.45,
-            ),
-          ),
-        ),
-        CardGroup(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.cardPadding,
-                AppSpacing.cardPadding,
-                AppSpacing.cardPadding,
-                0,
-              ),
-              child: Semantics(
-                header: true,
-                child: Text(l.guideVanCheck, style: AppTextStyles.header),
-              ),
-            ),
-            ChoiceBlock(
-              title: l.guideVanTrip,
-              subtitle: l.guideVanTripHint,
-              child: pills(l.guideVanTrip, [
-                ChoicePill(
-                  l.guideVanCrossBorder,
-                  selected: _crossBorder,
-                  onTap: () => setState(() => _crossBorder = true),
-                ),
-                ChoicePill(
-                  l.guideVanDomestic,
-                  selected: !_crossBorder,
-                  onTap: () => setState(() => _crossBorder = false),
-                ),
-              ]),
-            ),
-            ChoiceBlock(
-              title: l.guideVanCarriage,
-              subtitle: l.guideVanCarriageHint,
-              child: pills(l.guideVanCarriage, [
-                for (final (carriage, label) in [
-                  (VanCarriage.hireOrReward, l.guideVanHire),
-                  (VanCarriage.ownAccount, l.guideVanOwn),
-                  (VanCarriage.nonCommercial, l.guideVanNonCommercial),
-                ])
-                  ChoicePill(
-                    label,
-                    selected: _carriage == carriage,
-                    onTap: () => setState(() => _carriage = carriage),
-                  ),
-              ]),
-            ),
-            // Основная работа важна только для своей перевозки (ст. 3(ha))
-            if (_carriage == VanCarriage.ownAccount)
-              ChoiceBlock(
-                title: l.guideVanMain,
-                child: pills(l.guideVanMain, [
-                  ChoicePill(
-                    l.yes,
-                    selected: _mainActivity,
-                    onTap: () => setState(() => _mainActivity = true),
-                  ),
-                  ChoicePill(
-                    l.no,
-                    selected: !_mainActivity,
-                    onTap: () => setState(() => _mainActivity = false),
-                  ),
-                ]),
-              ),
-            _VanResult(result, date: date),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.textInset,
-            AppSpacing.s12,
-            AppSpacing.textInset,
-            0,
-          ),
-          child: Text(l.guideVanNotes, style: captionStyle),
-        ),
-      ],
-    );
-  }
-}
-
-/// The answer of the check: whether the rules apply, why, the article.
-class _VanResult extends StatelessWidget {
-  const new(this.result, {required this.date});
-
-  final VanRules result;
-  final String date;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final applies = result == VanRules.applies;
-    final text = switch (result) {
-      VanRules.applies => l.guideVanAppliesText,
-      VanRules.notYet => l.guideVanNotYetText(date),
-      VanRules.domestic => l.guideVanDomesticText,
-      VanRules.ownAccountExempt => l.guideVanOwnText,
-      VanRules.nonCommercialExempt => l.guideVanNonCommercialText,
-    };
-    return Semantics(
-      container: true,
-      liveRegion: true,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.cardPadding),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
+    child: Material(
+      color: context.colors.surface,
+      borderRadius: BorderRadius.circular(AppRadius.card),
+      child: const Padding(
+        padding: EdgeInsets.all(AppSpacing.cardPadding),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            StatusChip(
-              applies ? l.guideVanApplies : l.guideVanNotApply,
-              tone: applies ? Tone.warning : Tone.rest,
+            Row(
+              children: [
+                Expanded(child: _LegendItem(DriverMode.driving)),
+                SizedBox(width: AppSpacing.s12),
+                Expanded(child: _LegendItem(DriverMode.rest)),
+              ],
             ),
-            const SizedBox(height: AppSpacing.s8),
-            Text(text, style: AppTextStyles.body.copyWith(height: 1.45)),
-            const SizedBox(height: AppSpacing.s4),
-            Text(
-              l.guideArticle(result.article),
-              style: AppTextStyles.caption.copyWith(
-                color: context.colors.textSecondary,
-              ),
+            SizedBox(height: AppSpacing.s12),
+            Row(
+              children: [
+                Expanded(child: _LegendItem(DriverMode.otherWork)),
+                SizedBox(width: AppSpacing.s12),
+                Expanded(child: _LegendItem(DriverMode.availability)),
+              ],
             ),
           ],
         ),
+      ),
+    ),
+  );
+}
+
+/// An activity symbol on its colour and the activity's name.
+class _LegendItem extends StatelessWidget {
+  const new(this.mode);
+
+  final DriverMode mode;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return MergeSemantics(
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: colors.mode(mode),
+              borderRadius: BorderRadius.circular(AppRadius.chip),
+            ),
+            child: ModeIcon(mode, size: 22, color: colors.onAccent),
+          ),
+          const SizedBox(width: AppSpacing.s12),
+          Expanded(
+            child: Text(context.l10n.modeName(mode), style: AppTextStyles.body),
+          ),
+        ],
       ),
     );
   }

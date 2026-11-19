@@ -25,73 +25,87 @@ class SegmentedTabs<T> extends StatelessWidget {
   final ValueChanged<T> onChanged;
 
   @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      color: context.colors.background,
+      borderRadius: BorderRadius.circular(AppRadius.badge),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(AppSpacing.s4),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (final o in options)
+              Expanded(
+                child: _Tab(
+                  o,
+                  selected: o.value == value,
+                  onTap: () => onChanged(o.value),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// One option: the label and the digits under it; the selected one on a pad.
+class _Tab extends StatelessWidget {
+  const new(this.option, {required this.selected, required this.onTap});
+
+  final SegmentOption<Object?> option;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    Widget tab(SegmentOption<T> o) {
-      final on = o.value == value;
-      final detail = o.detail;
-      final color = on ? colors.text : colors.textSecondary;
-      return Expanded(
-        child: Semantics(
-          selected: on,
-          inMutuallyExclusiveGroup: true,
-          button: true,
-          child: Material(
-            color: on ? colors.surface2 : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppRadius.icon),
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: () => onChanged(o.value),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: AppSize.minTouch),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.s6,
-                      vertical: AppSpacing.s6,
+    final detail = option.detail;
+    final color = selected ? colors.text : colors.textSecondary;
+    return Semantics(
+      selected: selected,
+      inMutuallyExclusiveGroup: true,
+      button: true,
+      child: Material(
+        color: selected ? colors.surface2 : Colors.transparent,
+        borderRadius: BorderRadius.circular(AppRadius.icon),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: AppSize.minTouch),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.s6,
+                  vertical: AppSpacing.s6,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      option.label,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.rowTitle.copyWith(color: color),
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          o.label,
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.rowTitle.copyWith(color: color),
-                        ),
-                        if (detail != null)
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              detail,
-                              maxLines: 1,
-                              style: AppTextStyles.numericCaption.copyWith(
-                                color: color,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
+                    if (detail != null)
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          detail,
+                          maxLines: 1,
+                          style: AppTextStyles.numericCaption.copyWith(
+                            color: color,
+                            fontWeight: FontWeight.w700,
                           ),
-                      ],
-                    ),
-                  ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
-          ),
-        ),
-      );
-    }
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadius.badge),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.s4),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [for (final o in options) tab(o)],
           ),
         ),
       ),

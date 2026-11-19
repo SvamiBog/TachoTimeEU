@@ -7,23 +7,16 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
-import 'package:tachogo/background/tracking_providers.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
-import 'package:tachogo/core/widgets/mode_style.dart';
-import 'package:tachogo/core/widgets/sections.dart';
-import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/data/countries/country_providers.dart';
-import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
-import 'package:tachogo/data/settings/settings_repository.dart';
-import 'package:tachogo/features/guide/guide_screen.dart';
-import 'package:tachogo/features/settings/auto_detect.dart';
-import 'package:tachogo/features/settings/base_country.dart';
+import 'package:tachogo/features/onboarding/onboarding_setup.dart';
+import 'package:tachogo/features/onboarding/onboarding_steps.dart';
 import 'package:tachogo/features/settings/language_sheet.dart';
 
 /// Onboarding steps. The mockups are 13 (welcome) and 14 (setup); the
@@ -78,36 +71,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: AppSize.header),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.s4,
-                    AppSpacing.s8,
-                    AppSpacing.s24,
-                    AppSpacing.s8,
-                  ),
-                  child: Row(
-                    children: [
-                      if (!first)
-                        IconButton(
-                          onPressed: _back,
-                          tooltip: l.back,
-                          icon: const Icon(Icons.arrow_back_ios_new, size: 22),
-                        ),
-                      const Spacer(),
-                      if (first) const _LanguageButton(),
-                    ],
-                  ),
-                ),
-              ),
+              _TopBar(onBack: first ? null : _back),
               Expanded(
                 child: switch (_step) {
                   OnboardingStep.welcome => const _Welcome(),
-                  OnboardingStep.modes => const _Modes(),
-                  OnboardingStep.rules => const _Rules(),
-                  OnboardingStep.setup => const _Setup(),
-                  OnboardingStep.autoDetect => const _AutoDetect(),
+                  OnboardingStep.modes => const ModesStep(),
+                  OnboardingStep.rules => const RulesStep(),
+                  OnboardingStep.setup => const SetupStep(),
+                  OnboardingStep.autoDetect => const AutoDetectStep(),
                 },
               ),
               Padding(
@@ -119,22 +90,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
                 child: _StepDots(step: _step.index),
               ),
-              if (blocked)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.s24,
-                    0,
-                    AppSpacing.s24,
-                    AppSpacing.s12,
-                  ),
-                  child: Text(
-                    l.onbBaseCountryRequired,
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.caption.copyWith(
-                      color: context.colors.textSecondary,
-                    ),
-                  ),
-                ),
+              if (blocked) const _CountryRequired(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   AppSpacing.screenPadding,
@@ -157,6 +113,64 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ),
     );
   }
+}
+
+/// The top bar: "‹" back from the second step on, the language on the first.
+class _TopBar extends StatelessWidget {
+  const new({required this.onBack});
+
+  /// «Назад»; null — первый шаг: вместо стрелки язык.
+  final VoidCallback? onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final onBack = this.onBack;
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: AppSize.header),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.s4,
+          AppSpacing.s8,
+          AppSpacing.s24,
+          AppSpacing.s8,
+        ),
+        child: Row(
+          children: [
+            if (onBack != null)
+              IconButton(
+                onPressed: onBack,
+                tooltip: context.l10n.back,
+                icon: const Icon(Icons.arrow_back_ios_new, size: 22),
+              ),
+            const Spacer(),
+            if (onBack == null) const _LanguageButton(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// "Choose the company country to go on" over the disabled "Next".
+class _CountryRequired extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(
+      AppSpacing.s24,
+      0,
+      AppSpacing.s24,
+      AppSpacing.s12,
+    ),
+    child: Text(
+      context.l10n.onbBaseCountryRequired,
+      textAlign: TextAlign.center,
+      style: AppTextStyles.caption.copyWith(
+        color: context.colors.textSecondary,
+      ),
+    ),
+  );
 }
 
 /// The language in the top right corner of the welcome step (screen 13).
@@ -235,36 +249,6 @@ class _StepDots extends StatelessWidget {
   }
 }
 
-/// Title and explanation of a step.
-class _Intro extends StatelessWidget {
-  const new({required this.title, required this.text});
-
-  final String title;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Semantics(
-          header: true,
-          child: Text(title, style: AppTextStyles.screenTitle),
-        ),
-        const SizedBox(height: AppSpacing.s8),
-        Text(
-          text,
-          style: AppTextStyles.body.copyWith(
-            color: context.colors.textSecondary,
-            height: 1.45,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
 // ───────────────────────── 1. Приветствие ─────────────────────────
 
 /// Welcome step: the activities ring picture, the title and what the app does.
@@ -292,7 +276,7 @@ class _Welcome extends StatelessWidget {
                     ),
                   ),
                 ),
-                _Intro(title: l.onbWelcomeTitle, text: l.onbWelcomeText),
+                StepIntro(title: l.onbWelcomeTitle, text: l.onbWelcomeText),
               ],
             ),
           ),
@@ -382,411 +366,4 @@ class _ModesRingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_ModesRingPainter old) => old.colors != colors;
-}
-
-// ───────────────────────── 2. Режимы и таймеры ─────────────────────────
-
-/// Activities step: the four activities with their symbols and what each means.
-class _Modes extends StatelessWidget {
-  const new();
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-    String about(DriverMode mode) => switch (mode) {
-      DriverMode.driving => l.onbModeDriving,
-      DriverMode.otherWork => l.onbModeWork,
-      DriverMode.availability => l.onbModeAvailability,
-      DriverMode.rest => l.onbModeRest,
-    };
-    return ListView(
-      padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-      children: [
-        _Intro(title: l.onbModesTitle, text: l.onbModesText),
-        const SizedBox(height: AppSpacing.beforeSectionMin),
-        CardGroup(
-          children: [
-            for (final mode in const [
-              DriverMode.driving,
-              DriverMode.otherWork,
-              DriverMode.availability,
-              DriverMode.rest,
-            ])
-              MergeSemantics(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.cardPadding),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: AppSize.minTouch,
-                        height: AppSize.minTouch,
-                        decoration: BoxDecoration(
-                          color: colors.surface2,
-                          borderRadius: BorderRadius.circular(AppRadius.icon),
-                        ),
-                        alignment: Alignment.center,
-                        child: ModeIcon(
-                          mode,
-                          size: 24,
-                          color: colors.mode(mode),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.s14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              l.modeName(mode),
-                              style: AppTextStyles.rowTitle,
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              about(mode),
-                              style: AppTextStyles.caption.copyWith(
-                                color: colors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-// ───────────────────────── 3. Главные правила ─────────────────────────
-
-/// The four limits a driver must know from day one; the rest is in "Guide and
-/// rules".
-class _Rules extends StatelessWidget {
-  const new();
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    return ListView(
-      padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-      children: [
-        _Intro(title: l.onbRulesTitle, text: l.onbRulesText),
-        const SizedBox(height: AppSpacing.beforeSectionMin),
-        const CardGroup(
-          children: [
-            RuleRow(GuideRule.continuous),
-            RuleRow(GuideRule.dailyDriving),
-            RuleRow(GuideRule.dailyRest),
-            RuleRow(GuideRule.weeklyRest),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.textInset,
-            AppSpacing.s12,
-            AppSpacing.textInset,
-            0,
-          ),
-          child: Text(
-            l.onbRulesMore,
-            style: AppTextStyles.caption.copyWith(
-              color: context.colors.textSecondary,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ───────────────────────── 4. Настройка ─────────────────────────
-
-/// Setup step (screen 14): tachograph type, company country (required — "Next"
-/// waits for it), Mobility Package, notifications, analytics consent.
-class _Setup extends ConsumerWidget {
-  const new();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = context.l10n;
-    final repo = ref.read(settingsRepositoryProvider);
-    final prefs =
-        ref.watch(preferencesProvider).value ?? const AppPreferences();
-    final rules =
-        ref.watch(complianceSettingsProvider).value ??
-        const ComplianceSettings();
-    final consent = ref.watch(analyticsConsentProvider).value ?? false;
-    return ListView(
-      padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-      children: [
-        _Intro(title: l.onbSetupTitle, text: l.onbSetupText),
-        SectionTitle(l.settingsTachograph, top: AppSpacing.beforeSectionMin),
-        _Options(
-          options: [
-            (
-              icon: Icons.credit_card,
-              label: l.tachographDigital,
-              selected: prefs.tachograph == TachographType.digital,
-              onTap: () =>
-                  unawaited(repo.setTachograph(TachographType.digital)),
-            ),
-            (
-              icon: Icons.album_outlined,
-              label: l.tachographAnalog,
-              selected: prefs.tachograph == TachographType.analog,
-              onTap: () => unawaited(repo.setTachograph(TachographType.analog)),
-            ),
-          ],
-        ),
-        SectionTitle(l.settingsRules, top: AppSpacing.beforeSectionMin),
-        CardGroup(
-          children: [
-            const BaseCountryRow(),
-            SwitchRow(
-              title: l.settingsMobility,
-              subtitle: l.onbMobilityHint,
-              value: rules.mobilityPackage,
-              onChanged: (on) =>
-                  unawaited(repo.updateComplianceSettings(mobilityPackage: on)),
-            ),
-          ],
-        ),
-        SectionTitle(l.settingsNotifications, top: AppSpacing.beforeSectionMin),
-        _NotificationsCard(lead: rules.warningLead),
-        SectionTitle(l.settingsData, top: AppSpacing.beforeSectionMin),
-        CardGroup(
-          children: [
-            SwitchRow(
-              title: l.settingsAnalytics,
-              subtitle: l.settingsAnalyticsHint,
-              value: consent,
-              onChanged: (on) =>
-                  unawaited(repo.setAnalyticsConsent(granted: on)),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-/// One option card: icon, label, whether it is selected and what a tap does.
-typedef _Option = ({
-  IconData icon,
-  String label,
-  bool selected,
-  VoidCallback onTap,
-});
-
-/// Options as cards in a row (screen 14): "Digital" / "Analogue" tachograph.
-class _Options extends StatelessWidget {
-  const new({required this.options});
-
-  final List<_Option> options;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
-    child: IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (final (i, option) in options.indexed) ...[
-            if (i > 0) const SizedBox(width: AppSpacing.s8),
-            Expanded(child: _OptionCard(option)),
-          ],
-        ],
-      ),
-    ),
-  );
-}
-
-/// One option card, outlined in the driving colour when selected.
-class _OptionCard extends StatelessWidget {
-  const new(this.option);
-
-  final _Option option;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Semantics(
-      selected: option.selected,
-      inMutuallyExclusiveGroup: true,
-      button: true,
-      child: Material(
-        color: colors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.modeButton),
-          side: BorderSide(
-            color: option.selected ? colors.drive : colors.line,
-            width: 2,
-          ),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: option.onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 112),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.cardPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(option.icon, size: 28),
-                  const SizedBox(height: AppSpacing.s16),
-                  Text(option.label, style: AppTextStyles.header),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// "We will warn you 30 minutes before…" and the system notification permission
-/// request. Exact alarms are not requested (decision 2026-10-13).
-class _NotificationsCard extends ConsumerStatefulWidget {
-  const new({required this.lead});
-
-  final Duration lead;
-
-  @override
-  ConsumerState<_NotificationsCard> createState() => _NotificationsCardState();
-}
-
-/// Asks for the permission through [NotificationPermissionAsking].
-class _NotificationsCardState extends ConsumerState<_NotificationsCard>
-    with NotificationPermissionAsking {
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-    final allowed = ref.watch(trackingHealthProvider).value?.notifications;
-    return CardGroup(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(AppSpacing.cardPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: AppSize.minTouch,
-                    height: AppSize.minTouch,
-                    decoration: BoxDecoration(
-                      color: colors.surface2,
-                      borderRadius: BorderRadius.circular(AppRadius.icon),
-                    ),
-                    alignment: Alignment.center,
-                    child: const Icon(
-                      Icons.notifications_none_outlined,
-                      size: 22,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.s14),
-                  Expanded(
-                    child: Text(
-                      l.onbNotifyText(widget.lead.inMinutes),
-                      style: AppTextStyles.body.copyWith(
-                        color: colors.chipText,
-                        height: 1.45,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.s14),
-              if (allowed ?? false)
-                DoneMark(l.notifyAllowed)
-              else
-                SecondaryButton(
-                  label: notificationsAsked
-                      ? l.openSystemSettings
-                      : l.notifyAllow,
-                  onPressed: () => unawaited(allowNotifications()),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ───────────────────────── 5. Автоопределение ─────────────────────────
-
-/// Automatic detection step: what it does, the permissions it needs and the
-/// switch.
-class _AutoDetect extends ConsumerStatefulWidget {
-  const new();
-
-  @override
-  ConsumerState<_AutoDetect> createState() => _AutoDetectState();
-}
-
-/// Turns automatic detection on through [AutoDetectEnabling].
-class _AutoDetectState extends ConsumerState<_AutoDetect>
-    with AutoDetectEnabling {
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final enabled = ref.watch(autoDetectSettingsProvider).value?.enabled;
-    final blocker = this.blocker;
-    final hints = enabled ?? false
-        ? backgroundHints(context, ref)
-        : const <Widget>[];
-    return ListView(
-      padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-      children: [
-        _Intro(title: l.autoTitle, text: l.onbAutoText),
-        const SizedBox(height: AppSpacing.beforeSectionMin),
-        CardGroup(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.cardPadding),
-              child: enabled ?? false
-                  ? DoneMark(l.autoEnabled)
-                  : SecondaryButton(
-                      label: l.autoEnable,
-                      onPressed: busy
-                          ? null
-                          : () => unawaited(enableAutoDetect()),
-                    ),
-            ),
-            if (blocker != null) BlockerNotice(blocker),
-          ],
-        ),
-        if (hints.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.betweenCardsMin),
-          CardGroup(children: hints),
-        ],
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.textInset,
-            AppSpacing.s12,
-            AppSpacing.textInset,
-            0,
-          ),
-          child: Text(
-            l.onbAutoLater,
-            style: AppTextStyles.caption.copyWith(
-              color: context.colors.textSecondary,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }

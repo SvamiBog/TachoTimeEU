@@ -131,7 +131,8 @@ class DailyRestScreen extends ConsumerWidget {
   }
 }
 
-/// The ring with the rest so far, or the time left in the shift.
+/// The summary card: the rest so far, until when to start the rest, or that
+/// there is no shift.
 class _Summary extends StatelessWidget {
   const new(this.s);
 
@@ -139,26 +140,64 @@ class _Summary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-    final label = AppTextStyles.label.copyWith(
-      color: colors.textSecondary,
-      letterSpacing: AppTextStyles.label.fontSize! * 0.08,
-    );
-    final caption = AppTextStyles.body.copyWith(color: colors.textSecondary);
     final restStart = s.restStart;
     final shiftStart = s.shiftStart;
-    final List<Widget> children;
-    if (restStart != null) {
-      final rest = Duration(minutes: s.rest);
-      final target = s.weekly
-          ? EuLimits.weeklyRestRegular
-          : EuLimits.dailyRestRegular;
-      children = [
-        Text(
-          (s.weekly ? l.weeklyOngoing : l.dailyRestOngoing).toUpperCase(),
-          style: label,
-        ),
+    return HeroCard(
+      children: [
+        if (restStart != null)
+          _RestSoFar(s, restStart: restStart)
+        else if (shiftStart != null)
+          _StartRestBy(s, shiftStart: shiftStart)
+        else
+          Text(
+            context.l10n.workdayNoShift,
+            style: AppTextStyles.body.copyWith(
+              color: context.colors.textSecondary,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// The caption over the big value of the summary card: "DAILY REST".
+class _SummaryLabel extends StatelessWidget {
+  const new(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Text(
+    text.toUpperCase(),
+    style: AppTextStyles.label.copyWith(
+      color: context.colors.textSecondary,
+      letterSpacing: AppTextStyles.label.fontSize! * 0.08,
+    ),
+  );
+}
+
+/// The rest in progress: how long, out of what, since when and the bar with
+/// the 3 and 9 h marks.
+class _RestSoFar extends StatelessWidget {
+  const new(this.s, {required this.restStart});
+
+  final DailyRestState s;
+  final DateTime restStart;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final colors = context.colors;
+    final caption = AppTextStyles.body.copyWith(color: colors.textSecondary);
+    final rest = Duration(minutes: s.rest);
+    final target = s.weekly
+        ? EuLimits.weeklyRestRegular
+        : EuLimits.dailyRestRegular;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _SummaryLabel(s.weekly ? l.weeklyOngoing : l.dailyRestOngoing),
         const SizedBox(height: AppSpacing.s4),
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.end,
@@ -188,15 +227,35 @@ class _Summary extends StatelessWidget {
                 ],
           color: colors.rest,
         ),
-      ];
-    } else if (shiftStart != null) {
-      final regular = shiftStart.add(Duration(minutes: s.regular));
-      final extended = shiftStart.add(Duration(minutes: s.extended));
-      final late = s.now.isAfter(regular);
-      final overdue = s.tone == Tone.violation;
-      final latest = s.reducedLeft > 0 || s.splitFirstPart ? extended : regular;
-      children = [
-        Text(l.dailyRestStartBy.toUpperCase(), style: label),
+      ],
+    );
+  }
+}
+
+/// While the driver works: until when to start a regular rest, and a reduced
+/// one if any are left; past it — how late.
+class _StartRestBy extends StatelessWidget {
+  const new(this.s, {required this.shiftStart});
+
+  final DailyRestState s;
+  final DateTime shiftStart;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final colors = context.colors;
+    final caption = AppTextStyles.body.copyWith(color: colors.textSecondary);
+    final regular = shiftStart.add(Duration(minutes: s.regular));
+    final extended = shiftStart.add(Duration(minutes: s.extended));
+    final late = s.now.isAfter(regular);
+    final overdue = s.tone == Tone.violation;
+    final reduced = s.reducedLeft > 0 || s.splitFirstPart;
+    final latest = reduced ? extended : regular;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _SummaryLabel(l.dailyRestStartBy),
         const SizedBox(height: AppSpacing.s4),
         Text(
           formatClock(late ? latest : regular),
@@ -217,7 +276,7 @@ class _Summary extends StatelessWidget {
                   EuLimits.dailyRestReduced.inHours,
                   'reduced',
                 )
-              : s.reducedLeft > 0 || s.splitFirstPart
+              : reduced
               ? l.dailyRestReducedBy(
                   EuLimits.dailyRestReduced.inHours,
                   formatClock(extended),
@@ -225,11 +284,8 @@ class _Summary extends StatelessWidget {
               : l.dailyRestNoReduced,
           style: caption.copyWith(color: overdue ? colors.errorText : null),
         ),
-      ];
-    } else {
-      children = [Text(l.workdayNoShift, style: caption)];
-    }
-    return HeroCard(children: children);
+      ],
+    );
   }
 }
 
@@ -243,116 +299,183 @@ class _Milestones extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l = context.l10n;
     final restStart = s.restStart;
     final shiftStart = s.shiftStart;
+    if (restStart != null) return _RestMilestones(s, restStart: restStart);
+    if (shiftStart != null) return _ShiftMilestones(s, shiftStart: shiftStart);
+    return _RuleMilestones(s);
+  }
+}
+
+/// Milestones of the rest in progress: when each is reached and how long is
+/// left.
+class _RestMilestones extends StatelessWidget {
+  const new(this.s, {required this.restStart});
+
+  final DailyRestState s;
+  final DateTime restStart;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
     final rest = Duration(minutes: s.rest);
     final reduced = s.reducedLeft > 0 || s.splitFirstPart;
-    final rows = <Widget>[];
-
-    if (restStart != null) {
-      MilestoneRow row(Duration hours, String kind, {String? pending}) {
-        final reached = rest >= hours;
-        final left = hours - rest;
-        return MilestoneRow(
-          dot: reached ? MilestoneDot.solid : MilestoneDot.ring,
-          title: l.dailyRestMilestone(hours.inHours, kind),
-          subtitle: reached
-              ? (kind == 'split' ? l.dailyRestSplitHint : l.dailyRestReached)
-              : pending ?? l.left(formatHm(left)),
-          value: formatClock(restStart.add(hours)),
-        );
-      }
-
-      // Первая часть раздельного — только пока смена идёт: она сама её не
-      // завершает, а если первая часть уже взята, этот отдых — вторая
-      if (!s.offDuty && !s.splitFirstPart) {
-        rows.add(row(EuLimits.dailyRestSplitFirst, 'split'));
-      }
-      final reducedLeft = EuLimits.dailyRestReduced - rest;
-      rows
-        ..add(
-          reduced || rest >= EuLimits.dailyRestReduced
-              ? row(
-                  EuLimits.dailyRestReduced,
-                  'reduced',
-                  pending: s.splitFirstPart
-                      ? null
-                      : l.dailyRestLeftCount(
-                          formatHm(reducedLeft),
-                          s.reducedLeft,
-                        ),
-                )
-              : MilestoneRow(
-                  dot: MilestoneDot.muted,
-                  title: l.dailyRestMilestone(
-                    EuLimits.dailyRestReduced.inHours,
-                    'reduced',
-                  ),
-                  subtitle: l.dailyRestNoReduced,
-                  value: formatClock(restStart.add(EuLimits.dailyRestReduced)),
-                  muted: true,
-                ),
-        )
-        ..add(row(EuLimits.dailyRestRegular, 'regular'));
-    } else if (shiftStart != null) {
-      final late = s.now.isAfter(shiftStart.add(Duration(minutes: s.regular)));
-      rows
-        ..add(
-          MilestoneRow(
-            dot: MilestoneDot.ring,
-            title: l.dailyRestMilestone(
-              EuLimits.dailyRestRegular.inHours,
-              'regular',
-            ),
-            subtitle: l.dailyRestStartLatest,
-            value: formatClock(shiftStart.add(Duration(minutes: s.regular))),
-            muted: late,
+    final reducedLeft = EuLimits.dailyRestReduced - rest;
+    return CardGroup(
+      children: [
+        // Первая часть раздельного — только пока смена идёт: она сама её не
+        // завершает, а если первая часть уже взята, этот отдых — вторая
+        if (!s.offDuty && !s.splitFirstPart)
+          _Reached(
+            EuLimits.dailyRestSplitFirst,
+            'split',
+            rest: rest,
+            restStart: restStart,
           ),
-        )
-        ..add(
+        if (reduced || rest >= EuLimits.dailyRestReduced)
+          _Reached(
+            EuLimits.dailyRestReduced,
+            'reduced',
+            rest: rest,
+            restStart: restStart,
+            pending: s.splitFirstPart
+                ? null
+                : l.dailyRestLeftCount(formatHm(reducedLeft), s.reducedLeft),
+          )
+        else
           MilestoneRow(
-            dot: reduced ? MilestoneDot.ring : MilestoneDot.muted,
+            dot: MilestoneDot.muted,
             title: l.dailyRestMilestone(
               EuLimits.dailyRestReduced.inHours,
               'reduced',
             ),
-            subtitle: s.splitFirstPart
-                ? l.dailyRestStartLatest
-                : reduced
-                ? l.dailyRestStartLatestCount(s.reducedLeft)
-                : l.dailyRestNoReduced,
-            value: formatClock(shiftStart.add(Duration(minutes: s.extended))),
-            muted: !reduced,
+            subtitle: l.dailyRestNoReduced,
+            value: formatClock(restStart.add(EuLimits.dailyRestReduced)),
+            muted: true,
           ),
-        );
-    } else {
-      rows
-        ..add(
-          MilestoneRow(
-            dot: MilestoneDot.ring,
-            title: l.dailyRestMilestone(
-              EuLimits.dailyRestRegular.inHours,
-              'regular',
-            ),
-            value: formatHm(EuLimits.dailyRestRegular),
+        _Reached(
+          EuLimits.dailyRestRegular,
+          'regular',
+          rest: rest,
+          restStart: restStart,
+        ),
+      ],
+    );
+  }
+}
+
+/// A milestone of the rest in progress: reached — a solid dot, not yet — how
+/// long is left ([pending] instead, when given); the time it is reached.
+class _Reached extends StatelessWidget {
+  const new(
+    this.hours,
+    this.kind, {
+    required this.rest,
+    required this.restStart,
+    this.pending,
+  });
+
+  final Duration hours;
+
+  /// Вид отдыха для подписи: split, reduced, regular.
+  final String kind;
+  final Duration rest;
+  final DateTime restStart;
+  final String? pending;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final reached = rest >= hours;
+    return MilestoneRow(
+      dot: reached ? MilestoneDot.solid : MilestoneDot.ring,
+      title: l.dailyRestMilestone(hours.inHours, kind),
+      subtitle: reached
+          ? (kind == 'split' ? l.dailyRestSplitHint : l.dailyRestReached)
+          : pending ?? l.left(formatHm(hours - rest)),
+      value: formatClock(restStart.add(hours)),
+    );
+  }
+}
+
+/// While the driver works: the latest start of a regular and of a reduced
+/// rest.
+class _ShiftMilestones extends StatelessWidget {
+  const new(this.s, {required this.shiftStart});
+
+  final DailyRestState s;
+  final DateTime shiftStart;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final reduced = s.reducedLeft > 0 || s.splitFirstPart;
+    final regular = shiftStart.add(Duration(minutes: s.regular));
+    return CardGroup(
+      children: [
+        MilestoneRow(
+          dot: MilestoneDot.ring,
+          title: l.dailyRestMilestone(
+            EuLimits.dailyRestRegular.inHours,
+            'regular',
           ),
-        )
-        ..add(
-          MilestoneRow(
-            dot: reduced ? MilestoneDot.ring : MilestoneDot.muted,
-            title: l.dailyRestMilestone(
-              EuLimits.dailyRestReduced.inHours,
-              'reduced',
-            ),
-            subtitle: reduced
-                ? l.chipTimes(EuLimits.dailyRestReduced.inHours, s.reducedLeft)
-                : l.dailyRestNoReduced,
-            value: formatHm(EuLimits.dailyRestReduced),
-            muted: !reduced,
+          subtitle: l.dailyRestStartLatest,
+          value: formatClock(regular),
+          muted: s.now.isAfter(regular),
+        ),
+        MilestoneRow(
+          dot: reduced ? MilestoneDot.ring : MilestoneDot.muted,
+          title: l.dailyRestMilestone(
+            EuLimits.dailyRestReduced.inHours,
+            'reduced',
           ),
-        );
-    }
-    return CardGroup(children: rows);
+          subtitle: s.splitFirstPart
+              ? l.dailyRestStartLatest
+              : reduced
+              ? l.dailyRestStartLatestCount(s.reducedLeft)
+              : l.dailyRestNoReduced,
+          value: formatClock(shiftStart.add(Duration(minutes: s.extended))),
+          muted: !reduced,
+        ),
+      ],
+    );
+  }
+}
+
+/// No shift and no rest: the regular and the reduced rest and how many reduced
+/// rests are left.
+class _RuleMilestones extends StatelessWidget {
+  const new(this.s);
+
+  final DailyRestState s;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final reduced = s.reducedLeft > 0 || s.splitFirstPart;
+    return CardGroup(
+      children: [
+        MilestoneRow(
+          dot: MilestoneDot.ring,
+          title: l.dailyRestMilestone(
+            EuLimits.dailyRestRegular.inHours,
+            'regular',
+          ),
+          value: formatHm(EuLimits.dailyRestRegular),
+        ),
+        MilestoneRow(
+          dot: reduced ? MilestoneDot.ring : MilestoneDot.muted,
+          title: l.dailyRestMilestone(
+            EuLimits.dailyRestReduced.inHours,
+            'reduced',
+          ),
+          subtitle: reduced
+              ? l.chipTimes(EuLimits.dailyRestReduced.inHours, s.reducedLeft)
+              : l.dailyRestNoReduced,
+          value: formatHm(EuLimits.dailyRestReduced),
+          muted: !reduced,
+        ),
+      ],
+    );
   }
 }

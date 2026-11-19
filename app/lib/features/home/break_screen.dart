@@ -98,9 +98,6 @@ class _Summary extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final colors = context.colors;
-    const splitFirst = EuLimits.breakSplitFirst;
-    const splitSecond = EuLimits.breakSplitSecond;
-    final firstDone = s.firstDone;
     final taken = Duration(minutes: s.taken);
     final (current, required) = (s.current, s.required);
     final (first, firstStart) = (s.first, s.firstStart);
@@ -134,34 +131,54 @@ class _Summary extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacing.s14),
-        Row(
-          children: [
-            Expanded(
-              child: _Part(
-                firstDone
-                    ? l.breakPartDone(splitFirst.inMinutes)
-                    : l.breakPart(splitFirst.inMinutes),
-                done: firstDone,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.s8),
-            Expanded(
-              flex: 2,
-              child: _Part(
-                s.counted
-                    ? l.breakPartDone(splitSecond.inMinutes)
-                    : firstDone
-                    ? l.breakPartLeft(splitSecond.inMinutes)
-                    : l.breakPart(splitSecond.inMinutes),
-                done: s.counted,
-              ),
-            ),
-          ],
-        ),
+        _Parts(firstDone: s.firstDone, counted: s.counted),
         const SizedBox(height: AppSpacing.s14),
         Text(
           caption,
           style: AppTextStyles.caption.copyWith(color: colors.textSecondary),
+        ),
+      ],
+    );
+  }
+}
+
+/// The two parts of a split break side by side: 15 min and, twice as wide,
+/// 30 min.
+class _Parts extends StatelessWidget {
+  const new({required this.firstDone, required this.counted});
+
+  /// Первые 15 мин набраны.
+  final bool firstDone;
+
+  /// Перерыв засчитан целиком.
+  final bool counted;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    const splitFirst = EuLimits.breakSplitFirst;
+    const splitSecond = EuLimits.breakSplitSecond;
+    return Row(
+      children: [
+        Expanded(
+          child: _Part(
+            firstDone
+                ? l.breakPartDone(splitFirst.inMinutes)
+                : l.breakPart(splitFirst.inMinutes),
+            done: firstDone,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.s8),
+        Expanded(
+          flex: 2,
+          child: _Part(
+            counted
+                ? l.breakPartDone(splitSecond.inMinutes)
+                : firstDone
+                ? l.breakPartLeft(splitSecond.inMinutes)
+                : l.breakPart(splitSecond.inMinutes),
+            done: counted,
+          ),
         ),
       ],
     );
@@ -287,36 +304,54 @@ class _Correction extends ConsumerWidget {
                 ),
               )
             else
-              MergeSemantics(
-                child: InkWell(
-                  onTap: () => unawaited(openBreakCorrection(context, ref)),
-                  child: CardRow(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            info.open
-                                ? l.breakCurrentDuration
-                                : l.breakLastDuration,
-                            style: AppTextStyles.rowTitle,
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.s8),
-                        DurationText(
-                          formatHm(info.duration),
-                          spoken: spokenDuration(l, info.duration),
-                          style: AppTextStyles.value,
-                        ),
-                        const SizedBox(width: AppSpacing.s4),
-                        Icon(Icons.chevron_right, color: colors.textSecondary),
-                      ],
-                    ),
-                  ),
-                ),
+              _LastBreakRow(
+                open: info.open,
+                duration: info.duration,
+                onTap: () => unawaited(openBreakCorrection(context, ref)),
               ),
           ],
         ),
       ],
+    );
+  }
+}
+
+/// "Last break 0:15 ›" (or the one in progress): a tap opens the correction.
+class _LastBreakRow extends StatelessWidget {
+  const new({required this.open, required this.duration, required this.onTap});
+
+  /// Перерыв ещё идёт.
+  final bool open;
+  final Duration duration;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return MergeSemantics(
+      child: InkWell(
+        onTap: onTap,
+        child: CardRow(
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  open ? l.breakCurrentDuration : l.breakLastDuration,
+                  style: AppTextStyles.rowTitle,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.s8),
+              DurationText(
+                formatHm(duration),
+                spoken: spokenDuration(l, duration),
+                style: AppTextStyles.value,
+              ),
+              const SizedBox(width: AppSpacing.s4),
+              Icon(Icons.chevron_right, color: context.colors.textSecondary),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
