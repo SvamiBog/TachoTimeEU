@@ -116,6 +116,7 @@ _Journal _repaidCompensation() {
 /// которых в ней нет.
 final _journals = <String, _Journal Function()>{
   'Смена · долг по компенсации погашен': _repaidCompensation,
+  'Детали дня · сокращённый недельный отдых': _repaidCompensation,
 };
 
 /// Прокрутка до строки: проверки видят только то, что ленивый список
@@ -199,6 +200,14 @@ final _screens = <String, _Screen>{
   'Детали дня': (
     build: () => ShiftDayScreen(shiftKey: (manualId: null, start: _shiftStart)),
     open: null,
+  ),
+  // Чип «сокращённый» и длительность отдыха на узком экране с крупным
+  // шрифтом уходят под название строки
+  'Детали дня · сокращённый недельный отдых': (
+    build: () => ShiftDayScreen(
+      shiftKey: (manualId: null, start: _repaidCompensationStart),
+    ),
+    open: _scrollToText((l) => l.dayRestAfter),
   ),
   'Смена': (build: _editor, open: null),
   // Чип и длительность отдыха на узком экране с крупным шрифтом уходят
