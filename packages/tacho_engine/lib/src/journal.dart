@@ -5,7 +5,7 @@ library;
 
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/compliance.dart';
-import 'package:tacho_engine/src/driver_mode.dart';
+import 'package:tacho_engine/src/compliance_log.dart';
 import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/manual_rest.dart';
 import 'package:tacho_engine/src/manual_shift.dart';
@@ -141,164 +141,199 @@ List<JournalWeek> buildJournal({
   Map<DateTime, ShiftRoute> routes = const {},
 }) {
   final manual = manualShifts.toList();
-  final window = workdayWindow(crew);
   final restOfManual = manualRests(manual, timeline, now);
-  final weeklyRests = _weeklyRests(timeline, restOfManual, now);
-  final withoutRight = reducedWeeklyRestsWithoutRight(
-    [
-      for (final r in weeklyRests)
-        if (r.end != null) r,
-    ]..sort((a, b) => a.start.compareTo(b.start)),
-    mobilityPackage: mobilityPackage,
-    atBase: atBaseCountry(
-      baseCountry: baseCountry,
-      shiftStarts: [
-        for (final s in timeline.shifts) s.start,
-        for (final m in manual) m.start,
-      ],
-      routes: routes,
+  final weeklyRests = weeklyRestsOf(timeline, restOfManual, now);
+  final levels = _Levels(
+    window: workdayWindow(crew),
+    withoutRight: reducedWeeklyRestsWithoutRight(
+      [
+        for (final r in weeklyRests)
+          if (r.end != null) r,
+      ]..sort((a, b) => a.start.compareTo(b.start)),
+      mobilityPackage: mobilityPackage,
+      atBase: atBaseCountry(
+        baseCountry: baseCountry,
+        shiftStarts: [
+          for (final s in timeline.shifts) s.start,
+          for (final m in manual) m.start,
+        ],
+        routes: routes,
+      ),
     ),
+    now: now,
   );
-  // Тот же отдых может быть и записью, и отдыхом ручной смены — по
-  // пересечению, а не по началу
-  bool takenWithoutRight(DateTime start, DateTime end) => withoutRight.any(
-    (w) => w.start.isBefore(end) && (w.end ?? now).isAfter(start),
-  );
+  final shifts = [
+    for (final s in timeline.shifts)
+      _recordedShift(s, timeline, crew, levels, now),
+    for (final (i, m) in manual.indexed)
+      _manualShift(m, restOfManual[i], crew, levels, now),
+  ];
+  return _weeks(shifts, weeklyRests, timeline, manual, now);
+}
 
-  // Один водитель: 13 ч / 15 ч, экипаж: 19 ч / 21 ч.
-  JournalLevel spanLevel(Duration span) {
+/// Highlights of journal values: the limits of Art. 6(1) and 8(2) for the
+/// crew, and the reduced weekly rests taken without the right to them.
+final class _Levels {
+  const new({
+    required this.window,
+    required this.withoutRight,
+    required this.now,
+  });
+
+  /// Окно суточного отдыха: 24 ч, экипаж — 30 ч.
+  final Duration window;
+
+  /// Сокращённые недельные отдыхи без права на них.
+  final List<WeeklyRest> withoutRight;
+  final DateTime now;
+
+  /// Один водитель: больше 15 ч — плохо, больше 13 ч — только при
+  /// сокращённом отдыхе; экипаж: 21 ч и 19 ч.
+  JournalLevel span(Duration span) {
     if (span > window - EuLimits.dailyRestReduced) return JournalLevel.bad;
     return span > window - EuLimits.dailyRestRegular
         ? JournalLevel.warn
         : JournalLevel.ok;
   }
 
-  JournalLevel driveLevel(Duration driving) {
+  JournalLevel drive(Duration driving) {
     if (driving > EuLimits.dailyDrivingExtended) return JournalLevel.bad;
     return driving > EuLimits.dailyDriving
         ? JournalLevel.warn
         : JournalLevel.ok;
   }
 
-  JournalLevel restLevel(RestStatus? status) => switch (status) {
+  JournalLevel rest(RestStatus? status) => switch (status) {
     RestStatus.insufficient => JournalLevel.bad,
     RestStatus.reduced => JournalLevel.warn,
     RestStatus.full || null => JournalLevel.ok,
   };
 
-  // Недельный отдых без права на сокращённый — нарушение
-  JournalLevel weeklyLevel(RestStatus? status, DateTime start, DateTime? end) =>
-      end != null && takenWithoutRight(start, end)
+  /// Недельный отдых [start]–[end] без права на сокращённый — нарушение.
+  /// Тот же отдых может быть и записью, и отдыхом ручной смены — по
+  /// пересечению, а не по началу.
+  JournalLevel weekly(RestStatus? status, DateTime start, DateTime? end) =>
+      end != null &&
+          withoutRight.any(
+            (w) => w.start.isBefore(end) && (w.end ?? now).isAfter(start),
+          )
       ? JournalLevel.bad
-      : restLevel(status);
+      : rest(status);
+}
 
-  final shifts = <JournalShift>[];
-
-  for (final s in timeline.shifts) {
-    final r = s.restAfter;
-    final kind = r == null
-        ? RestKind.none
-        : (r.isWeekly ? RestKind.weekly : RestKind.daily);
-    final status = r == null || r.open
-        ? null
-        : kind == RestKind.weekly
-        ? weeklyRestStatus(r.rest)
-        : dailyRestStatus(
-            shiftRestInWindow(timeline.blocks, s, crew),
-            split: s.splitFirstPart,
-          );
-    final span = durationBetween(s.start, s.end ?? now);
-    shifts.add(
-      JournalShift(
-        recorded: s,
-        manual: null,
-        start: s.start,
-        end: s.end,
-        driving: s.driving,
-        otherWork: s.otherWork,
-        availability: s.availability,
-        breaks: s.breaks,
-        span: span,
-        continuousDrivingAtEnd: s.continuousDrivingAtEnd,
-        rest: JournalRest(
-          kind: kind,
-          duration: r?.rest ?? Duration.zero,
-          ongoing: r?.open ?? false,
+/// Смена [s] из записей [timeline] со статусом отдыха после неё: суточный
+/// оценивается по части в окне от начала смены ([shiftRestInWindow]).
+JournalShift _recordedShift(
+  Shift s,
+  Timeline timeline,
+  CrewMode crew,
+  _Levels levels,
+  DateTime now,
+) {
+  final r = s.restAfter;
+  final kind = r == null
+      ? RestKind.none
+      : (r.isWeekly ? RestKind.weekly : RestKind.daily);
+  final status = r == null || r.open
+      ? null
+      : kind == RestKind.weekly
+      ? weeklyRestStatus(r.rest)
+      : dailyRestStatus(
+          shiftRestInWindow(timeline.blocks, s, crew),
           split: s.splitFirstPart,
-          status: status,
-        ),
-        live: s.isOngoing || (r?.open ?? false),
-        restEnd: r != null && !r.open ? r.end : null,
-        driveLevel: driveLevel(s.driving),
-        spanLevel: spanLevel(span),
-        restLevel: kind == RestKind.weekly && r != null && !r.open
-            ? weeklyLevel(status, r.start, r.end)
-            : restLevel(status),
-      ),
-    );
-  }
+        );
+  final span = durationBetween(s.start, s.end ?? now);
+  return JournalShift(
+    recorded: s,
+    manual: null,
+    start: s.start,
+    end: s.end,
+    driving: s.driving,
+    otherWork: s.otherWork,
+    availability: s.availability,
+    breaks: s.breaks,
+    span: span,
+    continuousDrivingAtEnd: s.continuousDrivingAtEnd,
+    rest: JournalRest(
+      kind: kind,
+      duration: r?.rest ?? Duration.zero,
+      ongoing: r?.open ?? false,
+      split: s.splitFirstPart,
+      status: status,
+    ),
+    live: s.isOngoing || (r?.open ?? false),
+    restEnd: r != null && !r.open ? r.end : null,
+    driveLevel: levels.drive(s.driving),
+    spanLevel: levels.span(span),
+    restLevel: kind == RestKind.weekly && r != null && !r.open
+        ? levels.weekly(status, r.start, r.end)
+        : levels.rest(status),
+  );
+}
 
-  for (final (i, m) in manual.indexed) {
-    final span = durationBetween(m.start, m.end ?? now);
-    final r = restOfManual[i];
-    final status = r == null || r.ongoing
-        ? null
-        : r.kind == RestKind.weekly
-        ? weeklyRestStatus(r.duration)
-        : dailyRestStatus(
-            restInWindow(span, r.duration, crew),
-            split: m.splitRest,
-          );
-    shifts.add(
-      JournalShift(
-        recorded: null,
-        manual: m,
-        start: m.start,
-        end: m.end,
-        driving: m.driving,
-        otherWork: Duration.zero,
-        availability: Duration.zero,
-        breaks: Duration.zero,
-        span: span,
-        continuousDrivingAtEnd: m.continuousDrivingAtEnd,
-        rest: JournalRest(
-          kind: r?.kind ?? RestKind.none,
-          duration: r?.duration ?? Duration.zero,
-          ongoing: r?.ongoing ?? false,
+/// Ручная смена [m] с отдыхом [r] после неё (до начала следующей смены):
+/// суточный оценивается по части в окне от начала смены ([restInWindow]).
+JournalShift _manualShift(
+  ManualShift m,
+  ManualRest? r,
+  CrewMode crew,
+  _Levels levels,
+  DateTime now,
+) {
+  final span = durationBetween(m.start, m.end ?? now);
+  final status = r == null || r.ongoing
+      ? null
+      : r.kind == RestKind.weekly
+      ? weeklyRestStatus(r.duration)
+      : dailyRestStatus(
+          restInWindow(span, r.duration, crew),
           split: m.splitRest,
-          status: status,
-        ),
-        live: false,
-        restEnd: r?.end,
-        driveLevel: driveLevel(m.driving),
-        spanLevel: spanLevel(span),
-        restLevel: r != null && r.kind == RestKind.weekly
-            ? weeklyLevel(status, r.start, r.end)
-            : restLevel(status),
-      ),
-    );
-  }
+        );
+  return JournalShift(
+    recorded: null,
+    manual: m,
+    start: m.start,
+    end: m.end,
+    driving: m.driving,
+    otherWork: Duration.zero,
+    availability: Duration.zero,
+    breaks: Duration.zero,
+    span: span,
+    continuousDrivingAtEnd: m.continuousDrivingAtEnd,
+    rest: JournalRest(
+      kind: r?.kind ?? RestKind.none,
+      duration: r?.duration ?? Duration.zero,
+      ongoing: r?.ongoing ?? false,
+      split: m.splitRest,
+      status: status,
+    ),
+    live: false,
+    restEnd: r?.end,
+    driveLevel: levels.drive(m.driving),
+    spanLevel: levels.span(span),
+    restLevel: r != null && r.kind == RestKind.weekly
+        ? levels.weekly(status, r.start, r.end)
+        : levels.rest(status),
+  );
+}
 
-  // Недели — по началу смены; вождение недели — точно по отрезкам
+/// Смены [shifts] по неделям — по началу смены, от новых к старым;
+/// вождение недели — точно по отрезкам ([drivingBetween]). Недельный отдых
+/// — в неделе, где он закончился (или идёт).
+List<JournalWeek> _weeks(
+  List<JournalShift> shifts,
+  List<WeeklyRest> weeklyRests,
+  Timeline timeline,
+  List<ManualShift> manual,
+  DateTime now,
+) {
   final currentWeek = weekStartUtc(now);
   final weekStarts = {
     currentWeek,
     for (final s in shifts) weekStartUtc(s.start),
   };
-  Duration drivingInWeek(DateTime from) {
-    final to = from.add(week);
-    var total = Duration.zero;
-    for (final b in timeline.blocks) {
-      if (b.mode == DriverMode.driving) {
-        total += overlap(b.start, b.end, from, to);
-      }
-    }
-    for (final m in manual) {
-      if (!m.start.isBefore(from) && m.start.isBefore(to)) total += m.driving;
-    }
-    return total;
-  }
-
+  Duration drivingInWeek(DateTime from) =>
+      drivingBetween(timeline, manual, from, from.add(week));
   final sortedWeeks = weekStarts.toList()..sort((a, b) => b.compareTo(a));
   return [
     for (final start in sortedWeeks)
@@ -310,43 +345,9 @@ List<JournalWeek> buildJournal({
             drivingInWeek(start) + drivingInWeek(start.subtract(week)),
         shifts: shifts.where((s) => weekStartUtc(s.start) == start).toList()
           ..sort((a, b) => b.start.compareTo(a.start)),
-        // Недельный отдых показываем в неделе, где он закончился (или идёт)
         weeklyRests: weeklyRests
             .where((r) => weekStartUtc(r.end ?? now) == start)
             .toList(),
       ),
-  ];
-}
-
-/// Недельные отдыхи из записей и ручных смен, идущий — тоже ([WeeklyRest.end]
-/// null). Отдых ручной смены, который уже есть в записях, — один раз.
-List<WeeklyRest> _weeklyRests(
-  Timeline timeline,
-  List<ManualRest?> restOfManual,
-  DateTime now,
-) {
-  final recordedWeekly = timeline.rests.where((p) => p.isWeekly).toList();
-  return [
-    for (final p in recordedWeekly)
-      WeeklyRest(
-        start: p.start,
-        end: p.open ? null : p.end,
-        duration: p.rest,
-        status: weeklyRestStatus(p.rest),
-      ),
-    for (final r in restOfManual.nonNulls)
-      if (r.kind == RestKind.weekly)
-        // Тот же отдых уже есть в записях режимов — не показываем его дважды
-        if (!recordedWeekly.any(
-          (p) =>
-              p.start.isBefore(r.end ?? now) &&
-              (p.open ? now : p.end).isAfter(r.start),
-        ))
-          WeeklyRest(
-            start: r.start,
-            end: r.end,
-            duration: r.duration,
-            status: weeklyRestStatus(r.duration),
-          ),
   ];
 }
