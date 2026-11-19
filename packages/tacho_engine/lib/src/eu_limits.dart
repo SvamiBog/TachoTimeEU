@@ -52,6 +52,11 @@ abstract final class EuLimits {
   static const weeklyRestReduced = Duration(hours: 24);
   static const maxBetweenWeeklyRests = Duration(hours: 144);
 
+  /// Пакет мобильности (ст. 8(6), ред. 2020/1054): из любых четырёх
+  /// недельных отдыхов подряд не меньше двух полных.
+  static const weeklyRestsInWindow = 4;
+  static const regularWeeklyRestsInWindow = 2;
+
   /// Компенсация сокращённого недельного отдыха — до конца третьей недели
   /// после недели, в которую он начался (ст. 8(6)).
   static const compensationWeeks = 3;
