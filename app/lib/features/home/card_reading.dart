@@ -37,15 +37,7 @@ class CardReadingTile extends ConsumerWidget {
     final s = watchSnapshot(ref, _card);
     final last = ref.watch(lastCardDownloadProvider.select((a) => a.value));
     if (s == null) return const SizedBox.shrink();
-    final l = context.l10n;
     final colors = context.colors;
-    final daysLeft = s.daysLeft;
-    const interval = EuLimits.cardDownloadInterval;
-    final valueColor = switch (s.tone) {
-      Tone.violation => colors.errorText,
-      Tone.warning => colors.drive,
-      _ => colors.text,
-    };
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.screenPadding,
@@ -79,49 +71,10 @@ class CardReadingTile extends ConsumerWidget {
                 ),
                 const SizedBox(width: AppSpacing.s14),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              l.cardTitle,
-                              style: AppTextStyles.rowTitle,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.s8),
-                          Text(
-                            daysLeft == null ? '—' : l.daysShort(daysLeft),
-                            style: AppTextStyles.value.copyWith(
-                              color: valueColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.s6),
-                      LimitBar(
-                        value: daysLeft == null
-                            ? Duration.zero
-                            : interval - Duration(days: daysLeft),
-                        max: interval,
-                        color: s.tone == Tone.violation
-                            ? colors.errorText
-                            : colors.text,
-                      ),
-                      const SizedBox(height: AppSpacing.s6),
-                      Text(
-                        last == null
-                            ? l.cardNever
-                            : l.cardCaption(
-                                formatDayMonth(last),
-                                formatDayMonth(last.add(interval)),
-                              ),
-                        style: AppTextStyles.caption.copyWith(
-                          color: colors.textSecondary,
-                        ),
-                      ),
-                    ],
+                  child: _CardDue(
+                    daysLeft: s.daysLeft,
+                    tone: s.tone,
+                    last: last,
                   ),
                 ),
               ],
@@ -129,6 +82,63 @@ class CardReadingTile extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Days left until the download, the 28-day bar and when the card was last
+/// read.
+class _CardDue extends StatelessWidget {
+  const new({required this.daysLeft, required this.tone, required this.last});
+
+  final int? daysLeft;
+  final Tone tone;
+  final DateTime? last;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final colors = context.colors;
+    final daysLeft = this.daysLeft;
+    final last = this.last;
+    const interval = EuLimits.cardDownloadInterval;
+    final valueColor = switch (tone) {
+      Tone.violation => colors.errorText,
+      Tone.warning => colors.drive,
+      _ => colors.text,
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(child: Text(l.cardTitle, style: AppTextStyles.rowTitle)),
+            const SizedBox(width: AppSpacing.s8),
+            Text(
+              daysLeft == null ? '—' : l.daysShort(daysLeft),
+              style: AppTextStyles.value.copyWith(color: valueColor),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.s6),
+        LimitBar(
+          value: daysLeft == null
+              ? Duration.zero
+              : interval - Duration(days: daysLeft),
+          max: interval,
+          color: tone == Tone.violation ? colors.errorText : colors.text,
+        ),
+        const SizedBox(height: AppSpacing.s6),
+        Text(
+          last == null
+              ? l.cardNever
+              : l.cardCaption(
+                  formatDayMonth(last),
+                  formatDayMonth(last.add(interval)),
+                ),
+          style: AppTextStyles.caption.copyWith(color: colors.textSecondary),
+        ),
+      ],
     );
   }
 }

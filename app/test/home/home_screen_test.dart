@@ -20,8 +20,10 @@ import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/hero_card.dart';
 import 'package:tachogo/features/home/home_screen.dart';
 import 'package:tachogo/features/home/limit_row.dart';
-import 'package:tachogo/features/home/limit_sections.dart';
 import 'package:tachogo/features/home/mode_buttons.dart';
+import 'package:tachogo/features/home/rest_section.dart';
+import 'package:tachogo/features/home/today_section.dart';
+import 'package:tachogo/features/home/week_section.dart';
 import 'package:tachogo/features/home/workday_screen.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
 

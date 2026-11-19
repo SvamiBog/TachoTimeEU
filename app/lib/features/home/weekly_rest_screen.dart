@@ -14,22 +14,14 @@ import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/limit_bar.dart';
-import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/compensation_row.dart';
 import 'package:tachogo/features/home/detail_rows.dart';
 import 'package:tachogo/features/home/end_day.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
+import 'package:tachogo/features/home/weekly_rest_history.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
-
-/// The last weekly rest, in whole minutes.
-typedef _Last = ({
-  DateTime start,
-  DateTime? end,
-  int duration,
-  RestStatus status,
-});
 
 /// Everything the weekly rest screen shows, in whole minutes.
 typedef _Weekly = ({
@@ -43,7 +35,7 @@ typedef _Weekly = ({
   /// Сокращённый недоступен из-за страны фирмы: второй подряд — только вне
   /// неё (ст. 8(6)).
   bool reducedAtBase,
-  _Last? last,
+  LastWeeklyRest? last,
 
   /// Непогашенные долги по сроку; за два сокращённых подряд — один на оба.
   ValueList<Compensation> debts,
@@ -108,28 +100,7 @@ class WeeklyRestScreen extends ConsumerWidget {
     );
     return DetailScaffold(
       title: l.rowWeeklyRest,
-      bottom: Row(
-        children: [
-          Expanded(
-            child: SecondaryButton(
-              label: l.weeklyAddManually,
-              onPressed: () => unawaited(
-                openShiftEditor(context, presetRest: RestKind.weekly),
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.s8),
-          Expanded(
-            child: PrimaryButton(
-              label: l.weeklyStartRest,
-              color: context.colors.rest,
-              onPressed: s == null || s.onWeekly != null
-                  ? null
-                  : () => _startRest(context, ref),
-            ),
-          ),
-        ],
-      ),
+      bottom: _Actions(canStart: s != null && s.onWeekly == null),
       children: s == null
           ? const []
           : [
@@ -151,7 +122,7 @@ class WeeklyRestScreen extends ConsumerWidget {
                 ),
               ],
               SectionTitle(l.weeklyHistory),
-              _History(s),
+              WeeklyRestHistory(last: s.last, debts: s.debts.items),
               if (s.twoReducedDebt case final debt?)
                 InfoNote(
                   l.weeklyTwoReducedNote(
@@ -166,6 +137,14 @@ class WeeklyRestScreen extends ConsumerWidget {
             ],
     );
   }
+}
+
+/// "Add manually" and "Start weekly rest" at the bottom of the screen.
+class _Actions extends ConsumerWidget {
+  const new({required this.canStart});
+
+  /// Недельный отдых ещё не идёт — его можно начать.
+  final bool canStart;
 
   /// Недельный отдых сразу, ещё до 24 ч: смена завершается — как
   /// «Завершить день», водитель вводит вождение за день, — а идущий
@@ -173,6 +152,31 @@ class WeeklyRestScreen extends ConsumerWidget {
   static Future<void> _startRest(BuildContext context, WidgetRef ref) async {
     final navigator = Navigator.of(context);
     if (await finishDay(context, ref, weekly: true)) navigator.pop();
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    return Row(
+      children: [
+        Expanded(
+          child: SecondaryButton(
+            label: l.weeklyAddManually,
+            onPressed: () => unawaited(
+              openShiftEditor(context, presetRest: RestKind.weekly),
+            ),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.s8),
+        Expanded(
+          child: PrimaryButton(
+            label: l.weeklyStartRest,
+            color: context.colors.rest,
+            onPressed: canStart ? () => _startRest(context, ref) : null,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -400,136 +404,6 @@ class _Option extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-/// The previous weekly rests and the compensation debt: the whole debt and,
-/// when there are several, each one with its due date.
-class _History extends StatelessWidget {
-  const new(this.s);
-
-  final _Weekly s;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-    final last = s.last;
-    final debts = s.debts.items;
-    final debt = debts.fold(Duration.zero, (sum, c) => sum + c.debt);
-    String moment(DateTime t) => '${formatDayMonth(t)} ${formatClock(t)}';
-    String debtValue(Compensation c) =>
-        l.weeklyCompensationValue(formatHm(c.debt), formatDayMonth(c.dueBy));
-    final caption = AppTextStyles.caption.copyWith(color: colors.textSecondary);
-    return CardGroup(
-      children: [
-        if (last == null)
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Text(
-              l.statusNoData,
-              style: AppTextStyles.body.copyWith(color: colors.textSecondary),
-            ),
-          )
-        else
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Row(
-              children: [
-                ModeIcon(DriverMode.rest, size: 24, color: colors.rest),
-                const SizedBox(width: AppSpacing.s14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l.weeklyPrevious(last.status.name),
-                        style: AppTextStyles.rowTitle,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '${moment(last.start)} → '
-                        '${last.end == null ? l.weeklyNow : moment(last.end!)}',
-                        style: AppTextStyles.caption.copyWith(
-                          color: colors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.s8),
-                DurationText(
-                  formatHm(Duration(minutes: last.duration)),
-                  spoken: spokenDuration(l, Duration(minutes: last.duration)),
-                  style: AppTextStyles.value,
-                ),
-              ],
-            ),
-          ),
-        CardRow(
-          vertical: AppSpacing.s12,
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l.weeklyCompensation,
-                  style: AppTextStyles.rowTitle,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.s8),
-              // «15:00 antes del 12.10» на крупном шрифте переносится, а не
-              // выталкивает название
-              Flexible(
-                child: Text(
-                  switch (debts) {
-                    [] => l.weeklyCompensationNone,
-                    [final c] => debtValue(c),
-                    // Несколько долгов — сколько всего, ниже каждый
-                    _ => formatHm(debt),
-                  },
-                  textAlign: TextAlign.end,
-                  style: AppTextStyles.body.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: debts.isEmpty ? colors.restText : colors.drive,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (debts.length > 1)
-          for (final c in debts)
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.cardPadding,
-                vertical: AppSpacing.s12,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(switch (c.secondRestStart) {
-                      final second? => l.weeklyCompensationForTwo(
-                        formatDayMonth(c.restStart),
-                        formatDayMonth(second),
-                      ),
-                      null => l.weeklyCompensationFor(
-                        formatDayMonth(c.restStart),
-                      ),
-                    }, style: caption),
-                  ),
-                  const SizedBox(width: AppSpacing.s8),
-                  Flexible(
-                    child: Text(
-                      debtValue(c),
-                      textAlign: TextAlign.end,
-                      style: AppTextStyles.body,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-      ],
     );
   }
 }

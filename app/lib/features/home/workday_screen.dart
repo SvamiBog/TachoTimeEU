@@ -70,41 +70,7 @@ class WorkdayScreen extends ConsumerWidget {
     final start = s?.start;
     return DetailScaffold(
       title: l.rowWorkday,
-      bottom: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (start != null) ...[
-            Text(
-              l.workdayEndDayHint,
-              style: AppTextStyles.caption.copyWith(
-                color: context.colors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.s12),
-          ],
-          Row(
-            children: [
-              Expanded(
-                child: SecondaryButton(
-                  label: l.workdayChangeStart,
-                  onPressed: start == null
-                      ? null
-                      : () => unawaited(openShiftStartCorrection(context, ref)),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.s8),
-              Expanded(
-                child: PrimaryButton(
-                  label: l.workdayEndDay,
-                  color: context.colors.rest,
-                  onPressed: start == null ? null : () => _endDay(context, ref),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+      bottom: _Actions(shift: start != null),
       children: s == null
           ? const []
           : [
@@ -125,12 +91,61 @@ class WorkdayScreen extends ConsumerWidget {
             ],
     );
   }
+}
+
+/// "Change start" and "End day" at the bottom of the screen; while a shift is
+/// on — with the hint over them.
+class _Actions extends ConsumerWidget {
+  const new({required this.shift});
+
+  /// Смена идёт: кнопки доступны.
+  final bool shift;
 
   /// «Завершить день» — отдых, который сразу завершает смену; водитель
   /// вводит вождение за день.
   static Future<void> _endDay(BuildContext context, WidgetRef ref) async {
     final navigator = Navigator.of(context);
     if (await finishDay(context, ref)) navigator.pop();
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (shift) ...[
+          Text(
+            l.workdayEndDayHint,
+            style: AppTextStyles.caption.copyWith(
+              color: context.colors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.s12),
+        ],
+        Row(
+          children: [
+            Expanded(
+              child: SecondaryButton(
+                label: l.workdayChangeStart,
+                onPressed: shift
+                    ? () => unawaited(openShiftStartCorrection(context, ref))
+                    : null,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.s8),
+            Expanded(
+              child: PrimaryButton(
+                label: l.workdayEndDay,
+                color: context.colors.rest,
+                onPressed: shift ? () => _endDay(context, ref) : null,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
 

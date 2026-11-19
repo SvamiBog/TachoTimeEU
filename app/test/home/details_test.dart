@@ -20,7 +20,7 @@ import 'package:tachogo/features/home/detail_rows.dart';
 import 'package:tachogo/features/home/driving_screen.dart';
 import 'package:tachogo/features/home/hero_card.dart';
 import 'package:tachogo/features/home/home_screen.dart';
-import 'package:tachogo/features/home/limit_sections.dart';
+import 'package:tachogo/features/home/rest_section.dart';
 import 'package:tachogo/features/home/weekly_rest_screen.dart';
 import 'package:tachogo/features/home/work_week_screen.dart';
 import 'package:tachogo/features/home/workday_screen.dart';

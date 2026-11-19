@@ -130,7 +130,6 @@ class AlertCard extends StatelessWidget {
     final c = tone == Tone.neutral
         ? (background: colors.surface, foreground: colors.text)
         : colors.tone(tone);
-    final text = context.l10n.infringement(infringement);
     // Без liveRegion: время в тексте меняется каждую минуту, диктор
     // повторял бы плашку. О нарушении сообщит уведомление (Фаза 3).
     return Semantics(
@@ -163,31 +162,9 @@ class AlertCard extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.s12),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          text.title,
-                          style: AppTextStyles.body.copyWith(
-                            color: c.foreground,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          text.text,
-                          style: AppTextStyles.caption.copyWith(
-                            color: c.foreground,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.s4),
-                        Text(
-                          text.article,
-                          style: AppTextStyles.small.copyWith(
-                            color: c.foreground,
-                          ),
-                        ),
-                      ],
+                    child: _AlertText(
+                      context.l10n.infringement(infringement),
+                      color: c.foreground,
                     ),
                   ),
                   if (onTap != null) ...[
@@ -202,4 +179,30 @@ class AlertCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The texts of an infringement card: title, what happened and the article.
+class _AlertText extends StatelessWidget {
+  const new(this.copy, {required this.color});
+
+  final ({String title, String text, String article}) copy;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        copy.title,
+        style: AppTextStyles.body.copyWith(
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      const SizedBox(height: 2),
+      Text(copy.text, style: AppTextStyles.caption.copyWith(color: color)),
+      const SizedBox(height: AppSpacing.s4),
+      Text(copy.article, style: AppTextStyles.small.copyWith(color: color)),
+    ],
+  );
 }

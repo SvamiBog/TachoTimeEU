@@ -16,9 +16,11 @@ import 'package:tachogo/features/home/ban_card.dart';
 import 'package:tachogo/features/home/card_reading.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
 import 'package:tachogo/features/home/hero_card.dart';
-import 'package:tachogo/features/home/limit_sections.dart';
 import 'package:tachogo/features/home/mode_buttons.dart';
+import 'package:tachogo/features/home/rest_section.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
+import 'package:tachogo/features/home/today_section.dart';
+import 'package:tachogo/features/home/week_section.dart';
 import 'package:tachogo/features/settings/base_country.dart';
 
 /// Whether the calculation is loading, ready or failed.
