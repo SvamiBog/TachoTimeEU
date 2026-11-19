@@ -62,17 +62,17 @@ final class _ViolationTexts {
         l.reportViolationSpan(
           _date(s.start),
           formatHm(s.span),
-          (workdayWindow(crew) - EuLimits.dailyRestReduced).inHours,
+          extendedWorkday(crew).inHours,
         ),
         InfringementType.shiftExceeded,
-        crew == CrewMode.team ? '8(5)' : null,
+        workdayArticle(crew),
       ),
-    // Отдыху отдельного вида нарушения в движке нет — статья по виду отдыха
+    // У отдыха отдельного вида нарушения нет — регламент и статья из журнала
     if (s.restLevel == JournalLevel.bad)
       (
         text: l.reportViolationRest(_date(s.start), formatHm(s.rest.duration)),
-        regulation: '561/2006',
-        article: s.rest.kind == RestKind.weekly ? '8(6)' : '8(2)',
+        regulation: s.rest.regulation,
+        article: s.rest.article,
       ),
   ];
 
@@ -80,12 +80,12 @@ final class _ViolationTexts {
   List<ReportViolation> ofWeek(JournalWeek w) {
     final label = formatWeekRange(w.start, locale);
     return [
-      if (w.driving > EuLimits.weeklyDriving)
+      if (w.drivingLevel == JournalLevel.bad)
         _of(
           l.reportViolationWeek(label, formatHm(w.driving)),
           InfringementType.weeklyDriveExceeded,
         ),
-      if (w.fortnightDriving > EuLimits.fortnightDriving)
+      if (w.fortnightLevel == JournalLevel.bad)
         _of(
           l.reportViolationFortnight(label, formatHm(w.fortnightDriving)),
           InfringementType.fortnightDriveExceeded,

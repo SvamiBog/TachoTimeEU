@@ -51,7 +51,7 @@ final class Workday {
       extensionsUsed: _extensionsUsed(log, shift, start),
       reducedRestsUsed: _reducedRestsUsed(log, crew, workWeekStart),
       span: _span(log, start, breakState.currentRest),
-      window: workdayWindow(crew),
+      crew: crew,
     );
   }
 
@@ -64,7 +64,7 @@ final class Workday {
     required this.extensionsUsed,
     required this.reducedRestsUsed,
     required this.span,
-    required this.window,
+    required this.crew,
   });
 
   /// Текущая смена по записям; null — смены нет.
@@ -93,8 +93,8 @@ final class Workday {
   /// Рабочий день: от [start] до сейчас, во время отдыха — до начала отдыха.
   final Duration span;
 
-  /// Окно суточного отдыха: 24 ч, экипаж — 30 ч.
-  final Duration window;
+  /// Один водитель или экипаж: окно отдыха 24 или 30 ч и лимиты дня.
+  final CrewMode crew;
 
   Duration get continuousDriving => breakState.continuousDriving;
 
@@ -138,17 +138,17 @@ final class Workday {
   // трёх сокращений рабочий день экипажа — 19 ч, а не 21 ч.
 
   /// Обычный рабочий день: 13 ч (экипаж — 19 ч).
-  Duration get regularLimit => window - EuLimits.dailyRestRegular;
+  Duration get regularLimit => regularWorkday(crew);
 
   /// Удлинённый: 15 ч при сокращённом или раздельном отдыхе (экипаж — 21 ч).
-  Duration get extendedLimit => window - EuLimits.dailyRestReduced;
+  Duration get extendedLimit => extendedWorkday(crew);
 
   /// Действующий лимит с учётом доступных сокращений.
   Duration get limit =>
       reducedRestsLeft > 0 || splitFirstPart ? extendedLimit : regularLimit;
 
   /// Суточный отдых должен закончиться до этого момента; null — смены нет.
-  DateTime? get restDeadline => start?.add(window);
+  DateTime? get restDeadline => start?.add(workdayWindow(crew));
 }
 
 /// Рабочий день от [start] до сейчас; во время отдыха [currentRest] — до его

@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/compliance.dart';
 import 'package:tacho_engine/src/compliance_log.dart';
 import 'package:tacho_engine/src/eu_limits.dart';
+import 'package:tacho_engine/src/infringement.dart';
 import 'package:tacho_engine/src/manual_rest.dart';
 import 'package:tacho_engine/src/manual_shift.dart';
 import 'package:tacho_engine/src/shift_route.dart';
@@ -37,6 +38,17 @@ class JournalRest {
 
   /// null — отдыха нет или он ещё идёт.
   final RestStatus? status;
+
+  /// Отдых длится 24 ч и больше — недельный по длительности, какой бы вид ни
+  /// выбрал водитель (`RestPeriod.isWeekly`); короче — вид такой, как
+  /// отмечен.
+  bool get weeklyByLength => duration >= EuLimits.weeklyRestReduced;
+
+  /// Регламент отдыха после смены — им отвечает недостаточный отдых.
+  String get regulation => drivingTimesRegulation;
+
+  /// Статья: недельный отдых — ст. 8(6), суточный — ст. 8(2).
+  String get article => kind == RestKind.weekly ? '8(6)' : '8(2)';
 }
 
 /// A shift in the journal: worked out from records or entered by hand.
@@ -117,6 +129,16 @@ class JournalWeek {
   /// Вождение за эту и прошлую неделю (лимит 90 ч).
   final Duration fortnightDriving;
 
+  /// Больше 56 ч за неделю — плохо (ст. 6(2)).
+  JournalLevel get drivingLevel =>
+      driving > EuLimits.weeklyDriving ? JournalLevel.bad : JournalLevel.ok;
+
+  /// Больше 90 ч за две недели — плохо (ст. 6(3)).
+  JournalLevel get fortnightLevel =>
+      fortnightDriving > EuLimits.fortnightDriving
+      ? JournalLevel.bad
+      : JournalLevel.ok;
+
   /// Смены, начавшиеся на этой неделе, от новых к старым.
   final List<JournalShift> shifts;
 
@@ -144,7 +166,7 @@ List<JournalWeek> buildJournal({
   final restOfManual = manualRests(manual, timeline, now);
   final weeklyRests = weeklyRestsOf(timeline, restOfManual, now);
   final levels = _Levels(
-    window: workdayWindow(crew),
+    crew: crew,
     withoutRight: reducedWeeklyRestsWithoutRight(
       [
         for (final r in weeklyRests)
@@ -175,13 +197,13 @@ List<JournalWeek> buildJournal({
 /// crew, and the reduced weekly rests taken without the right to them.
 final class _Levels {
   const new({
-    required this.window,
+    required this.crew,
     required this.withoutRight,
     required this.now,
   });
 
-  /// Окно суточного отдыха: 24 ч, экипаж — 30 ч.
-  final Duration window;
+  /// Один водитель или экипаж: лимиты рабочего дня.
+  final CrewMode crew;
 
   /// Сокращённые недельные отдыхи без права на них.
   final List<WeeklyRest> withoutRight;
@@ -190,10 +212,8 @@ final class _Levels {
   /// Один водитель: больше 15 ч — плохо, больше 13 ч — только при
   /// сокращённом отдыхе; экипаж: 21 ч и 19 ч.
   JournalLevel span(Duration span) {
-    if (span > window - EuLimits.dailyRestReduced) return JournalLevel.bad;
-    return span > window - EuLimits.dailyRestRegular
-        ? JournalLevel.warn
-        : JournalLevel.ok;
+    if (span > extendedWorkday(crew)) return JournalLevel.bad;
+    return span > regularWorkday(crew) ? JournalLevel.warn : JournalLevel.ok;
   }
 
   JournalLevel drive(Duration driving) {

@@ -99,7 +99,7 @@ class _WeekHeader extends StatelessWidget {
     final l = context.l10n;
     final colors = context.colors;
     final range = formatWeekRange(week.start, context.localeTag);
-    final weekOver = week.driving > EuLimits.weeklyDriving;
+    final weekOver = week.drivingLevel == JournalLevel.bad;
     return Semantics(
       button: true,
       expanded: true,
@@ -152,7 +152,7 @@ class _WeekHeader extends StatelessWidget {
                     label: l.journalFortnight,
                     value: week.fortnightDriving,
                     of: l.journalOf(_fortnightHours),
-                    over: week.fortnightDriving > EuLimits.fortnightDriving,
+                    over: week.fortnightLevel == JournalLevel.bad,
                   ),
                 ],
               ),

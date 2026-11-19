@@ -492,7 +492,7 @@ final class ShiftForm {
     return (
       // Идущий отдых короче 24 ч — какой выбран: недельный отмечается у
       // записи отдыха (`declareRest`)
-      kind: live && r.duration < EuLimits.weeklyRestReduced
+      kind: live && !r.weeklyByLength
           ? values.restKind
           : r.kind == RestKind.none
           ? values.restKind

@@ -102,15 +102,15 @@ List<Infringement> _dailyDrivingAlerts(
 }
 
 /// Рабочий день длиннее лимита — нарушение, за [ComplianceSettings
-/// .warningLead] до конца — предупреждение, пока водитель не отдыхает. У
-/// экипажа статья — 8(5).
+/// .warningLead] до конца — предупреждение, пока водитель не отдыхает.
+/// Статья — по экипажу ([workdayArticle]): у экипажа — 8(5).
 Infringement? _shiftAlert(
   ComplianceLog log,
   Workday day,
   ComplianceSettings settings,
 ) {
   if (day.shift == null) return null;
-  final article = settings.crew == CrewMode.team ? '8(5)' : null;
+  final article = workdayArticle(settings.crew);
   if (day.span > day.limit) {
     return Infringement(
       InfringementType.shiftExceeded,

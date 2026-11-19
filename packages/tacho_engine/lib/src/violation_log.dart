@@ -360,7 +360,7 @@ List<LoggedViolation> _manualDays(
 }) {
   if (manual.isEmpty) return const [];
   final days = ManualDays(manual, manualRests(manual, timeline, now));
-  final spanLimit = workdayWindow(crew) - EuLimits.dailyRestReduced;
+  final spanLimit = extendedWorkday(crew);
   final result = <LoggedViolation>[];
   for (final m in manual) {
     final end = m.end;
@@ -399,7 +399,7 @@ List<LoggedViolation> _manualDays(
             InfringementType.shiftExceeded,
             time: span - spanLimit,
             limit: spanLimit,
-            article: crew == CrewMode.team ? '8(5)' : null,
+            article: workdayArticle(crew),
           ),
         ),
       );
