@@ -3,22 +3,14 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
-import 'package:tachogo/core/widgets/limit_bar.dart';
-import 'package:tachogo/core/widgets/mode_style.dart';
-import 'package:tachogo/core/widgets/sections.dart';
-import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/export/export_sheet.dart';
-import 'package:tachogo/features/home/compensation_row.dart';
-import 'package:tachogo/features/home/snapshot_select.dart';
-import 'package:tachogo/features/journal/journal_parts.dart';
-import 'package:tachogo/features/journal/shift_day_screen.dart';
+import 'package:tachogo/features/journal/journal_week.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
 
 /// Journal (screen 2): weeks → shifts and weekly rests, with highlights for 10
@@ -48,7 +40,11 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
     return Scaffold(
       body: SafeArea(
         child: switch (journal) {
-          AsyncData(:final value) => _list(value),
+          AsyncData(:final value) => _WeekList(
+            value,
+            toggled: _toggled,
+            onToggle: _toggle,
+          ),
           AsyncError() => Center(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.screenPadding * 2),
@@ -62,6 +58,8 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
           _ => const Center(child: CircularProgressIndicator()),
         },
       ),
+      // Кнопка — прямо в Scaffold: у расширенной кнопки он анимирует
+      // появление иначе, чем у обёрнутой в свой виджет
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => openShiftEditor(context),
         tooltip: l.journalAddShiftSpoken,
@@ -77,7 +75,24 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
     );
   }
 
-  Widget _list(Journal journal) {
+  void _toggle(DateTime week) => setState(() {
+    if (!_toggled.remove(week)) _toggled.add(week);
+  });
+}
+
+/// The weeks from the newest: the last [JournalScreen.expandedWeeks] expanded,
+/// older ones collapsed, unless the driver toggled them.
+class _WeekList extends StatelessWidget {
+  const new(this.journal, {required this.toggled, required this.onToggle});
+
+  final Journal journal;
+
+  /// Начала недель, которые водитель свернул или раскрыл сам.
+  final Set<DateTime> toggled;
+  final ValueChanged<DateTime> onToggle;
+
+  @override
+  Widget build(BuildContext context) {
     final weeks = journal.weeks;
     final empty = weeks.every((w) => w.shifts.isEmpty && w.weeklyRests.isEmpty);
     return ListView(
@@ -110,24 +125,20 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
             ),
             child:
                 (i < JournalScreen.expandedWeeks) !=
-                    _toggled.contains(week.start)
-                ? _WeekCard(
+                    toggled.contains(week.start)
+                ? JournalWeekCard(
                     journal: journal,
                     week: week,
-                    onToggle: () => _toggle(week.start),
+                    onToggle: () => onToggle(week.start),
                   )
-                : _CollapsedWeek(
+                : JournalCollapsedWeek(
                     week: week,
-                    onToggle: () => _toggle(week.start),
+                    onToggle: () => onToggle(week.start),
                   ),
           ),
       ],
     );
   }
-
-  void _toggle(DateTime week) => setState(() {
-    if (!_toggled.remove(week)) _toggled.add(week);
-  });
 }
 
 /// The title with the export button.
@@ -176,449 +187,6 @@ class _Header extends StatelessWidget {
               icon: const Icon(Icons.file_download_outlined),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// An item of a week: a shift or a weekly rest, newest first.
-sealed class _Item {
-  const new(this.at);
-
-  final DateTime at;
-}
-
-/// A shift in the week's list.
-class _ShiftItem extends _Item {
-  new(this.shift) : super(shift.start);
-
-  final JournalShift shift;
-}
-
-/// A weekly rest in the week's list, placed by its end.
-class _RestItem extends _Item {
-  new(this.rest, DateTime now) : super(rest.end ?? now);
-
-  final WeeklyRest rest;
-}
-
-List<_Item> _items(JournalWeek week, DateTime now) =>
-    <_Item>[
-      for (final s in week.shifts) _ShiftItem(s),
-      for (final r in week.weeklyRests) _RestItem(r, now),
-    ]..sort((a, b) {
-      final byTime = b.at.compareTo(a.at);
-      if (byTime != 0) return byTime;
-      // Отдых, закончившийся в начале смены, — под ней
-      return a is _ShiftItem ? -1 : 1;
-    });
-
-/// A week card: header with totals and its shifts and weekly rests.
-class _WeekCard extends StatelessWidget {
-  const new({
-    required this.journal,
-    required this.week,
-    required this.onToggle,
-  });
-
-  final Journal journal;
-  final JournalWeek week;
-  final VoidCallback onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Material(
-      color: colors.surface,
-      borderRadius: BorderRadius.circular(AppRadius.card),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _WeekHeader(week: week, onToggle: onToggle),
-          for (final item in _items(week, journal.now)) ...[
-            Divider(height: 1, thickness: 1, color: colors.surface2),
-            switch (item) {
-              _ShiftItem(:final shift) => _ShiftRow(journal, shift),
-              _RestItem(:final rest) => _WeeklyRestRow(rest),
-            },
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-final int _weekHours = EuLimits.weeklyDriving.inHours;
-final int _fortnightHours = EuLimits.fortnightDriving.inHours;
-
-/// Week header: dates, driving of the week and the collapse toggle.
-class _WeekHeader extends StatelessWidget {
-  const new({required this.week, required this.onToggle});
-
-  final JournalWeek week;
-  final VoidCallback onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-    final range = formatWeekRange(week.start, context.localeTag);
-    final weekOver = week.driving > EuLimits.weeklyDriving;
-    final fortnightOver = week.fortnightDriving > EuLimits.fortnightDriving;
-    final caption = AppTextStyles.caption.copyWith(color: colors.textSecondary);
-    InlineSpan value(Duration d, {bool over = false}) => TextSpan(
-      text: formatHm(d),
-      style: AppTextStyles.numericCaption.copyWith(
-        fontWeight: FontWeight.w700,
-        color: over ? colors.errorText : colors.text,
-      ),
-    );
-    return Semantics(
-      button: true,
-      expanded: true,
-      label: l.journalWeekSpoken(
-        range,
-        spokenDuration(l, week.driving),
-        spokenDuration(l, week.fortnightDriving),
-      ),
-      excludeSemantics: true,
-      child: InkWell(
-        onTap: onToggle,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.cardPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      range,
-                      style: AppTextStyles.rowTitle.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.s8),
-                  if (week.isCurrent)
-                    StatusChip(l.journalCurrent, tone: Tone.warning)
-                  else
-                    Icon(
-                      Icons.keyboard_arrow_up,
-                      size: 20,
-                      color: colors.textSecondary,
-                    ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.s10),
-              LimitBar(
-                value: week.driving,
-                max: EuLimits.weeklyDriving,
-                color: weekOver ? colors.errorText : colors.drive,
-              ),
-              const SizedBox(height: AppSpacing.s10),
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                spacing: AppSpacing.s12,
-                runSpacing: 2,
-                children: [
-                  Text.rich(
-                    TextSpan(
-                      style: caption,
-                      children: [
-                        TextSpan(text: '${l.journalDriving} '),
-                        value(week.driving, over: weekOver),
-                        TextSpan(text: ' ${l.journalOf(_weekHours)}'),
-                      ],
-                    ),
-                  ),
-                  Text.rich(
-                    TextSpan(
-                      style: caption,
-                      children: [
-                        TextSpan(text: '${l.journalFortnight} '),
-                        value(week.fortnightDriving, over: fortnightOver),
-                        TextSpan(text: ' ${l.journalOf(_fortnightHours)}'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// A collapsed past week: dates and driving, a tap expands it.
-class _CollapsedWeek extends StatelessWidget {
-  const new({required this.week, required this.onToggle});
-
-  final JournalWeek week;
-  final VoidCallback onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-    final range = formatWeekRange(week.start, context.localeTag);
-    return Semantics(
-      button: true,
-      expanded: false,
-      label: l.journalWeekSpoken(
-        range,
-        spokenDuration(l, week.driving),
-        spokenDuration(l, week.fortnightDriving),
-      ),
-      excludeSemantics: true,
-      child: Material(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.modeButton),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onToggle,
-          child: CardRow(
-            vertical: AppSpacing.s8,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    range,
-                    style: AppTextStyles.rowTitle.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.s8),
-                Text.rich(
-                  TextSpan(
-                    style: AppTextStyles.caption.copyWith(
-                      color: colors.textSecondary,
-                    ),
-                    children: [
-                      TextSpan(text: '${l.journalCollapsedDriving} '),
-                      TextSpan(
-                        text: formatHm(week.driving),
-                        style: AppTextStyles.numericCaption.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: colors.text,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.s8),
-                Icon(
-                  Icons.keyboard_arrow_down,
-                  size: 20,
-                  color: colors.textSecondary,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// A shift row: day, countries, time, totals. A tap opens the day details.
-class _ShiftRow extends StatelessWidget {
-  const new(this.journal, this.shift);
-
-  final Journal journal;
-  final JournalShift shift;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-    final locale = context.localeTag;
-    final s = shift;
-    final route = routeOf(journal.metaOf(s));
-    final time = shiftTimeOf(l, s);
-    final live = s.end == null;
-    return Semantics(
-      button: true,
-      label: l.journalShiftSpoken(
-        formatWeekdayFull(s.start, locale),
-        route,
-        time,
-        spokenDuration(l, s.driving),
-        spokenDuration(l, s.span),
-        restSpokenOf(l, s),
-      ),
-      excludeSemantics: true,
-      child: InkWell(
-        onTap: () => openShiftDay(context, keyOf(s)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.cardPadding,
-            vertical: AppSpacing.s14,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 44,
-                child: Column(
-                  children: [
-                    Text(
-                      formatWeekdayShort(s.start, locale),
-                      style: AppTextStyles.small.copyWith(
-                        color: colors.textSecondary,
-                      ),
-                    ),
-                    Text(
-                      '${s.start.toLocal().day}',
-                      style: AppTextStyles.modeTimer,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpacing.s12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: AppSpacing.s8,
-                      runSpacing: 2,
-                      children: [
-                        Text.rich(
-                          TextSpan(
-                            text: route,
-                            style: AppTextStyles.body.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                            children: [
-                              if (s.manual != null)
-                                TextSpan(
-                                  text: '  ${l.journalManual}',
-                                  style: AppTextStyles.small.copyWith(
-                                    color: colors.textSecondary,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          time,
-                          style: AppTextStyles.numericCaption.copyWith(
-                            color: live ? colors.drive : colors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.s8),
-                    ShiftMetrics(s),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// A weekly rest row with its status and the compensation debt it created or
-/// repaid.
-class _WeeklyRestRow extends ConsumerWidget {
-  const new(this.rest);
-
-  final WeeklyRest rest;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = context.l10n;
-    final colors = context.colors;
-    final end = rest.end;
-    final title = l.journalWeeklyRest(l.restStatus(rest.status.name));
-    final when =
-        '${formatDayMonthClock(rest.start)} → '
-        '${end == null ? l.weeklyNow : formatDayMonthClock(end)}';
-    // Долг за сокращённый отдых и чем он погашен; долг, погашенный им
-    final all = watchSnapshot(ref, (s) => ValueList(s.compensations));
-    final (:taken, :debt) = compensationOfRest(
-      all?.items ?? const [],
-      rest.start,
-    );
-    final repaidIn = debt?.repaidIn;
-    final debtState = debt == null
-        ? null
-        : repaidIn != null
-        ? l.compensationRepaidOn(formatDayMonth(repaidIn))
-        : l.compensationAttachBy(formatDayMonth(debt.dueBy));
-    // Два сокращённых подряд — один долг на оба: у каждого — с каким
-    final paired = debt == null ? null : pairedRest(debt, rest.start);
-    final compensation = [
-      if (debt != null && debtState != null)
-        '${l.compensationDebt(formatHm(debt.debt))} — $debtState',
-      if (paired != null) l.compensationTogetherWith(formatDayMonth(paired)),
-      if (taken > Duration.zero) l.compensationTakenValue(formatHm(taken)),
-    ].join(' · ');
-    return Semantics(
-      container: true,
-      label:
-          '$title. $when. ${spokenDuration(l, rest.duration)}'
-          '${compensation.isEmpty ? '' : '. $compensation'}',
-      excludeSemantics: true,
-      child: ColoredBox(
-        color: colors.restBg,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.cardPadding,
-            vertical: AppSpacing.s14,
-          ),
-          child: Row(
-            children: [
-              ModeIcon(DriverMode.rest, size: 22, color: colors.rest),
-              const SizedBox(width: AppSpacing.s12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: AppTextStyles.body.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: colors.restText,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      when,
-                      style: AppTextStyles.numericCaption.copyWith(
-                        color: colors.textSecondary,
-                      ),
-                    ),
-                    if (compensation.isNotEmpty)
-                      Text(
-                        compensation,
-                        style: AppTextStyles.caption.copyWith(
-                          color: debt != null && repaidIn == null
-                              ? colors.warningText
-                              : colors.restText,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpacing.s8),
-              Text(
-                formatHm(rest.duration),
-                style: AppTextStyles.value.copyWith(color: colors.restText),
-              ),
-            ],
-          ),
         ),
       ),
     );

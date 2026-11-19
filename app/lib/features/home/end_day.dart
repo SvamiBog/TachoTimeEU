@@ -12,7 +12,7 @@ import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/journal_save.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
-import 'package:tachogo/features/journal/pickers.dart';
+import 'package:tachogo/features/journal/duration_sheet.dart';
 
 /// «Завершить день»: водитель вводит вождение за день. Журнал режимов по
 /// времени ему не нужен — только итог (отзыв водителей, 28.09.2026). В поле
