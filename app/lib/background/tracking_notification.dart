@@ -14,75 +14,100 @@ import 'package:tachogo/core/l10n/l10n.dart';
   AutoSwitch? suggestion,
 }) {
   if (suggestion case AutoSwitch(:final at?)) {
-    final since = formatClock(at);
-    return switch (suggestion.reason) {
-      AutoSwitchReason.team => (
-        title: l.serviceTeamTitle,
-        text: l.serviceTeamText(since),
-      ),
-      _ => (title: l.serviceSuggestTitle, text: l.serviceSuggestText(since)),
-    };
+    return _suggestion(l, suggestion.reason, formatClock(at));
   }
 
   String title(String mode) =>
       l.serviceModeTitle(mode, _hm(m.currentModeDuration));
-  switch (m.status) {
-    case DriverStatus.driving:
-      final over = m.continuousDriving - EuLimits.continuousDriving;
-      return (
-        title: title(l.modeDriving),
-        text: over > Duration.zero
-            ? l.serviceDrivingOver(_hm(over))
-            : l.serviceDriving(
-                _hm(m.drivingUntilBreak),
-                _hm(m.dailyDrivingRemaining),
-              ),
-      );
-    case DriverStatus.onBreak:
-      final left = m.currentBreak?.remaining ?? Duration.zero;
-      return (
-        title: title(l.heroBreak),
-        text: left > Duration.zero
-            ? l.serviceBreakLeft(_hm(left))
-            : l.serviceBreakDone(_hm(m.drivingUntilBreak)),
-      );
-    case DriverStatus.otherWork:
-    case DriverStatus.availability:
-      return (
-        title: title(
-          m.status == DriverStatus.otherWork
-              ? l.modeWorkFull
-              : l.modeAvailability,
-        ),
-        text: l.serviceWorkday(_hm(m.shiftDuration), _hm(m.shiftLimit)),
-      );
-    case DriverStatus.dailyRest:
-      final left = m.dailyRestRemaining ?? Duration.zero;
-      return (
-        title: title(l.heroDailyRest),
-        text: left > Duration.zero
-            ? l.serviceRestLeft(
-                formatLimit(l, EuLimits.dailyRestRegular),
-                _hm(left),
-              )
-            : l.serviceDailyRestDone,
-      );
-    case DriverStatus.weeklyRest:
-      final left = m.weeklyRestRemaining ?? Duration.zero;
-      return (
-        title: title(l.heroWeeklyRest),
-        text: left > Duration.zero
-            ? l.serviceRestLeft(
-                formatLimit(l, EuLimits.weeklyRestRegular),
-                _hm(left),
-              )
-            : l.serviceWeeklyRestDone,
-      );
-    case DriverStatus.notStarted:
-      return (title: l.workdayNoShift, text: l.serviceNotStartedText);
-    case DriverStatus.unknown:
-      return (title: l.modeNone, text: l.serviceNoModeText);
-  }
+  return switch (m.status) {
+    DriverStatus.driving => (
+      title: title(l.modeDriving),
+      text: _drivingText(l, m),
+    ),
+    DriverStatus.onBreak => (title: title(l.heroBreak), text: _breakText(l, m)),
+    DriverStatus.otherWork => (
+      title: title(l.modeWorkFull),
+      text: _workdayText(l, m),
+    ),
+    DriverStatus.availability => (
+      title: title(l.modeAvailability),
+      text: _workdayText(l, m),
+    ),
+    DriverStatus.dailyRest => (
+      title: title(l.heroDailyRest),
+      text: _restText(
+        l,
+        m.dailyRestRemaining,
+        full: EuLimits.dailyRestRegular,
+        done: l.serviceDailyRestDone,
+      ),
+    ),
+    DriverStatus.weeklyRest => (
+      title: title(l.heroWeeklyRest),
+      text: _restText(
+        l,
+        m.weeklyRestRemaining,
+        full: EuLimits.weeklyRestRegular,
+        done: l.serviceWeeklyRestDone,
+      ),
+    ),
+    DriverStatus.notStarted => (
+      title: l.workdayNoShift,
+      text: l.serviceNotStartedText,
+    ),
+    DriverStatus.unknown => (title: l.modeNone, text: l.serviceNoModeText),
+  };
+}
+
+/// Предложение переключить режим с местного времени [since]: экипажу —
+/// спросить, кто за рулём, остальным — включить вождение.
+({String title, String text}) _suggestion(
+  AppLocalizations l,
+  AutoSwitchReason? reason,
+  String since,
+) => switch (reason) {
+  AutoSwitchReason.team => (
+    title: l.serviceTeamTitle,
+    text: l.serviceTeamText(since),
+  ),
+  _ => (title: l.serviceSuggestTitle, text: l.serviceSuggestText(since)),
+};
+
+/// За рулём: до перерыва и остаток за день, после 4:30 без перерыва —
+/// превышение.
+String _drivingText(AppLocalizations l, ComplianceSnapshot m) {
+  final over = m.continuousDriving - EuLimits.continuousDriving;
+  return over > Duration.zero
+      ? l.serviceDrivingOver(_hm(over))
+      : l.serviceDriving(
+          _hm(m.drivingUntilBreak),
+          _hm(m.dailyDrivingRemaining),
+        );
+}
+
+/// Перерыв: сколько до полного, затем — сколько можно ехать.
+String _breakText(AppLocalizations l, ComplianceSnapshot m) {
+  final left = m.currentBreak?.remaining ?? Duration.zero;
+  return left > Duration.zero
+      ? l.serviceBreakLeft(_hm(left))
+      : l.serviceBreakDone(_hm(m.drivingUntilBreak));
+}
+
+/// Работа и готовность: рабочий день из лимита.
+String _workdayText(AppLocalizations l, ComplianceSnapshot m) =>
+    l.serviceWorkday(_hm(m.shiftDuration), _hm(m.shiftLimit));
+
+/// Отдых: сколько осталось [remaining] до полного [full], набран — [done].
+String _restText(
+  AppLocalizations l,
+  Duration? remaining, {
+  required Duration full,
+  required String done,
+}) {
+  final left = remaining ?? Duration.zero;
+  return left > Duration.zero
+      ? l.serviceRestLeft(formatLimit(l, full), _hm(left))
+      : done;
 }
 
 /// «4:05»: часы без ограничения, минуты с округлением вниз, без минуса.

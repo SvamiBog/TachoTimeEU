@@ -133,78 +133,84 @@ String _offset(Duration d) {
 String formatDiagnostics(Diagnostics d) {
   final s = d.snapshot;
   final p = d.preferences;
-  final c = d.compliance;
-  final n = d.notifications;
-  final a = d.autoDetect;
-  final mode = s.currentMode;
-  final since = mode == null
-      ? ''
-      : ', ${mode.name} since ${_utc(s.currentModeStart!)} UTC';
-  final timers = [
-    'continuous ${formatHm(s.continuousDriving)}',
-    'daily ${formatHm(s.dailyDriving)}/${formatHm(s.dailyDrivingLimit)}',
-    'workday ${formatHm(s.shiftDuration)}',
-    'week ${formatHm(s.weeklyDriving)}',
-    'fortnight ${formatHm(s.fortnightDriving)}',
-    'work week ${formatHm(s.workWeekDuration)}',
-    'card ${s.cardDaysLeft == null ? 'never read' : '${s.cardDaysLeft} d'}',
-  ];
-  final settings = [
-    'tachograph ${p.tachograph.name}',
-    'crew ${c.crew.name}',
-    'mobility package ${_onOff(c.mobilityPackage)}',
-    'base country ${c.baseCountry ?? 'not set'}',
-    'warning ${c.warningLead.inMinutes} min',
-    'card alert ${c.cardAlertDays} d',
-    'theme ${p.theme.name}',
-  ];
-  final notifications = [
-    'breaks ${_onOff(n.breaks)}',
-    'shift end ${_onOff(n.shiftEnd)}',
-    'driving ${_onOff(n.driving)}',
-    'card ${_onOff(n.card)}',
-  ];
-  final autoDetect = [
-    _onOff(a.enabled),
-    'after stop ${a.rules.afterStop.name}',
-    'start from rest ${_onOff(a.rules.startFromRest)}',
-  ];
+  final infringements = [for (final i in s.infringements) i.type.name];
+  final lastCard = d.lastCard;
   final journal =
       '${d.totalRecords} records, ${d.manualShifts} manual shifts; '
       'last ${reportWindow.inHours} h (UTC):';
-  final infringements = [for (final i in s.infringements) i.type.name];
-  final lastCard = d.lastCard;
-  String record(ActivityPeriod r) {
-    final end = r.end;
-    final flags = [
-      if (r.ferry) 'ferry',
-      if (r.dayEnd) 'day-end',
-      if (r.weeklyRest) 'weekly',
-    ];
-    return '  ${_utc(r.start)} → ${end == null ? 'now' : _utc(end)} '
-        '${[r.mode.name, ...flags].join(' ')}';
-  }
-
   final lines = <String>[
     'TachoGo ${d.app}, ${d.env.name}',
     'Report: ${_utc(d.now)} UTC; device time zone ${d.timeZone}',
     'Device: ${d.device}',
     'Locale: ${d.systemLocale}; app language: ${p.language ?? 'system'}',
-    'Settings: ${settings.join(', ')}',
-    'Notifications: ${notifications.join(', ')}',
-    'Auto-detect: ${autoDetect.join(', ')}',
+    'Settings: ${_settings(p, d.compliance).join(', ')}',
+    'Notifications: ${_notifications(d.notifications).join(', ')}',
+    'Auto-detect: ${_autoDetect(d.autoDetect).join(', ')}',
     'Permissions: ${d.permissions}',
-    'Status: ${s.status.name}$since',
-    'Timers: ${timers.join(', ')}',
+    'Status: ${s.status.name}${_since(s)}',
+    'Timers: ${_timers(s).join(', ')}',
     'Now: ${infringements.isEmpty ? 'none' : infringements.join(', ')}',
     'Scheduled alerts: ${d.pendingAlerts}',
     'Forecast:${d.forecast.isEmpty ? ' none' : ''}',
     for (final f in d.forecast.take(12)) '  ${_utc(f.at)} UTC ${f.kind.name}',
     'Card download: ${lastCard == null ? 'never' : '${_utc(lastCard)} UTC'}',
     'Journal: $journal',
-    for (final r in d.recent) record(r),
+    for (final r in d.recent) _record(r),
   ];
   return lines.join('\n');
+}
+
+/// Текущий режим и с какого времени: «, driving since 2026-09-23 08:00 UTC».
+String _since(ComplianceSnapshot s) {
+  final mode = s.currentMode;
+  return mode == null
+      ? ''
+      : ', ${mode.name} since ${_utc(s.currentModeStart!)} UTC';
+}
+
+List<String> _timers(ComplianceSnapshot s) => [
+  'continuous ${formatHm(s.continuousDriving)}',
+  'daily ${formatHm(s.dailyDriving)}/${formatHm(s.dailyDrivingLimit)}',
+  'workday ${formatHm(s.shiftDuration)}',
+  'week ${formatHm(s.weeklyDriving)}',
+  'fortnight ${formatHm(s.fortnightDriving)}',
+  'work week ${formatHm(s.workWeekDuration)}',
+  'card ${s.cardDaysLeft == null ? 'never read' : '${s.cardDaysLeft} d'}',
+];
+
+List<String> _settings(AppPreferences p, ComplianceSettings c) => [
+  'tachograph ${p.tachograph.name}',
+  'crew ${c.crew.name}',
+  'mobility package ${_onOff(c.mobilityPackage)}',
+  'base country ${c.baseCountry ?? 'not set'}',
+  'warning ${c.warningLead.inMinutes} min',
+  'card alert ${c.cardAlertDays} d',
+  'theme ${p.theme.name}',
+];
+
+List<String> _notifications(NotificationSettings n) => [
+  'breaks ${_onOff(n.breaks)}',
+  'shift end ${_onOff(n.shiftEnd)}',
+  'driving ${_onOff(n.driving)}',
+  'card ${_onOff(n.card)}',
+];
+
+List<String> _autoDetect(AutoDetectSettings a) => [
+  _onOff(a.enabled),
+  'after stop ${a.rules.afterStop.name}',
+  'start from rest ${_onOff(a.rules.startFromRest)}',
+];
+
+/// Запись журнала: «  2026-09-22 15:00 → now rest day-end».
+String _record(ActivityPeriod r) {
+  final end = r.end;
+  final flags = [
+    if (r.ferry) 'ferry',
+    if (r.dayEnd) 'day-end',
+    if (r.weeklyRest) 'weekly',
+  ];
+  return '  ${_utc(r.start)} → ${end == null ? 'now' : _utc(end)} '
+      '${[r.mode.name, ...flags].join(' ')}';
 }
 
 /// Collects [Diagnostics]. Everything that depends on the platform can be
@@ -257,21 +263,11 @@ class DiagnosticsCollector {
     final compliance = await _settings.complianceSettings();
     final lastCard = await _cards.last();
     final local = now.toLocal();
-    final from = now.subtract(reportWindow);
-    final recent = [
-      for (final p in periods)
-        if (p.end == null || p.end!.isAfter(from)) p,
-    ];
     return Diagnostics(
       now: now,
       app: await _safe(_appVersion),
       env: _env,
-      device: await _safe(() async {
-        final d = await _device.read();
-        if (d == null) return Platform.operatingSystem;
-        return '${d.manufacturer} ${d.model}, '
-            'Android ${d.release} (SDK ${d.sdk})';
-      }),
+      device: await _safe(_deviceName),
       systemLocale: Platform.localeName,
       timeZone: '${_offset(local.timeZoneOffset)} (${local.timeZoneName})',
       preferences: await _settings.preferences(),
@@ -279,11 +275,7 @@ class DiagnosticsCollector {
       notifications: await _settings.notifications(),
       autoDetect: await _settings.autoDetect(),
       permissions: await _safe(_permissions),
-      pendingAlerts: await _safe(() async {
-        final ids = await _notifications.pendingIds();
-        final kinds = [for (final id in ids) alertKindOf(id)?.name ?? '#$id'];
-        return '${ids.length}${kinds.isEmpty ? '' : ': ${kinds.join(', ')}'}';
-      }),
+      pendingAlerts: await _safe(_pendingAlerts),
       forecast: forecastAlerts(
         periods: periods,
         now: now,
@@ -300,13 +292,42 @@ class DiagnosticsCollector {
         lastCardDownload: lastCard,
         routes: routes,
       ),
-      recent: recent.length > reportMaxRecords
-          ? recent.sublist(recent.length - reportMaxRecords)
-          : recent,
+      recent: _recent(periods, now),
       totalRecords: periods.length,
       manualShifts: manual.length,
       lastCard: lastCard,
     );
+  }
+
+  /// Записи, которые заходят в [reportWindow] до [now], — последние
+  /// [reportMaxRecords].
+  static List<ActivityPeriod> _recent(
+    List<ActivityPeriod> periods,
+    DateTime now,
+  ) {
+    final from = now.subtract(reportWindow);
+    final recent = [
+      for (final p in periods)
+        if (p.end == null || p.end!.isAfter(from)) p,
+    ];
+    return recent.length > reportMaxRecords
+        ? recent.sublist(recent.length - reportMaxRecords)
+        : recent;
+  }
+
+  /// Производитель, модель и версия Android; не Android — имя системы.
+  Future<String> _deviceName() async {
+    final d = await _device.read();
+    if (d == null) return Platform.operatingSystem;
+    return '${d.manufacturer} ${d.model}, '
+        'Android ${d.release} (SDK ${d.sdk})';
+  }
+
+  /// Сколько уведомлений о лимитах в расписании системы и каких видов.
+  Future<String> _pendingAlerts() async {
+    final ids = await _notifications.pendingIds();
+    final kinds = [for (final id in ids) alertKindOf(id)?.name ?? '#$id'];
+    return '${ids.length}${kinds.isEmpty ? '' : ': ${kinds.join(', ')}'}';
   }
 
   Future<String> _permissions() async {

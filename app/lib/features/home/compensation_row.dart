@@ -55,67 +55,95 @@ typedef _Compensation = ({
 });
 
 _Compensation? _compensation(ComplianceSnapshot s) {
-  final rest = s.restCompensation;
-  final next = rest?.next;
-  final until = rest?.until;
-  final untilAll = rest?.untilAll;
   final tone = toneOf(
     s,
     violation: InfringementType.compensationOverdue,
     warning: InfringementType.compensationSoon,
   );
-  // Отдых успевает погасить долги: весь долг этого отдыха — уже
-  // присоединённый и тот, что он ещё погасит, — и до какого времени
-  // отдыхать. После двух сокращённых по 24 ч — 42:00 до 45 + 42 ч.
-  if (rest != null && rest.planned.isNotEmpty && untilAll != null) {
-    final total = rest.total;
-    final done = total - atLeastZero(untilAll.difference(s.now));
-    return (
-      debt: minutes(total),
-      progress: minutes(atLeastZero(done)),
-      dueBy: rest.planned
-          .map((c) => c.dueBy)
-          .reduce((a, b) => a.isBefore(b) ? a : b),
-      first: null,
-      until: minuteOf(untilAll),
-      resting: true,
-      inTime: true,
-      done: false,
-      tone: tone,
-    );
+  final rest = s.restCompensation;
+  if (rest != null) {
+    final resting =
+        _repayingAll(s, rest, tone) ??
+        _repayingNext(s, rest, tone) ??
+        _repaid(rest);
+    if (resting != null) return resting;
   }
-  if (rest != null && next != null && until != null) {
-    final left = until.difference(s.now);
-    final done = next.debt - (left.isNegative ? Duration.zero : left);
-    return (
-      debt: minutes(next.debt),
-      progress: minutes(done.isNegative ? Duration.zero : done),
-      dueBy: next.dueBy,
-      first: null,
-      until: minuteOf(until),
-      resting: true,
-      inTime: rest.inTime,
-      done: false,
-      tone: rest.inTime ? tone : Tone.warning,
-    );
-  }
-  if (rest != null && rest.taken > Duration.zero) {
-    return (
-      debt: minutes(rest.taken),
-      progress: minutes(rest.taken),
-      dueBy: null,
-      first: null,
-      until: null,
-      resting: true,
-      inTime: true,
-      done: true,
-      tone: Tone.rest,
-    );
-  }
+  return _debt(s, tone);
+}
+
+/// Отдых успевает погасить долги: весь долг этого отдыха — уже
+/// присоединённый и тот, что он ещё погасит, — и до какого времени
+/// отдыхать. После двух сокращённых по 24 ч — 42:00 до 45 + 42 ч.
+_Compensation? _repayingAll(
+  ComplianceSnapshot s,
+  RestCompensation rest,
+  Tone tone,
+) {
+  final untilAll = rest.untilAll;
+  if (rest.planned.isEmpty || untilAll == null) return null;
+  final total = rest.total;
+  final done = total - atLeastZero(untilAll.difference(s.now));
+  return (
+    debt: minutes(total),
+    progress: minutes(atLeastZero(done)),
+    dueBy: rest.planned
+        .map((c) => c.dueBy)
+        .reduce((a, b) => a.isBefore(b) ? a : b),
+    first: null,
+    until: minuteOf(untilAll),
+    resting: true,
+    inTime: true,
+    done: false,
+    tone: tone,
+  );
+}
+
+/// Долг, который отдых погасит следующим, и когда; к сроку не успеть —
+/// предупреждение.
+_Compensation? _repayingNext(
+  ComplianceSnapshot s,
+  RestCompensation rest,
+  Tone tone,
+) {
+  final next = rest.next;
+  final until = rest.until;
+  if (next == null || until == null) return null;
+  final left = until.difference(s.now);
+  final done = next.debt - (left.isNegative ? Duration.zero : left);
+  return (
+    debt: minutes(next.debt),
+    progress: minutes(done.isNegative ? Duration.zero : done),
+    dueBy: next.dueBy,
+    first: null,
+    until: minuteOf(until),
+    resting: true,
+    inTime: rest.inTime,
+    done: false,
+    tone: rest.inTime ? tone : Tone.warning,
+  );
+}
+
+/// Идущий отдых уже погасил долг, гасить больше нечего.
+_Compensation? _repaid(RestCompensation rest) {
+  if (rest.taken <= Duration.zero) return null;
+  return (
+    debt: minutes(rest.taken),
+    progress: minutes(rest.taken),
+    dueBy: null,
+    first: null,
+    until: null,
+    resting: true,
+    inTime: true,
+    done: true,
+    tone: Tone.rest,
+  );
+}
+
+/// Водитель не на отдыхе, который гасит долг: сколько всего компенсации
+/// нужно взять — все долги, после двух сокращённых подряд — один на оба.
+_Compensation? _debt(ComplianceSnapshot s, Tone tone) {
   final c = s.compensation;
   if (c == null) return null;
-  // Сколько всего компенсации нужно взять: все долги, после двух
-  // сокращённых подряд — один на оба
   return (
     debt: minutes(s.compensationDebt),
     progress: 0,
