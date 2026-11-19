@@ -184,95 +184,91 @@ extension on GuideRule {
   _RuleText describe(AppLocalizations l, AppColors colors) {
     String h(Duration d) => formatLimit(l, d);
     String m(Duration d) => l.leadMinutes(d.inMinutes);
-    ({String value, String spoken}) limit(Duration d) =>
-        (value: formatLimit(l, d), spoken: spokenDuration(l, d));
-    switch (this) {
-      case GuideRule.continuous:
-        final v = limit(EuLimits.continuousDriving);
-        return (
-          value: v.value,
-          spoken: v.spoken,
-          color: colors.drive,
-          title: l.guideContinuous,
-          text: l.guideContinuousText(
-            m(EuLimits.breakFull),
-            m(EuLimits.breakSplitFirst),
-            m(EuLimits.breakSplitSecond),
-          ),
-        );
-      case GuideRule.dailyDriving:
-        final v = limit(EuLimits.dailyDriving);
-        return (
-          value: v.value,
-          spoken: v.spoken,
-          color: colors.drive,
-          title: l.guideDailyDriving,
-          text: l.guideDailyDrivingText(h(EuLimits.dailyDrivingExtended)),
-        );
-      case GuideRule.weeklyDriving:
-        final v = limit(EuLimits.weeklyDriving);
-        return (
-          value: v.value,
-          spoken: v.spoken,
-          color: colors.drive,
-          title: l.guideWeeklyDriving,
-          text: l.guideWeeklyDrivingText(h(EuLimits.fortnightDriving)),
-        );
-      case GuideRule.dailyRest:
-        final v = limit(EuLimits.dailyRestRegular);
-        return (
-          value: v.value,
-          spoken: v.spoken,
-          color: colors.rest,
-          title: l.guideDailyRest,
-          text: l.guideDailyRestText(
-            h(EuLimits.dailyRestReduced),
-            h(EuLimits.dailyRestSplitFirst),
-            h(EuLimits.dailyRestSplitSecond),
-          ),
-        );
-      case GuideRule.workday:
-        const regular = EuLimits.workdayWithRegularRest;
-        const reduced = EuLimits.workdayWithReducedRest;
-        return (
-          value: '${regular.inHours}/${reduced.inHours}',
-          spoken: l.guideWorkdaySpoken(regular.inHours, reduced.inHours),
-          color: colors.text,
-          title: l.guideWorkday,
-          text: l.guideWorkdayText(
-            h(EuLimits.workdayWindow),
-            h(regular),
-            h(reduced),
-          ),
-        );
-      case GuideRule.weeklyRest:
-        final v = limit(EuLimits.weeklyRestRegular);
-        return (
-          value: v.value,
-          spoken: v.spoken,
-          color: colors.rest,
-          title: l.guideWeeklyRest,
-          text: l.guideWeeklyRestText(h(EuLimits.weeklyRestReduced)),
-        );
-      case GuideRule.workWeek:
-        final v = limit(EuLimits.maxBetweenWeeklyRests);
-        return (
-          value: v.value,
-          spoken: v.spoken,
-          color: colors.text,
-          title: l.guideWorkWeek,
-          text: l.guideWorkWeekText(h(EuLimits.workdayWindow)),
-        );
-      case GuideRule.card:
-        final days = EuLimits.cardDownloadInterval.inDays;
-        return (
-          value: l.daysShort(days),
-          spoken: l.leadDays(days),
-          color: colors.text,
-          title: l.guideCard,
-          text: l.guideCardText(l.leadDays(days)),
-        );
-    }
+    // Значение — лимит из EuLimits: «4:30», вслух — «4 часа 30 минут»
+    _RuleText limit(Duration d, Color color, String title, String text) => (
+      value: formatLimit(l, d),
+      spoken: spokenDuration(l, d),
+      color: color,
+      title: title,
+      text: text,
+    );
+    return switch (this) {
+      GuideRule.continuous => limit(
+        EuLimits.continuousDriving,
+        colors.drive,
+        l.guideContinuous,
+        l.guideContinuousText(
+          m(EuLimits.breakFull),
+          m(EuLimits.breakSplitFirst),
+          m(EuLimits.breakSplitSecond),
+        ),
+      ),
+      GuideRule.dailyDriving => limit(
+        EuLimits.dailyDriving,
+        colors.drive,
+        l.guideDailyDriving,
+        l.guideDailyDrivingText(h(EuLimits.dailyDrivingExtended)),
+      ),
+      GuideRule.weeklyDriving => limit(
+        EuLimits.weeklyDriving,
+        colors.drive,
+        l.guideWeeklyDriving,
+        l.guideWeeklyDrivingText(h(EuLimits.fortnightDriving)),
+      ),
+      GuideRule.dailyRest => limit(
+        EuLimits.dailyRestRegular,
+        colors.rest,
+        l.guideDailyRest,
+        l.guideDailyRestText(
+          h(EuLimits.dailyRestReduced),
+          h(EuLimits.dailyRestSplitFirst),
+          h(EuLimits.dailyRestSplitSecond),
+        ),
+      ),
+      GuideRule.workday => _workday(l, colors),
+      GuideRule.weeklyRest => limit(
+        EuLimits.weeklyRestRegular,
+        colors.rest,
+        l.guideWeeklyRest,
+        l.guideWeeklyRestText(h(EuLimits.weeklyRestReduced)),
+      ),
+      GuideRule.workWeek => limit(
+        EuLimits.maxBetweenWeeklyRests,
+        colors.text,
+        l.guideWorkWeek,
+        l.guideWorkWeekText(h(EuLimits.workdayWindow)),
+      ),
+      GuideRule.card => _card(l, colors),
+    };
+  }
+
+  /// Рабочий день: два лимита сразу — «13/15».
+  static _RuleText _workday(AppLocalizations l, AppColors colors) {
+    const regular = EuLimits.workdayWithRegularRest;
+    const reduced = EuLimits.workdayWithReducedRest;
+    return (
+      value: '${regular.inHours}/${reduced.inHours}',
+      spoken: l.guideWorkdaySpoken(regular.inHours, reduced.inHours),
+      color: colors.text,
+      title: l.guideWorkday,
+      text: l.guideWorkdayText(
+        formatLimit(l, EuLimits.workdayWindow),
+        formatLimit(l, regular),
+        formatLimit(l, reduced),
+      ),
+    );
+  }
+
+  /// Карта водителя: срок считывания в днях.
+  static _RuleText _card(AppLocalizations l, AppColors colors) {
+    final days = EuLimits.cardDownloadInterval.inDays;
+    return (
+      value: l.daysShort(days),
+      spoken: l.leadDays(days),
+      color: colors.text,
+      title: l.guideCard,
+      text: l.guideCardText(l.leadDays(days)),
+    );
   }
 }
 
