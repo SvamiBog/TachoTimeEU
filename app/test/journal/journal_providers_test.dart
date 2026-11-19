@@ -9,8 +9,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/database_provider.dart';
+import 'package:tachogo/data/journal/activity_repository.dart';
+import 'package:tachogo/data/journal/journal_edit_repository.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
+import 'package:tachogo/data/settings/settings_repository.dart';
 
 final DateTime t0 = DateTime.utc(2026, 9, 23, 12);
 
@@ -287,6 +290,39 @@ void main() {
         expect(async.periodicTimerCount, 0);
       }, initialTime: t0);
     });
+  });
+
+  test('readJournal — журнал прямо из базы: записи и ручные смены', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final start = t0.subtract(hours(1));
+    final activity = ActivityRepository(db, clock: () => start);
+    final edits = JournalEditRepository(db, SettingsRepository(db));
+    await activity.switchMode(DriverMode.driving);
+    await edits.saveManualShift(
+      ManualShift(
+        start: t0.subtract(hours(30)),
+        end: t0.subtract(hours(20)),
+        driving: hours(8),
+        restKind: RestKind.daily,
+      ),
+      const ShiftMeta(startCountry: 'PL'),
+    );
+
+    final journal = await readJournal(
+      activity: activity,
+      edits: edits,
+      settings: const ComplianceSettings(),
+      routes: const {},
+      now: t0,
+    );
+    expect(journal.now, t0);
+    expect(journal.periods.single.start, start);
+    final shifts = journal.shifts.toList();
+    expect(shifts.map((s) => s.start), [start, t0.subtract(hours(30))]);
+    expect(shifts.first.driving, hours(1));
+    expect(shifts.last.manual?.driving, hours(8));
+    expect(journal.metaOf(shifts.last), ShiftMeta.empty);
   });
 
   test('PRV-04: репозиторий журнала сообщает другому движку об '

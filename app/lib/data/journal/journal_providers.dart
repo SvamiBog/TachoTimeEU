@@ -178,7 +178,46 @@ Journal _journal(
   List<ActivityPeriod> periods,
   List<ManualShiftRecord> manual,
   Map<DateTime, ShiftMeta> meta,
-) {
+) => _buildJournal(
+  now: now,
+  settings: settings,
+  periods: periods,
+  manualShifts: [for (final r in manual) r.shift],
+  routes: shiftRoutesOf(meta, manual),
+  recordedMeta: meta,
+  manualMeta: {for (final r in manual) ?r.shift.id: r.meta},
+);
+
+/// Журнал прямо из базы, не дожидаясь потоков [journalProvider]: сразу
+/// после записи правки. Страны смен для расчёта — [routes], страны и
+/// заметки в журнал не читаются.
+Future<Journal> readJournal({
+  required ActivityRepository activity,
+  required JournalEditRepository edits,
+  required ComplianceSettings settings,
+  required Map<DateTime, ShiftRoute> routes,
+  required DateTime now,
+}) async {
+  final periods = await activity.periods();
+  final manual = await edits.manualShifts();
+  return _buildJournal(
+    now: now,
+    settings: settings,
+    periods: periods,
+    manualShifts: manual,
+    routes: routes,
+  );
+}
+
+Journal _buildJournal({
+  required DateTime now,
+  required ComplianceSettings settings,
+  required List<ActivityPeriod> periods,
+  required List<ManualShift> manualShifts,
+  required Map<DateTime, ShiftRoute> routes,
+  Map<DateTime, ShiftMeta> recordedMeta = const {},
+  Map<int, ShiftMeta> manualMeta = const {},
+}) {
   final timeline = analyzeTimeline(periods, now);
   return Journal(
     now: now,
@@ -187,14 +226,14 @@ Journal _journal(
     weeks: buildJournal(
       timeline: timeline,
       now: now,
-      manualShifts: [for (final r in manual) r.shift],
+      manualShifts: manualShifts,
       crew: settings.crew,
       mobilityPackage: settings.mobilityPackage,
       baseCountry: settings.baseCountry,
-      routes: shiftRoutesOf(meta, manual),
+      routes: routes,
     ),
-    recordedMeta: meta,
-    manualMeta: {for (final r in manual) ?r.shift.id: r.meta},
+    recordedMeta: recordedMeta,
+    manualMeta: manualMeta,
   );
 }
 

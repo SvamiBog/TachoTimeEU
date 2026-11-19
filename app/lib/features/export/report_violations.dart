@@ -84,3 +84,35 @@ List<ReportViolation> reportViolations(
   }
   return result;
 }
+
+/// Нарушения вокруг смены [start]–[end] (null — идёт) после её сохранения:
+/// в самой смене, в отдыхе перед ней (новая смена его завершила) и в
+/// неделях, куда она попала.
+List<ReportViolation> violationsAroundShift(
+  Journal journal, {
+  required DateTime start,
+  required DateTime? end,
+  required DateTime now,
+  required CrewMode crew,
+  required AppLocalizations l,
+  required String locale,
+}) {
+  // Отдых перед сменой — у предыдущей смены журнала
+  DateTime? previous;
+  for (final s in journal.shifts) {
+    if (s.start.isBefore(start) &&
+        (previous == null || s.start.isAfter(previous))) {
+      previous = s.start;
+    }
+  }
+  return reportViolations(
+    journal,
+    (
+      start: previous ?? start,
+      end: (end ?? now).add(const Duration(minutes: 1)),
+    ),
+    crew: crew,
+    l: l,
+    locale: locale,
+  );
+}

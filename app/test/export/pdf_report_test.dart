@@ -230,6 +230,52 @@ void main() {
       },
     );
 
+    test('JRN-02: после сохранения смены — нарушения её и смены перед ней '
+        '(отдых между ними), следующей смены — нет', () {
+      const tenThirty = [
+        (DriverMode.driving, Duration(hours: 4, minutes: 30)),
+        (DriverMode.rest, Duration(minutes: 45)),
+        (DriverMode.driving, Duration(hours: 4, minutes: 30)),
+        (DriverMode.rest, Duration(minutes: 45)),
+        (DriverMode.driving, Duration(hours: 1, minutes: 30)),
+      ];
+      // Пн 06:00–18:00, вт 05:00–17:00, ср 04:00–16:00: по 10:30 вождения,
+      // между ними по 11 ч отдыха
+      final periods = consecutive(DateTime.utc(2026, 9, 20, 19), [
+        (DriverMode.rest, const Duration(hours: 11)),
+        ...tenThirty,
+        (DriverMode.rest, const Duration(hours: 11)),
+        ...tenThirty,
+        (DriverMode.rest, const Duration(hours: 11)),
+        ...tenThirty,
+        (DriverMode.rest, const Duration(hours: 4)),
+      ], open: true);
+      final now = DateTime.utc(2026, 9, 23, 20);
+      List<String> around(DateTime start, DateTime end) => [
+        for (final v in violationsAroundShift(
+          _journal(periods, now),
+          start: start,
+          end: end,
+          now: now,
+          crew: CrewMode.solo,
+          l: l,
+          locale: 'ru',
+        ))
+          v.text,
+      ];
+      const monday = 'пн 21.09: суточное вождение 10:30 — больше 10 ч';
+      const tuesday = 'вт 22.09: суточное вождение 10:30 — больше 10 ч';
+      expect(
+        around(DateTime.utc(2026, 9, 22, 5), DateTime.utc(2026, 9, 22, 17)),
+        unorderedEquals([monday, tuesday]),
+      );
+      // Первая смена журнала: перед ней смен нет
+      expect(
+        around(DateTime.utc(2026, 9, 21, 6), DateTime.utc(2026, 9, 21, 18)),
+        [monday],
+      );
+    });
+
     test('без нарушений — пустой список', () {
       final j = designJournal();
       expect(
