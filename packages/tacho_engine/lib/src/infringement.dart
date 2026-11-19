@@ -3,6 +3,11 @@
 library;
 
 import 'package:meta/meta.dart';
+import 'package:tacho_engine/src/eu_limits.dart';
+
+/// Регламент (ЕС) № 561/2006 о времени вождения и отдыха — у всех видов,
+/// кроме считывания карты.
+const drivingTimesRegulation = '561/2006';
 
 /// How serious a finding is: a note, a warning before a limit, or an
 /// infringement.
@@ -19,11 +24,17 @@ enum InfringementType {
     InfringementSeverity.violation,
     InfringementCategory.breaks,
     '7',
+    limit: EuLimits.continuousDriving,
   ),
 
   /// Скоро перерыв. [Infringement.time] — сколько осталось,
   /// [Infringement.requiredBreak] — 45 или 30 мин.
-  breakSoon(InfringementSeverity.warning, InfringementCategory.breaks, '7'),
+  breakSoon(
+    InfringementSeverity.warning,
+    InfringementCategory.breaks,
+    '7',
+    limit: EuLimits.continuousDriving,
+  ),
 
   /// Суточное вождение больше лимита. [Infringement.time] — превышение,
   /// [Infringement.limit] — 9 или 10 ч.
@@ -31,11 +42,13 @@ enum InfringementType {
     InfringementSeverity.violation,
     InfringementCategory.driving,
     '6(1)',
+    limit: EuLimits.dailyDriving,
   ),
   dailyDriveSoon(
     InfringementSeverity.warning,
     InfringementCategory.driving,
     '6(1)',
+    limit: EuLimits.dailyDriving,
   ),
 
   /// Идёт продление до 10 ч. [Infringement.count] — сколько продлений
@@ -52,6 +65,7 @@ enum InfringementType {
     InfringementSeverity.violation,
     InfringementCategory.shiftEnd,
     '8(2)',
+    limit: EuLimits.workdayWithRegularRest,
   ),
   shiftSoon(
     InfringementSeverity.warning,
@@ -62,21 +76,25 @@ enum InfringementType {
     InfringementSeverity.violation,
     InfringementCategory.driving,
     '6(2)',
+    limit: EuLimits.weeklyDriving,
   ),
   weeklyDriveSoon(
     InfringementSeverity.warning,
     InfringementCategory.driving,
     '6(2)',
+    limit: EuLimits.weeklyDriving,
   ),
   fortnightDriveExceeded(
     InfringementSeverity.violation,
     InfringementCategory.driving,
     '6(3)',
+    limit: EuLimits.fortnightDriving,
   ),
   fortnightDriveSoon(
     InfringementSeverity.warning,
     InfringementCategory.driving,
     '6(3)',
+    limit: EuLimits.fortnightDriving,
   ),
 
   /// Недельный отдых не начат через 144 ч. [Infringement.time] — опоздание.
@@ -163,7 +181,8 @@ enum InfringementType {
     this.severity,
     this.category,
     this.article, {
-    this.regulation = '561/2006',
+    this.regulation = drivingTimesRegulation,
+    this.limit,
   });
 
   final InfringementSeverity severity;
@@ -172,6 +191,11 @@ enum InfringementType {
   /// Регламент и статья, например 561/2006, ст. 7.
   final String regulation;
   final String article;
+
+  /// Лимит вида по регламенту: 4:30 непрерывного вождения, 9 ч за день,
+  /// рабочий день 13 ч, 56 ч за неделю, 90 ч за две; null — лимита у вида
+  /// нет. Действующий лимит нарушения — [Infringement.effectiveLimit].
+  final Duration? limit;
 }
 
 /// A warning or infringement with the values its text needs.
@@ -204,6 +228,21 @@ class Infringement {
   /// Статья, которую видит инспектор. Обычно — статья вида, но рабочий день
   /// экипажа ограничен ст. 8(5), а не 8(2).
   String get article => _article ?? type.article;
+
+  /// Лимит, о котором предупреждение или нарушение: действующий [limit]
+  /// (9 или 10 ч за день, рабочий день с учётом сокращений и экипажа), а у
+  /// вида с одним лимитом — лимит вида ([InfringementType.limit]: 4:30,
+  /// 56 ч, 90 ч). null — у вида лимита нет.
+  Duration? get effectiveLimit => limit ?? type.limit;
+
+  /// Перерыв по ст. 7, который нужно взять: перед лимитом 4:30 — 45 мин или
+  /// 30 после первой части ([requiredBreak]), после превышения — полный
+  /// перерыв 45 мин. null — вид не о перерыве.
+  Duration? get breakToTake => switch (type) {
+    InfringementType.breakSoon => requiredBreak ?? EuLimits.breakFull,
+    InfringementType.continuousExceeded => EuLimits.breakFull,
+    _ => null,
+  };
 
   @override
   bool operator ==(Object other) =>
