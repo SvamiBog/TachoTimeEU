@@ -111,6 +111,27 @@ class RestCompensation {
   /// присоединённый и [planned].
   Duration get total => planned.fold(taken, (sum, c) => sum + c.debt);
 
+  /// Ближайший срок среди [planned]; null — [planned] пуст.
+  DateTime? get plannedDueBy => planned.isEmpty
+      ? null
+      : planned.map((c) => c.dueBy).reduce((a, b) => a.isBefore(b) ? a : b);
+
+  /// Сколько из [total] отдых набрал к моменту снимка [now]: [total] минус
+  /// то, что ещё отдыхать до [untilAll]. null — [planned] пуст.
+  Duration? totalRepaidAt(DateTime now) {
+    final at = untilAll;
+    if (planned.isEmpty || at == null) return null;
+    return clampToZero(total - clampToZero(at.difference(now)));
+  }
+
+  /// Сколько из долга [next] отдых набрал к моменту снимка [now]: долг
+  /// минус то, что ещё отдыхать до [until]. null — [next] нет.
+  Duration? nextRepaidAt(DateTime now) {
+    final (c, at) = (next, until);
+    if (c == null || at == null) return null;
+    return clampToZero(c.debt - clampToZero(at.difference(now)));
+  }
+
   @override
   bool operator ==(Object other) =>
       other is RestCompensation &&

@@ -197,5 +197,66 @@ void main() {
       final done = calc(log.periods, log.now.add(hour * 15));
       expect(done.offDutyRest!.remaining, Duration.zero);
     });
+
+    group('сколько долга набрано', () {
+      // Сокращённый недельный 40 ч: долг 5 ч до пн 12.10; суточный отдых
+      // гасит его при 9 + 5 = 14 ч
+      final reduced40 = [...drivingDay('9:00'), rest('40:00')];
+      final log = logFrom(start, [...reduced40, ...day13, rest('14:00')]);
+      final restStart = log.now.subtract(hour * 14);
+      RestCompensation? at(Duration rested) =>
+          calc(log.periods, restStart.add(rested)).restCompensation;
+
+      test('8 ч «конца дня» — до основы 9 ч не дошёл, набрано 0', () {
+        final ended = logFrom(start, [
+          ...reduced40,
+          ...day13,
+          rest('8:00', dayEnd: true),
+        ]);
+        final c = calc(ended.periods, ended.now).restCompensation!;
+        expect(c.nextRepaidAt(ended.now), Duration.zero);
+        expect(c.totalRepaidAt(ended.now), Duration.zero);
+      });
+
+      test('10 ч из 14 — набран 1 ч, срок — пн 12.10', () {
+        final c = at(hour * 10)!;
+        final t = restStart.add(hour * 10);
+        expect(c.nextRepaidAt(t), hour);
+        expect(c.totalRepaidAt(t), hour);
+        expect(c.plannedDueBy, utc('2026-10-12 00:00'));
+        // После 14 ч набран весь долг — не больше его
+        final later = restStart.add(hour * 15);
+        expect(c.nextRepaidAt(later), hour * 5);
+        expect(c.totalRepaidAt(later), hour * 5);
+      });
+
+      test('14 ч — долг погашен этим отдыхом, набирать нечего', () {
+        final c = at(hour * 14)!;
+        final t = restStart.add(hour * 14);
+        expect(c.taken, hour * 5);
+        expect(c.nextRepaidAt(t), isNull);
+        expect(c.totalRepaidAt(t), isNull);
+        expect(c.plannedDueBy, isNull);
+      });
+
+      test('два сокращённых подряд: 66 ч из 45 + 42 — набран 21 ч', () {
+        final twoReduced = [
+          ...drivingDay('9:00'),
+          rest('24:00'),
+          ...repeat(5, cycle),
+          ...drivingDay('9:00'),
+          rest('24:00'),
+          ...repeat(5, cycle),
+          ...day13,
+        ];
+        final weekly = logFrom(start, [...twoReduced, rest('30:00')]);
+        final t = utc('2026-10-02 00:45').add(hour * 66);
+        final c = calc(weekly.periods, t).restCompensation!;
+        expect(c.total, hour * 42);
+        expect(c.totalRepaidAt(t), hour * 21);
+        expect(c.nextRepaidAt(t), hour * 21);
+        expect(c.plannedDueBy, utc('2026-10-12 00:00'));
+      });
+    });
   });
 }
