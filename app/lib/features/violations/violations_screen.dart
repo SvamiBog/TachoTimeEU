@@ -232,39 +232,9 @@ class _ViolationCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1),
-                        child: Icon(
-                          Icons.warning_amber_rounded,
-                          size: 20,
-                          color: colors.errorText,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.s10),
-                      Expanded(
-                        child: Text(text.title, style: AppTextStyles.rowTitle),
-                      ),
-                    ],
-                  ),
+                  _ViolationTitle(text.title),
                   const SizedBox(height: AppSpacing.s6),
-                  Wrap(
-                    spacing: AppSpacing.s8,
-                    runSpacing: AppSpacing.s4,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text(
-                        formatDeadline(violation.at, context.localeTag),
-                        style: AppTextStyles.numericCaption.copyWith(
-                          color: colors.text,
-                        ),
-                      ),
-                      if (violation.active)
-                        StatusChip(l.violationsActive, tone: Tone.violation),
-                    ],
-                  ),
+                  _ViolationTime(violation.at, active: violation.active),
                   if (detail != null) ...[
                     const SizedBox(height: AppSpacing.s6),
                     Text(detail, style: AppTextStyles.body),
@@ -276,21 +246,7 @@ class _ViolationCard extends StatelessWidget {
                   Divider(height: 1, thickness: 1, color: colors.surface2),
                   const SizedBox(height: AppSpacing.s12),
                   if (note == null)
-                    Wrap(
-                      spacing: AppSpacing.s12,
-                      runSpacing: AppSpacing.s8,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        StatusChip(l.violationsNoNote, tone: Tone.warning),
-                        Text(
-                          l.violationsNoteAdd,
-                          style: AppTextStyles.label.copyWith(
-                            color: colors.text,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ],
-                    )
+                    const _NoNote()
                   else ...[
                     Text(l.violationsNote, style: secondary),
                     const SizedBox(height: 2),
@@ -302,6 +258,82 @@ class _ViolationCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The warning sign and what was exceeded.
+class _ViolationTitle extends StatelessWidget {
+  const new(this.title);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(top: 1),
+        child: Icon(
+          Icons.warning_amber_rounded,
+          size: 20,
+          color: context.colors.errorText,
+        ),
+      ),
+      const SizedBox(width: AppSpacing.s10),
+      Expanded(child: Text(title, style: AppTextStyles.rowTitle)),
+    ],
+  );
+}
+
+/// When the infringement began; one still going on is marked "now".
+class _ViolationTime extends StatelessWidget {
+  const new(this.at, {required this.active});
+
+  final DateTime at;
+
+  /// Нарушение ещё идёт.
+  final bool active;
+
+  @override
+  Widget build(BuildContext context) => Wrap(
+    spacing: AppSpacing.s8,
+    runSpacing: AppSpacing.s4,
+    crossAxisAlignment: WrapCrossAlignment.center,
+    children: [
+      Text(
+        formatDeadline(at, context.localeTag),
+        style: AppTextStyles.numericCaption.copyWith(
+          color: context.colors.text,
+        ),
+      ),
+      if (active)
+        StatusChip(context.l10n.violationsActive, tone: Tone.violation),
+    ],
+  );
+}
+
+/// No explanation yet: the chip and "Add an explanation".
+class _NoNote extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return Wrap(
+      spacing: AppSpacing.s12,
+      runSpacing: AppSpacing.s8,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        StatusChip(l.violationsNoNote, tone: Tone.warning),
+        Text(
+          l.violationsNoteAdd,
+          style: AppTextStyles.label.copyWith(
+            color: context.colors.text,
+            decoration: TextDecoration.underline,
+          ),
+        ),
+      ],
     );
   }
 }

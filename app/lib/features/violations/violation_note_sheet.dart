@@ -103,30 +103,11 @@ class _NoteSheetState extends ConsumerState<_NoteSheet> {
           ),
         ),
         const SizedBox(height: AppSpacing.s16),
-        TextField(
-          controller: _text,
+        _NoteField(
+          _text,
           autofocus: existing == null,
           enabled: !_saving,
-          minLines: 3,
-          maxLines: 6,
-          maxLength: ViolationNoteRepository.maxLength,
-          style: AppTextStyles.body,
-          textCapitalization: TextCapitalization.sentences,
-          onChanged: (_) => setState(() {}),
-          decoration: InputDecoration(
-            hintText: l.violationsNoteHint,
-            counterStyle: AppTextStyles.numericCaption.copyWith(
-              color: colors.textSecondary,
-            ),
-            hintStyle: AppTextStyles.body.copyWith(color: colors.textSecondary),
-            filled: true,
-            fillColor: colors.surface2,
-            contentPadding: const EdgeInsets.all(AppSpacing.cardPadding),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.modeButton),
-              borderSide: BorderSide.none,
-            ),
-          ),
+          onChanged: () => setState(() {}),
         ),
         const SizedBox(height: AppSpacing.s12),
         Row(
@@ -156,6 +137,53 @@ class _NoteSheetState extends ConsumerState<_NoteSheet> {
           ],
         ),
       ],
+    );
+  }
+}
+
+/// The explanation field: several lines, with the counter of characters left.
+class _NoteField extends StatelessWidget {
+  const new(
+    this.controller, {
+    required this.autofocus,
+    required this.enabled,
+    required this.onChanged,
+  });
+
+  final TextEditingController controller;
+  final bool autofocus;
+  final bool enabled;
+
+  /// Текст изменился: «Сохранить» включается, когда он не пустой.
+  final VoidCallback onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return TextField(
+      controller: controller,
+      autofocus: autofocus,
+      enabled: enabled,
+      minLines: 3,
+      maxLines: 6,
+      maxLength: ViolationNoteRepository.maxLength,
+      style: AppTextStyles.body,
+      textCapitalization: TextCapitalization.sentences,
+      onChanged: (_) => onChanged(),
+      decoration: InputDecoration(
+        hintText: context.l10n.violationsNoteHint,
+        counterStyle: AppTextStyles.numericCaption.copyWith(
+          color: colors.textSecondary,
+        ),
+        hintStyle: AppTextStyles.body.copyWith(color: colors.textSecondary),
+        filled: true,
+        fillColor: colors.surface2,
+        contentPadding: const EdgeInsets.all(AppSpacing.cardPadding),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.modeButton),
+          borderSide: BorderSide.none,
+        ),
+      ),
     );
   }
 }

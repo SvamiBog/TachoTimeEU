@@ -202,25 +202,10 @@ class _NotificationsCard extends ConsumerWidget {
     return CardGroup(
       children: [
         if (allowed == false) const NotificationPermissionRow(),
-        ChoiceBlock(
-          title: l.settingsWarnLead,
-          subtitle: l.settingsWarnLeadHint,
-          child: Semantics(
-            container: true,
-            label: l.settingsWarnLeadGroup,
-            child: PillWrap(
-              children: [
-                for (final lead in warningLeads)
-                  ChoicePill(
-                    leadLabel(l, lead),
-                    selected: rules.warningLead == lead,
-                    onTap: () => unawaited(
-                      repo.updateComplianceSettings(warningLead: lead),
-                    ),
-                  ),
-              ],
-            ),
-          ),
+        _WarnLead(
+          rules.warningLead,
+          onSelected: (lead) =>
+              unawaited(repo.updateComplianceSettings(warningLead: lead)),
         ),
         SwitchRow(
           title: l.notifyBreak,
@@ -241,55 +226,111 @@ class _NotificationsCard extends ConsumerWidget {
           value: notify.driving,
           onChanged: (on) => save(notify.copyWith(driving: on)),
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        _CardReminder(
+          on: notify.card,
+          days: rules.cardAlertDays,
+          onChanged: (on) => save(notify.copyWith(card: on)),
+          onDays: (days) =>
+              unawaited(repo.updateComplianceSettings(cardAlertDays: days)),
+        ),
+      ],
+    );
+  }
+}
+
+/// "Warn before limits": 15 min, 30 min or 1 h.
+class _WarnLead extends StatelessWidget {
+  const new(this.lead, {required this.onSelected});
+
+  final Duration lead;
+  final ValueChanged<Duration> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return ChoiceBlock(
+      title: l.settingsWarnLead,
+      subtitle: l.settingsWarnLeadHint,
+      child: Semantics(
+        container: true,
+        label: l.settingsWarnLeadGroup,
+        child: PillWrap(
           children: [
-            SwitchRow(
-              title: l.notifyCard,
-              subtitle: l.notifyCardHint,
-              strong: false,
-              value: notify.card,
-              onChanged: (on) => save(notify.copyWith(card: on)),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.cardPadding,
-                0,
-                AppSpacing.cardPadding,
-                AppSpacing.cardPadding,
+            for (final value in warningLeads)
+              ChoicePill(
+                leadLabel(l, value),
+                selected: lead == value,
+                onTap: () => onSelected(value),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l.notifyCardLead,
-                    style: AppTextStyles.caption.copyWith(
-                      color: context.colors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.s8),
-                  Semantics(
-                    container: true,
-                    label: l.notifyCardLeadGroup,
-                    child: PillWrap(
-                      children: [
-                        for (final days in cardAlertDays)
-                          ChoicePill(
-                            l.leadDays(days),
-                            selected: rules.cardAlertDays == days,
-                            onTap: () => unawaited(
-                              repo.updateComplianceSettings(
-                                cardAlertDays: days,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The card download reminder: the switch and how many days ahead.
+class _CardReminder extends StatelessWidget {
+  const new({
+    required this.on,
+    required this.days,
+    required this.onChanged,
+    required this.onDays,
+  });
+
+  final bool on;
+
+  /// За сколько дней напоминать.
+  final int days;
+  final ValueChanged<bool> onChanged;
+  final ValueChanged<int> onDays;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SwitchRow(
+          title: l.notifyCard,
+          subtitle: l.notifyCardHint,
+          strong: false,
+          value: on,
+          onChanged: onChanged,
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.cardPadding,
+            0,
+            AppSpacing.cardPadding,
+            AppSpacing.cardPadding,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l.notifyCardLead,
+                style: AppTextStyles.caption.copyWith(
+                  color: context.colors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.s8),
+              Semantics(
+                container: true,
+                label: l.notifyCardLeadGroup,
+                child: PillWrap(
+                  children: [
+                    for (final value in cardAlertDays)
+                      ChoicePill(
+                        l.leadDays(value),
+                        selected: days == value,
+                        onTap: () => onDays(value),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

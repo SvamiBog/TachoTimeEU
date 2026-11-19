@@ -53,7 +53,6 @@ class CountryBansScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
-    final locale = context.localeTag;
     final country = ref.watch(banDataProvider)[code]!;
     final now = ref.watch(clockProvider.select(minuteOf));
     final status = banStatus(country, bansMass, now);
@@ -73,33 +72,9 @@ class CountryBansScreen extends ConsumerWidget {
         _Now(country: country, status: status, now: now),
         if (country.coverage == BanCoverage.rules) ...[
           SectionTitle(l.bansRules),
-          CardGroup(
-            children: [
-              for (final r in country.rules)
-                _Line(
-                  title: banRuleText(l, r, locale),
-                  subtitle: banRuleCaption(l, r, locale),
-                ),
-            ],
-          ),
+          _Rules(country.rules),
           SectionTitle(l.bansUpcoming),
-          CardGroup(
-            children: [
-              if (upcoming.isEmpty)
-                _Line(title: l.bansNoUpcoming)
-              else
-                for (final w in upcoming)
-                  _Line(
-                    title: banSpan(w, country.zone, locale),
-                    subtitle: [
-                      w.kinds.map((k) => l.bansKind(k.name)).join(', '),
-                      l.bansScope(w.scope.name),
-                      if (w.provisional) l.bansProvisional,
-                    ].join(' · '),
-                    warn: w.scope.definite,
-                  ),
-            ],
-          ),
+          _Upcoming(upcoming, zone: country.zone),
         ] else
           InfoNote(
             country.coverage == BanCoverage.someRoads
@@ -108,19 +83,7 @@ class CountryBansScreen extends ConsumerWidget {
           ),
         if (country.sources.isNotEmpty) ...[
           SectionTitle(l.bansSources),
-          CardGroup(
-            children: [
-              for (final source in country.sources)
-                NavRow(
-                  icon: Icons.open_in_new,
-                  title: Uri.parse(source).host,
-                  subtitle: sourcePage(country.sources, source),
-                  onTap: () => unawaited(
-                    ref.read(linkOpenerProvider).open(Uri.parse(source)),
-                  ),
-                ),
-            ],
-          ),
+          _Sources(country.sources),
         ],
         InfoNote(
           [
@@ -200,6 +163,80 @@ class _Now extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The country's ban rules, each with its caption.
+class _Rules extends StatelessWidget {
+  const new(this.rules);
+
+  final List<BanRule> rules;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final locale = context.localeTag;
+    return CardGroup(
+      children: [
+        for (final r in rules)
+          _Line(
+            title: banRuleText(l, r, locale),
+            subtitle: banRuleCaption(l, r, locale),
+          ),
+      ],
+    );
+  }
+}
+
+/// The bans of the next [upcomingDays] days: when, what and where; bans on the
+/// whole road network in the error colour.
+class _Upcoming extends StatelessWidget {
+  const new(this.windows, {required this.zone});
+
+  final List<BanWindow> windows;
+  final BanZone zone;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return CardGroup(
+      children: [
+        if (windows.isEmpty)
+          _Line(title: l.bansNoUpcoming)
+        else
+          for (final w in windows)
+            _Line(
+              title: banSpan(w, zone, context.localeTag),
+              subtitle: [
+                w.kinds.map((k) => l.bansKind(k.name)).join(', '),
+                l.bansScope(w.scope.name),
+                if (w.provisional) l.bansProvisional,
+              ].join(' · '),
+              warn: w.scope.definite,
+            ),
+      ],
+    );
+  }
+}
+
+/// Where to check the bans: the official sites, opened in the browser.
+class _Sources extends ConsumerWidget {
+  const new(this.sources);
+
+  final List<String> sources;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => CardGroup(
+    children: [
+      for (final source in sources)
+        NavRow(
+          icon: Icons.open_in_new,
+          title: Uri.parse(source).host,
+          subtitle: sourcePage(sources, source),
+          onTap: () =>
+              unawaited(ref.read(linkOpenerProvider).open(Uri.parse(source))),
+        ),
+    ],
+  );
 }
 
 /// A rule or ban line: text and caption.

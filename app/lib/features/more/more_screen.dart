@@ -35,7 +35,6 @@ class MoreScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
-    final version = ref.watch(appVersionProvider).value;
     final problemReport = ref.watch(problemReportEnabledProvider);
     return Scaffold(
       body: SafeArea(
@@ -55,38 +54,7 @@ class MoreScreen extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.betweenCardsMax),
-            CardGroup(
-              children: [
-                NavRow(
-                  icon: Icons.warning_amber_rounded,
-                  title: l.violationsTitle,
-                  subtitle: l.violationsHint,
-                  onTap: () => openViolations(context),
-                ),
-                NavRow(
-                  icon: Icons.file_download_outlined,
-                  title: l.settingsExport,
-                  onTap: () => unawaited(showExportSheet(context)),
-                ),
-                NavRow(
-                  icon: Icons.calendar_month_outlined,
-                  title: l.workDaysTitle,
-                  subtitle: l.workDaysHint,
-                  onTap: () => openWorkingDays(context),
-                ),
-                NavRow(
-                  icon: Icons.mobile_screen_share_outlined,
-                  title: l.transferTitle,
-                  subtitle: l.transferHint,
-                  onTap: () => unawaited(showTransferSheet(context)),
-                ),
-                NavRow(
-                  icon: Icons.description_outlined,
-                  title: l.guideTitle,
-                  onTap: () => openGuide(context),
-                ),
-              ],
-            ),
+            const _JournalTools(),
             if (problemReport) ...[
               const SizedBox(height: AppSpacing.betweenCardsMax),
               CardGroup(
@@ -101,27 +69,7 @@ class MoreScreen extends ConsumerWidget {
               ),
             ],
             const SizedBox(height: AppSpacing.betweenCardsMax),
-            CardGroup(
-              children: [
-                NavRow(
-                  icon: Icons.info_outline,
-                  title: l.moreAbout,
-                  value: version,
-                  numericValue: true,
-                  onTap: () => openAbout(context),
-                ),
-                NavRow(
-                  icon: Icons.privacy_tip_outlined,
-                  title: l.morePrivacy,
-                  onTap: () => unawaited(openPrivacyPolicy(context, ref)),
-                ),
-                NavRow(
-                  icon: Icons.gavel_outlined,
-                  title: l.moreTerms,
-                  onTap: () => unawaited(openTermsOfUse(context, ref)),
-                ),
-              ],
-            ),
+            const _AboutApp(),
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.textInset,
@@ -140,6 +88,80 @@ class MoreScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The driver's journal tools: infringements, export, working days, moving to
+/// another phone, guide and rules.
+class _JournalTools extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return CardGroup(
+      children: [
+        NavRow(
+          icon: Icons.warning_amber_rounded,
+          title: l.violationsTitle,
+          subtitle: l.violationsHint,
+          onTap: () => openViolations(context),
+        ),
+        NavRow(
+          icon: Icons.file_download_outlined,
+          title: l.settingsExport,
+          onTap: () => unawaited(showExportSheet(context)),
+        ),
+        NavRow(
+          icon: Icons.calendar_month_outlined,
+          title: l.workDaysTitle,
+          subtitle: l.workDaysHint,
+          onTap: () => openWorkingDays(context),
+        ),
+        NavRow(
+          icon: Icons.mobile_screen_share_outlined,
+          title: l.transferTitle,
+          subtitle: l.transferHint,
+          onTap: () => unawaited(showTransferSheet(context)),
+        ),
+        NavRow(
+          icon: Icons.description_outlined,
+          title: l.guideTitle,
+          onTap: () => openGuide(context),
+        ),
+      ],
+    );
+  }
+}
+
+/// About the app with its version, the privacy policy and the terms of use.
+class _AboutApp extends ConsumerWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    return CardGroup(
+      children: [
+        NavRow(
+          icon: Icons.info_outline,
+          title: l.moreAbout,
+          value: ref.watch(appVersionProvider).value,
+          numericValue: true,
+          onTap: () => openAbout(context),
+        ),
+        NavRow(
+          icon: Icons.privacy_tip_outlined,
+          title: l.morePrivacy,
+          onTap: () => unawaited(openPrivacyPolicy(context, ref)),
+        ),
+        NavRow(
+          icon: Icons.gavel_outlined,
+          title: l.moreTerms,
+          onTap: () => unawaited(openTermsOfUse(context, ref)),
+        ),
+      ],
     );
   }
 }
