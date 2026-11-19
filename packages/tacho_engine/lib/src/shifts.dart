@@ -187,9 +187,10 @@ class CurrentRest {
   final DateTime start;
   final Duration duration;
 
-  /// До этого отдыха взята первая часть раздельного перерыва: ему хватит
-  /// 30 мин.
-  final bool firstPartBefore;
+  /// Первая часть раздельного перерыва, взятая до этого отдыха: тогда он —
+  /// вторая часть, и ему хватит 30 мин. Хранится и после того, как вторая
+  /// часть набрала 30 мин и [BreakState.firstPart] сброшена.
+  final BreakPart? firstPartBefore;
 }
 
 /// Art. 7 state since the last qualifying break: driving so far, the first part
@@ -215,33 +216,28 @@ class BreakState {
   bool get firstPartTaken => firstPart != null;
 
   /// Идущий отдых — вторая часть раздельного перерыва: до него взята первая.
-  bool get _secondPartGoing => currentRest?.firstPartBefore ?? false;
+  bool get _secondPartGoing => currentRest?.firstPartBefore != null;
 
   /// Взято в счёт перерыва. Без отдыха — первая часть; во время отдыха — он
-  /// сам, а если он вторая часть, то и первая перед ним.
-  ///
-  /// Вторая часть, набравшая 30 мин, первую уже сбросила, и в счёт идёт
-  /// только она — известный дефект (ENG-32, тест со `skip`).
+  /// сам, а если он вторая часть, то и первая перед ним — в том числе когда
+  /// перерыв 15 + 30 уже засчитан.
   Duration get taken {
     final rest = currentRest;
-    final first = firstPart?.duration ?? Duration.zero;
-    if (rest == null) return first;
-    return _secondPartGoing ? first + rest.duration : rest.duration;
+    if (rest == null) return firstPart?.duration ?? Duration.zero;
+    final before = rest.firstPartBefore?.duration ?? Duration.zero;
+    return before + rest.duration;
   }
 
   /// Раздельный перерыв 15 + 30: первая часть взята (идущий отдых от 15 мин
   /// — тоже она) или идёт вторая.
   bool get split => firstPartTaken || _secondPartGoing;
 
-  /// Первые 15 мин набраны: первая часть взята или идущий отдых — не вторая
-  /// часть — длится от 15 мин (отдых от 45 мин первую часть уже не хранит).
-  bool get firstPartDone {
-    final rest = currentRest;
-    return firstPartTaken ||
-        (rest != null &&
-            !_secondPartGoing &&
-            rest.duration >= EuLimits.breakSplitFirst);
-  }
+  /// Первые 15 мин набраны: первая часть взята, идёт вторая (засчитанная
+  /// тоже) или идущий отдых длится от 15 мин (отдых от 45 мин первую часть
+  /// уже не хранит).
+  bool get firstPartDone =>
+      split ||
+      (currentRest?.duration ?? Duration.zero) >= EuLimits.breakSplitFirst;
 }
 
 /// Перерыв по ст. 7: 45 мин подряд или 15 + 30 именно в таком порядке.
@@ -264,7 +260,7 @@ BreakState computeBreakState(List<Block> blocks) {
       currentRest = CurrentRest(
         start: b.start,
         duration: d,
-        firstPartBefore: firstPart != null,
+        firstPartBefore: firstPart,
       );
     }
     if (d >= EuLimits.breakFull ||
