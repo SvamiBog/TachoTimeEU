@@ -11,6 +11,7 @@ import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
+import 'package:tachogo/core/widgets/value_row_layout.dart';
 import 'package:tachogo/features/home/country_sheet.dart';
 import 'package:tachogo/features/journal/shift_form.dart';
 
@@ -75,7 +76,8 @@ class ShiftTimesCard extends StatelessWidget {
 }
 
 /// "Duration" of the shift: to the end or, for an ongoing shift, to now;
-/// longer than a manual shift may be — in red.
+/// longer than a manual shift may be — in red. When the value does not fit
+/// beside the label, it moves under it.
 class _SpanRow extends StatelessWidget {
   const new({required this.start, required this.end, required this.now});
 
@@ -90,30 +92,33 @@ class _SpanRow extends StatelessWidget {
     final l = context.l10n;
     final colors = context.colors;
     final span = durationBetween(start, end ?? now);
+    // «сейчас» — при длительности: на узком экране уходит под название
+    // вместе с ней
     return MergeSemantics(
       child: CardRow(
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(l.shiftDuration, style: AppTextStyles.rowTitle),
-            ),
-            if (end == null) ...[
-              Text(
-                l.shiftNowSuffix,
-                style: AppTextStyles.label.copyWith(color: colors.drive),
+        child: ValueRowLayout(
+          text: Text(l.shiftDuration, style: AppTextStyles.rowTitle),
+          value: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (end == null) ...[
+                Text(
+                  l.shiftNowSuffix,
+                  style: AppTextStyles.label.copyWith(color: colors.drive),
+                ),
+                const SizedBox(width: AppSpacing.s8),
+              ],
+              DurationText(
+                formatHm(span),
+                spoken: spokenDuration(l, span),
+                style: AppTextStyles.value.copyWith(
+                  color: span > maxManualShiftSpan
+                      ? colors.errorText
+                      : colors.textSecondary,
+                ),
               ),
-              const SizedBox(width: AppSpacing.s8),
             ],
-            DurationText(
-              formatHm(span),
-              spoken: spokenDuration(l, span),
-              style: AppTextStyles.value.copyWith(
-                color: span > maxManualShiftSpan
-                    ? colors.errorText
-                    : colors.textSecondary,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

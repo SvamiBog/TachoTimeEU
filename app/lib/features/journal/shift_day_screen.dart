@@ -13,6 +13,7 @@ import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
+import 'package:tachogo/core/widgets/value_row_layout.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/journal/journal_parts.dart';
 import 'package:tachogo/features/journal/shift_edit_screen.dart';
@@ -209,7 +210,8 @@ class _Totals extends StatelessWidget {
   }
 }
 
-/// A "label — value" row, with an optional caption and chip.
+/// A "label — value" row, with an optional caption and chip. When the chip
+/// and the value do not fit beside the label, they move under it.
 class _ValueRow extends StatelessWidget {
   const new({
     required this.label,
@@ -229,37 +231,28 @@ class _ValueRow extends StatelessWidget {
     final value = this.value;
     return MergeSemantics(
       child: CardRow(
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(label, style: AppTextStyles.rowTitle),
-                  if (caption case final caption?)
-                    Text(
-                      caption,
-                      style: AppTextStyles.caption.copyWith(
-                        color: context.colors.textSecondary,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            if (chip case final chip?) ...[
-              const SizedBox(width: AppSpacing.s8),
-              chip,
+        child: ValueRowLayout(
+          text: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: AppTextStyles.rowTitle),
+              if (caption case final caption?)
+                Text(
+                  caption,
+                  style: AppTextStyles.caption.copyWith(
+                    color: context.colors.textSecondary,
+                  ),
+                ),
             ],
-            const SizedBox(width: AppSpacing.s8),
-            if (value == null)
-              const Text('—', style: AppTextStyles.value)
-            else
-              DurationText(
-                formatHm(value),
-                spoken: spokenDuration(l, value),
-                style: AppTextStyles.value,
-              ),
-          ],
+          ),
+          chip: chip,
+          value: value == null
+              ? const Text('—', style: AppTextStyles.value)
+              : DurationText(
+                  formatHm(value),
+                  spoken: spokenDuration(l, value),
+                  style: AppTextStyles.value,
+                ),
         ),
       ),
     );

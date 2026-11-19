@@ -11,6 +11,7 @@ import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
 import 'package:tachogo/core/widgets/hm_field.dart';
 import 'package:tachogo/core/widgets/segmented_tabs.dart';
+import 'package:tachogo/core/widgets/value_row_layout.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/tables.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
@@ -57,7 +58,7 @@ String typed(DateTime t) {
 /// Длительность [value] в строке отдыха с оценкой [status]: время суток
 /// в других строках формы может выглядеть так же.
 Finder restRow(String status, String value) => find.descendant(
-  of: find.widgetWithText(Row, status),
+  of: find.widgetWithText(ValueRowLayout, status),
   matching: find.text(value),
 );
 

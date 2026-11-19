@@ -17,6 +17,7 @@ import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/segmented_tabs.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
+import 'package:tachogo/core/widgets/value_row_layout.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/features/home/compensation_row.dart';
 import 'package:tachogo/features/home/snapshot_select.dart';
@@ -493,7 +494,8 @@ class ShiftNoteField extends StatelessWidget {
   }
 }
 
-/// A "label — value ›" row: a tap opens the duration sheet.
+/// A "label — value ›" row: a tap opens the duration sheet. When the chip
+/// and the value do not fit beside the label, they move under it.
 class _ValueRow extends StatelessWidget {
   const new({
     required this.label,
@@ -514,37 +516,36 @@ class _ValueRow extends StatelessWidget {
     final l = context.l10n;
     final colors = context.colors;
     final caption = this.caption;
-    final chip = this.chip;
     final body = CardRow(
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: AppTextStyles.rowTitle),
-                if (caption != null)
-                  Text(
-                    caption,
-                    style: AppTextStyles.small.copyWith(
-                      color: colors.textSecondary,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          if (chip != null) ...[const SizedBox(width: AppSpacing.s8), chip],
-          const SizedBox(width: AppSpacing.s8),
-          DurationText(
-            formatHm(value),
-            spoken: spokenDuration(l, value),
-            style: AppTextStyles.value,
-          ),
-          if (onTap != null) ...[
-            const SizedBox(width: AppSpacing.s4),
-            Icon(Icons.chevron_right, color: colors.textSecondary),
+      child: ValueRowLayout(
+        text: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: AppTextStyles.rowTitle),
+            if (caption != null)
+              Text(
+                caption,
+                style: AppTextStyles.small.copyWith(
+                  color: colors.textSecondary,
+                ),
+              ),
           ],
-        ],
+        ),
+        chip: chip,
+        value: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DurationText(
+              formatHm(value),
+              spoken: spokenDuration(l, value),
+              style: AppTextStyles.value,
+            ),
+            if (onTap != null) ...[
+              const SizedBox(width: AppSpacing.s4),
+              Icon(Icons.chevron_right, color: colors.textSecondary),
+            ],
+          ],
+        ),
       ),
     );
     return MergeSemantics(
