@@ -20,69 +20,78 @@ List<ReportViolation> reportViolations(
   required AppLocalizations l,
   required String locale,
 }) {
-  String date(DateTime t) => formatWeekdayDay(t, locale);
-  ReportViolation v(String text, InfringementType type, [String? article]) => (
+  final texts = _ViolationTexts(crew: crew, l: l, locale: locale);
+  return [
+    for (final s in shiftsInRange(journal.shifts, range)) ...texts.ofShift(s),
+    for (final w in journal.weeks.reversed)
+      if (w.start.add(week).isAfter(range.start) && w.start.isBefore(range.end))
+        ...texts.ofWeek(w),
+  ];
+}
+
+/// Infringements of one shift or week in the report's words, with the
+/// article of the regulation.
+final class _ViolationTexts {
+  const new({required this.crew, required this.l, required this.locale});
+
+  final CrewMode crew;
+  final AppLocalizations l;
+  final String locale;
+
+  String _date(DateTime t) => formatWeekdayDay(t, locale);
+
+  static ReportViolation _of(
+    String text,
+    InfringementType type, [
+    String? article,
+  ]) => (
     text: text,
     regulation: type.regulation,
     article: article ?? type.article,
   );
-  final spanLimit = workdayWindow(crew) - EuLimits.dailyRestReduced;
-  final result = <ReportViolation>[];
-  for (final s in shiftsInRange(journal.shifts, range)) {
-    if (s.driveLevel == JournalLevel.bad) {
-      result.add(
-        v(
-          l.reportViolationDrive(date(s.start), formatHm(s.driving)),
-          InfringementType.dailyDriveExceeded,
+
+  /// Вождение за день, рабочий день и отдых после смены [s].
+  List<ReportViolation> ofShift(JournalShift s) => [
+    if (s.driveLevel == JournalLevel.bad)
+      _of(
+        l.reportViolationDrive(_date(s.start), formatHm(s.driving)),
+        InfringementType.dailyDriveExceeded,
+      ),
+    if (s.spanLevel == JournalLevel.bad)
+      _of(
+        l.reportViolationSpan(
+          _date(s.start),
+          formatHm(s.span),
+          (workdayWindow(crew) - EuLimits.dailyRestReduced).inHours,
         ),
-      );
-    }
-    if (s.spanLevel == JournalLevel.bad) {
-      result.add(
-        v(
-          l.reportViolationSpan(
-            date(s.start),
-            formatHm(s.span),
-            spanLimit.inHours,
-          ),
-          InfringementType.shiftExceeded,
-          crew == CrewMode.team ? '8(5)' : null,
-        ),
-      );
-    }
-    if (s.restLevel == JournalLevel.bad) {
-      // Отдыху отдельного вида нарушения в движке нет — статья по виду отдыха
-      result.add((
-        text: l.reportViolationRest(date(s.start), formatHm(s.rest.duration)),
+        InfringementType.shiftExceeded,
+        crew == CrewMode.team ? '8(5)' : null,
+      ),
+    // Отдыху отдельного вида нарушения в движке нет — статья по виду отдыха
+    if (s.restLevel == JournalLevel.bad)
+      (
+        text: l.reportViolationRest(_date(s.start), formatHm(s.rest.duration)),
         regulation: '561/2006',
         article: s.rest.kind == RestKind.weekly ? '8(6)' : '8(2)',
-      ));
-    }
-  }
-  for (final w in journal.weeks.reversed) {
-    final weekEnd = w.start.add(week);
-    if (!weekEnd.isAfter(range.start) || !w.start.isBefore(range.end)) {
-      continue;
-    }
+      ),
+  ];
+
+  /// Вождение за неделю [w] и за две недели, которыми она кончается.
+  List<ReportViolation> ofWeek(JournalWeek w) {
     final label = formatWeekRange(w.start, locale);
-    if (w.driving > EuLimits.weeklyDriving) {
-      result.add(
-        v(
+    return [
+      if (w.driving > EuLimits.weeklyDriving)
+        _of(
           l.reportViolationWeek(label, formatHm(w.driving)),
           InfringementType.weeklyDriveExceeded,
         ),
-      );
-    }
-    if (w.fortnightDriving > EuLimits.fortnightDriving) {
-      result.add(
-        v(
+      if (w.fortnightDriving > EuLimits.fortnightDriving)
+        _of(
           l.reportViolationFortnight(label, formatHm(w.fortnightDriving)),
           InfringementType.fortnightDriveExceeded,
         ),
-      );
-    }
+    ];
   }
-  return result;
 }
 
 /// Нарушения вокруг смены [start]–[end] (null — идёт) после её сохранения:

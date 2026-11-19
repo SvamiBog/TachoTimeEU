@@ -95,45 +95,37 @@ String buildCsv(
   TimeRange range, {
   required bool includeNotes,
 }) {
+  final notes = _CsvNotes(journal, includeNotes: includeNotes);
+  // Записи режимов — раньше ручных смен: заметка смены — в первой строке
+  final rows = [
+    ..._periodRows(journal, range, notes),
+    ..._manualShiftRows(journal, range, notes),
+  ]..sort((a, b) => a.start.compareTo(b.start));
+
+  final lines = [
+    _csvHeader(includeNotes: includeNotes).map(csvCell).join(','),
+    for (final r in rows) r.cells.map(csvCell).join(','),
+  ];
+  // BOM — чтобы Excel открыл кириллицу в UTF-8
+  return '﻿${lines.join('\r\n')}\r\n';
+}
+
+/// Заголовки колонок CSV.
+List<String> _csvHeader({required bool includeNotes}) => [
+  'activity',
+  'start_utc',
+  'end_utc',
+  'duration_min',
+  'driving_min',
+  'ferry',
+  if (includeNotes) ...['country_start', 'country_end', 'note'],
+];
+
+/// Строки записей режимов, обрезанных по границам периода; идущая запись —
+/// `ACTIVE`.
+List<_Row> _periodRows(Journal journal, TimeRange range, _CsvNotes notes) {
   final from = range.start;
   final to = range.end;
-  final header = [
-    'activity',
-    'start_utc',
-    'end_utc',
-    'duration_min',
-    'driving_min',
-    'ferry',
-    if (includeNotes) ...['country_start', 'country_end', 'note'],
-  ];
-
-  // Смена, к которой относится запись: последняя начатая до неё
-  final recorded = [
-    for (final s in journal.shifts)
-      if (s.recorded != null) s,
-  ]..sort((a, b) => a.start.compareTo(b.start));
-  JournalShift? shiftOf(DateTime t) {
-    JournalShift? found;
-    for (final s in recorded) {
-      if (s.start.isAfter(t)) break;
-      found = s;
-    }
-    return found;
-  }
-
-  final noted = <JournalShift>{};
-  List<Object> notes(JournalShift? shift) {
-    if (!includeNotes) return const [];
-    if (shift == null) return const ['', '', ''];
-    final meta = journal.metaOf(shift);
-    final first = noted.add(shift);
-    return [
-      meta.startCountry ?? '',
-      meta.endCountry ?? '',
-      if (first) meta.note ?? '' else '',
-    ];
-  }
-
   final rows = <_Row>[];
   for (final p in sortedByStart(journal.periods)) {
     final end = p.end ?? journal.now;
@@ -150,12 +142,21 @@ String buildCsv(
         minutes,
         if (p.mode == DriverMode.driving) minutes else 0,
         if (p.ferry) 1 else 0,
-        ...notes(shiftOf(p.start)),
+        ...notes.cells(notes.shiftOf(p.start)),
       ],
     ));
   }
+  return rows;
+}
+
+/// Строки смен, внесённых итогами и начатых в периоде: `MANUAL_SHIFT` с
+/// вождением за смену.
+List<_Row> _manualShiftRows(Journal journal, TimeRange range, _CsvNotes notes) {
+  final rows = <_Row>[];
   for (final s in journal.shifts) {
-    if (s.manual == null || s.start.isBefore(from) || !s.start.isBefore(to)) {
+    if (s.manual == null ||
+        s.start.isBefore(range.start) ||
+        !s.start.isBefore(range.end)) {
       continue;
     }
     final end = s.end;
@@ -168,18 +169,54 @@ String buildCsv(
         s.span.inMinutes,
         s.driving.inMinutes,
         0,
-        ...notes(s),
+        ...notes.cells(s),
       ],
     ));
   }
-  rows.sort((a, b) => a.start.compareTo(b.start));
+  return rows;
+}
 
-  final lines = [
-    header.map(csvCell).join(','),
-    for (final r in rows) r.cells.map(csvCell).join(','),
-  ];
-  // BOM — чтобы Excel открыл кириллицу в UTF-8
-  return '﻿${lines.join('\r\n')}\r\n';
+/// The country and note columns of one CSV: which shift a record belongs to,
+/// and the shift's note only in its first row. Lives for one [buildCsv] call.
+final class _CsvNotes {
+  new(this._journal, {required this.includeNotes})
+    : _recorded = [
+        for (final s in _journal.shifts)
+          if (s.recorded != null) s,
+      ]..sort((a, b) => a.start.compareTo(b.start));
+
+  final Journal _journal;
+  final bool includeNotes;
+
+  /// Смены из записей режимов по возрастанию начала.
+  final List<JournalShift> _recorded;
+
+  /// Смены, чья заметка уже выведена.
+  final _noted = <JournalShift>{};
+
+  /// Смена, к которой относится запись [t]: последняя начатая до неё.
+  JournalShift? shiftOf(DateTime t) {
+    JournalShift? found;
+    for (final s in _recorded) {
+      if (s.start.isAfter(t)) break;
+      found = s;
+    }
+    return found;
+  }
+
+  /// Страны и заметка смены [shift] для очередной строки; без колонок
+  /// заметок — ничего.
+  List<Object> cells(JournalShift? shift) {
+    if (!includeNotes) return const [];
+    if (shift == null) return const ['', '', ''];
+    final meta = _journal.metaOf(shift);
+    final first = _noted.add(shift);
+    return [
+      meta.startCountry ?? '',
+      meta.endCountry ?? '',
+      if (first) meta.note ?? '' else '',
+    ];
+  }
 }
 
 /// CSV в байтах UTF-8 для файла.
