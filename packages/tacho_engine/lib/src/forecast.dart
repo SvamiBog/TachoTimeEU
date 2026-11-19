@@ -247,70 +247,101 @@ DateTime? _nextCheckpoint(
   ComplianceSettings settings,
   DateTime? lastCardDownload,
 ) {
-  final now = s.now;
-  final points = <DateTime>[];
-  void add(DateTime t) {
-    if (t.isAfter(now)) points.add(t);
-  }
-
-  // Остаток до лимита убывает вместе со временем.
-  void limit(Duration left, {Duration? warning}) {
-    add(now.add(left - (warning ?? settings.warningLead)));
-    add(now.add(left));
-    add(now.add(left + _minute));
-  }
-
-  final mode = s.currentMode;
-  if (mode == DriverMode.driving) {
-    limit(EuLimits.continuousDriving - s.continuousDriving);
-    limit(EuLimits.dailyDriving - s.dailyDriving);
-    limit(s.dailyDrivingLimit - s.dailyDriving);
-    limit(EuLimits.weeklyDriving - s.weeklyDriving);
-    limit(EuLimits.fortnightDriving - s.fortnightDriving);
-  }
-  if (s.shift != null) limit(s.shiftLimit - s.shiftDuration);
-
-  // Отдых растёт: перерыв засчитан, смена закрыта, отдых суточный,
-  // недельный, полный.
-  if (s.currentBreak case final b?) {
-    add(now.add(b.required - b.duration));
-    add(now.add(EuLimits.breakSplitFirst - b.duration));
-  }
-  final rests = s.timeline.rests;
-  // Отдых после ручной смены растёт и без записи режима
-  final rest = mode == DriverMode.rest && rests.isNotEmpty
-      ? (rests.last.open ? rests.last.rest : null)
-      : mode == null
-      ? s.offDutyRest?.duration
-      : null;
-  if (rest != null) {
-    for (final threshold in const [
-      EuLimits.dailyRestSplitFirst,
-      EuLimits.dailyRestReduced,
-      EuLimits.dailyRestRegular,
-      EuLimits.weeklyRestReduced,
-      EuLimits.weeklyRestRegular,
-    ]) {
-      add(now.add(threshold - rest));
-    }
-  }
-
-  // Календарь: неделя с понедельника, 144 ч, компенсация, карта.
-  add(s.weekStart.add(week));
-  if (s.weeklyRestDeadline case final deadline?) {
-    add(deadline.subtract(EuLimits.weeklyRestWarning));
-    add(deadline);
-    add(deadline.add(_minute));
-  }
-  if (s.compensation case final c?) {
-    add(c.dueBy.subtract(EuLimits.compensationWarning));
-    add(c.dueBy.add(_minute));
-  }
-  if (s.restCompensation case final c? when c.inTime) add(c.until!);
-  if (lastCardDownload != null) {
-    final days = EuLimits.cardDownloadInterval.inDays;
-    add(lastCardDownload.add(Duration(days: days - settings.cardAlertDays)));
-    add(lastCardDownload.add(Duration(days: days + 1)));
-  }
+  final points = [
+    ..._limitPoints(s, settings.warningLead),
+    ..._restPoints(s),
+    ..._calendarPoints(s, settings, lastCardDownload),
+  ].where((t) => t.isAfter(s.now));
   return points.isEmpty ? null : points.reduce(earlier);
+}
+
+/// Остаток до лимита убывает вместе со временем: за [lead] до лимита, сам
+/// лимит и минута после него — для вождения (пока водитель за рулём) и
+/// рабочего дня.
+List<DateTime> _limitPoints(ComplianceSnapshot s, Duration lead) {
+  final now = s.now;
+  List<DateTime> limit(Duration left) => [
+    now.add(left - lead),
+    now.add(left),
+    now.add(left + _minute),
+  ];
+  return [
+    if (s.currentMode == DriverMode.driving) ...[
+      ...limit(EuLimits.continuousDriving - s.continuousDriving),
+      ...limit(EuLimits.dailyDriving - s.dailyDriving),
+      ...limit(s.dailyDrivingLimit - s.dailyDriving),
+      ...limit(EuLimits.weeklyDriving - s.weeklyDriving),
+      ...limit(EuLimits.fortnightDriving - s.fortnightDriving),
+    ],
+    if (s.shift != null) ...limit(s.shiftLimit - s.shiftDuration),
+  ];
+}
+
+/// Пороги, которые проходит растущий отдых: первая часть раздельного
+/// суточного, сокращённый и полный суточный, сокращённый и полный
+/// недельный.
+const List<Duration> _restThresholds = [
+  EuLimits.dailyRestSplitFirst,
+  EuLimits.dailyRestReduced,
+  EuLimits.dailyRestRegular,
+  EuLimits.weeklyRestReduced,
+  EuLimits.weeklyRestRegular,
+];
+
+/// Отдых растёт: перерыв засчитан, набрана его первая часть, отдых проходит
+/// пороги суточного и недельного ([_restThresholds]).
+List<DateTime> _restPoints(ComplianceSnapshot s) {
+  final now = s.now;
+  final b = s.currentBreak;
+  final rest = _growingRest(s);
+  return [
+    if (b != null) ...[
+      now.add(b.required - b.duration),
+      now.add(EuLimits.breakSplitFirst - b.duration),
+    ],
+    if (rest != null)
+      for (final threshold in _restThresholds) now.add(threshold - rest),
+  ];
+}
+
+/// Идущий отдых, который растёт вместе со временем; null — водитель не
+/// отдыхает. Отдых после ручной смены растёт и без записи режима.
+Duration? _growingRest(ComplianceSnapshot s) {
+  final rests = s.timeline.rests;
+  return switch (s.currentMode) {
+    DriverMode.rest =>
+      rests.isNotEmpty && rests.last.open ? rests.last.rest : null,
+    null => s.offDutyRest?.duration,
+    _ => null,
+  };
+}
+
+/// Календарь: начало следующей недели, срок недельного отдыха (144 ч),
+/// срок компенсации, конец её набора в идущем отдыхе, считывание карты.
+List<DateTime> _calendarPoints(
+  ComplianceSnapshot s,
+  ComplianceSettings settings,
+  DateTime? lastCardDownload,
+) {
+  final deadline = s.weeklyRestDeadline;
+  final debt = s.compensation;
+  final repaying = s.restCompensation;
+  final cardDays = EuLimits.cardDownloadInterval.inDays;
+  return [
+    s.weekStart.add(week),
+    if (deadline != null) ...[
+      deadline.subtract(EuLimits.weeklyRestWarning),
+      deadline,
+      deadline.add(_minute),
+    ],
+    if (debt != null) ...[
+      debt.dueBy.subtract(EuLimits.compensationWarning),
+      debt.dueBy.add(_minute),
+    ],
+    if (repaying != null && repaying.inTime) repaying.until!,
+    if (lastCardDownload != null) ...[
+      lastCardDownload.add(Duration(days: cardDays - settings.cardAlertDays)),
+      lastCardDownload.add(Duration(days: cardDays + 1)),
+    ],
+  ];
 }
