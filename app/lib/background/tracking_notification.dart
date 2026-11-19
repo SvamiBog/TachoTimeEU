@@ -35,21 +35,11 @@ import 'package:tachogo/core/l10n/l10n.dart';
     ),
     DriverStatus.dailyRest => (
       title: title(l.heroDailyRest),
-      text: _restText(
-        l,
-        m.dailyRestRemaining,
-        full: EuLimits.dailyRestRegular,
-        done: l.serviceDailyRestDone,
-      ),
+      text: _restText(l, m.offDutyRest, done: l.serviceDailyRestDone),
     ),
     DriverStatus.weeklyRest => (
       title: title(l.heroWeeklyRest),
-      text: _restText(
-        l,
-        m.weeklyRestRemaining,
-        full: EuLimits.weeklyRestRegular,
-        done: l.serviceWeeklyRestDone,
-      ),
+      text: _restText(l, m.offDutyRest, done: l.serviceWeeklyRestDone),
     ),
     DriverStatus.notStarted => (
       title: l.workdayNoShift,
@@ -74,10 +64,10 @@ import 'package:tachogo/core/l10n/l10n.dart';
 };
 
 /// За рулём: до перерыва и остаток за день, после 4:30 без перерыва —
-/// превышение.
+/// превышение из нарушения движка.
 String _drivingText(AppLocalizations l, ComplianceSnapshot m) {
-  final over = m.continuousDriving - EuLimits.continuousDriving;
-  return over > Duration.zero
+  final over = m.infringement(InfringementType.continuousExceeded)?.time;
+  return over != null
       ? l.serviceDrivingOver(_hm(over))
       : l.serviceDriving(
           _hm(m.drivingUntilBreak),
@@ -97,17 +87,15 @@ String _breakText(AppLocalizations l, ComplianceSnapshot m) {
 String _workdayText(AppLocalizations l, ComplianceSnapshot m) =>
     l.serviceWorkday(_hm(m.shiftDuration), _hm(m.shiftLimit));
 
-/// Отдых: сколько осталось [remaining] до полного [full], набран — [done].
+/// Отдых после смены [rest]: сколько осталось до полного (11 или 45 ч —
+/// [OffDutyRest.full]), набран — [done].
 String _restText(
   AppLocalizations l,
-  Duration? remaining, {
-  required Duration full,
+  OffDutyRest? rest, {
   required String done,
 }) {
-  final left = remaining ?? Duration.zero;
-  return left > Duration.zero
-      ? l.serviceRestLeft(formatLimit(l, full), _hm(left))
-      : done;
+  if (rest == null || rest.remaining <= Duration.zero) return done;
+  return l.serviceRestLeft(formatLimit(l, rest.full), _hm(rest.remaining));
 }
 
 /// «4:05»: часы без ограничения, минуты с округлением вниз, без минуса.

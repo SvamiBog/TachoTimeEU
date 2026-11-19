@@ -100,6 +100,13 @@ class OffDutyRest {
   /// Отдых уже длится не меньше 24 ч — это недельный отдых. Отдых после
   /// ручной смены — ещё и если водитель отметил его недельным.
   final bool weekly;
+
+  /// Полный отдых: недельный — 45 ч, суточный — 11 ч.
+  Duration get full =>
+      weekly ? EuLimits.weeklyRestRegular : EuLimits.dailyRestRegular;
+
+  /// До полного отдыха ([full]); ноль — набран.
+  Duration get remaining => clampToZero(full - duration);
 }
 
 /// The break in progress now.
@@ -359,7 +366,7 @@ class ComplianceSnapshot {
   Duration? get dailyRestRemaining {
     final rest = offDutyRest;
     if (rest == null || rest.weekly) return null;
-    return clampToZero(EuLimits.dailyRestRegular - rest.duration);
+    return rest.remaining;
   }
 
   /// До полного недельного отдыха (45 ч); null — водитель не на недельном
@@ -367,7 +374,7 @@ class ComplianceSnapshot {
   Duration? get weeklyRestRemaining {
     final rest = offDutyRest;
     if (rest == null || !rest.weekly) return null;
-    return clampToZero(EuLimits.weeklyRestRegular - rest.duration);
+    return rest.remaining;
   }
 
   /// Сколько всего компенсации нужно взять: сумма непогашенных долгов.

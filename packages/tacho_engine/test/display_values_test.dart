@@ -175,4 +175,27 @@ void main() {
       });
     });
   });
+
+  group('ENG-34: полный отдых и компенсация в идущем отдыхе', () {
+    final start = utc('2026-09-18 16:15');
+
+    test('суточный отдых 10 ч: полный — 11 ч, осталось 1 ч', () {
+      final log = logFrom(start, [...day13, rest('10:00')]);
+      final rest10 = calc(log.periods, log.now).offDutyRest!;
+      expect(rest10.weekly, isFalse);
+      expect(rest10.full, dur('11:00'));
+      expect(rest10.remaining, dur('1:00'));
+    });
+
+    test('недельный отдых 30 ч: полный — 45 ч, осталось 15 ч; 45 ч — '
+        'набран', () {
+      final log = logFrom(start, [...day13, rest('30:00')]);
+      final m = calc(log.periods, log.now);
+      expect(m.offDutyRest!.full, dur('45:00'));
+      expect(m.offDutyRest!.remaining, dur('15:00'));
+      expect(m.weeklyRestRemaining, dur('15:00'));
+      final done = calc(log.periods, log.now.add(hour * 15));
+      expect(done.offDutyRest!.remaining, Duration.zero);
+    });
+  });
 }
