@@ -117,9 +117,17 @@ final class Workday {
       required: rest.firstPartBefore != null
           ? EuLimits.breakSplitSecond
           : EuLimits.breakFull,
-      needed: breakState.continuousDriving > Duration.zero,
+      // Отдых, набравший нужное, обнуляет непрерывное вождение, поэтому
+      // «ноль» — это и засчитанный отдых, и отдых без вождения перед ним
+      done: breakState.continuousDriving == Duration.zero,
     );
   }
+
+  /// Перерыв, который снимет превышение 4:30: идёт отдых — сколько нужно
+  /// ему самому (45 мин одним куском или 30, если он вторая часть), иначе —
+  /// [breakRequired]. Во время отдыха от 15 мин [breakRequired] уже считает
+  /// его первой частью, хотя продолжать ему — до 45.
+  Duration get breakToClear => currentBreak?.required ?? breakRequired;
 
   int get extensionsLeft =>
       _nonNegative(EuLimits.dailyDrivingExtensionsPerWeek - extensionsUsed);

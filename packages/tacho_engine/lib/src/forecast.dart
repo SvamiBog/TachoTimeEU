@@ -15,7 +15,9 @@ import 'package:tacho_engine/src/time.dart';
 
 /// A rest taken in full: the driver may drive on.
 enum RestMilestone {
-  /// Перерыв по ст. 7 засчитан: 45 мин или 30 после первой части.
+  /// Перерыв по ст. 7 засчитан: 45 мин или 30 после первой части
+  /// ([CurrentBreak.done]). Отдых без вождения перед ним набран сразу — о
+  /// нём не сообщаем.
   breakTaken,
 
   /// Полный суточный отдых 11 ч.
@@ -174,10 +176,8 @@ RestMilestone? _restTaken(ComplianceSnapshot s) {
   if (s.dailyRestRemaining == Duration.zero) {
     return RestMilestone.dailyRestTaken;
   }
-  final b = s.currentBreak;
-  if (s.status == DriverStatus.onBreak &&
-      b != null &&
-      b.duration >= b.required) {
+  // Набран — как на главной: и отдых без вождения перед ним
+  if (s.status == DriverStatus.onBreak && (s.currentBreak?.done ?? false)) {
     return RestMilestone.breakTaken;
   }
   return null;

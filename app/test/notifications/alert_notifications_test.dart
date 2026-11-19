@@ -1,5 +1,5 @@
 // Что показать водителю по прогнозу движка: id, категории из настроек,
-// тексты и каналы. План тестов: NTF-03, NTF-05 в docs/testing.md.
+// тексты и каналы. План тестов: NTF-03, NTF-05, NTF-06 в docs/testing.md.
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -179,6 +179,61 @@ void main() {
       expect(appLocale(null, const [Locale('hi')]), const Locale('ru'));
       expect(appLocale(null, const [Locale('de')]), const Locale('de'));
       expect(appLocale(null, const <Locale>[]), const Locale('ru'));
+    });
+  });
+
+  group('NTF-06: перерыв в тексте превышения — из движка', () {
+    // Журнал с полуночи; последний отрезок идёт до now
+    final start = DateTime.utc(2026, 9, 22);
+    const minute = Duration(minutes: 1);
+    List<ActivityPeriod> log(List<(DriverMode, Duration)> segs) {
+      final periods = <ActivityPeriod>[];
+      var t = start;
+      for (final (i, (mode, d)) in segs.indexed) {
+        final end = t.add(d);
+        periods.add(
+          ActivityPeriod(
+            mode: mode,
+            start: t,
+            end: i == segs.length - 1 ? null : end,
+          ),
+        );
+        t = end;
+      }
+      return periods;
+    }
+
+    String exceededBody(List<(DriverMode, Duration)> segs) {
+      final now = segs.fold(start, (t, s) => t.add(s.$2));
+      final alerts = forecastAlerts(periods: log(segs), now: now);
+      final over = alerts.whereType<LimitAlert>().singleWhere(
+        (a) => a.kind == InfringementType.continuousExceeded,
+      );
+      return alertNotifications([over], all, l).single.body;
+    }
+
+    test('после первой части 15 мин — перерыв 30 мин', () {
+      expect(
+        exceededBody([
+          (DriverMode.rest, const Duration(hours: 11)),
+          (DriverMode.driving, const Duration(hours: 2)),
+          (DriverMode.rest, minute * 15),
+          (DriverMode.driving, const Duration(hours: 2)),
+        ]),
+        'Вождение без перерыва больше 4:30 на 0:01. Остановитесь и сделайте '
+        'перерыв 30 мин.',
+      );
+    });
+
+    test('без первой части — перерыв 45 мин', () {
+      expect(
+        exceededBody([
+          (DriverMode.rest, const Duration(hours: 11)),
+          (DriverMode.driving, const Duration(hours: 4)),
+        ]),
+        'Вождение без перерыва больше 4:30 на 0:01. Остановитесь и сделайте '
+        'перерыв 45 мин.',
+      );
     });
   });
 }

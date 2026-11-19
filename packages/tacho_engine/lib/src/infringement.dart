@@ -19,7 +19,9 @@ enum InfringementCategory { breaks, driving, shiftEnd, weeklyRest, card }
 /// Kind of warning or infringement. Each kind has a fixed severity, category
 /// and article; the text comes from the dictionary by [name].
 enum InfringementType {
-  /// Непрерывное вождение больше 4:30. [Infringement.time] — превышение.
+  /// Непрерывное вождение больше 4:30. [Infringement.time] — превышение,
+  /// [Infringement.requiredBreak] — перерыв, который его снимет: 45 или 30
+  /// мин.
   continuousExceeded(
     InfringementSeverity.violation,
     InfringementCategory.breaks,
@@ -235,12 +237,12 @@ class Infringement {
   /// 56 ч, 90 ч). null — у вида лимита нет.
   Duration? get effectiveLimit => limit ?? type.limit;
 
-  /// Перерыв по ст. 7, который нужно взять: перед лимитом 4:30 — 45 мин или
-  /// 30 после первой части ([requiredBreak]), после превышения — полный
-  /// перерыв 45 мин. null — вид не о перерыве.
+  /// Перерыв по ст. 7, который нужно взять, — до лимита 4:30 и после
+  /// превышения: 45 мин или 30 после первой части ([requiredBreak]), без
+  /// него — полный 45 мин. null — вид не о перерыве.
   Duration? get breakToTake => switch (type) {
-    InfringementType.breakSoon => requiredBreak ?? EuLimits.breakFull,
-    InfringementType.continuousExceeded => EuLimits.breakFull,
+    InfringementType.breakSoon ||
+    InfringementType.continuousExceeded => requiredBreak ?? EuLimits.breakFull,
     _ => null,
   };
 

@@ -59,6 +59,37 @@ void main() {
     expect(n.text, 'До полного перерыва 0:25');
   });
 
+  group('NTF-06: перерыв — как на главной', () {
+    test('отдых без вождения с начала смены — перерыв засчитан, можно ехать '
+        '4:30', () {
+      final s = snapshot([
+        (DriverMode.rest, h * 11),
+        (DriverMode.otherWork, h),
+        (DriverMode.rest, m * 20),
+      ]);
+      // Главная показывает «Перерыв засчитан» по тому же значению движка
+      expect(s.currentBreak?.done, isTrue);
+      final n = trackingNotification(ru, s);
+      expect(n.title, 'Перерыв · 0:20');
+      expect(n.text, 'Перерыв засчитан, можно ехать 4:30');
+    });
+
+    test('после первой части 15 мин вторая идёт — до полного перерыва из '
+        '30 мин', () {
+      final n = trackingNotification(
+        ru,
+        snapshot([
+          (DriverMode.rest, h * 11),
+          (DriverMode.driving, h * 2),
+          (DriverMode.rest, m * 15),
+          (DriverMode.driving, h),
+          (DriverMode.rest, m * 10),
+        ]),
+      );
+      expect(n.text, 'До полного перерыва 0:20');
+    });
+  });
+
   test('работа: рабочий день из лимита', () {
     final n = trackingNotification(
       ru,

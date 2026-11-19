@@ -27,13 +27,17 @@ ComplianceSnapshot run(List<Seg> segs, {int? lead}) => calc(
   firstPartDone: m.breakFirstPartDone,
 );
 
-/// Идущий перерыв: сколько нужно, нужен ли ещё и сколько осталось.
-({Duration required, bool needed, Duration remaining})? going(
+/// Идущий перерыв: сколько нужно, набран ли и сколько осталось.
+({Duration required, bool done, Duration remaining})? going(
   ComplianceSnapshot m,
 ) => switch (m.currentBreak) {
-  final b? => (required: b.required, needed: b.needed, remaining: b.remaining),
+  final b? => (required: b.required, done: b.done, remaining: b.remaining),
   null => null,
 };
+
+/// Сколько перерыва называет нарушение «больше 4:30 без перерыва».
+Duration? exceededBreak(ComplianceSnapshot m) =>
+    m.infringement(InfringementType.continuousExceeded)?.breakToTake;
 
 void main() {
   group('ст. 7: граница 4:30', () {
@@ -339,7 +343,7 @@ void main() {
     test('ENG-32: 45 мин одним куском — засчитан и не раздельный', () {
       final m = run([drive('2:00'), rest('0:45')]);
       expect(shown(m), (taken: minutes(45), split: false, firstPartDone: true));
-      expect(going(m), (required: minutes(45), needed: false, remaining: zero));
+      expect(going(m), (required: minutes(45), done: true, remaining: zero));
       expect(m.continuousDriving, zero);
     });
 
@@ -348,7 +352,7 @@ void main() {
       expect(shown(m), (taken: minutes(44), split: true, firstPartDone: true));
       expect(going(m), (
         required: minutes(45),
-        needed: true,
+        done: false,
         remaining: minutes(1),
       ));
     });
@@ -370,7 +374,7 @@ void main() {
       ));
       expect(going(first), (
         required: minutes(45),
-        needed: true,
+        done: false,
         remaining: minutes(30),
       ));
     });
@@ -387,7 +391,7 @@ void main() {
       expect(shown(m), (taken: minutes(44), split: true, firstPartDone: true));
       expect(going(m), (
         required: minutes(30),
-        needed: true,
+        done: false,
         remaining: minutes(1),
       ));
       expect(m.continuousDriving, minutes(180));
@@ -398,7 +402,7 @@ void main() {
       final m = run([drive('2:00'), rest('0:15'), drive('1:00'), rest('0:30')]);
       expect(m.continuousDriving, zero);
       expect(m.drivingUntilBreak, minutes(270));
-      expect(going(m), (required: minutes(30), needed: false, remaining: zero));
+      expect(going(m), (required: minutes(30), done: true, remaining: zero));
       expect(m.breakSplit, isTrue);
     });
 
@@ -431,7 +435,7 @@ void main() {
       expect(shown(m), (taken: minutes(30), split: true, firstPartDone: true));
       expect(going(m), (
         required: minutes(45),
-        needed: true,
+        done: false,
         remaining: minutes(15),
       ));
     });
@@ -442,7 +446,7 @@ void main() {
       expect(m.continuousDriving, minutes(180));
       expect(going(m), (
         required: minutes(30),
-        needed: true,
+        done: false,
         remaining: minutes(15),
       ));
       // В счёт обе части — 0:45 из 45, хотя перерыв не засчитан: так
@@ -453,7 +457,7 @@ void main() {
     test('ENG-32: после первой части отдых 45 мин — засчитан как вторая', () {
       final m = run([drive('2:00'), rest('0:15'), drive('1:00'), rest('0:45')]);
       expect(m.continuousDriving, zero);
-      expect(going(m), (required: minutes(30), needed: false, remaining: zero));
+      expect(going(m), (required: minutes(30), done: true, remaining: zero));
     });
 
     test('ENG-32: пауза после ручной смены — первая часть, вторая идёт по '
@@ -476,19 +480,8 @@ void main() {
       expect(shown(m), (taken: minutes(30), split: true, firstPartDone: true));
       expect(going(m), (
         required: minutes(30),
-        needed: true,
+        done: false,
         remaining: minutes(20),
-      ));
-    });
-
-    test('ENG-32: отдых без вождения с прошлого перерыва — перерыв не нужен, '
-        'хотя сам отдых ещё не засчитан', () {
-      final m = run([work('0:30'), rest('0:10')]);
-      expect(m.continuousDriving, zero);
-      expect(going(m), (
-        required: minutes(45),
-        needed: false,
-        remaining: minutes(35),
       ));
     });
 
@@ -503,6 +496,129 @@ void main() {
         rest('0:40'),
       ]);
       expect(going(second)?.remaining, zero);
+    });
+  });
+
+  group('ENG-35: перерыв набран — одно понятие для главной, уведомления и '
+      'прогноза', () {
+    const zero = Duration.zero;
+
+    test('ENG-35: начало смены, 1:00 другой работы, 20 мин отдыха — перерыв '
+        'набран: вождения не было, можно ехать 4:30', () {
+      final m = run([work('1:00'), rest('0:20')]);
+      expect(m.status, DriverStatus.onBreak);
+      expect(m.continuousDriving, zero);
+      expect(m.drivingUntilBreak, dur('4:30'));
+      // Раньше остаток был 25 мин: уведомление звало «до полного перерыва»,
+      // а главная уже писала «Перерыв засчитан»
+      expect(going(m), (required: minutes(45), done: true, remaining: zero));
+    });
+
+    test('ENG-35: отдых без вождения с прошлого засчитанного перерыва — '
+        'набран с первой минуты', () {
+      final m = run([drive('2:00'), rest('0:45'), work('0:30'), rest('0:01')]);
+      expect(m.continuousDriving, zero);
+      expect(going(m), (required: minutes(45), done: true, remaining: zero));
+    });
+
+    test('ENG-35: 2:00 вождения, 20 мин отдыха — не набран, ещё 25 мин', () {
+      final m = run([drive('2:00'), rest('0:20')]);
+      expect(going(m), (
+        required: minutes(45),
+        done: false,
+        remaining: minutes(25),
+      ));
+    });
+
+    test('ENG-35: набран ровно тогда, когда остатка нет и непрерывное '
+        'вождение обнулено', () {
+      final cases = <(List<Seg>, bool)>[
+        ([drive('2:00'), rest('0:44')], false),
+        ([drive('2:00'), rest('0:45')], true),
+        ([drive('2:00'), rest('0:15'), drive('1:00'), rest('0:29')], false),
+        ([drive('2:00'), rest('0:15'), drive('1:00'), rest('0:30')], true),
+        ([drive('2:00'), rest('0:30'), drive('1:00'), rest('0:15')], false),
+        ([drive('4:31'), rest('0:20')], false),
+        ([work('0:30'), rest('0:01')], true),
+      ];
+      for (final (segs, done) in cases) {
+        final m = run(segs);
+        final b = m.currentBreak!;
+        expect(b.done, done, reason: '$segs');
+        expect(b.remaining == zero, done, reason: '$segs');
+        expect(m.continuousDriving == zero, done, reason: '$segs');
+      }
+    });
+
+    test('ENG-35: больше 4:30 без перерыва — перерыв 45 мин', () {
+      expect(exceededBreak(run([drive('4:31')])), minutes(45));
+    });
+
+    test('ENG-35: превышение после первой части 15 мин — перерыв 30 мин, как '
+        'считает движок', () {
+      final m = run([drive('2:00'), rest('0:15'), drive('2:31')]);
+      expect(m.infringement(InfringementType.continuousExceeded)?.time, minute);
+      expect(m.breakRequired, minutes(30));
+      expect(exceededBreak(m), minutes(30));
+
+      // 30 мин после этого и правда снимают превышение
+      final after = run([
+        drive('2:00'),
+        rest('0:15'),
+        drive('2:31'),
+        rest('0:30'),
+      ]);
+      expect(after.continuousDriving, zero);
+      expect(keys(after), isNot(contains(InfringementType.continuousExceeded)));
+    });
+
+    test('ENG-35: после первой части и превышения идёт вторая часть — '
+        'перерыв 30 мин', () {
+      final m = run([drive('2:00'), rest('0:15'), drive('2:31'), rest('0:10')]);
+      expect(exceededBreak(m), minutes(30));
+      expect(going(m)?.remaining, minutes(20));
+    });
+
+    test('ENG-35: после превышения без первой части идёт отдых 20 мин — '
+        'перерыв 45 мин: этому отдыху нужно 45 одним куском', () {
+      final m = run([drive('4:31'), rest('0:20')]);
+      expect(exceededBreak(m), minutes(45));
+      expect(going(m)?.remaining, minutes(25));
+    });
+
+    test('ENG-35: после превышения 20 мин отдыха и снова вождение — они стали '
+        'первой частью, перерыв 30 мин', () {
+      final m = run([drive('4:31'), rest('0:20'), drive('0:10')]);
+      expect(
+        m.infringement(InfringementType.continuousExceeded)?.time,
+        minutes(11),
+      );
+      expect(m.breakRequired, minutes(30));
+      expect(exceededBreak(m), minutes(30));
+    });
+
+    test('ENG-35: нарушение без перерыва в данных — 45 мин', () {
+      const exceeded = Infringement(InfringementType.continuousExceeded);
+      expect(exceeded.breakToTake, minutes(45));
+    });
+
+    test('ENG-35: в журнале нарушений — тот же перерыв, что на главной', () {
+      final start = utc('2026-09-21 06:00');
+      final periods = closedLog(start, [
+        drive('2:00'),
+        rest('0:15'),
+        drive('2:31'),
+        rest('0:30'),
+        drive('1:00'),
+        rest('11:00'),
+      ]);
+      final found = violationLog(
+        periods: periods,
+        from: start,
+        now: periods.last.end!,
+      );
+      expect(found.map((v) => v.type), [InfringementType.continuousExceeded]);
+      expect(found.single.infringement.breakToTake, minutes(30));
     });
   });
 }
