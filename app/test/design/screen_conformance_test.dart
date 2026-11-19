@@ -4,11 +4,13 @@
 // время и цифры — JetBrains Mono с цифрами одной ширины.
 //
 // Новый экран или шторка — добавить в [_screens]. Данные — неделя
-// с макета «Главная» за рулём: предупреждения, чипы и плашки на экране.
+// с макета «Главная» за рулём: предупреждения, чипы и плашки на экране;
+// состояние, которого в ней нет, — свой журнал в [_journals].
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/app.dart';
 import 'package:tachogo/core/l10n/format.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
@@ -73,28 +75,66 @@ Future<void> _openCountrySheet(WidgetTester tester, AppLocalizations l) async {
 /// Идущая смена с макета «Главная».
 final _shiftStart = DateTime.utc(2026, 9, 23, 6, 49);
 
-/// Форма смены (экран 11) для идущей смены.
-Widget _editor() => Consumer(
-  builder: (context, ref, _) {
-    final journal = ref.watch(journalProvider).value;
-    if (journal == null) return const SizedBox.shrink();
-    return ShiftEditScreen(
-      shift: findShift(journal, (manualId: null, start: _shiftStart)),
+/// Форма смены (экран 11) для смены журнала, начатой в [start].
+Widget Function() _editorOf(DateTime start) =>
+    () => Consumer(
+      builder: (context, ref, _) {
+        final journal = ref.watch(journalProvider).value;
+        if (journal == null) return const SizedBox.shrink();
+        return ShiftEditScreen(
+          shift: findShift(journal, (manualId: null, start: start)),
+        );
+      },
     );
-  },
-);
+
+/// Форма смены для идущей смены.
+final Widget Function() _editor = _editorOf(_shiftStart);
+
+/// Журнал экрана: записи режимов и время «сейчас».
+typedef _Journal = ({List<ActivityPeriod> periods, DateTime now});
+
+/// Смена сб 19.09 10:00–20:00, за ней сокращённый недельный отдых 40 ч
+/// (долг 5 ч), смена пн 12:00–22:00 и отдых «конец дня»: к вт 12:00 он
+/// длится 9 + 5 ч и погасил долг.
+final _repaidCompensationStart = DateTime.utc(2026, 9, 19, 10);
+
+_Journal _repaidCompensation() {
+  const h = Duration(hours: 1);
+  final log = consecutive(_repaidCompensationStart, [
+    (DriverMode.otherWork, h * 10),
+    (DriverMode.rest, h * 40),
+    (DriverMode.otherWork, h * 10),
+    (DriverMode.rest, h * 4),
+  ], open: true);
+  return (
+    periods: [...log.take(3), log.last.withDayEnd(dayEnd: true)],
+    now: DateTime.utc(2026, 9, 22, 12),
+  );
+}
+
+/// Экраны со своим журналом вместо недели с макета: состояний формы смены,
+/// которых в ней нет.
+final _journals = <String, _Journal Function()>{
+  'Смена · долг по компенсации погашен': _repaidCompensation,
+};
+
+/// Прокрутка до строки: проверки видят только то, что ленивый список
+/// построил, — на маленьком экране низ формы ещё не построен.
+_Open _scrollToText(String Function(AppLocalizations l) label) =>
+    (tester, l) async {
+      final text = label(l);
+      await tester.scrollUntilVisible(
+        find.text(text),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.text(text).first);
+      await tester.pumpAndSettle();
+    };
 
 _Open _tapText(String Function(AppLocalizations l) label) => (tester, l) async {
-  final text = label(l);
-  // Ленивый список: на маленьком экране строка ещё не построена
-  await tester.scrollUntilVisible(
-    find.text(text),
-    200,
-    scrollable: find.byType(Scrollable).first,
-  );
-  await tester.ensureVisible(find.text(text).first);
-  await tester.pumpAndSettle();
-  await tester.tap(find.text(text).first);
+  await _scrollToText(label)(tester, l);
+  await tester.tap(find.text(label(l)).first);
   await tester.pumpAndSettle();
 };
 
@@ -161,6 +201,17 @@ final _screens = <String, _Screen>{
     open: null,
   ),
   'Смена': (build: _editor, open: null),
+  // Чип и длительность отдыха на узком экране с крупным шрифтом уходят
+  // под название строки: «недостаточный» — во всю ширину, «погашена» —
+  // рядом с долгом.
+  'Смена · прошлая, недельный отдых': (
+    build: _editorOf(DateTime.utc(2026, 9, 22, 6)),
+    open: _tapText((l) => l.shiftRestWeekly),
+  ),
+  'Смена · долг по компенсации погашен': (
+    build: _editorOf(_repaidCompensationStart),
+    open: _scrollToText((l) => l.weeklyCompensation),
+  ),
   'Новая смена': (build: ShiftEditScreen.new, open: null),
   'Шторка «Дата и время»': (
     build: _editor,
@@ -267,15 +318,18 @@ const _minTapTarget = MinimumTapTargetGuideline(
   link: 'docs/design/README.md — «Касание: мин. 44 dp»',
 );
 
+/// Экран [name] из [_screens] на журнале из [_journals], по умолчанию —
+/// на неделе с макета.
 Future<void> _pump(
   WidgetTester tester,
-  _Screen screen, {
+  String name, {
   Brightness brightness = Brightness.dark,
   Size viewport = const Size(412, 915),
   double textScale = 1,
   Locale locale = const Locale('ru'),
 }) async {
-  final week = designWeek(driving: true);
+  final screen = _screens[name]!;
+  final week = _journals[name]?.call() ?? designWeek(driving: true);
   await pumpScreen(
     tester,
     screen.build(),
@@ -401,7 +455,7 @@ void main() {
     await unmount(tester);
   });
 
-  for (final MapEntry(key: name, value: screen) in _screens.entries) {
+  for (final name in _screens.keys) {
     group('экран «$name»', () {
       for (final brightness in Brightness.values) {
         final theme = brightness == Brightness.dark ? 'тёмная' : 'светлая';
@@ -414,7 +468,7 @@ void main() {
             ) async {
               await _pump(
                 tester,
-                screen,
+                name,
                 brightness: brightness,
                 viewport: viewport,
                 textScale: scale,
@@ -427,7 +481,7 @@ void main() {
         testWidgets(
           '$theme: контраст отрисованного текста',
           (tester) async {
-            await _pump(tester, screen, brightness: brightness);
+            await _pump(tester, name, brightness: brightness);
             await expectLater(
               tester,
               meetsGuideline(deviceTextContrastGuideline),
@@ -441,7 +495,7 @@ void main() {
         testWidgets('$theme: зоны касания ≥ 44 dp и с подписью', (
           tester,
         ) async {
-          await _pump(tester, screen, brightness: brightness);
+          await _pump(tester, name, brightness: brightness);
           await expectLater(tester, meetsGuideline(_minTapTarget));
           await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
         });
@@ -450,12 +504,12 @@ void main() {
       testWidgets('время и цифры — JetBrains Mono, цифры одной ширины', (
         tester,
       ) async {
-        await _pump(tester, screen);
+        await _pump(tester, name);
         _expectNumericFont(tester, name);
       });
 
       testWidgets('поля экрана — 16 dp', (tester) async {
-        await _pump(tester, screen);
+        await _pump(tester, name);
         final screenRect = tester.getRect(find.byType(Scaffold).first);
         for (final text in find.byType(Text).evaluate()) {
           final rect = tester.getRect(
@@ -482,12 +536,12 @@ void main() {
   for (final locale in AppLocalizations.supportedLocales) {
     if (locale.languageCode == 'ru') continue;
     group('перевод ${locale.languageCode}', () {
-      for (final MapEntry(key: name, value: screen) in _screens.entries) {
+      for (final name in _screens.keys) {
         testWidgets('«$name»: 360 dp, шрифт ×2.0 — без переполнения, '
             'цифры — JetBrains Mono', (tester) async {
           await _pump(
             tester,
-            screen,
+            name,
             viewport: _viewports['360 dp']!,
             textScale: _textScales.last,
             locale: locale,
