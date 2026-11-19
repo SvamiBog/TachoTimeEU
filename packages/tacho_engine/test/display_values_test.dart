@@ -1,7 +1,8 @@
-// ENG-33, ENG-34 (docs/testing.md): готовые значения движка для экранов,
-// уведомления и отчёта — лимит и перерыв в тексте предупреждения, рабочий
-// день и его статья, статья отдыха и подсветка недели в журнале, полный
-// отдых после смены и набор компенсации в идущем отдыхе. Приложение их
+// ENG-33, ENG-34, ENG-36 (docs/testing.md): готовые значения движка для
+// экранов, уведомления и отчёта — лимит и перерыв в тексте предупреждения,
+// рабочий день и его статья, статья отдыха и подсветка недели в журнале,
+// полный отдых после смены и набор компенсации в идущем отдыхе, вехи
+// идущего отдыха и остатки вождения на экранах главной. Приложение их
 // показывает и правил не повторяет.
 
 import 'package:tacho_engine/tacho_engine.dart';
@@ -256,6 +257,109 @@ void main() {
         expect(c.totalRepaidAt(t), hour * 21);
         expect(c.nextRepaidAt(t), hour * 21);
         expect(c.plannedDueBy, utc('2026-10-12 00:00'));
+      });
+    });
+  });
+
+  group('ENG-36: остатки и вехи для экранов главной', () {
+    group('вехи суточного отдыха: 9 ч, затем 11 ч', () {
+      test('8:59 — ближайшая 9 ч, до неё 0:01, за ней 11 ч', () {
+        final m = RestMilestones.daily(dur('8:59'));
+        expect(m.next, dur('9:00'));
+        expect(m.afterNext, dur('11:00'));
+        expect(m.reached(EuLimits.dailyRestReduced), isFalse);
+        expect(m.left(EuLimits.dailyRestReduced), minute);
+        expect(m.left(EuLimits.dailyRestRegular), dur('2:01'));
+      });
+
+      test('9:00 — 9 ч набраны, ближайшая 11 ч, за ней ничего', () {
+        final m = RestMilestones.daily(dur('9:00'));
+        expect(m.reached(EuLimits.dailyRestReduced), isTrue);
+        expect(m.left(EuLimits.dailyRestReduced), Duration.zero);
+        expect(m.next, dur('11:00'));
+        expect(m.afterNext, isNull);
+        expect(RestMilestones.daily(dur('10:59')).next, dur('11:00'));
+      });
+
+      test('11:00 — набраны все, и первая часть раздельного 3 ч тоже', () {
+        final m = RestMilestones.daily(dur('11:00'));
+        expect(m.next, isNull);
+        expect(m.afterNext, isNull);
+        expect(m.reached(EuLimits.dailyRestSplitFirst), isTrue);
+        expect(m.left(EuLimits.dailyRestRegular), Duration.zero);
+      });
+
+      test('2:59 — до первой части раздельного 3 ч осталась минута', () {
+        final m = RestMilestones.daily(dur('2:59'));
+        expect(m.reached(EuLimits.dailyRestSplitFirst), isFalse);
+        expect(m.left(EuLimits.dailyRestSplitFirst), minute);
+      });
+
+      test('самый короткий суточный — 9 ч', () {
+        expect(const RestMilestones.daily(Duration.zero).shortest, dur('9:00'));
+        expect(const RestMilestones.daily(Duration.zero).all, [
+          dur('9:00'),
+          dur('11:00'),
+        ]);
+      });
+    });
+
+    group('вехи недельного отдыха: 24 ч, если сокращённый можно, '
+        'затем 45 ч', () {
+      test('23:59 — ближайшая 24 ч, до неё 0:01, за ней 45 ч', () {
+        final m = RestMilestones.weekly(dur('23:59'), reducedAvailable: true);
+        expect(m.shortest, dur('24:00'));
+        expect(m.next, dur('24:00'));
+        expect(m.afterNext, dur('45:00'));
+        expect(m.left(EuLimits.weeklyRestReduced), minute);
+      });
+
+      test('24:00 — ближайшая 45 ч, до неё 21 ч; 45:00 — набраны все', () {
+        final m = RestMilestones.weekly(dur('24:00'), reducedAvailable: true);
+        expect(m.reached(EuLimits.weeklyRestReduced), isTrue);
+        expect(m.next, dur('45:00'));
+        expect(m.afterNext, isNull);
+        expect(m.left(EuLimits.weeklyRestRegular), dur('21:00'));
+        final full = RestMilestones.weekly(
+          dur('45:00'),
+          reducedAvailable: true,
+        );
+        expect(full.next, isNull);
+        expect(full.reached(EuLimits.weeklyRestRegular), isTrue);
+      });
+
+      test('сокращённый нельзя — сразу 45 ч; до 24 ч по-прежнему '
+          'считается', () {
+        final m = RestMilestones.weekly(dur('20:00'), reducedAvailable: false);
+        expect(m.shortest, dur('45:00'));
+        expect(m.all, [dur('45:00')]);
+        expect(m.next, dur('45:00'));
+        expect(m.afterNext, isNull);
+        expect(m.left(EuLimits.weeklyRestReduced), dur('4:00'));
+        expect(m.reached(EuLimits.weeklyRestReduced), isFalse);
+      });
+
+      test('по снимку: после сокращённого без пакета мобильности суточный '
+          '12 ч набрал все вехи, недельным он станет только с 45 ч', () {
+        final log = logFrom(utc('2026-09-14 06:00'), [
+          rest('24:00'),
+          ...repeat(5, cycle),
+          ...day13,
+          rest('12:00'),
+        ]);
+        final m = calc(
+          log.periods,
+          log.now,
+          settings: const ComplianceSettings(mobilityPackage: false),
+        );
+        expect(m.reducedWeeklyRestAvailable, isFalse);
+        final daily = RestMilestones.daily(m.offDutyRest!.duration);
+        expect(daily.next, isNull);
+        final weekly = RestMilestones.weekly(
+          daily.rest,
+          reducedAvailable: m.reducedWeeklyRestAvailable,
+        );
+        expect(weekly.shortest, dur('45:00'));
       });
     });
   });

@@ -20,6 +20,7 @@ export 'src/journal.dart';
 export 'src/journal_edits.dart';
 export 'src/manual_rest.dart';
 export 'src/manual_shift.dart';
+export 'src/rest_milestones.dart';
 export 'src/scope.dart';
 export 'src/shift_edits.dart';
 export 'src/shift_route.dart';
