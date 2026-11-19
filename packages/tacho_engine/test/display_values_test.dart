@@ -362,5 +362,33 @@ void main() {
         expect(weekly.shortest, dur('45:00'));
       });
     });
+
+    group('компенсацию гасят недельным: 45 ч и весь долг одним блоком', () {
+      test('сокращённый 24 ч — долг 21 ч, недельный 66 ч', () {
+        final c = Compensation(
+          debt: hour * 21,
+          dueBy: utc('2026-10-12 00:00'),
+          restStart: utc('2026-09-19 00:00'),
+        );
+        expect(c.weeklyRestWithDebt, hour * 66);
+      });
+
+      test('два сокращённых подряд — один долг 42 ч, недельный 87 ч '
+          '(ст. 8(6))', () {
+        final log = logFrom(utc('2026-09-18 16:15'), [
+          ...drivingDay('9:00'),
+          rest('24:00'),
+          ...repeat(5, cycle),
+          ...drivingDay('9:00'),
+          rest('24:00'),
+          ...repeat(5, cycle),
+          ...day13,
+        ]);
+        final debt = calc(log.periods, log.now).unpaidCompensations.single;
+        expect(debt.secondRestStart, isNotNull);
+        expect(debt.debt, hour * 42);
+        expect(debt.weeklyRestWithDebt, hour * 87);
+      });
+    });
   });
 }
