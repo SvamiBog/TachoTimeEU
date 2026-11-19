@@ -82,7 +82,7 @@ class JournalBackup {
     final Object? json;
     try {
       var text = utf8.decode(bytes);
-      if (text.startsWith('﻿')) text = text.substring(1);
+      if (text.startsWith('\uFEFF')) text = text.substring(1);
       json = jsonDecode(text);
     } on FormatException {
       throw const BackupException(BackupError.notBackup, 'not JSON');
