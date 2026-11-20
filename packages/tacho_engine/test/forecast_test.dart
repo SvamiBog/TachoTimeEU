@@ -1,6 +1,6 @@
 // Прогноз уведомлений: когда движок покажет предупреждение, нарушение или
-// «отдых набран», если режим не изменится. План тестов: NTF-01, NTF-04 в
-// docs/testing.md.
+// «отдых набран», если режим не изменится. План тестов: NTF-01, NTF-04,
+// NTF-06 в docs/testing.md.
 
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:test/test.dart';
@@ -380,6 +380,62 @@ void main() {
       final taken = restAlert(alerts, RestMilestone.compensationTaken)!;
       expect(taken.at, restStart.add(hour * 14));
       expect(taken.taken, hour * 5);
+    });
+  });
+
+  group('NTF-06: перерыв в уведомлениях — как на главной', () {
+    test('отдых без вождения с начала смены — перерыв уже набран: «Перерыв '
+        'засчитан» через 45 мин не приходит', () {
+      final log = logFrom(utc('2026-09-22 00:00'), [
+        rest('11:00'),
+        work('1:00'),
+        rest(20),
+      ]);
+      final now = calc(log.periods, log.now);
+      expect(now.currentBreak?.done, isTrue);
+      expect(alertKinds(now), contains(RestMilestone.breakTaken));
+
+      final alerts = forecast(log.periods, log.now);
+      expect(restAlert(alerts, RestMilestone.breakTaken), isNull);
+      // Суточный отдых копится, как на главной
+      expect(
+        restAlert(alerts, RestMilestone.dailyRestTaken)!.at,
+        log.now.add(hour * 11 - minutes(20)),
+      );
+    });
+
+    test('после вождения перерыв набирается через 25 мин — как и раньше', () {
+      final log = logFrom(utc('2026-09-22 00:00'), [
+        rest('11:00'),
+        drive('2:00'),
+        rest(20),
+      ]);
+      final now = calc(log.periods, log.now);
+      expect(now.currentBreak?.done, isFalse);
+      expect(alertKinds(now), isNot(contains(RestMilestone.breakTaken)));
+
+      final taken = restAlert(
+        forecast(log.periods, log.now),
+        RestMilestone.breakTaken,
+      )!;
+      expect(taken.at, log.now.add(minutes(25)));
+      expect(taken.taken, minutes(45));
+    });
+
+    test('превышение 4:30 после первой части 15 мин — перерыв 30 мин', () {
+      final log = logFrom(utc('2026-09-22 00:00'), [
+        rest('11:00'),
+        drive('2:00'),
+        rest(15),
+        drive('2:00'),
+      ]);
+      final over = limitAlert(
+        forecast(log.periods, log.now),
+        InfringementType.continuousExceeded,
+      )!;
+      expect(over.at, log.now.add(minutes(31)));
+      expect(over.infringement.time, minute);
+      expect(over.infringement.breakToTake, minutes(30));
     });
   });
 

@@ -45,14 +45,16 @@ List<Infringement> complianceAlerts({
   ];
 }
 
-/// Больше 4:30 без перерыва — нарушение; за [lead] до этого — «скоро
-/// перерыв», пока водитель в смене и не отдыхает.
+/// Больше 4:30 без перерыва — нарушение с перерывом, который его снимет;
+/// за [lead] до этого — «скоро перерыв», пока водитель в смене и не
+/// отдыхает.
 Infringement? _breakAlert(ComplianceLog log, Workday day, Duration lead) {
   final continuous = day.continuousDriving;
   if (continuous > EuLimits.continuousDriving) {
     return Infringement(
       InfringementType.continuousExceeded,
       time: continuous - EuLimits.continuousDriving,
+      requiredBreak: day.breakToClear,
     );
   }
   if (day.shift != null &&

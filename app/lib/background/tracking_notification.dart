@@ -75,12 +75,13 @@ String _drivingText(AppLocalizations l, ComplianceSnapshot m) {
         );
 }
 
-/// Перерыв: сколько до полного, затем — сколько можно ехать.
+/// Перерыв: сколько до полного, набран ([CurrentBreak.done], как на
+/// главной) — сколько можно ехать.
 String _breakText(AppLocalizations l, ComplianceSnapshot m) {
-  final left = m.currentBreak?.remaining ?? Duration.zero;
-  return left > Duration.zero
-      ? l.serviceBreakLeft(_hm(left))
-      : l.serviceBreakDone(_hm(m.drivingUntilBreak));
+  final b = m.currentBreak;
+  return b == null || b.done
+      ? l.serviceBreakDone(_hm(m.drivingUntilBreak))
+      : l.serviceBreakLeft(_hm(b.remaining));
 }
 
 /// Работа и готовность: рабочий день из лимита.

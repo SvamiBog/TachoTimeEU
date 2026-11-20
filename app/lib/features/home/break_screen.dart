@@ -46,9 +46,9 @@ BreakView breakViewOf(ComplianceSnapshot s) {
     taken: minutes(s.breakTaken),
     split: s.breakSplit,
     firstDone: s.breakFirstPartDone,
-    // Зелёным перерыв становится, когда он уже не нужен: засчитан или с
-    // прошлого перерыва не было вождения
-    counted: current != null && !current.needed,
+    // Зелёным перерыв становится, когда набран: засчитан или с прошлого
+    // перерыва не было вождения
+    counted: current?.done ?? false,
     first: first == null ? null : minutes(first.duration),
     firstStart: first?.start,
     current: current == null ? null : minutes(current.duration),
