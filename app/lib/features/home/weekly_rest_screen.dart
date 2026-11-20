@@ -40,10 +40,11 @@ typedef _Weekly = ({
   /// Непогашенные долги по сроку; за два сокращённых подряд — один на оба.
   ValueList<Compensation> debts,
 
-  /// Долг за два последних недельных отдыха, если оба сокращённые: его
-  /// берут одним блоком после второго, перед следующим недельным отдыхом
-  /// (ст. 8(6)); null — не два сокращённых подряд или долг за них погашен.
-  int? twoReducedDebt,
+  /// Долг за два последних недельных отдыха, если оба сокращённые, и
+  /// недельный отдых, которым его гасят: долг берут одним блоком после
+  /// второго, перед следующим недельным отдыхом (ст. 8(6)); null — не два
+  /// сокращённых подряд или долг за них погашен.
+  ({int debt, int weeklyRest})? twoReducedDebt,
   bool restCompensation,
 });
 
@@ -77,7 +78,12 @@ _Weekly _weekly(ComplianceSnapshot s) {
             status: last.status,
           ),
     debts: ValueList(s.unpaidCompensations),
-    twoReducedDebt: twoReduced == null ? null : minutes(twoReduced.debt),
+    twoReducedDebt: twoReduced == null
+        ? null
+        : (
+            debt: minutes(twoReduced.debt),
+            weeklyRest: minutes(twoReduced.weeklyRestWithDebt),
+          ),
     restCompensation: s.restCompensation != null,
   );
 }
@@ -123,13 +129,11 @@ class WeeklyRestScreen extends ConsumerWidget {
               ],
               SectionTitle(l.weeklyHistory),
               WeeklyRestHistory(last: s.last, debts: s.debts.items),
-              if (s.twoReducedDebt case final debt?)
+              if (s.twoReducedDebt case (:final debt, :final weeklyRest)?)
                 InfoNote(
                   l.weeklyTwoReducedNote(
                     formatHm(Duration(minutes: debt)),
-                    formatHm(
-                      EuLimits.weeklyRestRegular + Duration(minutes: debt),
-                    ),
+                    formatHm(Duration(minutes: weeklyRest)),
                   ),
                 ),
               if (mobility != null)
@@ -271,9 +275,12 @@ class _Milestones extends StatelessWidget {
     final start = s.onWeeklyStart;
     final onWeekly = s.onWeekly;
     if (start == null || onWeekly == null) return const SizedBox.shrink();
-    final rest = Duration(minutes: onWeekly);
+    final rest = RestMilestones.weekly(
+      Duration(minutes: onWeekly),
+      reducedAvailable: s.reducedAvailable,
+    );
     MilestoneRow row(Duration hours, String kind, {bool allowed = true}) {
-      final reached = rest >= hours;
+      final reached = rest.reached(hours);
       return MilestoneRow(
         dot: !allowed
             ? MilestoneDot.muted
@@ -285,7 +292,7 @@ class _Milestones extends StatelessWidget {
             ? (s.reducedAtBase ? l.weeklyReducedNoBase : l.weeklyReducedNo)
             : reached
             ? l.dailyRestReached
-            : l.left(formatHm(hours - rest)),
+            : l.left(formatHm(rest.left(hours))),
         value: formatWeekdayClock(start.add(hours), context.localeTag),
         muted: !allowed,
       );

@@ -3,7 +3,6 @@
 library;
 
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +42,9 @@ typedef _Driving = ({
   int daily,
   int dailyLimit,
   int extensionsLeft,
+
+  /// Сегодня можно ехать до 10 ч.
+  bool extendable,
   DateTime weekStart,
   int weekly,
   int fortnight,
@@ -63,15 +65,14 @@ _Driving _driving(ComplianceSnapshot s) => (
   // Рабочий день — от начала смены до сейчас, а не до начала перерыва, как
   // в строке «Рабочий день»: здесь — сколько можно ехать, если тронуться
   // сейчас.
-  shiftLeft: switch (s.shiftStart) {
-    final start? => minutes(
-      atLeastZero(s.shiftLimit - s.now.difference(start)),
-    ),
+  shiftLeft: switch (s.shiftRemainingFromNow) {
+    final left? => minutes(left),
     null => null,
   },
   daily: minutes(s.dailyDriving),
   dailyLimit: minutes(s.dailyDrivingLimit),
   extensionsLeft: s.extensionsLeft,
+  extendable: s.dailyDrivingExtendable,
   weekStart: s.weekStart,
   weekly: minutes(s.weeklyDriving),
   fortnight: minutes(s.fortnightDriving),
@@ -99,22 +100,32 @@ _Driving _driving(ComplianceSnapshot s) => (
   ),
 );
 
+/// Вождение экрана в целых минутах — остатки лимитов считает по нему движок.
+DrivingTimes _times(_Driving s) => DrivingTimes(
+  daily: Duration(minutes: s.daily),
+  dailyLimit: Duration(minutes: s.dailyLimit),
+  weekly: Duration(minutes: s.weekly),
+  fortnight: Duration(minutes: s.fortnight),
+);
+
 /// Сколько ещё можно ехать и что остановит раньше: перерыв после 4:30,
 /// конец рабочего дня, лимит смены (9/10 ч), недели или двух недель. При
 /// равенстве — первое по порядку [DrivingStop].
 (Duration, DrivingStop) _nextStop(_Driving s) {
+  final times = _times(s);
   final candidates = [
-    (s.untilBreak, DrivingStop.breakDue),
-    if (s.shiftLeft case final left?) (left, DrivingStop.workday),
-    (s.dailyLimit - s.daily, DrivingStop.daily),
-    (EuLimits.weeklyDriving.inMinutes - s.weekly, DrivingStop.weekly),
-    (EuLimits.fortnightDriving.inMinutes - s.fortnight, DrivingStop.fortnight),
+    (Duration(minutes: s.untilBreak), DrivingStop.breakDue),
+    if (s.shiftLeft case final left?)
+      (Duration(minutes: left), DrivingStop.workday),
+    (times.untilDailyLimit, DrivingStop.daily),
+    (times.untilWeeklyLimit, DrivingStop.weekly),
+    (times.untilFortnightLimit, DrivingStop.fortnight),
   ];
   var next = candidates.first;
   for (final c in candidates.skip(1)) {
     if (c.$1 < next.$1) next = c;
   }
-  return (Duration(minutes: math.max(0, next.$1)), next.$2);
+  return (atLeastZero(next.$1), next.$2);
 }
 
 void openDrivingScreen(
@@ -278,14 +289,13 @@ MilestoneRow _ahead(
   BuildContext context,
   _Driving s, {
   required String title,
-  required int left,
+  required Duration left,
   String? hint,
   bool muted = false,
   Tone tone = Tone.neutral,
 }) {
   final l = context.l10n;
-  final rest = Duration(minutes: left);
-  final usedUp = rest <= Duration.zero;
+  final usedUp = left <= Duration.zero;
   return MilestoneRow(
     dot: usedUp
         ? MilestoneDot.solid
@@ -297,9 +307,9 @@ MilestoneRow _ahead(
         ? l.drivingUsedUp
         : hint ??
               (s.atWheel
-                  ? l.leftUntil(formatHm(rest), formatClock(s.now.add(rest)))
-                  : l.left(formatHm(rest))),
-    value: formatHm(atLeastZero(rest)),
+                  ? l.leftUntil(formatHm(left), formatClock(s.now.add(left)))
+                  : l.left(formatHm(left))),
+    value: formatHm(atLeastZero(left)),
     muted: muted,
     valueColor: tone == Tone.violation ? context.colors.errorText : null,
   );
@@ -326,7 +336,7 @@ class _Continuous extends StatelessWidget {
           context,
           s,
           title: l.drivingBreakDue(formatHm(EuLimits.continuousDriving)),
-          left: s.untilBreak,
+          left: Duration(minutes: s.untilBreak),
           tone: s.continuousTone,
         ),
         NavRow(title: l.rowBreak, onTap: () => openBreakScreen(context)),
@@ -345,9 +355,8 @@ class _Daily extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final start = s.shiftStart;
-    final extended =
-        s.extensionsLeft > 0 ||
-        Duration(minutes: s.dailyLimit) > EuLimits.dailyDriving;
+    final times = _times(s);
+    final extended = s.extendable;
     return CardGroup(
       children: [
         _used(
@@ -363,13 +372,13 @@ class _Daily extends StatelessWidget {
           context,
           s,
           title: l.workdayRegular(EuLimits.dailyDriving.inHours),
-          left: EuLimits.dailyDriving.inMinutes - s.daily,
+          left: times.untilRegularDay,
         ),
         _ahead(
           context,
           s,
           title: l.workdayExtended(EuLimits.dailyDrivingExtended.inHours),
-          left: EuLimits.dailyDrivingExtended.inMinutes - s.daily,
+          left: times.untilExtendedDay,
           hint: extended
               ? l.drivingExtensionsLeft(s.extensionsLeft)
               : l.drivingNoExtensions,
@@ -391,10 +400,9 @@ class _Week extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final colors = context.colors;
-    final weekLeft = EuLimits.weeklyDriving.inMinutes - s.weekly;
-    final fortnightLeft = Duration(
-      minutes: EuLimits.fortnightDriving.inMinutes - s.fortnight,
-    );
+    final times = _times(s);
+    final weekLeft = times.untilWeeklyLimit;
+    final fortnightLeft = times.untilFortnightLimit;
     return CardGroup(
       children: [
         _used(
@@ -411,9 +419,7 @@ class _Week extends StatelessWidget {
           s,
           title: l.drivingWeekLimit(EuLimits.weeklyDriving.inHours),
           left: weekLeft,
-          hint: weekLeft > 0
-              ? l.left(formatHm(Duration(minutes: weekLeft)))
-              : null,
+          hint: weekLeft > Duration.zero ? l.left(formatHm(weekLeft)) : null,
           tone: s.weeklyTone,
         ),
         MilestoneRow(
@@ -422,7 +428,7 @@ class _Week extends StatelessWidget {
               : MilestoneDot.ring,
           title: l.drivingFortnightLimit(EuLimits.fortnightDriving.inHours),
           subtitle: l.drivingFortnightHint(
-            formatHm(Duration(minutes: s.fortnight - s.weekly)),
+            formatHm(times.previousWeek),
             formatHm(atLeastZero(fortnightLeft)),
           ),
           value: formatHm(atLeastZero(fortnightLeft)),

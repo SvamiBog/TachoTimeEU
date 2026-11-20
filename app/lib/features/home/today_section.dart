@@ -49,7 +49,7 @@ class ContinuousRow extends ConsumerWidget {
     final l = context.l10n;
     final colors = context.colors;
     final value = _m(s.value);
-    final left = EuLimits.continuousDriving - value;
+    final left = DrivingTimes(continuous: value).untilBreak;
     return LimitRow(
       title: l.rowContinuous,
       onTap: () => openDrivingScreen(context),

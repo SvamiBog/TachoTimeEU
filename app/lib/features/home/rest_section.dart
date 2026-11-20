@@ -54,6 +54,23 @@ _Rest _rest(ComplianceSnapshot s) {
   );
 }
 
+/// Подписи строки идущего отдыха по вехам движка: слева — сколько ещё до
+/// ближайшей и во сколько она наберётся, справа — во сколько наберётся
+/// следующая; null — набраны все. [at] — время вехи для экрана.
+(String, String?)? _milestoneCaptions(
+  AppLocalizations l,
+  RestMilestones milestones,
+  String Function(Duration hours) at,
+) {
+  final next = milestones.next;
+  if (next == null) return null;
+  final after = milestones.afterNext;
+  return (
+    l.limitLeftUntil(next.inHours, formatHm(milestones.left(next)), at(next)),
+    after == null ? null : l.limitUntil(after.inHours, at(after)),
+  );
+}
+
 /// Подписи строки идущего суточного отдыха: ближайшая веха — 9 ч, затем
 /// 11 ч. Набрал 11 ч — когда отдых станет недельным: 24 ч (45 ч, если
 /// сокращённый недельный недоступен).
@@ -64,27 +81,17 @@ _Rest _rest(ComplianceSnapshot s) {
   required bool reducedWeekly,
   required String locale,
 }) {
-  final rest = _m(minutes);
-  String until(Duration hours) => l.limitLeftUntil(
-    hours.inHours,
-    formatHm(atLeastZero(hours - rest)),
-    formatClock(start.add(hours)),
+  final milestones = RestMilestones.daily(_m(minutes));
+  final captions = _milestoneCaptions(
+    l,
+    milestones,
+    (hours) => formatClock(start.add(hours)),
   );
-  if (rest < EuLimits.dailyRestReduced) {
-    return (
-      until(EuLimits.dailyRestReduced),
-      l.limitUntil(
-        EuLimits.dailyRestRegular.inHours,
-        formatClock(start.add(EuLimits.dailyRestRegular)),
-      ),
-    );
-  }
-  if (rest < EuLimits.dailyRestRegular) {
-    return (until(EuLimits.dailyRestRegular), null);
-  }
-  final weekly = reducedWeekly
-      ? EuLimits.weeklyRestReduced
-      : EuLimits.weeklyRestRegular;
+  if (captions != null) return captions;
+  final weekly = RestMilestones.weekly(
+    milestones.rest,
+    reducedAvailable: reducedWeekly,
+  ).shortest;
   return (
     l.dailyRestCaption,
     l.limitUntil(weekly.inHours, formatWeekdayClock(start.add(weekly), locale)),
@@ -100,24 +107,13 @@ _Rest _rest(ComplianceSnapshot s) {
   DateTime start, {
   required bool reducedWeekly,
   required String locale,
-}) {
-  final rest = _m(minutes);
-  String at(Duration hours) => formatWeekdayClock(start.add(hours), locale);
-  String until(Duration hours) => l.limitLeftUntil(
-    hours.inHours,
-    formatHm(atLeastZero(hours - rest)),
-    at(hours),
-  );
-  const regular = EuLimits.weeklyRestRegular;
-  if (reducedWeekly && rest < EuLimits.weeklyRestReduced) {
-    return (
-      until(EuLimits.weeklyRestReduced),
-      l.limitUntil(regular.inHours, at(regular)),
-    );
-  }
-  if (rest < regular) return (until(regular), null);
-  return (l.weeklyRestCaption, null);
-}
+}) =>
+    _milestoneCaptions(
+      l,
+      RestMilestones.weekly(_m(minutes), reducedAvailable: reducedWeekly),
+      (hours) => formatWeekdayClock(start.add(hours), locale),
+    ) ??
+    (l.weeklyRestCaption, null);
 
 /// «Не начат» или «идёт 2:15».
 StatusValue _status(AppLocalizations l, int? minutes) => StatusValue(

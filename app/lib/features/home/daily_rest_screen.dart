@@ -318,9 +318,9 @@ class _RestMilestones extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final rest = Duration(minutes: s.rest);
+    final rest = RestMilestones.daily(Duration(minutes: s.rest));
     final reduced = s.reducedLeft > 0 || s.splitFirstPart;
-    final reducedLeft = EuLimits.dailyRestReduced - rest;
+    final reducedLeft = rest.left(EuLimits.dailyRestReduced);
     return CardGroup(
       children: [
         // Первая часть раздельного — только пока смена идёт: она сама её не
@@ -332,7 +332,7 @@ class _RestMilestones extends StatelessWidget {
             rest: rest,
             restStart: restStart,
           ),
-        if (reduced || rest >= EuLimits.dailyRestReduced)
+        if (reduced || rest.reached(EuLimits.dailyRestReduced))
           _Reached(
             EuLimits.dailyRestReduced,
             'reduced',
@@ -379,20 +379,22 @@ class _Reached extends StatelessWidget {
 
   /// Вид отдыха для подписи: split, reduced, regular.
   final String kind;
-  final Duration rest;
+
+  /// Идущий отдых и его вехи — из движка.
+  final RestMilestones rest;
   final DateTime restStart;
   final String? pending;
 
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final reached = rest >= hours;
+    final reached = rest.reached(hours);
     return MilestoneRow(
       dot: reached ? MilestoneDot.solid : MilestoneDot.ring,
       title: l.dailyRestMilestone(hours.inHours, kind),
       subtitle: reached
           ? (kind == 'split' ? l.dailyRestSplitHint : l.dailyRestReached)
-          : pending ?? l.left(formatHm(hours - rest)),
+          : pending ?? l.left(formatHm(rest.left(hours))),
       value: formatClock(restStart.add(hours)),
     );
   }
