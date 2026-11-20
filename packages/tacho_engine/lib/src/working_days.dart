@@ -58,51 +58,70 @@ List<WorkingDayKind> workingDayKinds({
 }) {
   bool away(String? country) => country != null && country != baseCountry;
   final sorted = shifts.toList()..sort((a, b) => a.start.compareTo(b.start));
-  final abroad = <CalendarDay>[];
-  final work = <CalendarDay>[];
+  final abroad = [
+    for (final (i, s) in sorted.indexed)
+      ..._abroad(
+        s,
+        routes[s.start],
+        next: i + 1 < sorted.length ? sorted[i + 1].start : now,
+        now: now,
+        away: away,
+      ),
+  ];
+  final work = [for (final s in sorted) ..._work(s, now, availability: false)];
   // Не отдых: работа и готовность — день за границей с ними не выходной
-  final busy = <CalendarDay>[];
-  for (final (i, s) in sorted.indexed) {
-    final route = routes[s.start];
-    final end = s.end ?? now;
-    if (away(route?.from) || away(route?.to)) {
-      abroad.add((start: s.start, end: end));
-    }
-    final next = i + 1 < sorted.length ? sorted[i + 1].start : now;
-    if (s.end != null && away(route?.last) && next.isAfter(end)) {
-      abroad.add((start: end, end: next));
-    }
-    final recorded = s.recorded;
-    if (recorded == null) {
-      work.add((start: s.start, end: end));
-      busy.add((start: s.start, end: end));
-    } else {
-      for (final b in recorded.blocks) {
-        if (b.mode == DriverMode.rest) continue;
-        busy.add((start: b.start, end: b.end));
-        if (b.mode != DriverMode.availability) {
-          work.add((start: b.start, end: b.end));
-        }
-      }
-    }
-  }
+  final busy = [for (final s in sorted) ..._work(s, now, availability: true)];
   // Журнал — от первой смены до сейчас: где водитель, известно только в нём
   final journal = <CalendarDay>[
     if (sorted.isNotEmpty) (start: sorted.first.start, end: now),
   ];
   bool touches(List<CalendarDay> spans, CalendarDay day) =>
       spans.any((s) => s.start.isBefore(day.end) && s.end.isAfter(day.start));
+  WorkingDayKind kindOf(CalendarDay day) {
+    if (touches(abroad, day)) {
+      return touches(busy, day)
+          ? WorkingDayKind.abroad
+          : WorkingDayKind.restAbroad;
+    }
+    if (touches(work, day)) return WorkingDayKind.home;
+    return touches(journal, day) ? WorkingDayKind.restHome : WorkingDayKind.off;
+  }
+
+  return [for (final day in days) kindOf(day)];
+}
+
+/// Время смены [s] с маршрутом [route] вне страны фирмы ([away]): сама
+/// смена, если она началась или кончилась за границей, и время после неё
+/// до начала следующей [next], если она кончилась за границей.
+List<CalendarDay> _abroad(
+  JournalShift s,
+  ShiftRoute? route, {
+  required DateTime next,
+  required DateTime now,
+  required bool Function(String? country) away,
+}) {
+  final end = s.end ?? now;
   return [
-    for (final day in days)
-      if (touches(abroad, day) && touches(busy, day))
-        WorkingDayKind.abroad
-      else if (touches(abroad, day))
-        WorkingDayKind.restAbroad
-      else if (touches(work, day))
-        WorkingDayKind.home
-      else if (touches(journal, day))
-        WorkingDayKind.restHome
-      else
-        WorkingDayKind.off,
+    if (away(route?.from) || away(route?.to)) (start: s.start, end: end),
+    if (s.end != null && away(route?.last) && next.isAfter(end))
+      (start: end, end: next),
+  ];
+}
+
+/// Работа смены [s]: у ручной — вся смена, у смены из записей — вождение и
+/// другая работа, с [availability] — и готовность.
+List<CalendarDay> _work(
+  JournalShift s,
+  DateTime now, {
+  required bool availability,
+}) {
+  final recorded = s.recorded;
+  if (recorded == null) return [(start: s.start, end: s.end ?? now)];
+  return [
+    for (final b in recorded.blocks)
+      if (b.mode == DriverMode.driving ||
+          b.mode == DriverMode.otherWork ||
+          (availability && b.mode == DriverMode.availability))
+        (start: b.start, end: b.end),
   ];
 }

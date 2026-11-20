@@ -78,52 +78,59 @@ List<BanWindow> banWindows(
       if (mass.heavierThan(r.overTonnes)) r,
   ];
   if (rules.isEmpty || !to.isAfter(from)) return const [];
+  return _mergeByScope(_rawWindows(country, rules, from, to));
+}
+
+/// Запреты правил [rules] страны [country] по дням — с двух дней до [from]
+/// до двух дней после [to] по местному календарю: ночной запрет мог начаться
+/// накануне. Только те, что пересекают [from, to).
+List<_Raw> _rawWindows(
+  CountryBans country,
+  List<BanRule> rules,
+  DateTime from,
+  DateTime to,
+) {
   final zone = country.zone;
   final firstDay = _dateOf(zone.toLocal(from)).subtract(_days2);
   final lastDay = _dateOf(zone.toLocal(to)).add(_days2);
   final until = country.calendarUntil?.date;
-
   final raw = <_Raw>[];
   for (
     var day = firstDay;
     !day.isAfter(lastDay);
     day = DateTime.utc(day.year, day.month, day.day + 1)
   ) {
+    final provisional = until != null && day.isAfter(until);
     for (final r in rules) {
       if (!r.appliesOn(day)) continue;
       final start = zone.toUtc(r.from.on(day));
       final end = zone.toUtc(r.to.on(day));
-      if (!end.isAfter(start) || !end.isAfter(from) || !start.isBefore(to)) {
-        continue;
+      if (end.isAfter(start) && end.isAfter(from) && start.isBefore(to)) {
+        raw.add(_Raw(start, end, r.kind, r.scope, provisional: provisional));
       }
-      raw.add(
-        _Raw(
-          start,
-          end,
-          r.kind,
-          r.scope,
-          provisional: until != null && day.isAfter(until),
-        ),
-      );
     }
   }
+  return raw;
+}
 
+/// Запреты по всей сети ([BanScope.definite]) склеиваются друг с другом,
+/// остальные — с запретами той же области; частичный запрет внутри
+/// полного не показывается. По началу, с одинаковым — по области.
+List<BanWindow> _mergeByScope(List<_Raw> raw) {
   final definite = _merge([
     for (final w in raw)
       if (w.scope.definite) w,
   ]);
-  final partial = <BanWindow>[];
-  for (final scope in BanScope.values.where((s) => !s.definite)) {
-    for (final w in _merge([
-      for (final r in raw)
-        if (r.scope == scope) r,
-    ])) {
-      final covered = definite.any(
-        (d) => !d.start.isAfter(w.start) && !d.end.isBefore(w.end),
-      );
-      if (!covered) partial.add(w);
-    }
-  }
+  bool covered(BanWindow w) =>
+      definite.any((d) => !d.start.isAfter(w.start) && !d.end.isBefore(w.end));
+  final partial = [
+    for (final scope in BanScope.values.where((s) => !s.definite))
+      for (final w in _merge([
+        for (final r in raw)
+          if (r.scope == scope) r,
+      ]))
+        if (!covered(w)) w,
+  ];
   return [...definite, ...partial]..sort((a, b) {
     final byStart = a.start.compareTo(b.start);
     return byStart != 0 ? byStart : a.scope.index.compareTo(b.scope.index);

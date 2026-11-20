@@ -5,6 +5,9 @@ library;
 
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/activity_period.dart';
+import 'package:tacho_engine/src/compensation.dart';
+import 'package:tacho_engine/src/compliance_alerts.dart';
+import 'package:tacho_engine/src/compliance_log.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
 import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/infringement.dart';
@@ -14,7 +17,10 @@ import 'package:tacho_engine/src/shift_route.dart';
 import 'package:tacho_engine/src/shifts.dart';
 import 'package:tacho_engine/src/time.dart';
 import 'package:tacho_engine/src/timeline.dart';
-import 'package:tacho_engine/src/weekly_rest_right.dart';
+import 'package:tacho_engine/src/workday.dart';
+
+export 'package:tacho_engine/src/compensation.dart'
+    show Compensation, RestCompensation;
 
 /// Driver settings that change the calculation.
 @immutable
@@ -94,6 +100,13 @@ class OffDutyRest {
   /// Отдых уже длится не меньше 24 ч — это недельный отдых. Отдых после
   /// ручной смены — ещё и если водитель отметил его недельным.
   final bool weekly;
+
+  /// Полный отдых: недельный — 45 ч, суточный — 11 ч.
+  Duration get full =>
+      weekly ? EuLimits.weeklyRestRegular : EuLimits.dailyRestRegular;
+
+  /// До полного отдыха ([full]); ноль — набран.
+  Duration get remaining => clampToZero(full - duration);
 }
 
 /// The break in progress now.
@@ -122,128 +135,6 @@ class CurrentBreak {
   /// Сколько ещё отдыхать, чтобы этот отдых засчитался перерывом; ноль —
   /// засчитан.
   Duration get remaining => clampToZero(required - duration);
-}
-
-/// Debt for a reduced weekly rest (Art. 8(6)) and the rest it was attached to
-/// (Art. 8(7)). Two reduced weekly rests in a row make one debt: it is repaid
-/// together, en bloc, after the second of them.
-@immutable
-class Compensation {
-  const new({
-    required this.debt,
-    required this.dueBy,
-    required this.restStart,
-    this.secondRestStart,
-    this.repaidIn,
-  });
-
-  /// Сколько не хватило до 45 ч; два сокращённых подряд — за оба вместе:
-  /// после двух по 24 ч — 21 + 21 = 42 ч.
-  final Duration debt;
-
-  /// До какого момента долг нужно присоединить к отдыху; два сокращённых
-  /// подряд — срок первого.
-  final DateTime dueBy;
-
-  /// Начало сокращённого недельного отдыха, за который долг; два подряд —
-  /// первого из них.
-  final DateTime restStart;
-
-  /// Начало второго из двух сокращённых подряд: долг за оба гасит один
-  /// отдых после него (ст. 8(6)); null — сокращённый один.
-  final DateTime? secondRestStart;
-
-  /// Начало отдыха, к которому долг присоединён; null — не погашен.
-  final DateTime? repaidIn;
-
-  bool get repaid => repaidIn != null;
-
-  /// Долг — за недельный отдых, начатый в [start].
-  bool isFor(DateTime start) => restStart == start || secondRestStart == start;
-
-  @override
-  bool operator ==(Object other) =>
-      other is Compensation &&
-      other.debt == debt &&
-      other.dueBy == dueBy &&
-      other.restStart == restStart &&
-      other.secondRestStart == secondRestStart &&
-      other.repaidIn == repaidIn;
-
-  @override
-  int get hashCode =>
-      Object.hash(debt, dueBy, restStart, secondRestStart, repaidIn);
-
-  @override
-  String toString() =>
-      'Compensation(${debt.inMinutes} мин до $dueBy'
-      '${secondRestStart == null ? '' : ', два сокращённых подряд'}'
-      '${repaidIn == null ? '' : ', погашен $repaidIn'})';
-}
-
-/// Compensation inside the rest in progress: how much debt it has already
-/// repaid, which debt it repays next and when it repays every debt it can
-/// still repay in time. A rest repays a debt when it lasts 9 h + debt (a weekly
-/// rest of 24 h or more: 45 h + debt) and reaches that by the due date
-/// (Art. 8(7)).
-@immutable
-class RestCompensation {
-  const new({
-    required this.taken,
-    required this.next,
-    required this.until,
-    this.planned = const [],
-    this.untilAll,
-  });
-
-  /// Долг, уже присоединённый к этому отдыху; ноль — пока ни одного.
-  final Duration taken;
-
-  /// Долг, который отдых погасит следующим; null — гасить больше нечего.
-  final Compensation? next;
-
-  /// Когда отдых погасит [next], если продлится; null — [next] нет.
-  final DateTime? until;
-
-  /// Долги, которые отдых ещё погасит, если продлится до [untilAll]: [next]
-  /// и за ним остальные, что он успевает погасить к их срокам, не становясь
-  /// из суточного недельным. Каждый долг — целиком: после двух сокращённых
-  /// по 24 ч долг 42 ч один, недельный отдых гасит его при 45 + 42 = 87 ч.
-  /// Пусто — к сроку не успеть ни один.
-  final List<Compensation> planned;
-
-  /// Когда отдых погасит все [planned]; null — [planned] пуст.
-  final DateTime? untilAll;
-
-  /// Отдых успевает погасить [next] к сроку.
-  bool get inTime {
-    final (c, at) = (next, until);
-    return c != null && at != null && !at.isAfter(c.dueBy);
-  }
-
-  /// Весь долг этого отдыха, если он продлится до [untilAll]: уже
-  /// присоединённый и [planned].
-  Duration get total => planned.fold(taken, (sum, c) => sum + c.debt);
-
-  @override
-  bool operator ==(Object other) =>
-      other is RestCompensation &&
-      other.taken == taken &&
-      other.next == next &&
-      other.until == until &&
-      _sameList(other.planned, planned) &&
-      other.untilAll == untilAll;
-
-  @override
-  int get hashCode =>
-      Object.hash(taken, next, until, Object.hashAll(planned), untilAll);
-
-  @override
-  String toString() =>
-      'RestCompensation(погашено ${taken.inMinutes} мин'
-      '${next == null ? '' : ', дальше ${next!.debt.inMinutes} мин к $until'}'
-      '${planned.length < 2 ? '' : ', всё ${total.inMinutes} мин к $untilAll'}'
-      ')';
 }
 
 /// The driver's state for the home screen.
@@ -475,7 +366,7 @@ class ComplianceSnapshot {
   Duration? get dailyRestRemaining {
     final rest = offDutyRest;
     if (rest == null || rest.weekly) return null;
-    return clampToZero(EuLimits.dailyRestRegular - rest.duration);
+    return rest.remaining;
   }
 
   /// До полного недельного отдыха (45 ч); null — водитель не на недельном
@@ -483,7 +374,7 @@ class ComplianceSnapshot {
   Duration? get weeklyRestRemaining {
     final rest = offDutyRest;
     if (rest == null || !rest.weekly) return null;
-    return clampToZero(EuLimits.weeklyRestRegular - rest.duration);
+    return rest.remaining;
   }
 
   /// Сколько всего компенсации нужно взять: сумма непогашенных долгов.
@@ -512,6 +403,11 @@ class ComplianceSnapshot {
 /// внесённые итогами; [lastCardDownload] — последнее считывание карты;
 /// [routes] — страны смен по их началу (UTC): по ним и стране фирмы
 /// проверяются два сокращённых отдыха подряд.
+///
+/// Расчёт идёт по частям: журнал ([ComplianceLog]), недельные отдыхи и
+/// право на сокращённый ([WeeklyRestState]), рабочий день ([Workday]),
+/// вождение за неделю и две ([WeekDriving]), отдых после смены, долги
+/// компенсации ([compensationDebts]) и предупреждения ([complianceAlerts]).
 ComplianceSnapshot calculateCompliance({
   required Iterable<ActivityPeriod> periods,
   required DateTime now,
@@ -521,730 +417,152 @@ ComplianceSnapshot calculateCompliance({
   Map<DateTime, ShiftRoute> routes = const {},
 }) {
   if (!now.isUtc) throw ArgumentError.value(now, 'now', 'должно быть в UTC');
-  final manual = manualShifts.toList();
-  final timeline = analyzeTimeline(periods, now);
-  // Отдых ручных смен — до начала следующей смены
-  final restOfManual = manualRests(manual, timeline, now);
-  final manualRest = restOfManual.nonNulls.toList();
-  final lead = settings.warningLead;
-  final crew = settings.crew;
-  final infringements = <Infringement>[];
+  final log = ComplianceLog.of(
+    analyzeTimeline(periods, now),
+    manualShifts.toList(),
+    now,
+  );
+  final weekly = WeeklyRestState.of(log, settings, routes);
+  final day = Workday.of(
+    log,
+    crew: settings.crew,
+    workWeekStart: weekly.workWeekStart,
+  );
+  final week = WeekDriving.of(log);
+  final offDuty = _offDutyRest(log);
+  final debts = compensationDebts(log, weekly.completed);
+  final cardDaysLeft = _cardDaysLeft(lastCardDownload, now);
+  return _snapshot(
+    log,
+    day: day,
+    week: week,
+    weekly: weekly,
+    offDuty: offDuty,
+    debts: debts,
+    cardDaysLeft: cardDaysLeft,
+    infringements: complianceAlerts(
+      log: log,
+      settings: settings,
+      day: day,
+      week: week,
+      weekly: weekly,
+      offDuty: offDuty,
+      unpaid: debts.unpaid,
+      cardDaysLeft: cardDaysLeft,
+    ),
+  );
+}
 
-  // Текущий режим
-  final lastBlock = timeline.blocks.isEmpty ? null : timeline.blocks.last;
-  final openBlock = lastBlock != null && lastBlock.open ? lastBlock : null;
-  final currentMode = openBlock?.mode;
-  final resting = currentMode == DriverMode.rest;
-
-  // Смена и отдых после неё
-  final shift = timeline.current;
-  final lastRest = timeline.rests.isEmpty ? null : timeline.rests.last;
+/// Водитель на суточном или недельном отдыхе после смены: смены нет, а идёт
+/// отдых, который её закончил, или отдых после последней ручной смены;
+/// null — смена идёт или отдыха нет.
+///
+/// Недельным отдых объявляют у записи ([RestPeriod.weeklyRest]) или у
+/// ручной смены перед ним — после «Завершить день» с вождением смена стала
+/// ручной, а отдых остался записью.
+OffDutyRest? _offDutyRest(ComplianceLog log) {
+  if (log.timeline.current != null) return null;
   // Отдых после последней ручной смены, если следующей смены нет. Когда
   // смена кончается «сейчас», записи отдыха после неё нет: его время ещё не
   // наступило, — водитель на этом отдыхе, хотя режим не записан.
-  ManualRest? manualOffDuty;
-  for (final r in manualRest) {
-    if (r.ongoing && (manualOffDuty?.start.isBefore(r.start) ?? true)) {
-      manualOffDuty = r;
-    }
+  ManualRest? manual;
+  for (final r in log.manualRest) {
+    if (r.ongoing && (manual?.start.isBefore(r.start) ?? true)) manual = r;
   }
-  // Недельным отдых объявляют у записи ([RestPeriod.weeklyRest]) или у
-  // ручной смены перед ним — после «Завершить день» с вождением смена стала
-  // ручной, а отдых остался записью.
-  final offDutyRest = shift != null
-      ? null
-      : lastRest != null && lastRest.open && lastRest.endsShift
-      ? OffDutyRest(
-          start: lastRest.start,
-          duration: lastRest.rest,
-          weekly: lastRest.isWeekly || manualOffDuty?.kind == RestKind.weekly,
-        )
-      : manualOffDuty != null
-      ? OffDutyRest(
-          start: manualOffDuty.start,
-          duration: manualOffDuty.duration,
-          weekly: manualOffDuty.kind == RestKind.weekly,
-        )
-      : null;
-
-  // Рабочий день текущей смены. Ручные смены перед ней, отдых после которых
-  // был короче 9 ч, день не закончили: их вождение и время — в этом дне,
-  // как у отдыха короче 9 ч внутри смены из записей.
-  final days = ManualDays(manual, restOfManual);
-  final carried = shift == null
-      ? const <CarriedShift>[]
-      : days.before(shift.start);
-  final shiftStart = carried.firstOrNull?.shift.start ?? shift?.start;
-  final splitFirstPart =
-      (shift?.splitFirstPart ?? false) ||
-      carried.any(
-        (part) =>
-            part.shift.splitRest ||
-            part.rest.duration >= EuLimits.dailyRestSplitFirst,
-      );
-
-  final breakState = computeBreakState([
-    ..._breakBlocks(carried.lastOrNull),
-    ...?shift?.blocks,
-  ]);
-  final continuousDriving = breakState.continuousDriving;
-  final breakRequired = breakState.firstPartTaken
-      ? EuLimits.breakSplitSecond
-      : EuLimits.breakFull;
-  final currentRest = breakState.currentRest;
-  final currentBreak = currentRest == null
-      ? null
-      : CurrentBreak(
-          start: currentRest.start,
-          duration: currentRest.duration,
-          required: currentRest.firstPartBefore != null
-              ? EuLimits.breakSplitSecond
-              : EuLimits.breakFull,
-          needed: continuousDriving > Duration.zero,
-        );
-
-  // Недели: понедельник 00:00 UTC, как на тахографе
-  final weekStart = weekStartUtc(now);
-  final prevWeekStart = weekStart.subtract(week);
-  Duration drivingIn(DateTime from, DateTime to) {
-    var total = Duration.zero;
-    for (final b in timeline.blocks) {
-      if (b.mode == DriverMode.driving) {
-        total += overlap(b.start, b.end, from, to);
-      }
-    }
-    for (final m in manual) {
-      if (!m.start.isBefore(from) && m.start.isBefore(to)) total += m.driving;
-    }
-    return total;
+  final lastRest = log.lastRest;
+  if (lastRest != null && lastRest.open && lastRest.endsShift) {
+    return OffDutyRest(
+      start: lastRest.start,
+      duration: lastRest.rest,
+      weekly: lastRest.isWeekly || manual?.kind == RestKind.weekly,
+    );
   }
-
-  final weeklyDriving = drivingIn(weekStart, weekStart.add(week));
-  final fortnightDriving = weeklyDriving + drivingIn(prevWeekStart, weekStart);
-  final weeklyLeft = EuLimits.weeklyDriving - weeklyDriving;
-  final fortnightLeft = EuLimits.fortnightDriving - fortnightDriving;
-
-  // Продления до 10 ч — по завершённым рабочим дням недели. День — смена
-  // вместе с ручными сменами перед ней ([ManualDays]): 5 ч итогом и 5 ч по
-  // записям — одно продление. День относится к неделе, в которую начался:
-  // у смены с воскресенья на понедельник лимит в полночь не меняется, и
-  // продление она тратит у той недели, где его потом и засчитают.
-  final extensionWeek = weekStartUtc(shiftStart ?? now);
-  bool inExtensionWeek(DateTime t) =>
-      !t.isBefore(extensionWeek) && t.isBefore(extensionWeek.add(week));
-  var extensionsUsed = 0;
-  void countDay(DateTime start, Duration driving) {
-    final before = days.before(start);
-    final dayStart = before.firstOrNull?.shift.start ?? start;
-    if (inExtensionWeek(dayStart) &&
-        _drivingOf(before) + driving > EuLimits.dailyDriving) {
-      extensionsUsed++;
-    }
-  }
-
-  for (final s in timeline.shifts) {
-    if (identical(s, shift)) continue;
-    countDay(s.start, s.driving);
-  }
-  for (final m in manual) {
-    // Смена день не закончила — она в дне следующей смены
-    if (days.continues(m)) continue;
-    countDay(m.start, m.driving);
-  }
-  final extensionsLeft = _nonNegative(
-    EuLimits.dailyDrivingExtensionsPerWeek - extensionsUsed,
+  if (manual == null) return null;
+  return OffDutyRest(
+    start: manual.start,
+    duration: manual.duration,
+    weekly: manual.kind == RestKind.weekly,
   );
-  final dailyDriving = (shift?.driving ?? Duration.zero) + _drivingOf(carried);
-  final dailyDrivingLimit = extensionsLeft > 0
-      ? EuLimits.dailyDrivingExtended
-      : EuLimits.dailyDriving;
+}
 
-  // Недельные отдыхи: из записей и из ручных смен
-  final recordedWeekly = [
-    for (final p in timeline.rests)
-      if (p.isWeekly)
-        WeeklyRest(
-          start: p.start,
-          end: p.open ? null : p.end,
-          duration: p.rest,
-          status: weeklyRestStatus(p.rest),
-        ),
-  ];
-  final weeklyRests = [...recordedWeekly];
-  for (final r in manualRest) {
-    if (r.kind != RestKind.weekly) continue;
-    // Тот же отдых уже есть в записях режимов — не считаем его дважды
-    final duplicate = recordedWeekly.any(
-      (w) => w.start.isBefore(r.end ?? now) && (w.end ?? now).isAfter(r.start),
-    );
-    if (duplicate) continue;
-    weeklyRests.add(
-      WeeklyRest(
-        start: r.start,
-        end: r.end,
-        duration: r.duration,
-        status: weeklyRestStatus(r.duration),
-      ),
-    );
-  }
-  final completedWeekly = _sortedByStart(weeklyRests)
-      .where((r) => r.end != null)
-      .toList();
-  final lastWeeklyRest = completedWeekly.isEmpty ? null : completedWeekly.last;
-  final previousWeeklyRest = completedWeekly.length < 2
-      ? null
-      : completedWeekly[completedWeekly.length - 2];
-  // Право на сокращённый недельный отдых (ст. 8(6)): два подряд — только
-  // с пакетом мобильности, оба вне страны фирмы, и из четырёх недельных
-  // подряд два полных. Страна отдыха — там, где кончилась смена перед ним;
-  // страна не выбрана — не проверяем.
-  final atBase = atBaseCountry(
-    baseCountry: settings.baseCountry,
-    shiftStarts: [
-      for (final s in timeline.shifts) s.start,
-      for (final m in manual) m.start,
-    ],
-    routes: routes,
-  );
-  final right = reducedWeeklyRestRight(
-    completedWeekly,
-    restStart: now,
-    mobilityPackage: settings.mobilityPackage,
-    atBase: atBase,
-  );
-  final reducedWeeklyRestAtBase = right == ReducedWeeklyRestRight.atBase;
-  final reducedWeeklyRestAvailable = right == ReducedWeeklyRestRight.allowed;
-  // Последний недельный — сокращённый, а права на него не было
-  final lastWithoutRight =
-      lastWeeklyRest != null &&
-      lastWeeklyRest.status == RestStatus.reduced &&
-      reducedWeeklyRestRight(
-            completedWeekly.sublist(0, completedWeekly.length - 1),
-            restStart: lastWeeklyRest.start,
-            mobilityPackage: settings.mobilityPackage,
-            atBase: atBase,
-          ) !=
-          ReducedWeeklyRestRight.allowed;
+/// Дней до обязательного считывания карты; null — считываний не было.
+/// Считывание «из будущего» (часы телефона переведены назад) считаем
+/// сделанным сейчас: больше 28 дней остаться не может.
+int? _cardDaysLeft(DateTime? lastDownload, DateTime now) => lastDownload == null
+    ? null
+    : EuLimits.cardDownloadInterval.inDays -
+          floorDays(durationBetween(lastDownload, now));
 
-  // Компенсация сокращённого недельного отдыха (ст. 8(6), 8(7)): долг
-  // берётся одним блоком, присоединённым к другому отдыху не короче 9 ч, до
-  // конца третьей недели после недели сокращённого отдыха. Недельный отдых
-  // (≥ 24 ч) несёт компенсацию сверх 45 ч — иначе обычный недельный отдых
-  // сам гасил бы долг. Долги гасятся по порядку, один длинный отдых может
-  // погасить несколько.
-  final compensationHosts = [
-    for (final p in timeline.rests) (start: p.start, rest: p.rest),
-    for (final r in manualRest)
-      // Тот же отдых уже есть в записях режимов (после «Завершить день» с
-      // вождением) — он не может погасить долг дважды
-      if (!timeline.rests.any(
-        (p) =>
-            p.start.isBefore(r.end ?? now) &&
-            (p.open ? now : p.end).isAfter(r.start),
-      ))
-        (start: r.start, rest: r.duration),
-  ];
-  final hostUsed = List.filled(compensationHosts.length, Duration.zero);
-  // Два сокращённых подряд (пакет мобильности) — один долг за оба: следующему
-  // недельному отдыху предшествует отдых в компенсацию за оба (ст. 8(6)).
-  // Его берут вместе, одним блоком, после второго из них и до срока первого;
-  // отдых между ними долг не гасит, по частям — тоже.
-  final reducedGroups = <List<WeeklyRest>>[];
-  for (final (i, r) in completedWeekly.indexed) {
-    if (r.status != RestStatus.reduced) continue;
-    final group = reducedGroups.lastOrNull;
-    if (group != null &&
-        group.length == 1 &&
-        identical(group.single, completedWeekly[i - 1])) {
-      group.add(r);
-    } else {
-      reducedGroups.add([r]);
-    }
-  }
-  final compensations = <Compensation>[];
-  final unpaid = <Compensation>[];
-  for (final group in reducedGroups) {
-    final end = group.last.end;
-    if (end == null) continue;
-    final debt = group.fold(
-      Duration.zero,
-      (sum, r) => sum + EuLimits.weeklyRestRegular - r.duration,
-    );
-    final dueBy = weekStartUtc(group.first.start)
-        .add(week * (EuLimits.compensationWeeks + 1));
-    DateTime? repaidIn;
-    for (final (i, host) in compensationHosts.indexed) {
-      if (host.start.isBefore(end) || !host.start.isBefore(dueBy)) continue;
-      final base = _compensationBase(host.rest, Duration.zero);
-      // Засчитывается только отдых, набранный к сроку.
-      final byDue = shorter(host.rest, dueBy.difference(host.start));
-      if (byDue - base - hostUsed[i] >= debt) {
-        hostUsed[i] += debt;
-        repaidIn = host.start;
-        break;
-      }
-    }
-    final c = Compensation(
-      debt: debt,
-      dueBy: dueBy,
-      restStart: group.first.start,
-      secondRestStart: group.length > 1 ? group.last.start : null,
-      repaidIn: repaidIn,
-    );
-    compensations.add(c);
-    if (repaidIn == null && !dueBy.isBefore(now.subtract(week * 4))) {
-      unpaid.add(c);
-    }
-  }
-  unpaid.sort((a, b) => a.dueBy.compareTo(b.dueBy));
-  final compensation = unpaid.isEmpty ? null : unpaid.first;
-
-  // Компенсация в идущем отдыхе. Долги гасятся по очереди, и отдых гасит
-  // первым тот, что влезет раньше, — обычно меньший. Суточный отдых несёт
-  // долг сверх 9 ч, недельный — сверх 45 ч; отдых, который с долгом выйдет
-  // за 24 ч, станет недельным. Чистый отдых растёт вместе со временем:
-  // момент — от сейчас, прерывания на пароме в прошлом не мешают.
-  RestCompensation? restCompensation;
-  if (offDutyRest case final rest?) {
-    final taken = [
-      for (final c in compensations)
-        if (c.repaidIn == rest.start) c.debt,
-    ].fold(Duration.zero, (sum, d) => sum + d);
-    bool canRepay(Compensation c) =>
-        (c.secondRestStart ?? c.restStart).isBefore(rest.start) &&
-        c.dueBy.isAfter(rest.start);
-    ({Compensation c, DateTime until})? next;
-    for (final c in unpaid) {
-      if (!canRepay(c)) continue;
-      final load = taken + c.debt;
-      final need = _compensationBase(rest.duration, load) + load;
-      final until = now.add(need - rest.duration);
-      final inTime = !until.isAfter(c.dueBy);
-      final best = next;
-      final bestInTime = best != null && !best.until.isAfter(best.c.dueBy);
-      final better =
-          best == null ||
-          (inTime != bestInTime
-              ? inTime
-              : inTime
-              ? until.isBefore(best.until)
-              : c.dueBy.isBefore(best.c.dueBy));
-      if (better) next = (c: c, until: until);
-    }
-    // Вслед за [next] — остальные долги по сроку: отдых гасит и их, если
-    // успевает к сроку каждого и не становится из суточного недельным
-    // (тогда вместо 9 ч + долг понадобилось бы 45 ч + долг).
-    final planned = <Compensation>[];
-    DateTime? untilAll;
-    if (next case (:final c, :final until) when !until.isAfter(c.dueBy)) {
-      var load = taken + c.debt;
-      final base = _compensationBase(rest.duration, load);
-      planned.add(c);
-      untilAll = until;
-      for (final other in unpaid) {
-        if (identical(other, c) || !canRepay(other)) continue;
-        final more = load + other.debt;
-        if (_compensationBase(rest.duration, more) != base) continue;
-        final at = now.add(base + more - rest.duration);
-        if (at.isAfter(other.dueBy)) continue;
-        load = more;
-        planned.add(other);
-        untilAll = at;
-      }
-    }
-    if (taken > Duration.zero || next != null) {
-      restCompensation = RestCompensation(
-        taken: taken,
-        next: next?.c,
-        until: next?.until,
-        planned: List.unmodifiable(planned),
-        untilAll: untilAll,
-      );
-    }
-  }
-
-  // Рабочая неделя: 144 ч от конца предыдущего недельного отдыха
-  final onWeeklyRest = offDutyRest?.weekly ?? false;
-  final workWeekStart = lastWeeklyRest?.end;
-  final weeklyRestDeadline = workWeekStart?.add(EuLimits.maxBetweenWeeklyRests);
-  final workWeekDuration = workWeekStart != null && !onWeeklyRest
-      ? durationBetween(workWeekStart, now)
-      : Duration.zero;
-
-  // Сокращённые суточные отдыхи с последнего недельного
-  bool sinceWorkWeek(DateTime t) =>
-      workWeekStart == null || !t.isBefore(workWeekStart);
-  var reducedRestsUsed = 0;
-  for (final s in timeline.shifts) {
-    final r = s.restAfter;
-    if (r == null || r.open || !sinceWorkWeek(r.start) || r.isWeekly) {
-      continue;
-    }
-    final inWindow = shiftRestInWindow(timeline.blocks, s, crew);
-    if (dailyRestStatus(inWindow, split: s.splitFirstPart) ==
-        RestStatus.reduced) {
-      reducedRestsUsed++;
-    }
-  }
-  for (final (i, m) in manual.indexed) {
-    final end = m.end;
-    final r = restOfManual[i];
-    if (end == null ||
-        r == null ||
-        r.ongoing ||
-        r.kind != RestKind.daily ||
-        !sinceWorkWeek(end)) {
-      continue;
-    }
-    final inWindow = restInWindow(
-      durationBetween(m.start, end),
-      r.duration,
-      crew,
-    );
-    if (dailyRestStatus(inWindow, split: m.splitRest) == RestStatus.reduced) {
-      reducedRestsUsed++;
-    }
-  }
-  final reducedRestsLeft = _nonNegative(
-    EuLimits.dailyRestReductionsBetweenWeeklyRests - reducedRestsUsed,
-  );
-
-  // Рабочий день: во время отдыха считаем до его начала — отдых и есть
-  // конец дня
-  final spanEnd = resting && currentRest != null ? currentRest.start : now;
-  final shiftDuration = shiftStart == null
-      ? Duration.zero
-      : durationBetween(shiftStart, spanEnd);
-  // Отдых должен закончиться в окне 24 ч (экипаж — 30 ч): 11 ч или
-  // сокращённый 9 ч. В экипаже 9 ч — тоже сокращённый отдых, поэтому после
-  // трёх сокращений рабочий день экипажа — 19 ч, а не 21 ч.
-  final window = workdayWindow(crew);
-  final shiftRegularLimit = window - EuLimits.dailyRestRegular;
-  final shiftExtendedLimit = window - EuLimits.dailyRestReduced;
-  final canExtend = reducedRestsLeft > 0 || splitFirstPart;
-  final shiftLimit = canExtend ? shiftExtendedLimit : shiftRegularLimit;
-  final dailyRestDeadline = shiftStart?.add(window);
-  final shiftArticle = crew == CrewMode.team ? '8(5)' : null;
-
-  // Карта водителя. Считывание «из будущего» (часы телефона переведены
-  // назад) считаем сделанным сейчас: больше 28 дней остаться не может.
-  final cardDaysLeft = lastCardDownload == null
-      ? null
-      : EuLimits.cardDownloadInterval.inDays -
-            floorDays(durationBetween(lastCardDownload, now));
-
-  // Предупреждения и нарушения
-  final drivingUntilBreak = clampToZero(
-    EuLimits.continuousDriving - continuousDriving,
-  );
-  if (continuousDriving > EuLimits.continuousDriving) {
-    infringements.add(
-      Infringement(
-        InfringementType.continuousExceeded,
-        time: continuousDriving - EuLimits.continuousDriving,
-      ),
-    );
-  } else if (shift != null &&
-      !resting &&
-      continuousDriving > Duration.zero &&
-      drivingUntilBreak <= lead) {
-    infringements.add(
-      Infringement(
-        InfringementType.breakSoon,
-        time: drivingUntilBreak,
-        requiredBreak: breakRequired,
-      ),
-    );
-  }
-
-  if (dailyDriving > dailyDrivingLimit) {
-    infringements.add(
-      Infringement(
-        InfringementType.dailyDriveExceeded,
-        time: dailyDriving - dailyDrivingLimit,
-        limit: dailyDrivingLimit,
-      ),
-    );
-  } else if (shift != null &&
-      dailyDrivingLimit - dailyDriving <= lead &&
-      currentMode == DriverMode.driving) {
-    infringements.add(
-      Infringement(
-        InfringementType.dailyDriveSoon,
-        time: dailyDrivingLimit - dailyDriving,
-        limit: dailyDrivingLimit,
-      ),
-    );
-  }
-  if (dailyDriving > EuLimits.dailyDriving &&
-      dailyDriving <= dailyDrivingLimit) {
-    infringements.add(
-      Infringement(InfringementType.extensionInUse, count: extensionsLeft - 1),
-    );
-  }
-
-  if (shift != null && shiftDuration > shiftLimit) {
-    infringements.add(
-      Infringement(
-        InfringementType.shiftExceeded,
-        time: shiftDuration - shiftLimit,
-        limit: shiftLimit,
-        article: shiftArticle,
-      ),
-    );
-  } else if (shift != null && !resting && shiftLimit - shiftDuration <= lead) {
-    infringements.add(
-      Infringement(
-        InfringementType.shiftSoon,
-        time: shiftLimit - shiftDuration,
-        article: shiftArticle,
-      ),
-    );
-  }
-
-  final driving = currentMode == DriverMode.driving;
-  if (weeklyDriving > EuLimits.weeklyDriving) {
-    infringements.add(
-      Infringement(
-        InfringementType.weeklyDriveExceeded,
-        time: weeklyDriving - EuLimits.weeklyDriving,
-      ),
-    );
-  } else if (driving && weeklyLeft <= lead && weeklyLeft <= fortnightLeft) {
-    infringements.add(
-      Infringement(InfringementType.weeklyDriveSoon, time: weeklyLeft),
-    );
-  }
-  if (fortnightDriving > EuLimits.fortnightDriving) {
-    infringements.add(
-      Infringement(
-        InfringementType.fortnightDriveExceeded,
-        time: fortnightDriving - EuLimits.fortnightDriving,
-      ),
-    );
-  } else if (driving && fortnightLeft <= lead && fortnightLeft < weeklyLeft) {
-    infringements.add(
-      Infringement(InfringementType.fortnightDriveSoon, time: fortnightLeft),
-    );
-  }
-
-  // Отдых, начатый до дедлайна, — начало недельного, если продлится 24 ч
-  // (45 ч, если сокращённый недоступен). Пока он идёт после дедлайна, его
-  // нельзя прерывать.
-  if (weeklyRestDeadline != null) {
-    final left = weeklyRestDeadline.difference(now);
-    final restStartedInTime =
-        lastRest != null &&
-            lastRest.open &&
-            !lastRest.start.isAfter(weeklyRestDeadline)
-        ? lastRest
-        : null;
-    final requiredWeekly = reducedWeeklyRestAvailable
-        ? EuLimits.weeklyRestReduced
-        : EuLimits.weeklyRestRegular;
-    if (left.isNegative && restStartedInTime != null) {
-      if (restStartedInTime.rest < requiredWeekly) {
-        infringements.add(
-          Infringement(
-            InfringementType.weeklyRestContinue,
-            time: requiredWeekly - restStartedInTime.rest,
-          ),
-        );
-      }
-    } else if (!onWeeklyRest) {
-      if (left.isNegative) {
-        infringements.add(
-          Infringement(InfringementType.weeklyRestOverdue, time: -left),
-        );
-      } else if (left <= EuLimits.weeklyRestWarning) {
-        infringements.add(
-          Infringement(InfringementType.weeklyRestSoon, time: left),
-        );
-      }
-    }
-  }
-
-  // Сокращённый недельный отдых без права на него — нарушение, пока он
-  // последний недельный.
-  if (lastWeeklyRest case final last? when lastWithoutRight) {
-    infringements.add(
-      Infringement(
-        InfringementType.reducedWeeklyRestWithoutRight,
-        time: EuLimits.weeklyRestRegular - last.duration,
-      ),
-    );
-  }
-  // Идёт недельный отдых, а сокращённый недоступен — заканчивать раньше
-  // 45 ч нельзя. После срока 144 ч то же говорит «не прерывайте отдых».
-  if (offDutyRest case final rest?
-      when rest.weekly &&
-          !reducedWeeklyRestAvailable &&
-          rest.duration < EuLimits.weeklyRestRegular &&
-          !infringements.any(
-            (i) => i.type == InfringementType.weeklyRestContinue,
-          )) {
-    infringements.add(
-      Infringement(
-        InfringementType.fullWeeklyRestRequired,
-        time: EuLimits.weeklyRestRegular - rest.duration,
-      ),
-    );
-  }
-
-  // Компенсация: просроченная — нарушение, срок меньше чем через неделю —
-  // напоминание.
-  final overdueCompensation = unpaid.where((c) => c.dueBy.isBefore(now));
-  final pendingCompensation = unpaid.where((c) => !c.dueBy.isBefore(now));
-  if (overdueCompensation.firstOrNull case final c?) {
-    infringements.add(
-      Infringement(
-        InfringementType.compensationOverdue,
-        time: c.debt,
-        days: floorDays(now.difference(c.dueBy)),
-      ),
-    );
-  }
-  if (pendingCompensation.firstOrNull case final c?
-      when c.dueBy.difference(now) <= EuLimits.compensationWarning) {
-    infringements.add(
-      Infringement(
-        InfringementType.compensationSoon,
-        time: c.debt,
-        days: floorDays(c.dueBy.difference(now)),
-      ),
-    );
-  }
-
-  if (reducedRestsUsed > EuLimits.dailyRestReductionsBetweenWeeklyRests) {
-    infringements.add(
-      Infringement(
-        InfringementType.reducedRestsExceeded,
-        count: reducedRestsUsed,
-      ),
-    );
-  }
-
-  if (cardDaysLeft != null) {
-    if (cardDaysLeft < 0) {
-      infringements.add(
-        Infringement(InfringementType.cardOverdue, days: -cardDaysLeft),
-      );
-    } else if (cardDaysLeft <= settings.cardAlertDays) {
-      infringements.add(
-        Infringement(InfringementType.cardSoon, days: cardDaysLeft),
-      );
-    }
-  }
-
+/// Снимок из частей расчёта. Рабочая неделя — 144 ч от конца последнего
+/// недельного отдыха; на недельном отдыхе она не идёт.
+ComplianceSnapshot _snapshot(
+  ComplianceLog log, {
+  required Workday day,
+  required WeekDriving week,
+  required WeeklyRestState weekly,
+  required OffDutyRest? offDuty,
+  required CompensationDebts debts,
+  required int? cardDaysLeft,
+  required List<Infringement> infringements,
+}) {
+  final now = log.now;
+  final openBlock = log.openBlock;
+  final workWeekStart = weekly.workWeekStart;
+  final onWeeklyRest = offDuty?.weekly ?? false;
   return ComplianceSnapshot(
     now: now,
-    timeline: timeline,
-    currentMode: currentMode,
+    timeline: log.timeline,
+    currentMode: openBlock?.mode,
     currentModeStart: openBlock?.start,
     currentModeDuration: openBlock == null
         ? Duration.zero
         : durationBetween(openBlock.start, now),
-    shift: shift,
-    shiftStart: shiftStart,
-    splitFirstPart: splitFirstPart,
-    shiftDuration: shiftDuration,
-    shiftRegularLimit: shiftRegularLimit,
-    shiftExtendedLimit: shiftExtendedLimit,
-    shiftLimit: shiftLimit,
-    dailyRestDeadline: dailyRestDeadline,
-    offDutyRest: offDutyRest,
-    continuousDriving: continuousDriving,
-    drivingUntilBreak: drivingUntilBreak,
-    breakFirstPart: breakState.firstPart,
-    breakRequired: breakRequired,
-    breakTaken: breakState.taken,
-    breakSplit: breakState.split,
-    breakFirstPartDone: breakState.firstPartDone,
-    currentBreak: currentBreak,
-    dailyDriving: dailyDriving,
-    dailyDrivingLimit: dailyDrivingLimit,
-    extensionsUsed: extensionsUsed,
-    extensionsLeft: extensionsLeft,
-    reducedRestsUsed: reducedRestsUsed,
-    reducedRestsLeft: reducedRestsLeft,
-    weekStart: weekStart,
-    weeklyDriving: weeklyDriving,
-    fortnightDriving: fortnightDriving,
-    weeklyDrivingRemaining: clampToZero(shorter(weeklyLeft, fortnightLeft)),
-    fortnightLimiting: fortnightLeft < weeklyLeft,
-    lastWeeklyRest: lastWeeklyRest,
-    previousWeeklyRest: previousWeeklyRest,
+    shift: day.shift,
+    shiftStart: day.start,
+    splitFirstPart: day.splitFirstPart,
+    shiftDuration: day.span,
+    shiftRegularLimit: day.regularLimit,
+    shiftExtendedLimit: day.extendedLimit,
+    shiftLimit: day.limit,
+    dailyRestDeadline: day.restDeadline,
+    offDutyRest: offDuty,
+    continuousDriving: day.continuousDriving,
+    drivingUntilBreak: day.drivingUntilBreak,
+    breakFirstPart: day.breakState.firstPart,
+    breakRequired: day.breakRequired,
+    breakTaken: day.breakState.taken,
+    breakSplit: day.breakState.split,
+    breakFirstPartDone: day.breakState.firstPartDone,
+    currentBreak: day.currentBreak,
+    dailyDriving: day.driving,
+    dailyDrivingLimit: day.drivingLimit,
+    extensionsUsed: day.extensionsUsed,
+    extensionsLeft: day.extensionsLeft,
+    reducedRestsUsed: day.reducedRestsUsed,
+    reducedRestsLeft: day.reducedRestsLeft,
+    weekStart: week.start,
+    weeklyDriving: week.weekly,
+    fortnightDriving: week.fortnight,
+    weeklyDrivingRemaining: clampToZero(
+      shorter(week.weeklyLeft, week.fortnightLeft),
+    ),
+    fortnightLimiting: week.fortnightLeft < week.weeklyLeft,
+    lastWeeklyRest: weekly.last,
+    previousWeeklyRest: weekly.previous,
     workWeekStart: workWeekStart,
-    workWeekDuration: workWeekDuration,
-    weeklyRestDeadline: weeklyRestDeadline,
-    reducedWeeklyRestAvailable: reducedWeeklyRestAvailable,
-    reducedWeeklyRestAtBase: reducedWeeklyRestAtBase,
-    compensation: compensation,
-    compensations: compensations,
-    unpaidCompensations: List.unmodifiable(unpaid),
-    restCompensation: restCompensation,
+    workWeekDuration: workWeekStart != null && !onWeeklyRest
+        ? durationBetween(workWeekStart, now)
+        : Duration.zero,
+    weeklyRestDeadline: workWeekStart?.add(EuLimits.maxBetweenWeeklyRests),
+    reducedWeeklyRestAvailable: weekly.reducedAvailable,
+    reducedWeeklyRestAtBase: weekly.reducedAtBase,
+    compensation: debts.unpaid.firstOrNull,
+    compensations: debts.all,
+    unpaidCompensations: List.unmodifiable(debts.unpaid),
+    restCompensation: offDuty == null
+        ? null
+        : restCompensationOf(offDuty, debts, now),
     cardDaysLeft: cardDaysLeft,
     infringements: List.unmodifiable(infringements),
   );
-}
-
-int _nonNegative(int n) => n < 0 ? 0 : n;
-
-/// Вождение ручных смен рабочего дня.
-Duration _drivingOf(List<CarriedShift> carried) =>
-    carried.fold(Duration.zero, (sum, part) => sum + part.shift.driving);
-
-/// Конец ручной смены [part] для перерыва по ст. 7: непрерывное вождение на
-/// её конец и отдых до следующей смены. Отдых от 45 мин — перерыв, от
-/// 15 мин — его первая часть, короче — вождение продолжается.
-List<Block> _breakBlocks(CarriedShift? part) {
-  if (part == null) return const [];
-  final end = part.rest.start;
-  final driving = part.shift.continuousDrivingAtEnd;
-  return [
-    if (driving > Duration.zero)
-      Block(
-        mode: DriverMode.driving,
-        start: end.subtract(driving),
-        end: end,
-        open: false,
-        ferry: false,
-        dayEnd: false,
-      ),
-    Block(
-      mode: DriverMode.rest,
-      start: end,
-      end: end.add(part.rest.duration),
-      open: false,
-      ferry: false,
-      dayEnd: false,
-    ),
-  ];
-}
-
-/// Сколько отдыха нужно без долга, чтобы сверх этого шла компенсация:
-/// недельный отдых (от 24 ч) — 45 ч, остальной — 9 ч (ст. 8(7)). [rest] —
-/// сколько отдых длится, [debt] — сколько к нему присоединить: отдых,
-/// который вместе с долгом дойдёт до 24 ч, будет недельным.
-Duration _compensationBase(Duration rest, Duration debt) =>
-    rest >= EuLimits.weeklyRestReduced ||
-        EuLimits.compensationAttachedRest + debt >= EuLimits.weeklyRestReduced
-    ? EuLimits.weeklyRestRegular
-    : EuLimits.compensationAttachedRest;
-
-bool _sameList<T>(List<T> a, List<T> b) {
-  if (a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
-}
-
-List<WeeklyRest> _sortedByStart(List<WeeklyRest> rests) {
-  final indexed = rests.indexed.toList()
-    ..sort((a, b) {
-      final byStart = a.$2.start.compareTo(b.$2.start);
-      return byStart != 0 ? byStart : a.$1.compareTo(b.$1);
-    });
-  return [for (final (_, r) in indexed) r];
 }

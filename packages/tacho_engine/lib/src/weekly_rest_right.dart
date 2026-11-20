@@ -4,6 +4,7 @@
 library;
 
 import 'package:tacho_engine/src/compliance.dart';
+import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/shift_route.dart';
 import 'package:tacho_engine/src/shifts.dart';
 
@@ -25,8 +26,8 @@ enum ReducedWeeklyRestRight {
 
 /// Сколько недельных отдыхов подряд проверяет правило пакета мобильности:
 /// из любых четырёх не меньше двух полных.
-const _window = 4;
-const _fullInWindow = 2;
+const int _window = EuLimits.weeklyRestsInWindow;
+const int _fullInWindow = EuLimits.regularWeeklyRestsInWindow;
 
 /// Право на сокращённый недельный отдых, начатый в [restStart] (идущий или
 /// будущий — сейчас), если перед ним — законченные недельные отдыхи

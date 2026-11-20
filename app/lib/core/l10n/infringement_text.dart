@@ -10,30 +10,27 @@ import 'package:tachogo/core/l10n/l10n.dart';
 extension InfringementText on AppLocalizations {
   ({String title, String text, String article}) infringement(Infringement i) {
     final time = formatHm(i.time ?? Duration.zero);
-    String limit(Duration fallback) => formatLimit(this, i.limit ?? fallback);
-    final required = (i.requiredBreak ?? EuLimits.breakFull).inMinutes;
+    // Лимит и перерыв — из движка: у видов, где текст их называет, они есть
+    String limit() => formatLimit(this, i.effectiveLimit!);
+    int required() => i.breakToTake!.inMinutes;
     final days = i.days ?? 0;
     final count = i.count ?? 0;
     final (title, text) = switch (i.type) {
       InfringementType.continuousExceeded => (
         infrContinuousExceededTitle,
-        infrContinuousExceededText(
-          limit(EuLimits.continuousDriving),
-          time,
-          EuLimits.breakFull.inMinutes,
-        ),
+        infrContinuousExceededText(limit(), time, required()),
       ),
       InfringementType.breakSoon => (
         infrBreakSoonTitle,
-        infrBreakSoonText(limit(EuLimits.continuousDriving), time, required),
+        infrBreakSoonText(limit(), time, required()),
       ),
       InfringementType.dailyDriveExceeded => (
         infrDailyDriveExceededTitle,
-        infrDailyDriveExceededText(limit(EuLimits.dailyDriving), time),
+        infrDailyDriveExceededText(limit(), time),
       ),
       InfringementType.dailyDriveSoon => (
         infrDailyDriveSoonTitle,
-        infrDailyDriveSoonText(limit(EuLimits.dailyDriving), time),
+        infrDailyDriveSoonText(limit(), time),
       ),
       InfringementType.extensionInUse => (
         infrExtensionInUseTitle,
@@ -41,7 +38,7 @@ extension InfringementText on AppLocalizations {
       ),
       InfringementType.shiftExceeded => (
         infrShiftExceededTitle,
-        infrShiftExceededText(limit(EuLimits.workdayWithRegularRest), time),
+        infrShiftExceededText(limit(), time),
       ),
       InfringementType.shiftSoon => (
         infrShiftSoonTitle,
@@ -49,19 +46,19 @@ extension InfringementText on AppLocalizations {
       ),
       InfringementType.weeklyDriveExceeded => (
         infrWeeklyDriveExceededTitle,
-        infrWeeklyDriveExceededText(limit(EuLimits.weeklyDriving), time),
+        infrWeeklyDriveExceededText(limit(), time),
       ),
       InfringementType.weeklyDriveSoon => (
         infrWeeklyDriveSoonTitle,
-        infrWeeklyDriveSoonText(limit(EuLimits.weeklyDriving), time),
+        infrWeeklyDriveSoonText(limit(), time),
       ),
       InfringementType.fortnightDriveExceeded => (
         infrFortnightDriveExceededTitle,
-        infrFortnightDriveExceededText(limit(EuLimits.fortnightDriving), time),
+        infrFortnightDriveExceededText(limit(), time),
       ),
       InfringementType.fortnightDriveSoon => (
         infrFortnightDriveSoonTitle,
-        infrFortnightDriveSoonText(limit(EuLimits.fortnightDriving), time),
+        infrFortnightDriveSoonText(limit(), time),
       ),
       InfringementType.weeklyRestOverdue => (
         infrWeeklyRestOverdueTitle,

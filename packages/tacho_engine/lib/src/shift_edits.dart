@@ -10,6 +10,7 @@ library;
 import 'package:meta/meta.dart';
 import 'package:tacho_engine/src/activity_period.dart';
 import 'package:tacho_engine/src/driver_mode.dart';
+import 'package:tacho_engine/src/eu_limits.dart';
 import 'package:tacho_engine/src/journal.dart';
 import 'package:tacho_engine/src/journal_edits.dart';
 import 'package:tacho_engine/src/manual_rest.dart';
@@ -23,6 +24,9 @@ const _minute = Duration(minutes: 1);
 /// Смена, внесённая вручную, не длиннее 30 ч: дольше — почти наверняка
 /// ошибка в дате.
 const maxManualShiftSpan = Duration(hours: 30);
+
+/// Длина новой смены в форме по умолчанию — обычный рабочий день.
+const _defaultShiftSpan = Duration(hours: 10);
 
 /// An edit of the "live" shift: the one in progress, or the one followed by the
 /// rest in progress. Such a shift is worked out from the activity records, so
@@ -85,63 +89,17 @@ class LiveShiftEdit {
 /// ([LiveShiftEdit.manualDriving]): записей смены больше нет.
 ({List<ActivityPeriod> periods, DateTime shiftStart, ManualShift? manual})
 editLiveShift(List<ActivityPeriod> periods, LiveShiftEdit edit, DateTime now) {
-  var result = periods;
-  var shiftStart = edit.shiftStart;
-
-  final newStart = edit.newStart;
-  if (newStart != null && newStart != shiftStart) {
-    final sorted = sortedByStart(result);
-    final idx = sorted.indexWhere(
-      (p) => !p.start.isBefore(shiftStart) && !p.mode.isRest,
-    );
-    if (idx >= 0) {
-      final first = sorted[idx];
-      final max = (first.end ?? now).subtract(_minute);
-      var target = newStart;
-      if (idx > 0) target = later(target, sorted[idx - 1].start.add(_minute));
-      target = earlier(target, max);
-      result = moveStart(result, first, target, now);
-      shiftStart = target;
-    }
-  }
-
-  final restStart = edit.restStart;
-  final endAt = edit.endAt;
-  if (edit.resume && restStart != null) {
-    result = resumeShift(result, restStart);
-  } else if (endAt != null) {
-    result = restStart == null
-        ? endShiftAt(
-            result,
-            earlier(now, later(endAt, shiftStart.add(_minute))),
-            now,
-          )
-        : _moveRestStart(result, shiftStart, restStart, endAt, now);
-  }
-
+  final (periods: moved, :shiftStart) = _moveShiftStart(periods, edit, now);
+  var result = _moveShiftEnd(moved, edit, shiftStart, now);
   if (edit.drivingDelta != Duration.zero) {
     result = adjustDriving(result, shiftStart, edit.drivingDelta, now).periods;
   }
-
-  final manualDriving = edit.manualDriving;
-  final shift = manualDriving == null
-      ? null
-      : analyzeTimeline(result, now).shifts.lastOrNull;
-  if (manualDriving != null && shift != null && shift.start == shiftStart) {
-    final converted = _toManual(
-      result,
-      shift,
-      manualDriving,
-      restKind: edit.restKind,
-      splitRest: edit.splitRest,
+  if (_convertToManual(result, edit, shiftStart, now) case final converted?) {
+    return (
+      periods: converted.periods,
+      shiftStart: shiftStart,
+      manual: converted.manual,
     );
-    if (converted != null) {
-      return (
-        periods: converted.periods,
-        shiftStart: shiftStart,
-        manual: converted.manual,
-      );
-    }
   }
   final restKind = edit.restKind;
   return (
@@ -155,6 +113,78 @@ editLiveShift(List<ActivityPeriod> periods, LiveShiftEdit edit, DateTime now) {
           ),
     shiftStart: shiftStart,
     manual: null,
+  );
+}
+
+/// Новое начало смены ([LiveShiftEdit.newStart]): переносится первая
+/// работа смены — не раньше минуты после начала предыдущей записи и не
+/// позже минуты до своего конца. Возвращает записи и начало смены.
+({List<ActivityPeriod> periods, DateTime shiftStart}) _moveShiftStart(
+  List<ActivityPeriod> periods,
+  LiveShiftEdit edit,
+  DateTime now,
+) {
+  final shiftStart = edit.shiftStart;
+  final newStart = edit.newStart;
+  if (newStart == null || newStart == shiftStart) {
+    return (periods: periods, shiftStart: shiftStart);
+  }
+  final sorted = sortedByStart(periods);
+  final idx = sorted.indexWhere(
+    (p) => !p.start.isBefore(shiftStart) && !p.mode.isRest,
+  );
+  if (idx < 0) return (periods: periods, shiftStart: shiftStart);
+  final first = sorted[idx];
+  final max = (first.end ?? now).subtract(_minute);
+  var target = newStart;
+  if (idx > 0) target = later(target, sorted[idx - 1].start.add(_minute));
+  target = earlier(target, max);
+  return (periods: moveStart(periods, first, target, now), shiftStart: target);
+}
+
+/// Конец смены, начатой в [shiftStart]: отменить завершение
+/// ([LiveShiftEdit.resume]), завершить идущую смену или перенести начало
+/// отдыха после завершённой ([LiveShiftEdit.endAt]) — не раньше минуты
+/// после начала смены и не в будущее.
+List<ActivityPeriod> _moveShiftEnd(
+  List<ActivityPeriod> periods,
+  LiveShiftEdit edit,
+  DateTime shiftStart,
+  DateTime now,
+) {
+  final restStart = edit.restStart;
+  final endAt = edit.endAt;
+  if (edit.resume && restStart != null) return resumeShift(periods, restStart);
+  if (endAt == null) return periods;
+  return restStart == null
+      ? endShiftAt(
+          periods,
+          earlier(now, later(endAt, shiftStart.add(_minute))),
+          now,
+        )
+      : _moveRestStart(periods, shiftStart, restStart, endAt, now);
+}
+
+/// Смена [shiftStart], после которой идёт отдых, становится ручной с
+/// вождением итогом [LiveShiftEdit.manualDriving] ([_toManual]). null —
+/// итога нет, последняя смена после правки — другая или вождение совпало с
+/// записями.
+({List<ActivityPeriod> periods, ManualShift manual})? _convertToManual(
+  List<ActivityPeriod> periods,
+  LiveShiftEdit edit,
+  DateTime shiftStart,
+  DateTime now,
+) {
+  final manualDriving = edit.manualDriving;
+  if (manualDriving == null) return null;
+  final shift = analyzeTimeline(periods, now).shifts.lastOrNull;
+  if (shift == null || shift.start != shiftStart) return null;
+  return _toManual(
+    periods,
+    shift,
+    manualDriving,
+    restKind: edit.restKind,
+    splitRest: edit.splitRest,
   );
 }
 
@@ -527,15 +557,16 @@ ShiftEditProblem? checkManualShift({
 
 /// Время новой ручной смены по умолчанию: [span], заканчивающиеся сейчас,
 /// или, если это время занято сменой или отдыхом после неё, ближайшее
-/// более раннее свободное окно с отдыхом [rest] до следующей смены.
+/// более раннее свободное окно с отдыхом [rest] до следующей смены (по
+/// умолчанию — полный суточный отдых, 11 ч).
 ///
 /// Идущий отдых после ручной смены длится до начала следующей смены, поэтому
 /// новая смена может начаться после него — но не раньше, чем через [rest].
 TimeRange freeShiftSlot(
   Iterable<JournalShift> shifts,
   DateTime now, {
-  Duration span = const Duration(hours: 10),
-  Duration rest = const Duration(hours: 11),
+  Duration span = _defaultShiftSpan,
+  Duration rest = EuLimits.dailyRestRegular,
 }) {
   final sorted = shifts.toList()..sort((a, b) => b.start.compareTo(a.start));
   DateTime busyUntil(JournalShift s) {
@@ -574,7 +605,7 @@ TimeRange newShiftTimes(
   Iterable<JournalShift> shifts,
   DateTime now, {
   required bool ongoing,
-  Duration span = const Duration(hours: 10),
+  Duration span = _defaultShiftSpan,
 }) {
   final minute = floorTimeToMinute(now);
   if (shifts.any((s) => s.end == null)) {

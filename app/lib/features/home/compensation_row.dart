@@ -79,16 +79,13 @@ _Compensation? _repayingAll(
   RestCompensation rest,
   Tone tone,
 ) {
-  final untilAll = rest.untilAll;
-  if (rest.planned.isEmpty || untilAll == null) return null;
-  final total = rest.total;
-  final done = total - atLeastZero(untilAll.difference(s.now));
+  final (untilAll, dueBy) = (rest.untilAll, rest.plannedDueBy);
+  final done = rest.totalRepaidAt(s.now);
+  if (untilAll == null || dueBy == null || done == null) return null;
   return (
-    debt: minutes(total),
-    progress: minutes(atLeastZero(done)),
-    dueBy: rest.planned
-        .map((c) => c.dueBy)
-        .reduce((a, b) => a.isBefore(b) ? a : b),
+    debt: minutes(rest.total),
+    progress: minutes(done),
+    dueBy: dueBy,
     first: null,
     until: minuteOf(untilAll),
     resting: true,
@@ -105,14 +102,12 @@ _Compensation? _repayingNext(
   RestCompensation rest,
   Tone tone,
 ) {
-  final next = rest.next;
-  final until = rest.until;
-  if (next == null || until == null) return null;
-  final left = until.difference(s.now);
-  final done = next.debt - (left.isNegative ? Duration.zero : left);
+  final (next, until) = (rest.next, rest.until);
+  final done = rest.nextRepaidAt(s.now);
+  if (next == null || until == null || done == null) return null;
   return (
     debt: minutes(next.debt),
-    progress: minutes(done.isNegative ? Duration.zero : done),
+    progress: minutes(done),
     dueBy: next.dueBy,
     first: null,
     until: minuteOf(until),

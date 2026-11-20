@@ -286,6 +286,23 @@ Duration workdayWindow(CrewMode crew) => switch (crew) {
   CrewMode.team => EuLimits.teamWorkdayWindow,
 };
 
+/// Рабочий день при полном суточном отдыхе: окно минус 11 ч — 13 ч,
+/// экипаж — 19 ч.
+Duration regularWorkday(CrewMode crew) =>
+    workdayWindow(crew) - EuLimits.dailyRestRegular;
+
+/// Самый длинный рабочий день — при сокращённом или раздельном отдыхе: окно
+/// минус 9 ч — 15 ч, экипаж — 21 ч (в экипаже 9 ч — тоже сокращённый
+/// отдых). Длиннее — нарушение.
+Duration extendedWorkday(CrewMode crew) =>
+    workdayWindow(crew) - EuLimits.dailyRestReduced;
+
+/// Статья лимита рабочего дня: один водитель — ст. 8(2), экипаж — ст. 8(5).
+String workdayArticle(CrewMode crew) => switch (crew) {
+  CrewMode.solo => '8(2)',
+  CrewMode.team => '8(5)',
+};
+
 /// Часть суточного отдыха внутри окна от начала смены. По ст. 8(2) статус
 /// отдыха определяет именно она: смена 14 ч и отдых 12 ч — сокращённый
 /// отдых, в окне только 10 ч.
