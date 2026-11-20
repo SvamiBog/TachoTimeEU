@@ -359,9 +359,22 @@ class ComplianceSnapshot {
   Duration get fortnightDrivingRemaining =>
       clampToZero(EuLimits.fortnightDriving - fortnightDriving);
 
+  /// Сегодня можно ехать до 10 ч: на неделе остались продления или лимит
+  /// дня уже 10 ч (ст. 6(1)).
+  bool get dailyDrivingExtendable =>
+      extensionsLeft > 0 || dailyDrivingLimit > EuLimits.dailyDriving;
+
   /// До конца рабочего дня (13/15 ч); null — смены нет.
   Duration? get shiftRemaining =>
       shift == null ? null : clampToZero(shiftLimit - shiftDuration);
+
+  /// До конца рабочего дня, если работать с этой минуты: день идёт от
+  /// [shiftStart] до сейчас, и во время отдыха тоже, — у [shiftRemaining]
+  /// отдых уже конец дня; null — дня нет.
+  Duration? get shiftRemainingFromNow => switch (shiftStart) {
+    final start? => clampToZero(shiftLimit - now.difference(start)),
+    null => null,
+  };
 
   /// До полного суточного отдыха (11 ч); null — водитель не на суточном
   /// отдыхе.

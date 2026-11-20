@@ -44,6 +44,10 @@ class Compensation {
 
   bool get repaid => repaidIn != null;
 
+  /// Недельный отдых, который гасит долг: полные 45 ч и весь долг одним
+  /// блоком (ст. 8(6), 8(7)).
+  Duration get weeklyRestWithDebt => EuLimits.weeklyRestRegular + debt;
+
   /// Долг — за недельный отдых, начатый в [start].
   bool isFor(DateTime start) => restStart == start || secondRestStart == start;
 
