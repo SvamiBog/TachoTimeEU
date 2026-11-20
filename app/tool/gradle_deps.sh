@@ -13,7 +13,9 @@
 # версия), конфигурация — debugRuntimeClasspath. Повтор — только при
 # ошибке сети или репозитория; другая ошибка сразу роняет шаг. Попыток —
 # GRADLE_DEPS_ATTEMPTS (3), пауза перед повтором — GRADLE_DEPS_PAUSE (30 с),
-# умноженная на номер попытки.
+# умноженная на номер попытки. Ответ 429 (слишком много запросов: 20.11.2026
+# Maven Central так ограничивал адреса раннеров) — пауза вчетверо длиннее,
+# 2 и 4 мин: за полминуты ограничение не снимается.
 
 set -euo pipefail
 
@@ -25,7 +27,10 @@ log=$(mktemp)
 trap 'rm -f "$log"' EXIT
 
 # Признаки сбоя сети или репозитория, а не проекта
-network='Could not (resolve|parse POM|GET|HEAD|download|get resource)|Received status code 5[0-9][0-9]|Connection (reset|refused|timed out)|Read timed out|Remote host terminated|SSLHandshakeException|SocketException|Premature end of'
+network='Could not (resolve|parse POM|GET|HEAD|download|get resource)|Received status code (429|5[0-9][0-9])|Connection (reset|refused|timed out)|Read timed out|Remote host terminated|SSLHandshakeException|SocketException|Premature end of'
+# Репозиторий ограничил частоту запросов — ждать дольше
+rate_limited='Received status code 429'
+rate_limited_factor=4
 
 cd "$app"
 # gradlew и local.properties создаёт flutter; сама сборка не идёт
@@ -44,7 +49,12 @@ for attempt in $(seq 1 "$attempts"); do
   fi
   if [ "$attempt" -lt "$attempts" ]; then
     wait_s=$((pause * attempt))
-    echo "::warning::Зависимости Gradle не скачались (попытка $attempt из $attempts, сбой сети или репозитория) — повтор через $wait_s с"
+    reason='сбой сети или репозитория'
+    if grep -q "$rate_limited" "$log"; then
+      wait_s=$((wait_s * rate_limited_factor))
+      reason='репозиторий ответил 429, слишком много запросов'
+    fi
+    echo "::warning::Зависимости Gradle не скачались (попытка $attempt из $attempts, $reason) — повтор через $wait_s с"
     sleep "$wait_s"
   fi
 done
