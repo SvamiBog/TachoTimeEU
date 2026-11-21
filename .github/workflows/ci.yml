@@ -392,10 +392,15 @@ jobs:
           sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup \
             /usr/local/share/boost "$AGENT_TOOLSDIRECTORY/CodeQL"
           df -h /
+      # Кэш Gradle (~/.gradle/caches и wrapper, CI-14) — во всех Android-
+      # заданиях: зависимости не качаются заново каждый раз. 20.11.2026
+      # Maven Central трижды за день ответил 429 (слишком много запросов с
+      # адресов раннеров), и сборка падала на скачивании.
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
+          cache: gradle
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -602,6 +607,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+          cache: gradle
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -763,6 +769,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+          cache: gradle
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -868,6 +875,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+          cache: gradle
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
