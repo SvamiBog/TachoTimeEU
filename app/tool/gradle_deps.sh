@@ -16,6 +16,11 @@
 # умноженная на номер попытки. Ответ 429 (слишком много запросов: 20.11.2026
 # Maven Central так ограничивал адреса раннеров) — пауза вчетверо длиннее,
 # 2 и 4 мин: за полминуты ограничение не снимается.
+#
+# Повтор — с --refresh-dependencies: Gradle запоминает в ~/.gradle и битый
+# POM, и «не найдено», и без этого флага повтор за 3 с читает ту же ошибку
+# из кэша, а не из сети (20.11.2026: битый POM kotlin-gradle-plugin 2.2.21
+# с plugins.gradle.org, три попытки подряд).
 
 set -euo pipefail
 
@@ -37,8 +42,12 @@ cd "$app"
 flutter build apk --config-only --debug
 
 for attempt in $(seq 1 "$attempts"); do
+  # Первая попытка — из кэша, повтор — заново из репозиториев
+  refresh=()
+  if [ "$attempt" -gt 1 ]; then refresh=(--refresh-dependencies); fi
   if (cd android && ./gradlew --no-daemon :app:dependencies \
-    --configuration "$configuration") >"$log" 2>&1; then
+    --configuration "$configuration" ${refresh[@]+"${refresh[@]}"}) \
+    >"$log" 2>&1; then
     echo "Зависимости Gradle ($configuration) скачаны, попытка $attempt из $attempts"
     exit 0
   fi
