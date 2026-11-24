@@ -822,7 +822,7 @@ jobs:
   # UPG-01: обновление поверх прошлой версии, как из Google Play, — журнал
   # на месте (tool/integration/upgrade_on_emulator.sh, docs/testing.md,
   # раздел 14). Прошлая версия: у PR — его база, у main — main до push, у
-  # тега — прошлый тег.
+  # тега — прошлый тег, у ручного запуска на ветке — точка ответвления от main.
   upgrade-android:
     name: Обновление поверх прошлой версии
     needs: [plan, engine, app]
@@ -855,6 +855,12 @@ jobs:
               base=$(git describe --tags --abbrev=0 --match 'v[0-9]*' HEAD^ 2>/dev/null || true) ;;
             *) base=${PR_BASE:-$BEFORE} ;;
           esac
+          # Ручной запуск на ветке: прошлая версия — main в точке ответвления,
+          # а не прошлый коммит ветки (он мог и не собираться).
+          if [ -z "$base" ] && [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] &&
+            [ "$GITHUB_REF" != refs/heads/main ]; then
+            base=$(git merge-base HEAD origin/main 2>/dev/null || true)
+          fi
           if [ -z "$base" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
             base=$(git rev-parse HEAD^)
           fi
