@@ -2606,5 +2606,179 @@
   "violationsNote": "Пояснение",
   "@violationsNote": {
     "description": "Подпись над текстом пояснения водителя под нарушением"
+  },
+  "tachoTitle": "Тахограф по Bluetooth",
+  "@tachoTitle": {
+    "description": "Заголовок экрана и строка в «Ещё»: подключение к тахографу по Bluetooth"
+  },
+  "tachoHint": "Бета: режим и время прямо с тахографа",
+  "@tachoHint": {
+    "description": "Подпись строки в «Ещё» (только в бете)"
+  },
+  "tachoBeta": "Бета · только чтение",
+  "@tachoBeta": {
+    "description": "Подзаголовок экрана: функция в бете, приложение только читает"
+  },
+  "tachoLead": "Приложение читает режим и время с тахографа Smart 2 (VDO DTCO 4.1a и новее). Ничего не сохраняет и ничего не меняет в тахографе.",
+  "@tachoLead": {
+    "description": "Вступление на экране до подключения"
+  },
+  "tachoStepCard": "Вставьте карту водителя в тахограф.",
+  "@tachoStepCard": {
+    "description": "Шаг 1 подключения"
+  },
+  "tachoStepConsent": "В меню тахографа включите Bluetooth и разрешите передачу данных (ITS).",
+  "@tachoStepConsent": {
+    "description": "Шаг 2: в меню тахографа включить Bluetooth и согласие на передачу данных (ITS)"
+  },
+  "tachoStepPair": "Нажмите кнопку ниже и выберите тахограф. Когда на телефоне и тахографе появятся одинаковые 6 цифр, подтвердите на обоих.",
+  "@tachoStepPair": {
+    "description": "Шаг 3: найти тахограф и подтвердить одинаковые 6 цифр на телефоне и тахографе"
+  },
+  "tachoFind": "Найти тахограф",
+  "@tachoFind": {
+    "description": "Кнопка: начать поиск тахографа"
+  },
+  "tachoSearching": "Ищем тахограф рядом…",
+  "@tachoSearching": {
+    "description": "Идёт поиск, тахограф ещё не найден"
+  },
+  "tachoSearchHint": "Тахографа нет в списке? Откройте на тахографе меню Bluetooth и начните подключение.",
+  "@tachoSearchHint": {
+    "description": "Подсказка, если тахографа нет в списке"
+  },
+  "tachoShowAll": "Все устройства Bluetooth",
+  "@tachoShowAll": {
+    "description": "Переключатель: показать все устройства Bluetooth, а не только тахографы"
+  },
+  "tachoUnnamed": "Без имени",
+  "@tachoUnnamed": {
+    "description": "Устройство Bluetooth без имени"
+  },
+  "tachoStop": "Остановить",
+  "@tachoStop": {
+    "description": "Кнопка: остановить поиск"
+  },
+  "tachoConnecting": "Подключаемся к {name}…",
+  "@tachoConnecting": {
+    "description": "Идёт подключение к устройству {name}",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "DTCO 4.1a"
+      }
+    }
+  },
+  "tachoPairHint": "Появились 6 цифр? Проверьте, что на телефоне и тахографе они одинаковые, и подтвердите на обоих.",
+  "@tachoPairHint": {
+    "description": "Подсказка во время подключения: проверить и подтвердить 6 цифр"
+  },
+  "tachoWaiting": "Ждём данные с тахографа…",
+  "@tachoWaiting": {
+    "description": "Подключено, первые данные ещё не пришли"
+  },
+  "tachoNoConsent": "Тахограф не отдаёт данные водителя. Включите в его меню передачу данных (ITS).",
+  "@tachoNoConsent": {
+    "description": "Плашка: тахограф не даёт данные водителя без согласия ITS в его меню"
+  },
+  "tachoNoDriverData": "Тахограф пока не прислал данные водителя.",
+  "@tachoNoDriverData": {
+    "description": "Подключено, но данных водителя пока нет"
+  },
+  "tachoMoving": "едет",
+  "@tachoMoving": {
+    "description": "Чип: машина едет (по тахографу)"
+  },
+  "tachoStanding": "стоит",
+  "@tachoStanding": {
+    "description": "Чип: машина стоит (по тахографу)"
+  },
+  "tachoModeUnknown": "Режим неизвестен",
+  "@tachoModeUnknown": {
+    "description": "Тахограф не сообщил режим водителя"
+  },
+  "tachoCoDriver": "Второй водитель",
+  "@tachoCoDriver": {
+    "description": "Строка: режим второго водителя (экипаж)"
+  },
+  "tachoCurrentActivity": "Режим идёт",
+  "@tachoCurrentActivity": {
+    "description": "Строка: сколько идёт текущий режим"
+  },
+  "tachoLeftSection": "Осталось",
+  "@tachoLeftSection": {
+    "description": "Заголовок раздела: сколько осталось до отдыха и вождения"
+  },
+  "tachoUntilDailyRest": "До суточного отдыха",
+  "@tachoUntilDailyRest": {
+    "description": "Строка: время до суточного отдыха (по тахографу)"
+  },
+  "tachoUntilWeeklyRest": "До недельного отдыха",
+  "@tachoUntilWeeklyRest": {
+    "description": "Строка: время до недельного отдыха (по тахографу)"
+  },
+  "tachoShiftLeft": "Вождения в смене",
+  "@tachoShiftLeft": {
+    "description": "Строка: сколько ещё можно вести в этой смене (по тахографу)"
+  },
+  "tachoWeekLeft": "Вождения на неделе",
+  "@tachoWeekLeft": {
+    "description": "Строка: сколько ещё можно вести на этой неделе (по тахографу)"
+  },
+  "tachoNote": "Цифры — с тахографа, обновляются каждые несколько секунд. В журнал TachoGo они не попадают.",
+  "@tachoNote": {
+    "description": "Пояснение под данными: откуда цифры и что они не сохраняются"
+  },
+  "tachoDisconnect": "Отключить",
+  "@tachoDisconnect": {
+    "description": "Кнопка: отключиться от тахографа"
+  },
+  "tachoNoPermission": "Разрешите доступ к устройствам поблизости: без него телефон не найдёт тахограф.",
+  "@tachoNoPermission": {
+    "description": "Нет разрешения на доступ к устройствам поблизости (Bluetooth)"
+  },
+  "tachoAllow": "Разрешить",
+  "@tachoAllow": {
+    "description": "Кнопка: дать разрешение"
+  },
+  "tachoBluetoothOff": "Bluetooth на телефоне выключен.",
+  "@tachoBluetoothOff": {
+    "description": "Bluetooth на телефоне выключен"
+  },
+  "tachoTurnOn": "Включить Bluetooth",
+  "@tachoTurnOn": {
+    "description": "Кнопка: включить Bluetooth в настройках телефона"
+  },
+  "tachoLocationOff": "На этом телефоне поиск Bluetooth работает только с включённой геолокацией.",
+  "@tachoLocationOff": {
+    "description": "Старый Android: поиск Bluetooth работает только с включённой геолокацией"
+  },
+  "tachoUnsupported": "Этот телефон не поддерживает Bluetooth LE: подключиться к тахографу не получится.",
+  "@tachoUnsupported": {
+    "description": "Телефон без Bluetooth LE"
+  },
+  "tachoRetry": "Попробовать снова",
+  "@tachoRetry": {
+    "description": "Кнопка: попробовать подключиться снова"
+  },
+  "tachoFailScan": "Поиск не запустился.",
+  "@tachoFailScan": {
+    "description": "Ошибка: поиск Bluetooth не запустился"
+  },
+  "tachoFailConnect": "Не удалось подключиться. Подойдите ближе к тахографу и попробуйте снова.",
+  "@tachoFailConnect": {
+    "description": "Ошибка: не удалось подключиться к устройству"
+  },
+  "tachoFailNotTacho": "Это не тахограф Smart 2. Выберите другое устройство.",
+  "@tachoFailNotTacho": {
+    "description": "Ошибка: выбранное устройство — не тахограф Smart 2"
+  },
+  "tachoFailNoAnswer": "Тахограф не отвечает. Проверьте, что подключение подтверждено на тахографе и к нему не подключён другой телефон.",
+  "@tachoFailNoAnswer": {
+    "description": "Ошибка: тахограф подключился, но не отвечает"
+  },
+  "tachoFailLost": "Связь с тахографом оборвалась.",
+  "@tachoFailLost": {
+    "description": "Ошибка: связь с тахографом оборвалась"
   }
 }

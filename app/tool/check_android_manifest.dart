@@ -6,7 +6,9 @@
 /// turns on its notification is refreshed (`TachoGoApplication`); scheduled
 /// limit notifications survive a reboot; there is internet access for the ban
 /// rules; notifications have the white icon; PostHog does not start before
-/// consent.
+/// consent; the tachograph Bluetooth scan does not count as location access
+/// and Bluetooth is optional, so Google Play still lists the app on phones
+/// without it.
 ///
 /// ```sh
 /// dart tool/check_android_manifest.dart [AndroidManifest.xml …]
@@ -121,11 +123,52 @@ List<String> manifestProblems(String xml) {
     );
   }
 
+  problems.addAll(
+    _bluetoothProblems(tags('uses-permission'), tags('uses-feature')),
+  );
+
   const posthogAutoInit = 'com.posthog.posthog.AUTO_INIT';
   final autoInit = tags('meta-data').where((t) => named(t, posthogAutoInit));
   if (autoInit.isEmpty ||
       !autoInit.every((t) => t.contains('android:value="false"'))) {
     problems.add('PostHog AUTO_INIT должен быть false');
+  }
+  return problems;
+}
+
+/// Bluetooth для тахографа (бета): поиск без геолокации, иначе Google Play
+/// считает его доступом к местоположению; Bluetooth не обязателен, иначе
+/// Play скроет приложение на телефонах без него.
+List<String> _bluetoothProblems(
+  List<String> permissions,
+  List<String> features,
+) {
+  final problems = <String>[];
+  final scan = permissions.where(
+    (t) => t.contains('android:name="android.permission.BLUETOOTH_SCAN"'),
+  );
+  if (scan.any((t) => !t.contains('neverForLocation'))) {
+    problems.add('BLUETOOTH_SCAN без neverForLocation');
+  }
+  final bluetooth = permissions.any(
+    (t) => t.contains('android:name="android.permission.BLUETOOTH'),
+  );
+  final optional = features.where(
+    (t) =>
+        t.contains('android:name="android.hardware.bluetooth"') &&
+        t.contains('android:required="false"'),
+  );
+  if (bluetooth && optional.isEmpty) {
+    problems.add(
+      'Bluetooth обязателен: нужен uses-feature android.hardware.bluetooth '
+      'с required="false"',
+    );
+  }
+  for (final feature in features) {
+    if (feature.contains('android:name="android.hardware.bluetooth') &&
+        !feature.contains('android:required="false"')) {
+      problems.add('Обязательный $feature');
+    }
   }
   return problems;
 }

@@ -2768,4 +2768,146 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get violationsNote => 'Wyjaśnienie';
+
+  @override
+  String get tachoTitle => 'Tachograf przez Bluetooth';
+
+  @override
+  String get tachoHint => 'Beta: tryb i czas prosto z tachografu';
+
+  @override
+  String get tachoBeta => 'Beta · tylko odczyt';
+
+  @override
+  String get tachoLead =>
+      'Aplikacja odczytuje tryb i czas z tachografu Smart 2 (VDO DTCO 4.1a i nowsze). Niczego nie zapisuje i niczego nie zmienia w tachografie.';
+
+  @override
+  String get tachoStepCard => 'Włóż kartę kierowcy do tachografu.';
+
+  @override
+  String get tachoStepConsent =>
+      'W menu tachografu włącz Bluetooth i zezwól na przesyłanie danych (ITS).';
+
+  @override
+  String get tachoStepPair =>
+      'Naciśnij przycisk poniżej i wybierz tachograf. Gdy telefon i tachograf pokażą te same 6 cyfr, potwierdź na obu.';
+
+  @override
+  String get tachoFind => 'Znajdź tachograf';
+
+  @override
+  String get tachoSearching => 'Szukamy tachografu w pobliżu…';
+
+  @override
+  String get tachoSearchHint =>
+      'Nie ma tachografu na liście? Otwórz w tachografie menu Bluetooth i rozpocznij łączenie.';
+
+  @override
+  String get tachoShowAll => 'Wszystkie urządzenia Bluetooth';
+
+  @override
+  String get tachoUnnamed => 'Bez nazwy';
+
+  @override
+  String get tachoStop => 'Zatrzymaj';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Łączymy z $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Pojawiło się 6 cyfr? Sprawdź, czy na telefonie i tachografie są takie same, i potwierdź na obu.';
+
+  @override
+  String get tachoWaiting => 'Czekamy na dane z tachografu…';
+
+  @override
+  String get tachoNoConsent =>
+      'Tachograf nie udostępnia danych kierowcy. Włącz w jego menu przesyłanie danych (ITS).';
+
+  @override
+  String get tachoNoDriverData =>
+      'Tachograf nie przysłał jeszcze danych kierowcy.';
+
+  @override
+  String get tachoMoving => 'jedzie';
+
+  @override
+  String get tachoStanding => 'stoi';
+
+  @override
+  String get tachoModeUnknown => 'Tryb nieznany';
+
+  @override
+  String get tachoCoDriver => 'Drugi kierowca';
+
+  @override
+  String get tachoCurrentActivity => 'Tryb trwa';
+
+  @override
+  String get tachoLeftSection => 'Pozostało';
+
+  @override
+  String get tachoUntilDailyRest => 'Do odpoczynku dobowego';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Do odpoczynku tygodniowego';
+
+  @override
+  String get tachoShiftLeft => 'Jazdy w zmianie';
+
+  @override
+  String get tachoWeekLeft => 'Jazdy w tygodniu';
+
+  @override
+  String get tachoNote =>
+      'Liczby pochodzą z tachografu i odświeżają się co kilka sekund. Nie trafiają do dziennika TachoGo.';
+
+  @override
+  String get tachoDisconnect => 'Rozłącz';
+
+  @override
+  String get tachoNoPermission =>
+      'Zezwól na dostęp do urządzeń w pobliżu: bez tego telefon nie znajdzie tachografu.';
+
+  @override
+  String get tachoAllow => 'Zezwól';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth w telefonie jest wyłączony.';
+
+  @override
+  String get tachoTurnOn => 'Włącz Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'Na tym telefonie wyszukiwanie Bluetooth działa tylko z włączoną lokalizacją.';
+
+  @override
+  String get tachoUnsupported =>
+      'Ten telefon nie obsługuje Bluetooth LE: połączenie z tachografem nie jest możliwe.';
+
+  @override
+  String get tachoRetry => 'Spróbuj ponownie';
+
+  @override
+  String get tachoFailScan => 'Nie udało się rozpocząć wyszukiwania.';
+
+  @override
+  String get tachoFailConnect =>
+      'Nie udało się połączyć. Podejdź bliżej tachografu i spróbuj ponownie.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'To nie jest tachograf Smart 2. Wybierz inne urządzenie.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Tachograf nie odpowiada. Sprawdź, czy połączenie jest potwierdzone na tachografie i czy nie jest z nim połączony inny telefon.';
+
+  @override
+  String get tachoFailLost => 'Połączenie z tachografem zostało przerwane.';
 }

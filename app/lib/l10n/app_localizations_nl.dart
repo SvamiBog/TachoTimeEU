@@ -2745,4 +2745,147 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get violationsNote => 'Toelichting';
+
+  @override
+  String get tachoTitle => 'Tachograaf via Bluetooth';
+
+  @override
+  String get tachoHint =>
+      'Bèta: activiteit en tijden rechtstreeks van de tachograaf';
+
+  @override
+  String get tachoBeta => 'Bèta · alleen lezen';
+
+  @override
+  String get tachoLead =>
+      'De app leest activiteit en tijden van een Smart 2-tachograaf (VDO DTCO 4.1a of nieuwer). Hij slaat niets op en verandert niets in de tachograaf.';
+
+  @override
+  String get tachoStepCard => 'Steek de bestuurderskaart in de tachograaf.';
+
+  @override
+  String get tachoStepConsent =>
+      'Zet in het menu van de tachograaf Bluetooth aan en sta het delen van gegevens toe (ITS).';
+
+  @override
+  String get tachoStepPair =>
+      'Tik op de knop hieronder en kies de tachograaf. Als de telefoon en de tachograaf dezelfde 6 cijfers tonen, bevestig dan op beide.';
+
+  @override
+  String get tachoFind => 'Tachograaf zoeken';
+
+  @override
+  String get tachoSearching => 'Zoeken naar een tachograaf in de buurt…';
+
+  @override
+  String get tachoSearchHint =>
+      'Staat de tachograaf niet in de lijst? Open het Bluetooth-menu op de tachograaf en start het verbinden.';
+
+  @override
+  String get tachoShowAll => 'Alle Bluetooth-apparaten';
+
+  @override
+  String get tachoUnnamed => 'Zonder naam';
+
+  @override
+  String get tachoStop => 'Stoppen';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Verbinden met $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Zie je 6 cijfers? Controleer of ze op de telefoon en de tachograaf gelijk zijn en bevestig op beide.';
+
+  @override
+  String get tachoWaiting => 'Wachten op gegevens van de tachograaf…';
+
+  @override
+  String get tachoNoConsent =>
+      'De tachograaf deelt de gegevens van de bestuurder niet. Zet het delen van gegevens (ITS) aan in het menu.';
+
+  @override
+  String get tachoNoDriverData =>
+      'De tachograaf heeft de gegevens van de bestuurder nog niet gestuurd.';
+
+  @override
+  String get tachoMoving => 'rijdt';
+
+  @override
+  String get tachoStanding => 'staat stil';
+
+  @override
+  String get tachoModeUnknown => 'Activiteit onbekend';
+
+  @override
+  String get tachoCoDriver => 'Tweede bestuurder';
+
+  @override
+  String get tachoCurrentActivity => 'Activiteit duurt';
+
+  @override
+  String get tachoLeftSection => 'Resterend';
+
+  @override
+  String get tachoUntilDailyRest => 'Tot de dagelijkse rust';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Tot de wekelijkse rust';
+
+  @override
+  String get tachoShiftLeft => 'Rijtijd in deze dienst';
+
+  @override
+  String get tachoWeekLeft => 'Rijtijd deze week';
+
+  @override
+  String get tachoNote =>
+      'De cijfers komen van de tachograaf en worden om de paar seconden bijgewerkt. Ze komen niet in het TachoGo-logboek.';
+
+  @override
+  String get tachoDisconnect => 'Verbinding verbreken';
+
+  @override
+  String get tachoNoPermission =>
+      'Sta toegang tot apparaten in de buurt toe: zonder kan de telefoon de tachograaf niet vinden.';
+
+  @override
+  String get tachoAllow => 'Toestaan';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth staat uit op de telefoon.';
+
+  @override
+  String get tachoTurnOn => 'Bluetooth aanzetten';
+
+  @override
+  String get tachoLocationOff =>
+      'Op deze telefoon werkt zoeken via Bluetooth alleen met locatie aan.';
+
+  @override
+  String get tachoUnsupported =>
+      'Deze telefoon ondersteunt geen Bluetooth LE: verbinden met de tachograaf lukt niet.';
+
+  @override
+  String get tachoRetry => 'Opnieuw proberen';
+
+  @override
+  String get tachoFailScan => 'Het zoeken is niet gestart.';
+
+  @override
+  String get tachoFailConnect =>
+      'Verbinden mislukt. Ga dichter bij de tachograaf staan en probeer het opnieuw.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Dit is geen Smart 2-tachograaf. Kies een ander apparaat.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'De tachograaf reageert niet. Controleer of de verbinding op de tachograaf is bevestigd en of er geen andere telefoon mee verbonden is.';
+
+  @override
+  String get tachoFailLost => 'De verbinding met de tachograaf is verbroken.';
 }

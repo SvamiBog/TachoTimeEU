@@ -2733,4 +2733,147 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get violationsNote => 'Explanation';
+
+  @override
+  String get tachoTitle => 'Tachograph over Bluetooth';
+
+  @override
+  String get tachoHint =>
+      'Beta: activity and times straight from the tachograph';
+
+  @override
+  String get tachoBeta => 'Beta · read only';
+
+  @override
+  String get tachoLead =>
+      'The app reads the activity and times from a Smart 2 tachograph (VDO DTCO 4.1a or newer). It saves nothing and changes nothing in the tachograph.';
+
+  @override
+  String get tachoStepCard => 'Insert the driver card into the tachograph.';
+
+  @override
+  String get tachoStepConsent =>
+      'In the tachograph menu, turn on Bluetooth and allow data sharing (ITS).';
+
+  @override
+  String get tachoStepPair =>
+      'Tap the button below and choose the tachograph. When the phone and the tachograph show the same 6 digits, confirm on both.';
+
+  @override
+  String get tachoFind => 'Find tachograph';
+
+  @override
+  String get tachoSearching => 'Looking for a tachograph nearby…';
+
+  @override
+  String get tachoSearchHint =>
+      'Tachograph not in the list? Open the Bluetooth menu on the tachograph and start connecting.';
+
+  @override
+  String get tachoShowAll => 'All Bluetooth devices';
+
+  @override
+  String get tachoUnnamed => 'No name';
+
+  @override
+  String get tachoStop => 'Stop';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Connecting to $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Seeing 6 digits? Check they are the same on the phone and the tachograph, then confirm on both.';
+
+  @override
+  String get tachoWaiting => 'Waiting for data from the tachograph…';
+
+  @override
+  String get tachoNoConsent =>
+      'The tachograph does not share the driver’s data. Turn on data sharing (ITS) in its menu.';
+
+  @override
+  String get tachoNoDriverData =>
+      'The tachograph has not sent the driver’s data yet.';
+
+  @override
+  String get tachoMoving => 'moving';
+
+  @override
+  String get tachoStanding => 'stopped';
+
+  @override
+  String get tachoModeUnknown => 'Activity unknown';
+
+  @override
+  String get tachoCoDriver => 'Co-driver';
+
+  @override
+  String get tachoCurrentActivity => 'Current activity for';
+
+  @override
+  String get tachoLeftSection => 'Left';
+
+  @override
+  String get tachoUntilDailyRest => 'Until daily rest';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Until weekly rest';
+
+  @override
+  String get tachoShiftLeft => 'Driving in this shift';
+
+  @override
+  String get tachoWeekLeft => 'Driving this week';
+
+  @override
+  String get tachoNote =>
+      'The figures come from the tachograph and refresh every few seconds. They do not go into the TachoGo log.';
+
+  @override
+  String get tachoDisconnect => 'Disconnect';
+
+  @override
+  String get tachoNoPermission =>
+      'Allow access to nearby devices: without it the phone can’t find the tachograph.';
+
+  @override
+  String get tachoAllow => 'Allow';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth is off on the phone.';
+
+  @override
+  String get tachoTurnOn => 'Turn on Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'On this phone, Bluetooth search works only with location turned on.';
+
+  @override
+  String get tachoUnsupported =>
+      'This phone does not support Bluetooth LE, so it can’t connect to the tachograph.';
+
+  @override
+  String get tachoRetry => 'Try again';
+
+  @override
+  String get tachoFailScan => 'The search did not start.';
+
+  @override
+  String get tachoFailConnect =>
+      'Could not connect. Move closer to the tachograph and try again.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'This is not a Smart 2 tachograph. Choose another device.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'The tachograph is not answering. Check that the connection is confirmed on the tachograph and no other phone is connected to it.';
+
+  @override
+  String get tachoFailLost => 'The connection to the tachograph was lost.';
 }

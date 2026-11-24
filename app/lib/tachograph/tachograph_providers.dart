@@ -1,0 +1,45 @@
+/// Providers of the tachograph link over Bluetooth (beta, read only).
+library;
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tachogo/core/config/app_env.dart';
+import 'package:tachogo/tachograph/exchange_log.dart';
+import 'package:tachogo/tachograph/its_client.dart';
+import 'package:tachogo/tachograph/tachograph_platform.dart';
+import 'package:tachogo/tachograph/tachograph_reader.dart';
+
+final tachographPlatformProvider = Provider<TachographPlatform>(
+  (ref) => ReactiveBleTachographPlatform(),
+);
+
+/// Журнал обмена живёт, пока работает приложение: экран закрыли — отчёт о
+/// проблеме его ещё видит.
+final tachographLogProvider = Provider<ExchangeLog>((ref) => ExchangeLog());
+
+/// Есть ли строка «Тахограф по Bluetooth» в «Ещё»: пока только в сборке
+/// разработчика (dev — debug APK из CI и локальный запуск) на Android. Сборки
+/// для Google Play — внутреннее тестирование и закрытая бета (staging), релиз
+/// (prod) — её не показывают, пока чтение не проверено на настоящем тахографе
+/// (BT-11). Потом — staging, затем prod.
+bool tachographAvailable(AppEnv env, {required bool supported}) =>
+    env == AppEnv.dev && supported;
+
+/// Строка «Тахограф по Bluetooth» в «Ещё» в этой сборке.
+final tachographEnabledProvider = Provider<bool>(
+  (ref) => tachographAvailable(
+    AppEnv.current,
+    supported: ref.watch(tachographPlatformProvider).supported,
+  ),
+);
+
+/// Client and reader of one connected tachograph.
+typedef TachographSession = ({ItsClient client, TachographReader reader});
+
+/// Как экран говорит с подключённым тахографом; тесты делают обмен быстрым.
+final tachographSessionProvider =
+    Provider<TachographSession Function(ItsPort port, ExchangeLog log)>(
+      (ref) => (port, log) {
+        final client = ItsClient(port, log: log);
+        return (client: client, reader: TachographReader(client, log: log));
+      },
+    );

@@ -87,7 +87,7 @@ Windows (PowerShell): `[Convert]::ToBase64String([IO.File]::ReadAllBytes("debug.
 | Вычитка перевода | Носитель каждого языка Tier 1 | `translation-review.md` | `dart run tool/l10n_review.dart import` (`app/`) |
 | Анкета KK, KY, BE | Водители из Казахстана, Кыргызстана, Беларуси | Вопросы в `translation-review.md` | Решение в `docs/PRD.md` |
 | Замер скорости на телефоне | 1–2 телефона разработчика, в том числе недорогой | `flutter drive --profile` (`app/integration_test/performance_test.dart`) | PERF-03 в `docs/testing.md` |
-| Bluetooth с тахографом | Водители с DTCO 4.1 и SE5000 Smart 2 | Раздел «Bluetooth» инструкции | `docs/research/bluetooth-its.md` |
+| Bluetooth с тахографом | Владелец (DTCO 4.1a) на debug APK из CI — в сборках из Google Play строки пока нет; после проверки — водители с DTCO 4.1a и SE5000 Smart 2 обновлением из Play | «Ещё» → «Тахограф по Bluetooth», затем «Сообщить о проблеме» — в отчёте журнал обмена (раздел «Bluetooth» инструкции) | BT-11, `docs/research/bluetooth-its.md` |
 
 Личные данные: отчёт о проблеме и CSV содержат журнал режимов, файл карты — ещё и имя и номер карты. В репозиторий попадает только обезличенное: фикстура из `tool/ddd.dart fixture` без имени и номера, CSV — только в issue с согласия водителя. Сами файлы `.DDD` в git не кладём.
 

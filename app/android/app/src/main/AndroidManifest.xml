@@ -16,6 +16,17 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <!-- Правила запретов движения с сайта TachoGo (lib/data/bans), раз в сутки. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Тахограф по Bluetooth (бета, только чтение): поиск без геолокации
+         (neverForLocation) и подключение — Android 12+. На Android 11 и старше
+         поиск идёт по разрешению геолокации выше, BLUETOOTH и BLUETOOTH_ADMIN
+         до API 30 добавляет flutter_reactive_ble. Bluetooth не обязателен:
+         иначе Google Play скрыл бы приложение на телефонах без него. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
     <application
         android:label="TachoGo"
         android:name=".TachoGoApplication"

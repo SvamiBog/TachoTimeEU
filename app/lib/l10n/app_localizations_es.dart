@@ -2751,4 +2751,148 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get violationsNote => 'Explicación';
+
+  @override
+  String get tachoTitle => 'Tacógrafo por Bluetooth';
+
+  @override
+  String get tachoHint =>
+      'Beta: actividad y tiempos directamente del tacógrafo';
+
+  @override
+  String get tachoBeta => 'Beta · solo lectura';
+
+  @override
+  String get tachoLead =>
+      'La aplicación lee la actividad y los tiempos de un tacógrafo Smart 2 (VDO DTCO 4.1a o posterior). No guarda nada ni cambia nada en el tacógrafo.';
+
+  @override
+  String get tachoStepCard =>
+      'Introduzca la tarjeta del conductor en el tacógrafo.';
+
+  @override
+  String get tachoStepConsent =>
+      'En el menú del tacógrafo, active el Bluetooth y permita la transmisión de datos (ITS).';
+
+  @override
+  String get tachoStepPair =>
+      'Pulse el botón de abajo y elija el tacógrafo. Cuando el teléfono y el tacógrafo muestren los mismos 6 dígitos, confirme en ambos.';
+
+  @override
+  String get tachoFind => 'Buscar tacógrafo';
+
+  @override
+  String get tachoSearching => 'Buscando un tacógrafo cerca…';
+
+  @override
+  String get tachoSearchHint =>
+      '¿El tacógrafo no aparece? Abra el menú Bluetooth del tacógrafo e inicie la conexión.';
+
+  @override
+  String get tachoShowAll => 'Todos los dispositivos Bluetooth';
+
+  @override
+  String get tachoUnnamed => 'Sin nombre';
+
+  @override
+  String get tachoStop => 'Detener';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Conectando con $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      '¿Aparecen 6 dígitos? Compruebe que son iguales en el teléfono y el tacógrafo y confirme en ambos.';
+
+  @override
+  String get tachoWaiting => 'Esperando datos del tacógrafo…';
+
+  @override
+  String get tachoNoConsent =>
+      'El tacógrafo no comparte los datos del conductor. Active la transmisión de datos (ITS) en su menú.';
+
+  @override
+  String get tachoNoDriverData =>
+      'El tacógrafo aún no ha enviado los datos del conductor.';
+
+  @override
+  String get tachoMoving => 'en marcha';
+
+  @override
+  String get tachoStanding => 'parado';
+
+  @override
+  String get tachoModeUnknown => 'Actividad desconocida';
+
+  @override
+  String get tachoCoDriver => 'Segundo conductor';
+
+  @override
+  String get tachoCurrentActivity => 'Actividad en curso';
+
+  @override
+  String get tachoLeftSection => 'Restante';
+
+  @override
+  String get tachoUntilDailyRest => 'Hasta el descanso diario';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Hasta el descanso semanal';
+
+  @override
+  String get tachoShiftLeft => 'Conducción en la jornada';
+
+  @override
+  String get tachoWeekLeft => 'Conducción en la semana';
+
+  @override
+  String get tachoNote =>
+      'Las cifras vienen del tacógrafo y se actualizan cada pocos segundos. No pasan al registro de TachoGo.';
+
+  @override
+  String get tachoDisconnect => 'Desconectar';
+
+  @override
+  String get tachoNoPermission =>
+      'Permita el acceso a dispositivos cercanos: sin él, el teléfono no encuentra el tacógrafo.';
+
+  @override
+  String get tachoAllow => 'Permitir';
+
+  @override
+  String get tachoBluetoothOff => 'El Bluetooth del teléfono está desactivado.';
+
+  @override
+  String get tachoTurnOn => 'Activar Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'En este teléfono, la búsqueda Bluetooth solo funciona con la ubicación activada.';
+
+  @override
+  String get tachoUnsupported =>
+      'Este teléfono no admite Bluetooth LE: no puede conectarse al tacógrafo.';
+
+  @override
+  String get tachoRetry => 'Reintentar';
+
+  @override
+  String get tachoFailScan => 'La búsqueda no se ha iniciado.';
+
+  @override
+  String get tachoFailConnect =>
+      'No se pudo conectar. Acérquese al tacógrafo e inténtelo de nuevo.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'No es un tacógrafo Smart 2. Elija otro dispositivo.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'El tacógrafo no responde. Compruebe que la conexión está confirmada en el tacógrafo y que no hay otro teléfono conectado.';
+
+  @override
+  String get tachoFailLost => 'Se ha perdido la conexión con el tacógrafo.';
 }

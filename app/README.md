@@ -72,6 +72,12 @@ data/
 background/               — автоопределение вождения: трекер, foreground service
                             (Android), уведомление с таймерами — docs/background.md;
                             TrackingPlatform — всё от ОС и плагинов, подменяется в тестах
+tachograph/               — тахограф Smart 2 по Bluetooth (бета, только чтение):
+                            порт ITS поверх BLE (пакеты, кредиты), чтение по UDS,
+                            значения ISO 16844-7, опрос, журнал обмена для отчёта
+                            о проблеме; TachographPlatform — Bluetooth и
+                            разрешения (flutter_reactive_ble, канал MainActivity),
+                            подменяется в тестах — docs/research/bluetooth-its.md
 notifications/            — уведомления о лимитах: расписание по прогнозу движка
                             (AlertScheduler), категории и тексты, NotificationPlatform —
                             обёртка над flutter_local_notifications, подменяется в тестах
@@ -93,7 +99,8 @@ features/<экран>/         — UI и провайдеры конкретно
                             фургона; more/ — вкладка «Ещё»,
                             в бете — «Сообщить о проблеме»;
                             violations/ — «Нарушения» за 56 дней и шторка
-                            пояснения
+                            пояснения; tachograph/ — «Тахограф по Bluetooth»
+                            (бета)
 ```
 
 Экраны подписываются на расчёт через `watchSnapshot` (`features/home/snapshot_select.dart`): каждый блок выбирает свою часть снимка в целых минутах, поэтому ежесекундный тик часов перестраивает только таймеры, у которых сменилась минута. Состояния «скоро» и «превышено» берутся из предупреждений движка — правила регламента в UI не повторяются.
@@ -199,6 +206,7 @@ flutter drive --profile --driver=test_driver/integration_test.dart \
 Закрытое тестирование в Google Play — `docs/beta/README.md`. Выпуск — после всех проверок CI: merge в `main` с изменениями в `app/`, `packages/` или `ci.yml` (не только `.md`) — AAB со `staging` во внутреннее тестирование (CI-13), тег `v1.2.3-beta.N` — в закрытое, если задан секрет `PLAY_SERVICE_ACCOUNT_JSON`; `v1.2.3` — prod, пока только в артефактах.
 
 - **«Сообщить о проблеме»** (`features/more/problem_report.dart`) — в «Ещё», во всех сборках, кроме prod. Отчёт собирает `DiagnosticsCollector` (`core/diagnostics/`): версия, телефон (канал устройства в `MainActivity`), настройки, разрешения, расписание уведомлений, прогноз движка, журнал за 48 ч — и отдаёт в системное «Поделиться». Служебные подписи отчёта — по-английски: его читают разработчики, а не водитель.
+- **«Тахограф по Bluetooth»** (`features/tachograph/`) — в «Ещё», пока только в сборке разработчика (env `dev`: debug APK из CI, `flutter run`) и только на Android; в сборках для Google Play (staging, prod) строки нет, ступени — `tachographAvailable` и `docs/research/bluetooth-its.md`: поиск тахографа Smart 2, сопряжение, режим и время водителя за текущий день. Только чтение, ничего не сохраняется. Журнал обмена (байты по Bluetooth) хранится в памяти и уходит в «Сообщить о проблеме». Библиотека — `flutter_reactive_ble` (BSD): у `flutter_blue_plus` с версии 2 лицензия платная для коммерческих приложений.
 - **Вычитка переводов** — `tool/l10n_review.dart`: `export` — таблица CSV на язык для носителя, `import` — его исправления обратно в ARB с проверкой подстановок. Порядок — `docs/beta/translation-review.md`.
 
 ## Релиз Android

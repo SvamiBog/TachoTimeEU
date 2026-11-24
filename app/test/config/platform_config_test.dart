@@ -103,6 +103,25 @@ void main() {
       expect(manifestProblems(bad), [contains('AUTO_INIT')]);
     });
 
+    test('BT-08: Bluetooth — поиск без геолокации, Bluetooth необязателен', () {
+      final withLocation = source.replaceFirst(
+        'android:usesPermissionFlags="neverForLocation"',
+        '',
+      );
+      expect(manifestProblems(withLocation), [contains('neverForLocation')]);
+      final required = source.replaceFirst(
+        '<uses-feature android:name="android.hardware.bluetooth_le" '
+            'android:required="false" />',
+        '<uses-feature android:name="android.hardware.bluetooth_le" />',
+      );
+      expect(manifestProblems(required), [contains('bluetooth_le')]);
+      final implied = source.replaceAll(
+        RegExp('<uses-feature android:name="android.hardware.bluetooth[^>]*>'),
+        '',
+      );
+      expect(manifestProblems(implied), [contains('Bluetooth обязателен')]);
+    });
+
     test('CI-11: проверка ловит уведомления без белого значка', () {
       final bad = source.replaceFirst(
         'android:resource="$notificationIconResource"',

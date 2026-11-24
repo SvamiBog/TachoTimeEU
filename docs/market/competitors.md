@@ -76,7 +76,7 @@
 - **iDrive Truck** — Bluetooth с тахографом, разбор распечаток, запреты движения в 26 странах, карта стоянок и АЗС, доходы. Бесплатно + iDrive Pro.
 - **Driver Work Time** (Krecik Studio, PL) — 500+, живой VDO по Bluetooth.
 - **VDO Fleet** (AUMOVIO, бывш. Continental) — 100K+, 2,9★. С DTCO 4.1a: VDO Counter (остатки времени), ручные вводы с телефона, удалённое управление тахографом. Бесплатно, но только тахограф VDO. Ругают связь, просят виджеты.
-- **Stoneridge Duo Mobile** — бесплатно, второй экран для SE5000 Smart 2.
+- **Stoneridge Duo Mobile** — бесплатно, второй экран для SE5000 Exakt Duo, Connekt и 7.6 (последним нужен адаптер Tacholink); SE5000 Smart 2 на странице Stoneridge не назван (проверено 2026-11-24).
 - **AddSecure DrivingTIME** — только с аккаунтом автопарка FleetVisor.
 
 ## Цены

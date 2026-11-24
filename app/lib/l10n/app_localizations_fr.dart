@@ -2758,4 +2758,148 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get violationsNote => 'Explication';
+
+  @override
+  String get tachoTitle => 'Tachygraphe via Bluetooth';
+
+  @override
+  String get tachoHint => 'Bêta : activité et temps directement du tachygraphe';
+
+  @override
+  String get tachoBeta => 'Bêta · lecture seule';
+
+  @override
+  String get tachoLead =>
+      'L’application lit l’activité et les temps d’un tachygraphe Smart 2 (VDO DTCO 4.1a ou plus récent). Elle n’enregistre rien et ne modifie rien dans le tachygraphe.';
+
+  @override
+  String get tachoStepCard =>
+      'Insérez la carte conducteur dans le tachygraphe.';
+
+  @override
+  String get tachoStepConsent =>
+      'Dans le menu du tachygraphe, activez le Bluetooth et autorisez la transmission des données (ITS).';
+
+  @override
+  String get tachoStepPair =>
+      'Appuyez sur le bouton ci-dessous et choisissez le tachygraphe. Quand le téléphone et le tachygraphe affichent les mêmes 6 chiffres, confirmez sur les deux.';
+
+  @override
+  String get tachoFind => 'Trouver le tachygraphe';
+
+  @override
+  String get tachoSearching => 'Recherche d’un tachygraphe à proximité…';
+
+  @override
+  String get tachoSearchHint =>
+      'Le tachygraphe n’est pas dans la liste ? Ouvrez le menu Bluetooth du tachygraphe et lancez la connexion.';
+
+  @override
+  String get tachoShowAll => 'Tous les appareils Bluetooth';
+
+  @override
+  String get tachoUnnamed => 'Sans nom';
+
+  @override
+  String get tachoStop => 'Arrêter';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Connexion à $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      '6 chiffres affichés ? Vérifiez qu’ils sont identiques sur le téléphone et le tachygraphe, puis confirmez sur les deux.';
+
+  @override
+  String get tachoWaiting => 'En attente des données du tachygraphe…';
+
+  @override
+  String get tachoNoConsent =>
+      'Le tachygraphe ne transmet pas les données du conducteur. Activez la transmission des données (ITS) dans son menu.';
+
+  @override
+  String get tachoNoDriverData =>
+      'Le tachygraphe n’a pas encore envoyé les données du conducteur.';
+
+  @override
+  String get tachoMoving => 'en marche';
+
+  @override
+  String get tachoStanding => 'à l’arrêt';
+
+  @override
+  String get tachoModeUnknown => 'Activité inconnue';
+
+  @override
+  String get tachoCoDriver => 'Second conducteur';
+
+  @override
+  String get tachoCurrentActivity => 'Activité en cours depuis';
+
+  @override
+  String get tachoLeftSection => 'Restant';
+
+  @override
+  String get tachoUntilDailyRest => 'Avant le repos journalier';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Avant le repos hebdomadaire';
+
+  @override
+  String get tachoShiftLeft => 'Conduite dans ce poste';
+
+  @override
+  String get tachoWeekLeft => 'Conduite cette semaine';
+
+  @override
+  String get tachoNote =>
+      'Les chiffres viennent du tachygraphe et se mettent à jour toutes les quelques secondes. Ils ne vont pas dans le journal TachoGo.';
+
+  @override
+  String get tachoDisconnect => 'Déconnecter';
+
+  @override
+  String get tachoNoPermission =>
+      'Autorisez l’accès aux appareils à proximité : sans lui, le téléphone ne trouve pas le tachygraphe.';
+
+  @override
+  String get tachoAllow => 'Autoriser';
+
+  @override
+  String get tachoBluetoothOff =>
+      'Le Bluetooth est désactivé sur le téléphone.';
+
+  @override
+  String get tachoTurnOn => 'Activer le Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'Sur ce téléphone, la recherche Bluetooth ne fonctionne qu’avec la localisation activée.';
+
+  @override
+  String get tachoUnsupported =>
+      'Ce téléphone ne prend pas en charge le Bluetooth LE : impossible de se connecter au tachygraphe.';
+
+  @override
+  String get tachoRetry => 'Réessayer';
+
+  @override
+  String get tachoFailScan => 'La recherche n’a pas démarré.';
+
+  @override
+  String get tachoFailConnect =>
+      'Connexion impossible. Rapprochez-vous du tachygraphe et réessayez.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Ce n’est pas un tachygraphe Smart 2. Choisissez un autre appareil.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Le tachygraphe ne répond pas. Vérifiez que la connexion est confirmée sur le tachygraphe et qu’aucun autre téléphone n’y est connecté.';
+
+  @override
+  String get tachoFailLost => 'La connexion au tachygraphe a été perdue.';
 }

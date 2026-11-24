@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tachogo/background/tracking_providers.dart';
+import 'package:tachogo/core/config/app_env.dart';
 import 'package:tachogo/core/config/app_info.dart';
 import 'package:tachogo/core/config/app_links.dart';
 import 'package:tachogo/core/diagnostics/diagnostics.dart';
@@ -16,6 +17,9 @@ import 'package:tachogo/features/guide/guide_screen.dart';
 import 'package:tachogo/features/more/about_screen.dart';
 import 'package:tachogo/features/more/more_screen.dart';
 import 'package:tachogo/features/more/problem_report.dart';
+import 'package:tachogo/features/tachograph/tachograph_screen.dart';
+import 'package:tachogo/tachograph/exchange_log.dart';
+import 'package:tachogo/tachograph/tachograph_providers.dart';
 
 import '../notifications/fake_notification_platform.dart';
 import '../support/app_harness.dart';
@@ -51,6 +55,8 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     bool beta = false,
+    bool tachograph = false,
+    ExchangeLog? tachographLog,
     _FakeSharer? sharer,
     _FakeLinks? links,
     Locale locale = const Locale('ru'),
@@ -63,6 +69,9 @@ void main() {
       overrides: [
         ...journalOverrides(periods: week.periods, now: week.now),
         problemReportEnabledProvider.overrideWithValue(beta),
+        tachographEnabledProvider.overrideWithValue(tachograph),
+        if (tachographLog != null)
+          tachographLogProvider.overrideWithValue(tachographLog),
         if (sharer != null) textSharerProvider.overrideWithValue(sharer),
         if (links != null) linkOpenerProvider.overrideWithValue(links),
         diagnosticsCollectorProvider.overrideWith(
@@ -206,6 +215,49 @@ void main() {
     });
   });
 
+  group('BT-10: «Тахограф по Bluetooth» в «Ещё»', () {
+    test('только в сборке разработчика на Android: в сборках для Google '
+        'Play (staging) и в релизе строки нет', () {
+      expect(tachographAvailable(AppEnv.dev, supported: true), isTrue);
+      expect(tachographAvailable(AppEnv.staging, supported: true), isFalse);
+      expect(tachographAvailable(AppEnv.prod, supported: true), isFalse);
+      expect(tachographAvailable(AppEnv.dev, supported: false), isFalse);
+    });
+
+    testWidgets('выключено — строки нет', (tester) async {
+      await pump(tester);
+      expect(find.text('Тахограф по Bluetooth'), findsNothing);
+    });
+
+    testWidgets('включено — строка, открывает экран тахографа', (tester) async {
+      await pump(tester, tachograph: true);
+      expect(
+        find.text('Бета: режим и время прямо с тахографа'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Тахограф по Bluetooth'));
+      await tester.pumpAndSettle();
+      expect(find.byType(TachographScreen), findsOneWidget);
+    });
+
+    testWidgets('отчёт о проблеме несёт журнал обмена с тахографом', (
+      tester,
+    ) async {
+      final sharer = _FakeSharer();
+      final log = ExchangeLog(now: () => DateTime.utc(2026, 9, 22, 12))
+        ..sent('fifo', [1, 1, 0x22, 0xF9, 0x03]);
+      await pump(tester, beta: true, sharer: sharer, tachographLog: log);
+      await tester.tap(find.text('Сообщить о проблеме'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Отправить'));
+      await settle(tester);
+      await tester.pumpAndSettle();
+      final (:text, subject: _) = sharer.sent.single;
+      expect(text, contains('Tachograph Bluetooth log (UTC):'));
+      expect(text, contains('12:00:00.000 > fifo 01 01 22 F9 03'));
+    });
+  });
+
   group('BETA-02: «Сообщить о проблеме»', () {
     testWidgets('в релизе строки нет', (tester) async {
       await pump(tester);
@@ -235,6 +287,8 @@ void main() {
       expect(text, contains('TachoGo 0.2.0-beta.1 (20001)'));
       expect(text, contains('Status: '));
       expect(text, isNot(contains('lat')), reason: 'координат нет');
+      // Без подключения к тахографу журнала обмена нет
+      expect(text, isNot(contains('Tachograph Bluetooth log')));
     });
 
     testWidgets('«Отмена» ничего не отправляет', (tester) async {

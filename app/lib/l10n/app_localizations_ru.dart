@@ -2760,4 +2760,145 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get violationsNote => 'Пояснение';
+
+  @override
+  String get tachoTitle => 'Тахограф по Bluetooth';
+
+  @override
+  String get tachoHint => 'Бета: режим и время прямо с тахографа';
+
+  @override
+  String get tachoBeta => 'Бета · только чтение';
+
+  @override
+  String get tachoLead =>
+      'Приложение читает режим и время с тахографа Smart 2 (VDO DTCO 4.1a и новее). Ничего не сохраняет и ничего не меняет в тахографе.';
+
+  @override
+  String get tachoStepCard => 'Вставьте карту водителя в тахограф.';
+
+  @override
+  String get tachoStepConsent =>
+      'В меню тахографа включите Bluetooth и разрешите передачу данных (ITS).';
+
+  @override
+  String get tachoStepPair =>
+      'Нажмите кнопку ниже и выберите тахограф. Когда на телефоне и тахографе появятся одинаковые 6 цифр, подтвердите на обоих.';
+
+  @override
+  String get tachoFind => 'Найти тахограф';
+
+  @override
+  String get tachoSearching => 'Ищем тахограф рядом…';
+
+  @override
+  String get tachoSearchHint =>
+      'Тахографа нет в списке? Откройте на тахографе меню Bluetooth и начните подключение.';
+
+  @override
+  String get tachoShowAll => 'Все устройства Bluetooth';
+
+  @override
+  String get tachoUnnamed => 'Без имени';
+
+  @override
+  String get tachoStop => 'Остановить';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Подключаемся к $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Появились 6 цифр? Проверьте, что на телефоне и тахографе они одинаковые, и подтвердите на обоих.';
+
+  @override
+  String get tachoWaiting => 'Ждём данные с тахографа…';
+
+  @override
+  String get tachoNoConsent =>
+      'Тахограф не отдаёт данные водителя. Включите в его меню передачу данных (ITS).';
+
+  @override
+  String get tachoNoDriverData => 'Тахограф пока не прислал данные водителя.';
+
+  @override
+  String get tachoMoving => 'едет';
+
+  @override
+  String get tachoStanding => 'стоит';
+
+  @override
+  String get tachoModeUnknown => 'Режим неизвестен';
+
+  @override
+  String get tachoCoDriver => 'Второй водитель';
+
+  @override
+  String get tachoCurrentActivity => 'Режим идёт';
+
+  @override
+  String get tachoLeftSection => 'Осталось';
+
+  @override
+  String get tachoUntilDailyRest => 'До суточного отдыха';
+
+  @override
+  String get tachoUntilWeeklyRest => 'До недельного отдыха';
+
+  @override
+  String get tachoShiftLeft => 'Вождения в смене';
+
+  @override
+  String get tachoWeekLeft => 'Вождения на неделе';
+
+  @override
+  String get tachoNote =>
+      'Цифры — с тахографа, обновляются каждые несколько секунд. В журнал TachoGo они не попадают.';
+
+  @override
+  String get tachoDisconnect => 'Отключить';
+
+  @override
+  String get tachoNoPermission =>
+      'Разрешите доступ к устройствам поблизости: без него телефон не найдёт тахограф.';
+
+  @override
+  String get tachoAllow => 'Разрешить';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth на телефоне выключен.';
+
+  @override
+  String get tachoTurnOn => 'Включить Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'На этом телефоне поиск Bluetooth работает только с включённой геолокацией.';
+
+  @override
+  String get tachoUnsupported =>
+      'Этот телефон не поддерживает Bluetooth LE: подключиться к тахографу не получится.';
+
+  @override
+  String get tachoRetry => 'Попробовать снова';
+
+  @override
+  String get tachoFailScan => 'Поиск не запустился.';
+
+  @override
+  String get tachoFailConnect =>
+      'Не удалось подключиться. Подойдите ближе к тахографу и попробуйте снова.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Это не тахограф Smart 2. Выберите другое устройство.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Тахограф не отвечает. Проверьте, что подключение подтверждено на тахографе и к нему не подключён другой телефон.';
+
+  @override
+  String get tachoFailLost => 'Связь с тахографом оборвалась.';
 }

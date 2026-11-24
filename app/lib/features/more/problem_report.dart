@@ -13,6 +13,8 @@ import 'package:tachogo/core/config/app_env.dart';
 import 'package:tachogo/core/diagnostics/diagnostics.dart';
 import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/widgets/confirm_sheet.dart';
+import 'package:tachogo/tachograph/exchange_log.dart';
+import 'package:tachogo/tachograph/tachograph_providers.dart';
 
 /// Строка есть в бете и в сборке разработчика, в релизе — нет.
 final problemReportEnabledProvider = Provider<bool>(
@@ -39,9 +41,17 @@ final textSharerProvider = Provider<TextSharer>(
 );
 
 /// Сообщение с отчётом: приглашение водителю написать своими словами, под
-/// ним — диагностика.
-String problemMessage(AppLocalizations l, Diagnostics d) =>
-    '${l.problemPrompt}\n\n\n———\n${formatDiagnostics(d)}\n';
+/// ним — диагностика и, если подключались к тахографу, журнал обмена с ним.
+String problemMessage(
+  AppLocalizations l,
+  Diagnostics d, {
+  ExchangeLog? tachographLog,
+}) {
+  final log = tachographLog == null || tachographLog.isEmpty
+      ? ''
+      : '\n${tachographLog.format()}\n';
+  return '${l.problemPrompt}\n\n\n———\n${formatDiagnostics(d)}\n$log';
+}
 
 /// Шторка с пояснением, что уйдёт в отчёте, затем «Поделиться».
 Future<void> sendProblemReport(BuildContext context, WidgetRef ref) async {
@@ -59,7 +69,14 @@ Future<void> sendProblemReport(BuildContext context, WidgetRef ref) async {
     final diagnostics = await ref.read(diagnosticsCollectorProvider).collect();
     await ref
         .read(textSharerProvider)
-        .share(text: problemMessage(l, diagnostics), subject: l.problemSubject);
+        .share(
+          text: problemMessage(
+            l,
+            diagnostics,
+            tachographLog: ref.read(tachographLogProvider),
+          ),
+          subject: l.problemSubject,
+        );
   } on Object catch (e, st) {
     FlutterError.reportError(
       FlutterErrorDetails(exception: e, stack: st, library: 'problem report'),

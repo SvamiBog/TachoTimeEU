@@ -9,6 +9,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/app.dart';
@@ -40,11 +41,15 @@ import 'package:tachogo/features/more/more_screen.dart';
 import 'package:tachogo/features/onboarding/onboarding_screen.dart';
 import 'package:tachogo/features/settings/settings_screen.dart';
 import 'package:tachogo/features/shell/app_shell.dart';
+import 'package:tachogo/features/tachograph/tachograph_screen.dart';
 import 'package:tachogo/features/violations/violations_screen.dart';
 import 'package:tachogo/l10n/app_localizations.dart';
+import 'package:tachogo/tachograph/tachograph_platform.dart';
+import 'package:tachogo/tachograph/tachograph_providers.dart';
 
 import '../support/app_harness.dart';
 import '../support/journal_fixtures.dart';
+import '../tachograph/fake_tachograph_platform.dart';
 import 'text_contrast.dart';
 
 /// Как открыть шторку: строки — на языке, в котором отрисован экран.
@@ -111,6 +116,38 @@ _Journal _repaidCompensation() {
     now: DateTime.utc(2026, 9, 22, 12),
   );
 }
+
+/// Экран тахографа на поддельном DTCO: поиск, подключение, ошибка.
+List<Override> _tachograph({ConnectFailure? failure}) => [
+  tachographPlatformProvider.overrideWithValue(
+    FakeTachographPlatform(failure: failure),
+  ),
+  ...fastTachographSession(),
+];
+
+/// Экраны со своими провайдерами: поддельная платформа Bluetooth.
+final _overrides = <String, List<Override> Function()>{
+  'Тахограф по Bluetooth': _tachograph,
+  'Тахограф · поиск': _tachograph,
+  'Тахограф · подключён': _tachograph,
+  'Тахограф · ошибка': () => _tachograph(failure: ConnectFailure.notTachograph),
+};
+
+/// Обмен с поддельным тахографом идёт по поддельному времени теста.
+Future<void> _tachographExchange(WidgetTester tester) async {
+  for (var i = 0; i < 6; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}
+
+/// Поиск, затем, если [connect], — подключение к DTCO.
+_Open _openTachograph({required bool connect}) => (tester, l) async {
+  await tester.tap(find.text(l.tachoFind));
+  await _tachographExchange(tester);
+  if (!connect) return;
+  await tester.tap(find.text(dtco.name));
+  await _tachographExchange(tester);
+};
 
 /// Экраны со своим журналом вместо недели с макета: состояний формы смены,
 /// которых в ней нет.
@@ -287,6 +324,19 @@ final _screens = <String, _Screen>{
   'Запреты: Германия': (build: () => const CountryBansScreen('D'), open: null),
   'Запреты: Испания': (build: () => const CountryBansScreen('E'), open: null),
   'Инструкция и правила': (build: GuideScreen.new, open: null),
+  'Тахограф по Bluetooth': (build: TachographScreen.new, open: null),
+  'Тахограф · поиск': (
+    build: TachographScreen.new,
+    open: _openTachograph(connect: false),
+  ),
+  'Тахограф · подключён': (
+    build: TachographScreen.new,
+    open: _openTachograph(connect: true),
+  ),
+  'Тахограф · ошибка': (
+    build: TachographScreen.new,
+    open: _openTachograph(connect: true),
+  ),
   'Инструкция · своя перевозка': (
     build: GuideScreen.new,
     open: _tapText((l) => l.guideVanOwn),
@@ -314,6 +364,9 @@ const _withoutNumbers = {
   'Онбординг · режимы',
   'Онбординг · настройка',
   'Онбординг · автоопределение',
+  // Имя и адрес устройства — не время и не цифры
+  'Тахограф · поиск',
+  'Тахограф · ошибка',
 };
 
 /// Экраны телефона, dp: основной таргет и небольшой Android.
@@ -342,20 +395,22 @@ Future<void> _pump(
   await pumpScreen(
     tester,
     screen.build(),
-    overrides: journalOverrides(
-      periods: week.periods,
-      now: week.now,
-      lastCard: week.now.subtract(const Duration(days: 23)),
-      countries: {
-        DateTime.utc(2026, 9, 23, 6, 49): const ShiftCountries(start: 'PL'),
-      },
-      frequentCountries: ['PL', 'D', 'CZ', 'NL'],
-      defaultCountry: 'PL',
-      // Настройки и онбординг со всеми строками: автоопределение включено,
-      // уведомления запрещены, экономия батареи мешает (Android).
-      autoDetect: const AutoDetectSettings(enabled: true),
-      health: (location: true, notifications: false, battery: false),
-    ),
+    overrides:
+        journalOverrides(
+          periods: week.periods,
+          now: week.now,
+          lastCard: week.now.subtract(const Duration(days: 23)),
+          countries: {
+            DateTime.utc(2026, 9, 23, 6, 49): const ShiftCountries(start: 'PL'),
+          },
+          frequentCountries: ['PL', 'D', 'CZ', 'NL'],
+          defaultCountry: 'PL',
+          // Настройки и онбординг со всеми строками: автоопределение включено,
+          // уведомления запрещены, экономия батареи мешает (Android).
+          autoDetect: const AutoDetectSettings(enabled: true),
+          health: (location: true, notifications: false, battery: false),
+        ) +
+        [...?_overrides[name]?.call()],
     brightness: brightness,
     viewport: viewport,
     textScale: textScale,

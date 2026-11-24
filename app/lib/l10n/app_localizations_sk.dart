@@ -2765,4 +2765,145 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get violationsNote => 'Vysvetlenie';
+
+  @override
+  String get tachoTitle => 'Tachograf cez Bluetooth';
+
+  @override
+  String get tachoHint => 'Beta: režim a časy priamo z tachografu';
+
+  @override
+  String get tachoBeta => 'Beta · iba čítanie';
+
+  @override
+  String get tachoLead =>
+      'Aplikácia číta režim a časy z tachografu Smart 2 (VDO DTCO 4.1a a novšie). Nič neukladá a v tachografe nič nemení.';
+
+  @override
+  String get tachoStepCard => 'Vložte kartu vodiča do tachografu.';
+
+  @override
+  String get tachoStepConsent =>
+      'V menu tachografu zapnite Bluetooth a povoľte prenos údajov (ITS).';
+
+  @override
+  String get tachoStepPair =>
+      'Ťuknite na tlačidlo nižšie a vyberte tachograf. Keď telefón a tachograf ukážu rovnakých 6 číslic, potvrďte na oboch.';
+
+  @override
+  String get tachoFind => 'Nájsť tachograf';
+
+  @override
+  String get tachoSearching => 'Hľadáme tachograf v blízkosti…';
+
+  @override
+  String get tachoSearchHint =>
+      'Tachograf nie je v zozname? Otvorte na tachografe menu Bluetooth a začnite pripájanie.';
+
+  @override
+  String get tachoShowAll => 'Všetky zariadenia Bluetooth';
+
+  @override
+  String get tachoUnnamed => 'Bez názvu';
+
+  @override
+  String get tachoStop => 'Zastaviť';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Pripájame k $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Objavilo sa 6 číslic? Skontrolujte, či sú na telefóne a tachografe rovnaké, a potvrďte na oboch.';
+
+  @override
+  String get tachoWaiting => 'Čakáme na údaje z tachografu…';
+
+  @override
+  String get tachoNoConsent =>
+      'Tachograf nezdieľa údaje vodiča. Zapnite v jeho menu prenos údajov (ITS).';
+
+  @override
+  String get tachoNoDriverData => 'Tachograf zatiaľ neposlal údaje vodiča.';
+
+  @override
+  String get tachoMoving => 'ide';
+
+  @override
+  String get tachoStanding => 'stojí';
+
+  @override
+  String get tachoModeUnknown => 'Režim neznámy';
+
+  @override
+  String get tachoCoDriver => 'Druhý vodič';
+
+  @override
+  String get tachoCurrentActivity => 'Režim trvá';
+
+  @override
+  String get tachoLeftSection => 'Zostáva';
+
+  @override
+  String get tachoUntilDailyRest => 'Do denného odpočinku';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Do týždenného odpočinku';
+
+  @override
+  String get tachoShiftLeft => 'Jazdy v zmene';
+
+  @override
+  String get tachoWeekLeft => 'Jazdy v týždni';
+
+  @override
+  String get tachoNote =>
+      'Čísla sú z tachografu a obnovujú sa každých pár sekúnd. Do denníka TachoGo sa neukladajú.';
+
+  @override
+  String get tachoDisconnect => 'Odpojiť';
+
+  @override
+  String get tachoNoPermission =>
+      'Povoľte prístup k zariadeniam v okolí: bez neho telefón tachograf nenájde.';
+
+  @override
+  String get tachoAllow => 'Povoliť';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth je v telefóne vypnutý.';
+
+  @override
+  String get tachoTurnOn => 'Zapnúť Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'Na tomto telefóne funguje hľadanie Bluetooth len so zapnutou polohou.';
+
+  @override
+  String get tachoUnsupported =>
+      'Tento telefón nepodporuje Bluetooth LE: k tachografu sa nepripojí.';
+
+  @override
+  String get tachoRetry => 'Skúsiť znova';
+
+  @override
+  String get tachoFailScan => 'Hľadanie sa nespustilo.';
+
+  @override
+  String get tachoFailConnect =>
+      'Pripojenie sa nepodarilo. Priblížte sa k tachografu a skúste to znova.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Toto nie je tachograf Smart 2. Vyberte iné zariadenie.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Tachograf neodpovedá. Skontrolujte, či je pripojenie na tachografe potvrdené a či k nemu nie je pripojený iný telefón.';
+
+  @override
+  String get tachoFailLost => 'Spojenie s tachografom sa prerušilo.';
 }

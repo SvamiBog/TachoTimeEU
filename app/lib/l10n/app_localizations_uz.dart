@@ -2748,4 +2748,146 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get violationsNote => 'Izoh';
+
+  @override
+  String get tachoTitle => 'Taxograf Bluetooth orqali';
+
+  @override
+  String get tachoHint => 'Beta: rejim va vaqt toʻgʻridan-toʻgʻri taxografdan';
+
+  @override
+  String get tachoBeta => 'Beta · faqat oʻqish';
+
+  @override
+  String get tachoLead =>
+      'Ilova Smart 2 taxografidan (VDO DTCO 4.1a va yangilari) rejim va vaqtni oʻqiydi. Hech narsani saqlamaydi va taxografda hech narsani oʻzgartirmaydi.';
+
+  @override
+  String get tachoStepCard => 'Haydovchi kartasini taxografga qoʻying.';
+
+  @override
+  String get tachoStepConsent =>
+      'Taxograf menyusida Bluetoothni yoqing va maʼlumot uzatishga ruxsat bering (ITS).';
+
+  @override
+  String get tachoStepPair =>
+      'Quyidagi tugmani bosing va taxografni tanlang. Telefon va taxografda bir xil 6 raqam chiqqanda, ikkalasida ham tasdiqlang.';
+
+  @override
+  String get tachoFind => 'Taxografni topish';
+
+  @override
+  String get tachoSearching => 'Yaqindagi taxografni qidiryapmiz…';
+
+  @override
+  String get tachoSearchHint =>
+      'Taxograf roʻyxatda yoʻqmi? Taxografda Bluetooth menyusini oching va ulanishni boshlang.';
+
+  @override
+  String get tachoShowAll => 'Barcha Bluetooth qurilmalari';
+
+  @override
+  String get tachoUnnamed => 'Nomsiz';
+
+  @override
+  String get tachoStop => 'Toʻxtatish';
+
+  @override
+  String tachoConnecting(String name) {
+    return '$name ga ulanmoqdamiz…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      '6 ta raqam chiqdimi? Telefon va taxografda bir xil ekanini tekshiring va ikkalasida ham tasdiqlang.';
+
+  @override
+  String get tachoWaiting => 'Taxografdan maʼlumot kutyapmiz…';
+
+  @override
+  String get tachoNoConsent =>
+      'Taxograf haydovchi maʼlumotlarini bermayapti. Uning menyusida maʼlumot uzatishni yoqing (ITS).';
+
+  @override
+  String get tachoNoDriverData =>
+      'Taxograf hali haydovchi maʼlumotlarini yubormadi.';
+
+  @override
+  String get tachoMoving => 'harakatda';
+
+  @override
+  String get tachoStanding => 'turibdi';
+
+  @override
+  String get tachoModeUnknown => 'Rejim nomaʼlum';
+
+  @override
+  String get tachoCoDriver => 'Ikkinchi haydovchi';
+
+  @override
+  String get tachoCurrentActivity => 'Rejim davom etmoqda';
+
+  @override
+  String get tachoLeftSection => 'Qoldi';
+
+  @override
+  String get tachoUntilDailyRest => 'Kunlik dam olishgacha';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Haftalik dam olishgacha';
+
+  @override
+  String get tachoShiftLeft => 'Smenada haydash';
+
+  @override
+  String get tachoWeekLeft => 'Haftada haydash';
+
+  @override
+  String get tachoNote =>
+      'Raqamlar taxografdan olinadi va har necha soniyada yangilanadi. Ular TachoGo jurnaliga tushmaydi.';
+
+  @override
+  String get tachoDisconnect => 'Uzish';
+
+  @override
+  String get tachoNoPermission =>
+      'Yaqin-atrofdagi qurilmalarga ruxsat bering: busiz telefon taxografni topa olmaydi.';
+
+  @override
+  String get tachoAllow => 'Ruxsat berish';
+
+  @override
+  String get tachoBluetoothOff => 'Telefonda Bluetooth oʻchirilgan.';
+
+  @override
+  String get tachoTurnOn => 'Bluetoothni yoqish';
+
+  @override
+  String get tachoLocationOff =>
+      'Bu telefonda Bluetooth qidiruvi faqat joylashuv yoqilganda ishlaydi.';
+
+  @override
+  String get tachoUnsupported =>
+      'Bu telefon Bluetooth LE ni qoʻllamaydi: taxografga ulanib boʻlmaydi.';
+
+  @override
+  String get tachoRetry => 'Qayta urinish';
+
+  @override
+  String get tachoFailScan => 'Qidiruv boshlanmadi.';
+
+  @override
+  String get tachoFailConnect =>
+      'Ulanib boʻlmadi. Taxografga yaqinroq keling va qayta urinib koʻring.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Bu Smart 2 taxografi emas. Boshqa qurilmani tanlang.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Taxograf javob bermayapti. Ulanish taxografda tasdiqlanganini va unga boshqa telefon ulanmaganini tekshiring.';
+
+  @override
+  String get tachoFailLost => 'Taxograf bilan aloqa uzildi.';
 }
