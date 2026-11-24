@@ -17,7 +17,10 @@ android {
     // Идентификатор закреплён за приложением в Google Play с первой загрузкой —
     // не менять (вопрос 14 PRD, решение 2026-09-30).
     namespace = "eu.tachogo.app"
-    compileSdk = flutter.compileSdkVersion
+    // 37, а не flutter.compileSdkVersion (36): плагин Bluetooth reactive_ble_mobile 5.6
+    // собран под 37 и иначе не пускает сборку (checkDebugAarMetadata). Это только
+    // API для компиляции, поведение на телефонах задаёт targetSdk — он прежний.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
