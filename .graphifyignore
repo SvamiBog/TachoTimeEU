@@ -1,0 +1,19 @@
+# Что не попадает в граф graphify (синтаксис .gitignore; сам .gitignore
+# graphify тоже учитывает). Установка и правила — CLAUDE.md, «Claude Code».
+
+# Сгенерированный код
+*.g.dart
+app/test/drift/app_database/generated/
+
+# Переводы: ключи и русский текст есть в app_localizations.dart,
+# остальные языки повторяют те же ключи
+app/lib/l10n/app_localizations_*.dart
+
+# Тексты страницы Google Play на 13 языках
+docs/store/listing/
+
+# Claude Code: копии репозитория в worktree, сторонние скиллы, агенты, команды
+.claude/worktrees/
+.claude/skills/
+.claude/agents/
+.claude/commands/

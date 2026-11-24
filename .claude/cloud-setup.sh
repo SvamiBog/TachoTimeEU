@@ -41,4 +41,23 @@ if ! (cd "$warmup" &&
 fi
 rm -rf "$warmup"
 flutter --version || true
+
+# graphify — граф кода для Claude (CLAUDE.md, «Claude Code»). Хуки в
+# .claude/settings.json вызывают `graphify`: без него каждый Bash, Grep,
+# Read и Glob показывал бы ошибку хука. Граф сессия собирает сама:
+# `graphify update .`. Версия — та же, что в CLAUDE.md.
+GRAPHIFY_VERSION=0.9.118
+if ! command -v graphify >/dev/null 2>&1; then
+  if command -v uv >/dev/null 2>&1; then
+    UV_TOOL_DIR=/opt/uv-tools UV_TOOL_BIN_DIR=/usr/local/bin \
+      uv tool install "graphifyy==$GRAPHIFY_VERSION" --python 3.12 --with anyio ||
+      echo "cloud-setup: graphify не установился" >&2
+  elif python3 -m venv /opt/graphify &&
+    /opt/graphify/bin/pip install --quiet "graphifyy==$GRAPHIFY_VERSION" anyio; then
+    ln -sf /opt/graphify/bin/graphify /usr/local/bin/graphify
+  else
+    echo "cloud-setup: graphify не установился" >&2
+  fi
+fi
+graphify --version || true
 exit 0
