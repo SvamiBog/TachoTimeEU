@@ -26,7 +26,9 @@
 Список тестов проекта и порядок их ввода — `docs/testing.md`.
 
 ## Claude Code
-Правила для Claude — `.claude/rules/` (`dart/` — только для Dart-файлов), хуки — `.claude/settings.json`: `engine-purity.cjs` блокирует правки с `package:flutter` и `dart:ui` в движке, `dart-format.cjs` форматирует изменённые `.dart` (Dart — из PATH или `DART_EXE`). Агенты, скиллы и команды с префиксом `ecc-` взяты из ECC (`.claude/ECC-NOTICE.md`), лежат в репозитории и потому работают и в облачных сессиях. Облачному окружению нужен скрипт установки `.claude/cloud-setup.sh` (Flutter как в CI). Личные настройки — в `.claude/settings.local.json`, он не в git.
+Правила для Claude — `.claude/rules/` (`dart/` — только для Dart-файлов), хуки — `.claude/settings.json`: `engine-purity.cjs` блокирует правки с `package:flutter` и `dart:ui` в движке, `dart-format.cjs` форматирует изменённые `.dart` (Dart — из PATH или `DART_EXE`). Агенты, скиллы и команды с префиксом `ecc-` взяты из ECC (`.claude/ECC-NOTICE.md`), лежат в репозитории и потому работают и в облачных сессиях. Облачному окружению нужен скрипт установки `.claude/cloud-setup.sh` (Flutter как в CI, graphify). Личные настройки — в `.claude/settings.local.json`, он не в git.
+
+Граф кода — graphify (решение 2026-11-24): скилл `.claude/skills/graphify/`, хуки `graphify hook-guard` в `.claude/settings.json` подсказывают сначала спросить граф, правила — раздел «graphify» в конце файла. Установка: `uv tool install "graphifyy==0.9.118" --python 3.12 --with anyio` (`anyio` — обход бага 0.9.118). Граф `graphify-out/` не в git и собирается локально без LLM: `graphify update .` (~20 с, код и разделы Markdown); что не индексируется — `.graphifyignore`. Новая версия: та же установка, затем `graphify claude install --project` и удалить созданные им `.claude/CLAUDE.md` и `.claude/settings.json.graphify-bak`.
 
 ## Дизайн
 - Спецификация: `docs/design/README.md`, скриншоты: `docs/design/screens/`.
@@ -47,3 +49,14 @@
 
 ## Открытые вопросы
 Список — в `docs/PRD.md`, раздел «Открытые вопросы».
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- When graphify-out/graph.json exists, run `graphify query "<question>"` before your first grep, search or source-file read for a codebase question, and put this rule in every subagent prompt that explores code. Read raw files only for lines the graph or an earlier read already located. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. When the answer is under a Markdown heading, `graphify section "<heading>"` prints that section's text, so the .md need not be opened. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+- A committed graphify-out/graph.json is rewritten whole on every build, so a large diff to it in a pull request is expected. Do not flag it as churn or suggest skipping the graph rebuild or its hooks.

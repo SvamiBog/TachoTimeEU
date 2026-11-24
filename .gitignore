@@ -53,3 +53,7 @@ xcuserdata/
 .env.*
 google-services.json
 GoogleService-Info.plist
+
+# Граф кода graphify: собирается локально (`graphify update .`), CLAUDE.md
+# «Claude Code»
+graphify-out/
