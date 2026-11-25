@@ -8,7 +8,9 @@
 #
 # Скрипт кладёт init-скрипт в ~/.gradle/init.d: Gradle применяет его ко всем
 # сборкам на машине — приложению, плагинам Flutter и их buildscript, — и
-# ставит зеркало перед репозиториями проекта. Чего на зеркале нет, Gradle
+# ставит зеркало перед репозиториями проекта; сборке, где проекту свои
+# репозитории запрещены (FAIL_ON_PROJECT_REPOS у сборки плагинов Flutter),
+# — в репозитории настроек. Чего на зеркале нет, Gradle
 # ищет дальше по списку проекта (google(), mavenCentral()). Robolectric
 # качает образ Android мимо Gradle — ему зеркало передаётся свойством
 # robolectric.dependency.repo.url. Проект и локальные сборки не меняются.
@@ -32,12 +34,26 @@ def addMirror = { RepositoryHandler repos ->
         repos.addFirst(repo)
     }
 }
+// Сборка, где проекту свои репозитории нельзя (сборка плагинов Flutter:
+// FAIL_ON_PROJECT_REPOS), берёт зеркало из настроек
+def projectRepos = true
 beforeSettings { settings ->
-    addMirror(settings.pluginManagement.repositories)
+    addMirror(settings.dependencyResolutionManagement.repositories)
+}
+settingsEvaluated { settings ->
+    projectRepos = settings.dependencyResolutionManagement.repositoriesMode
+        .get() == RepositoriesMode.PREFER_PROJECT
+    // Плагины: без своих репозиториев сборка берёт их с Plugin Portal —
+    // он остаётся, зеркало встаёт перед ним
+    def plugins = settings.pluginManagement.repositories
+    if (plugins.isEmpty()) plugins.gradlePluginPortal()
+    addMirror(plugins)
 }
 allprojects {
-    addMirror(buildscript.repositories)
-    addMirror(repositories)
+    if (projectRepos) {
+        addMirror(buildscript.repositories)
+        addMirror(repositories)
+    }
     tasks.withType(Test).configureEach {
         systemProperty 'robolectric.dependency.repo.url', mirror
     }
