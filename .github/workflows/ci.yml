@@ -489,11 +489,19 @@ jobs:
             exit 1
           fi
 
-      # Нативная часть на JVM (Robolectric): экран автозапуска, BG-09.
-      # gradlew создаёт сборка выше.
+      # Образ Android для Robolectric (~100 МБ) — из кэша: тесты сами качают
+      # его с Maven Central, а тот отвечает раннерам 429 (25.11.2026, CI-14).
+      - name: Кэш Robolectric
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-${{ hashFiles('app/android/app/build.gradle.kts') }}
+          restore-keys: robolectric-
+
+      # Нативная часть на JVM (Robolectric): экран автозапуска, BG-09,
+      # Bluetooth, BT-08. Повтор — только при сбое скачивания (CI-14).
       - name: Тесты Kotlin (Robolectric)
-        working-directory: app/android
-        run: ./gradlew :app:testDebugUnitTest
+        run: tool/robolectric_tests.sh
 
       # Плагины могут добавить разрешения, которых нет в нашем манифесте.
       - name: Итоговый манифест с плагинами
