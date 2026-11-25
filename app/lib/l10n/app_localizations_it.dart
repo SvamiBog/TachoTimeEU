@@ -2902,4 +2902,8 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get tachoFailRefused =>
       'Il tachigrafo non lascia leggere i dati al telefono. A veicolo fermo, controlla nel menu del tachigrafo che Bluetooth e trasmissione dei dati (ITS) siano attivi, chiudi le altre app per tachigrafo e riprova.';
+
+  @override
+  String get tachoFailPairing =>
+      'Telefono e tachigrafo non sono associati. Nelle impostazioni Bluetooth del telefono rimuovi il tachigrafo, se c’è, riconnettiti e conferma le 6 cifre sul telefono e sul tachigrafo.';
 }

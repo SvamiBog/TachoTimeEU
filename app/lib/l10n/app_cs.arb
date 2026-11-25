@@ -739,5 +739,6 @@
   "tachoLogEmpty": "Zatím prázdné: spusťte hledání tachografu.",
   "tachoLogCopy": "Kopírovat protokol",
   "tachoLogCopied": "Protokol zkopírován — vložte ho do zprávy.",
-  "tachoFailRefused": "Tachograf nepouští telefon k datům. Při stání zkontrolujte v menu tachografu, že je zapnutý Bluetooth a přenos dat (ITS), zavřete jiné aplikace pro tachograf a zkuste to znovu."
+  "tachoFailRefused": "Tachograf nepouští telefon k datům. Při stání zkontrolujte v menu tachografu, že je zapnutý Bluetooth a přenos dat (ITS), zavřete jiné aplikace pro tachograf a zkuste to znovu.",
+  "tachoFailPairing": "Telefon a tachograf nejsou spárované. V nastavení Bluetooth telefonu odeberte tachograf, pokud tam je, připojte se znovu a potvrďte 6 číslic na telefonu i na tachografu."
 }

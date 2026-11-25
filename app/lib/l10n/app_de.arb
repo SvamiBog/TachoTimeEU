@@ -739,5 +739,6 @@
   "tachoLogEmpty": "Noch leer: Starten Sie die Suche nach dem Fahrtenschreiber.",
   "tachoLogCopy": "Protokoll kopieren",
   "tachoLogCopied": "Protokoll kopiert — fügen Sie es in eine Nachricht ein.",
-  "tachoFailRefused": "Der Fahrtenschreiber lässt das Telefon nicht an die Daten. Prüfen Sie im Stand im Menü des Fahrtenschreibers, ob Bluetooth und die Datenübertragung (ITS) eingeschaltet sind, schließen Sie andere Fahrtenschreiber-Apps und versuchen Sie es erneut."
+  "tachoFailRefused": "Der Fahrtenschreiber lässt das Telefon nicht an die Daten. Prüfen Sie im Stand im Menü des Fahrtenschreibers, ob Bluetooth und die Datenübertragung (ITS) eingeschaltet sind, schließen Sie andere Fahrtenschreiber-Apps und versuchen Sie es erneut.",
+  "tachoFailPairing": "Telefon und Fahrtenschreiber sind nicht gekoppelt. Entfernen Sie den Fahrtenschreiber in den Bluetooth-Einstellungen des Telefons, falls er dort steht, verbinden Sie sich erneut und bestätigen Sie die 6 Ziffern auf Telefon und Fahrtenschreiber."
 }

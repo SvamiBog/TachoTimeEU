@@ -739,5 +739,6 @@
   "tachoLogEmpty": "Hozircha boʻsh: taxografni qidirishni boshlang.",
   "tachoLogCopy": "Jurnalni nusxalash",
   "tachoLogCopied": "Jurnal nusxalandi — uni xabarga qoʻying.",
-  "tachoFailRefused": "Taxograf telefonni maʼlumotlarga kiritmayapti. Toʻxtaganda taxograf menyusida Bluetooth va maʼlumot uzatish (ITS) yoqilganini tekshiring, taxograf uchun boshqa ilovalarni yoping va qayta urinib koʻring."
+  "tachoFailRefused": "Taxograf telefonni maʼlumotlarga kiritmayapti. Toʻxtaganda taxograf menyusida Bluetooth va maʼlumot uzatish (ITS) yoqilganini tekshiring, taxograf uchun boshqa ilovalarni yoping va qayta urinib koʻring.",
+  "tachoFailPairing": "Telefon va taxograf juftlanmagan. Telefonning Bluetooth sozlamalarida taxograf boʻlsa, uni oʻchiring, qayta ulaning va 6 ta raqamni telefonda ham, taxografda ham tasdiqlang."
 }

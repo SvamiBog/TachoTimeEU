@@ -2893,4 +2893,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tachoFailRefused =>
       'The tachograph won’t let the phone read its data. When parked, check in the tachograph menu that Bluetooth and data sharing (ITS) are on, close other tachograph apps and try again.';
+
+  @override
+  String get tachoFailPairing =>
+      'The phone and the tachograph are not paired. In the phone’s Bluetooth settings, remove the tachograph if it is listed, connect again and confirm the 6 digits on the phone and on the tachograph.';
 }

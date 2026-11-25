@@ -2918,4 +2918,8 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get tachoFailRefused =>
       'Tahograful nu lasă telefonul să citească datele. În parcare, verificați în meniul tahografului că sunt activate Bluetooth și transmiterea datelor (ITS), închideți alte aplicații pentru tahograf și încercați din nou.';
+
+  @override
+  String get tachoFailPairing =>
+      'Telefonul și tahograful nu sunt asociate. În setările Bluetooth ale telefonului ștergeți tahograful, dacă apare acolo, conectați-vă din nou și confirmați cele 6 cifre pe telefon și pe tahograf.';
 }

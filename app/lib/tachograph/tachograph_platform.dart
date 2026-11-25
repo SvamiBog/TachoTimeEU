@@ -6,6 +6,7 @@ library;
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart' show immutable, visibleForTesting;
 import 'package:flutter/services.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
@@ -68,6 +69,9 @@ enum ConnectFailure {
 
   /// У устройства нет сервиса ITS: это не тахограф Smart 2.
   notTachograph,
+
+  /// Сопряжение не завершилось: водитель не подтвердил 6 цифр.
+  pairing,
 }
 
 /// A failed connection to the device.
@@ -240,7 +244,10 @@ class ReactiveBleTachographPlatform implements TachographPlatform {
       log.event('requesting mtu $_mtu');
       final mtu = await _ble.requestMtu(deviceId: deviceId, mtu: _mtu);
       log.event('mtu $mtu, discovering services');
-      await _ble.discoverAllServices(deviceId);
+      await discoverWhenBonded(
+        () => _ble.discoverAllServices(deviceId),
+        log: log,
+      );
       final services = await _ble.getDiscoveredServices(deviceId);
       final ids = [for (final s in services) '${s.id.expanded}'];
       log.event('services ${ids.join(', ')}');
@@ -276,6 +283,46 @@ class ReactiveBleTachographPlatform implements TachographPlatform {
     } on Object {
       await subscription.cancel();
       rethrow;
+    }
+  }
+}
+
+/// Отказ flutter_reactive_ble, пока идёт сопряжение (водитель сверяет 6
+/// цифр): так библиотека отвечает на любую операцию с устройством.
+final _bondingInProgress = RegExp('Bonding is in progress');
+
+/// Найти сервисы, когда закончится сопряжение. Новый тахограф начинает его
+/// сам сразу после подключения, и пока водитель сверяет 6 цифр, библиотека
+/// отказывает: ждём, а не рвём связь (DTCO 4.1a владельца, 25.11.2026).
+/// Не закончилось за [timeout] — [ConnectFailure.pairing].
+@visibleForTesting
+Future<void> discoverWhenBonded(
+  Future<void> Function() discover, {
+  required ExchangeLog log,
+  Duration timeout = const Duration(seconds: 90),
+  Duration pause = const Duration(seconds: 1),
+}) async {
+  final deadline = clock.now().add(timeout);
+  var waiting = false;
+  while (true) {
+    try {
+      await discover();
+      if (waiting) log.event('bonding finished');
+      return;
+    } on Object catch (e) {
+      if (!_bondingInProgress.hasMatch('$e')) rethrow;
+      if (!waiting) {
+        waiting = true;
+        log.event(
+          'bonding in progress: waiting for the 6 digits to be '
+          'confirmed',
+        );
+      }
+      if (!clock.now().isBefore(deadline)) {
+        log.event('bonding did not finish in ${timeout.inSeconds} s');
+        throw const TachographConnectException(ConnectFailure.pairing);
+      }
+      await Future<void>.delayed(pause);
     }
   }
 }

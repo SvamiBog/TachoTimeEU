@@ -171,6 +171,25 @@ void main() {
       await unmount(tester);
     });
 
+    testWidgets('BT-15: сопряжение не закончилось — что сделать', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        FakeTachographPlatform(failure: ConnectFailure.pairing),
+      );
+      await tester.tap(find.text('Найти тахограф'));
+      await exchange(tester);
+      await tester.tap(find.text('DTCO 4.1a'));
+      await exchange(tester);
+      expect(
+        find.textContaining('Телефон и тахограф не сопряжены'),
+        findsOneWidget,
+      );
+      expect(find.text('Попробовать снова'), findsOneWidget);
+      await unmount(tester);
+    });
+
     testWidgets('не сборка разработчика — журнала на экране нет', (
       tester,
     ) async {

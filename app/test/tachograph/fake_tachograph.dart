@@ -19,6 +19,7 @@ class FakeTachographPort implements ItsPort {
     this.creditFailures = 0,
     this.rejectsWrites = false,
     this.lostReplies = 0,
+    this.subscribeError,
     this.silent = const {},
   }) : values = values ?? {},
        refusals = refusals ?? {};
@@ -55,6 +56,10 @@ class FakeTachographPort implements ItsPort {
   /// чем клиент подписался (DTCO 4.1a владельца 25.11.2026).
   int lostReplies;
 
+  /// Ошибка подписки на кредиты: так Android сообщает об отказе тахографа
+  /// «недостаточно защиты».
+  final Object? subscribeError;
+
   /// Номера данных, на которые тахограф молчит.
   final Set<int> silent;
 
@@ -82,7 +87,10 @@ class FakeTachographPort implements ItsPort {
   Stream<List<int>> get fifo => _fifo.stream;
 
   @override
-  Stream<List<int>> get credits => _credits.stream;
+  Stream<List<int>> get credits => switch (subscribeError) {
+    final error? => Stream<List<int>>.error(error),
+    null => _credits.stream,
+  };
 
   @override
   Future<void> writeCredits(int credits) async {

@@ -2918,4 +2918,8 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get tachoFailRefused =>
       'Tachograf nepouští telefon k datům. Při stání zkontrolujte v menu tachografu, že je zapnutý Bluetooth a přenos dat (ITS), zavřete jiné aplikace pro tachograf a zkuste to znovu.';
+
+  @override
+  String get tachoFailPairing =>
+      'Telefon a tachograf nejsou spárované. V nastavení Bluetooth telefonu odeberte tachograf, pokud tam je, připojte se znovu a potvrďte 6 číslic na telefonu i na tachografu.';
 }

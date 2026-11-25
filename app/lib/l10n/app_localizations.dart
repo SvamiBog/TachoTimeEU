@@ -4568,6 +4568,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Тахограф не пускает телефон к данным. На стоянке проверьте в меню тахографа, что включены Bluetooth и передача данных (ITS), закройте другие приложения для тахографа и попробуйте снова.'**
   String get tachoFailRefused;
+
+  /// Ошибка: телефон и тахограф не сопряжены или сопряжение не завершилось; что сделать
+  ///
+  /// In ru, this message translates to:
+  /// **'Телефон и тахограф не сопряжены. В настройках Bluetooth телефона удалите тахограф, если он там есть, подключитесь снова и подтвердите 6 цифр на телефоне и на тахографе.'**
+  String get tachoFailPairing;
 }
 
 class _AppLocalizationsDelegate

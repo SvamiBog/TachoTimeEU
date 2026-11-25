@@ -2919,4 +2919,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get tachoFailRefused =>
       'Le tachygraphe refuse au téléphone l’accès aux données. À l’arrêt, vérifiez dans le menu du tachygraphe que le Bluetooth et la transmission des données (ITS) sont activés, fermez les autres applications de tachygraphe et réessayez.';
+
+  @override
+  String get tachoFailPairing =>
+      'Le téléphone et le tachygraphe ne sont pas associés. Dans les réglages Bluetooth du téléphone, supprimez le tachygraphe s’il y figure, reconnectez-vous et confirmez les 6 chiffres sur le téléphone et sur le tachygraphe.';
 }

@@ -2904,4 +2904,8 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get tachoFailRefused =>
       'De tachograaf geeft de telefoon geen toegang tot de gegevens. Controleer bij stilstand in het menu van de tachograaf of Bluetooth en het delen van gegevens (ITS) aan staan, sluit andere tachograaf-apps en probeer het opnieuw.';
+
+  @override
+  String get tachoFailPairing =>
+      'Telefoon en tachograaf zijn niet gekoppeld. Verwijder de tachograaf in de Bluetooth-instellingen van de telefoon als hij daar staat, maak opnieuw verbinding en bevestig de 6 cijfers op de telefoon en de tachograaf.';
 }

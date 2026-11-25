@@ -2927,4 +2927,8 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get tachoFailRefused =>
       'Tachograf nie dopuszcza telefonu do danych. Na postoju sprawdź w menu tachografu, czy włączone są Bluetooth i przesyłanie danych (ITS), zamknij inne aplikacje do tachografu i spróbuj ponownie.';
+
+  @override
+  String get tachoFailPairing =>
+      'Telefon i tachograf nie są sparowane. W ustawieniach Bluetooth telefonu usuń tachograf, jeśli tam jest, połącz się ponownie i potwierdź 6 cyfr na telefonie i tachografie.';
 }

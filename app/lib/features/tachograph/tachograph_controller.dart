@@ -31,6 +31,9 @@ enum TachoProblem {
 
   /// Тахограф отклоняет запись: не пускает этот телефон к данным.
   refused,
+
+  /// Телефон и тахограф не сопряжены, или сопряжение не завершилось.
+  pairing,
 }
 
 /// A state of the tachograph screen.
@@ -215,12 +218,14 @@ class TachographController extends Notifier<TachoState> {
       _fail(attempt, device, switch (e.failure) {
         ConnectFailure.refused => TachoProblem.connect,
         ConnectFailure.notTachograph => TachoProblem.notTachograph,
+        ConnectFailure.pairing => TachoProblem.pairing,
       }, '$e');
     } on ItsException catch (e) {
       _fail(attempt, device, switch (e.failure) {
         ItsFailure.noCredits || ItsFailure.timeout => TachoProblem.noAnswer,
         ItsFailure.disconnected => TachoProblem.lost,
         ItsFailure.refused => TachoProblem.refused,
+        ItsFailure.notPaired => TachoProblem.pairing,
       }, '$e');
     } on Object catch (e, st) {
       FlutterError.reportError(

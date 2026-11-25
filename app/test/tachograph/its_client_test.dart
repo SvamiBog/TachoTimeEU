@@ -185,6 +185,27 @@ void main() {
       },
     );
 
+    test('BT-15: тахограф отказал в подписке «недостаточно защиты» — '
+        'notPaired, а не обрыв', () async {
+      final port = FakeTachographPort(
+        subscribeError: Exception(
+          'GATT exception, status 5 (GATT_INSUF_AUTHENTICATION), '
+          'type DESCRIPTOR_WRITE',
+        ),
+      );
+      final client = _client(port, log);
+      await expectLater(
+        client.open(),
+        throwsA(
+          isA<ItsException>().having(
+            (e) => e.failure,
+            'failure',
+            ItsFailure.notPaired,
+          ),
+        ),
+      );
+    });
+
     test('нет ответа — ошибка timeout', () async {
       final port = FakeTachographPort(answers: false);
       final client = _client(port, log);

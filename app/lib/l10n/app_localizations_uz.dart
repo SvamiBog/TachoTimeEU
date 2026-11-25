@@ -2906,4 +2906,8 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get tachoFailRefused =>
       'Taxograf telefonni maʼlumotlarga kiritmayapti. Toʻxtaganda taxograf menyusida Bluetooth va maʼlumot uzatish (ITS) yoqilganini tekshiring, taxograf uchun boshqa ilovalarni yoping va qayta urinib koʻring.';
+
+  @override
+  String get tachoFailPairing =>
+      'Telefon va taxograf juftlanmagan. Telefonning Bluetooth sozlamalarida taxograf boʻlsa, uni oʻchiring, qayta ulaning va 6 ta raqamni telefonda ham, taxografda ham tasdiqlang.';
 }

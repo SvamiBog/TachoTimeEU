@@ -2922,4 +2922,8 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get tachoFailRefused =>
       'Tachograf nepúšťa telefón k údajom. Počas státia skontrolujte v menu tachografu, že je zapnutý Bluetooth a prenos údajov (ITS), zatvorte iné aplikácie pre tachograf a skúste to znova.';
+
+  @override
+  String get tachoFailPairing =>
+      'Telefón a tachograf nie sú spárované. V nastaveniach Bluetooth telefónu odstráňte tachograf, ak tam je, pripojte sa znova a potvrďte 6 číslic na telefóne aj na tachografe.';
 }

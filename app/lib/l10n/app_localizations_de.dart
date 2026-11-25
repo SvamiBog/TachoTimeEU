@@ -2923,4 +2923,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get tachoFailRefused =>
       'Der Fahrtenschreiber lässt das Telefon nicht an die Daten. Prüfen Sie im Stand im Menü des Fahrtenschreibers, ob Bluetooth und die Datenübertragung (ITS) eingeschaltet sind, schließen Sie andere Fahrtenschreiber-Apps und versuchen Sie es erneut.';
+
+  @override
+  String get tachoFailPairing =>
+      'Telefon und Fahrtenschreiber sind nicht gekoppelt. Entfernen Sie den Fahrtenschreiber in den Bluetooth-Einstellungen des Telefons, falls er dort steht, verbinden Sie sich erneut und bestätigen Sie die 6 Ziffern auf Telefon und Fahrtenschreiber.';
 }

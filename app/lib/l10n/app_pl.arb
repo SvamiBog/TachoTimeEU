@@ -739,5 +739,6 @@
   "tachoLogEmpty": "Na razie pusto: rozpocznij wyszukiwanie tachografu.",
   "tachoLogCopy": "Kopiuj dziennik",
   "tachoLogCopied": "Dziennik skopiowany — wklej go do wiadomości.",
-  "tachoFailRefused": "Tachograf nie dopuszcza telefonu do danych. Na postoju sprawdź w menu tachografu, czy włączone są Bluetooth i przesyłanie danych (ITS), zamknij inne aplikacje do tachografu i spróbuj ponownie."
+  "tachoFailRefused": "Tachograf nie dopuszcza telefonu do danych. Na postoju sprawdź w menu tachografu, czy włączone są Bluetooth i przesyłanie danych (ITS), zamknij inne aplikacje do tachografu i spróbuj ponownie.",
+  "tachoFailPairing": "Telefon i tachograf nie są sparowane. W ustawieniach Bluetooth telefonu usuń tachograf, jeśli tam jest, połącz się ponownie i potwierdź 6 cyfr na telefonie i tachografie."
 }

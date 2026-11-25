@@ -44,6 +44,10 @@ enum ItsFailure {
   /// телефон — передача данных (ITS) выключена или занята другим
   /// приложением.
   refused,
+
+  /// Тахограф отказал в подписке: «недостаточно защиты» — телефон с ним не
+  /// сопряжён, хотя может считать себя сопряжённым.
+  notPaired,
 }
 
 /// The tachograph answered a write with "write not permitted" (ATT error
@@ -67,6 +71,13 @@ class ItsException implements Exception {
   @override
   String toString() => 'ItsException: ${failure.name}';
 }
+
+/// Отказ тахографа «недостаточно защиты» (ATT 0x05, 0x0F) или сбой
+/// сопряжения в тексте ошибки подписки: телефон с ним не сопряжён.
+final _insufficientSecurity = RegExp(
+  r'INSUF|insufficient|AUTH_FAIL|status (5|15|137)\b',
+  caseSensitive: false,
+);
 
 /// Request and reply over an [ItsPort]. Requests go one at a time; a packet
 /// goes out only against a credit from the tachograph.
@@ -119,6 +130,9 @@ class ItsClient {
   Future<void> _queue = Future.value();
   bool _closed = false;
 
+  /// Тахограф отказал в подписке: «недостаточно защиты».
+  bool _notPaired = false;
+
   /// Таймер текущего ожидания: ответа, кредитов или повтора соединения.
   Timer? _wait;
 
@@ -157,7 +171,7 @@ class ItsClient {
     final accepted = _accepted = Completer<void>();
     var rejected = 0;
     while (!accepted.isCompleted) {
-      if (_closed) throw const ItsException(ItsFailure.disconnected);
+      if (_closed) throw _closedError();
       if (!clock.now().isBefore(deadline)) {
         _log.event('no credits from the tachograph');
         throw ItsException(
@@ -187,7 +201,7 @@ class ItsClient {
       await Future.any([accepted.future, retry.future]);
       timer.cancel();
     }
-    if (_closed) throw const ItsException(ItsFailure.disconnected);
+    if (_closed) throw _closedError();
   }
 
   /// Пауза, которую прерывает закрытие соединения.
@@ -199,7 +213,7 @@ class ItsClient {
     });
     await done.future;
     timer.cancel();
-    if (_closed) throw const ItsException(ItsFailure.disconnected);
+    if (_closed) throw _closedError();
   }
 
   /// Отправить [message] и вернуть ответ. Пока [pending] говорит «ждите»,
@@ -331,8 +345,13 @@ class ItsClient {
 
   void _onError(Object error) {
     _log.event('subscription error: $error');
+    if (_insufficientSecurity.hasMatch('$error')) _notPaired = true;
     _disconnected();
   }
+
+  /// Ошибка открытия, когда соединение уже закрыто.
+  ItsException _closedError() =>
+      ItsException(_notPaired ? ItsFailure.notPaired : ItsFailure.disconnected);
 
   void _disconnected() {
     _closed = true;
