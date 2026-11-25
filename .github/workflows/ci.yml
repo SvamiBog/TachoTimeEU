@@ -450,7 +450,11 @@ jobs:
 
       # versionCode растёт с каждым запуском CI, как у выпусков в Google
       # Play: Android не ставит сборку с номером меньше установленной.
+      # Отдельный пакет eu.tachogo.app.dev: APK встаёт рядом с версией из
+      # Google Play (android/app/build.gradle.kts, buildTypes.debug).
       - name: Debug APK (dev)
+        env:
+          TACHOGO_SIDE_BY_SIDE: 'true'
         run: >-
           flutter build apk --debug --dart-define-from-file=env/dev.json
           --build-number=$((1000 + GITHUB_RUN_NUMBER))

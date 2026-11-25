@@ -36,6 +36,8 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Имя под значком; у тестовой APK — своё (buildTypes.debug).
+        manifestPlaceholders["appLabel"] = "TachoGo"
     }
 
     signingConfigs {
@@ -65,6 +67,17 @@ android {
     }
 
     buildTypes {
+        // Тестовая APK для телефона (CI, шаг «Debug APK (dev)»,
+        // TACHOGO_SIDE_BY_SIDE=true) — отдельное приложение «TachoGo Dev»
+        // с пакетом eu.tachogo.app.dev: ставится рядом с версией из Google
+        // Play, а не пытается её обновить. Без переменной пакет обычный:
+        // тесты на эмуляторе и «Обновление поверх» ставят eu.tachogo.app.
+        debug {
+            if (System.getenv("TACHOGO_SIDE_BY_SIDE") == "true") {
+                applicationIdSuffix = ".dev"
+                manifestPlaceholders["appLabel"] = "TachoGo Dev"
+            }
+        }
         release {
             signingConfig = signingConfigs.findByName("release")
                 ?: signingConfigs.getByName("debug").also {

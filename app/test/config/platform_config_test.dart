@@ -131,6 +131,42 @@ void main() {
     });
   });
 
+  group('BETA-03: тестовая APK из CI — рядом с версией из Google Play', () {
+    final gradle = File('android/app/build.gradle.kts').readAsStringSync();
+    final ci = File('../.github/workflows/ci.yml').readAsStringSync();
+    const sideBySide = 'TACHOGO_SIDE_BY_SIDE';
+
+    test('свой пакет и имя — только у debug с переменной, у релиза — '
+        'eu.tachogo.app', () {
+      expect(gradle, contains('applicationId = "eu.tachogo.app"'));
+      final debug = RegExp(r'\n        debug \{[\s\S]*?\n        \}')
+          .firstMatch(gradle)?[0];
+      expect(debug, contains('System.getenv("$sideBySide") == "true"'));
+      expect(debug, contains('applicationIdSuffix = ".dev"'));
+      expect(
+        debug,
+        contains('manifestPlaceholders["appLabel"] = "TachoGo Dev"'),
+      );
+      expect('applicationIdSuffix'.allMatches(gradle), hasLength(1));
+      expect(
+        gradle,
+        contains('manifestPlaceholders["appLabel"] = "TachoGo"\n'),
+      );
+      expect(
+        File('android/app/src/main/AndroidManifest.xml').readAsStringSync(),
+        contains(r'android:label="${appLabel}"'),
+      );
+    });
+
+    test('в CI переменная — только у шага тестовой APK', () {
+      final step = RegExp(
+        r'\n      - name: Debug APK \(dev\)\n[\s\S]*?(?=\n      [-#])',
+      ).firstMatch(ci)?[0];
+      expect(step, contains("$sideBySide: 'true'"));
+      expect('$sideBySide:'.allMatches(ci), hasLength(1));
+    });
+  });
+
   group('CI-11: иконка, значок уведомлений и сплэш Android', () {
     const res = 'android/app/src/main/res';
     String read(String path) => File('$res/$path').readAsStringSync();
