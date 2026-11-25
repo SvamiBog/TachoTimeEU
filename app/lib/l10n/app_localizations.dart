@@ -4538,6 +4538,30 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Связь с тахографом оборвалась.'**
   String get tachoFailLost;
+
+  /// Заголовок раздела с журналом обмена на экране тахографа: виден только в сборке для разработчика
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал обмена · сборка разработчика'**
+  String get tachoLogTitle;
+
+  /// Журнал обмена пока пуст
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока пусто: начните поиск тахографа.'**
+  String get tachoLogEmpty;
+
+  /// Кнопка: скопировать журнал обмена с тахографом
+  ///
+  /// In ru, this message translates to:
+  /// **'Скопировать журнал'**
+  String get tachoLogCopy;
+
+  /// Сообщение: журнал обмена скопирован, его можно вставить в сообщение
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал скопирован — вставьте его в сообщение.'**
+  String get tachoLogCopied;
 }
 
 class _AppLocalizationsDelegate

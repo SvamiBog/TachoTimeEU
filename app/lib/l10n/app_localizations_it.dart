@@ -2886,4 +2886,16 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get tachoFailLost =>
       'La connessione con il tachigrafo si è interrotta.';
+
+  @override
+  String get tachoLogTitle => 'Registro di scambio · versione sviluppatore';
+
+  @override
+  String get tachoLogEmpty => 'Ancora vuoto: avvia la ricerca del tachigrafo.';
+
+  @override
+  String get tachoLogCopy => 'Copia registro';
+
+  @override
+  String get tachoLogCopied => 'Registro copiato — incollalo in un messaggio.';
 }

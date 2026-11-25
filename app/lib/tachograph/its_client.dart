@@ -93,6 +93,10 @@ class ItsClient {
   /// водитель подтверждает, свои кредиты повторяем.
   Future<void> open() async {
     final accepted = _accepted = Completer<void>();
+    _log.event(
+      'opening ITS: subscribe, grant ${_credits.grant} credits, '
+      'wait up to ${openTimeout.inSeconds} s for pairing',
+    );
     _subscriptions
       ..add(_port.fifo.listen(_onPacket, onError: _onError))
       ..add(_port.credits.listen(_onCredits, onError: _onError));

@@ -1,11 +1,13 @@
 /// "Tachograph over Bluetooth" screen (beta, read only): how to connect, the
 /// scan, the connection and what the tachograph reports for the driver now.
-/// Nothing is saved: the figures live while the screen is open.
+/// Nothing is saved: the figures live while the screen is open. The developer
+/// build also shows the exchange log live, with copy and send.
 library;
 
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/core/l10n/format.dart';
@@ -22,6 +24,7 @@ import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/core/widgets/value_row_layout.dart';
 import 'package:tachogo/features/more/problem_report.dart';
 import 'package:tachogo/features/tachograph/tachograph_controller.dart';
+import 'package:tachogo/tachograph/exchange_log.dart';
 import 'package:tachogo/tachograph/tachograph_platform.dart';
 import 'package:tachogo/tachograph/tachograph_providers.dart';
 import 'package:tachogo/tachograph/tachograph_values.dart';
@@ -39,6 +42,8 @@ class TachographScreen extends ConsumerWidget {
     final state = ref.watch(tachographControllerProvider);
     final controller = ref.read(tachographControllerProvider.notifier);
     final platform = ref.read(tachographPlatformProvider);
+    // В сборке разработчика «Сообщить о проблеме» — в разделе журнала
+    final logVisible = ref.watch(tachographLogVisibleProvider);
     final children = switch (state) {
       TachoStart() => const [_Intro()],
       TachoBlocked(:final reason) => [_Banner(_blocked(l, reason))],
@@ -51,13 +56,15 @@ class TachographScreen extends ConsumerWidget {
         ),
         _Note(l.tachoPairHint),
       ],
-      TachoConnected(:final reading?) => [_Readings(reading)],
+      TachoConnected(:final reading?) => [
+        _Readings(reading, report: !logVisible),
+      ],
       TachoConnected() => [
         CardGroup(children: [_ProgressRow(l.tachoWaiting)]),
       ],
       TachoFailed(:final problem) => [
         _Banner(_problem(l, problem), tone: Tone.violation),
-        const _ReportRow(),
+        if (!logVisible) const _ReportRow(),
       ],
     };
     final bottom = switch (state) {
@@ -96,7 +103,7 @@ class TachographScreen extends ConsumerWidget {
       title: l.tachoTitle,
       subtitle: l.tachoBeta,
       bottom: bottom,
-      children: children,
+      children: [...children, if (logVisible) const _LogPanel()],
     );
   }
 }
@@ -222,9 +229,12 @@ class _Searching extends ConsumerWidget {
 /// What the tachograph reports: the activity now, today, the week and what
 /// is left; a row is shown only if the tachograph gave its value.
 class _Readings extends StatelessWidget {
-  const new(this.reading);
+  const new(this.reading, {required this.report});
 
   final TachographReading reading;
+
+  /// Строка «Сообщить о проблеме» под данными.
+  final bool report;
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +276,7 @@ class _Readings extends StatelessWidget {
         ..._section(l.sectionWeek, week),
         ..._section(l.tachoLeftSection, left),
         _Note(l.tachoNote),
-        const _ReportRow(),
+        if (report) const _ReportRow(),
       ],
     );
   }
@@ -451,6 +461,88 @@ class _ReportRow extends ConsumerWidget {
       ],
     ),
   );
+}
+
+/// The exchange log live, in the developer build: the last lines, "Copy log"
+/// and "Report a problem" with the whole log, in every state of the screen.
+class _LogPanel extends ConsumerWidget {
+  const new();
+
+  /// Сколько последних строк видно; весь журнал — в копии и в отчёте.
+  static const _visibleLines = 40;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final log = ref.watch(tachographLogProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SectionTitle(l.tachoLogTitle),
+        CardGroup(
+          children: [
+            CardRow(
+              child: ListenableBuilder(
+                listenable: log,
+                builder: (context, _) => _LogLines(log.lines),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.betweenCardsMax),
+        CardGroup(
+          children: [
+            NavRow(
+              icon: Icons.copy_outlined,
+              title: l.tachoLogCopy,
+              onTap: () => unawaited(_copy(context, log)),
+            ),
+            NavRow(
+              icon: Icons.bug_report_outlined,
+              title: l.problemTitle,
+              onTap: () => unawaited(sendProblemReport(context, ref)),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// Весь журнал — в буфер обмена: вставить в сообщение разработчику.
+  static Future<void> _copy(BuildContext context, ExchangeLog log) async {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final copied = context.l10n.tachoLogCopied;
+    await Clipboard.setData(ClipboardData(text: log.format()));
+    messenger?.showSnackBar(SnackBar(content: Text(copied)));
+  }
+}
+
+/// The last lines of the exchange log, newest at the bottom.
+class _LogLines extends StatelessWidget {
+  const new(this.lines);
+
+  final List<String> lines;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    if (lines.isEmpty) {
+      return Text(
+        context.l10n.tachoLogEmpty,
+        style: AppTextStyles.caption.copyWith(color: colors.textSecondary),
+      );
+    }
+    final shown = lines.length > _LogPanel._visibleLines
+        ? lines.sublist(lines.length - _LogPanel._visibleLines)
+        : lines;
+    return SelectableText(
+      shown.join('\n'),
+      style: AppTextStyles.numericCaption.copyWith(
+        color: colors.textSecondary,
+        height: 1.4,
+      ),
+    );
+  }
 }
 
 /// Buttons for a phone that is not ready: the right settings and "Try again".

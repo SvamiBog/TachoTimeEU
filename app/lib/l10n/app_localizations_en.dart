@@ -2876,4 +2876,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'The connection to the tachograph was lost.';
+
+  @override
+  String get tachoLogTitle => 'Exchange log · developer build';
+
+  @override
+  String get tachoLogEmpty =>
+      'Empty for now: start searching for the tachograph.';
+
+  @override
+  String get tachoLogCopy => 'Copy log';
+
+  @override
+  String get tachoLogCopied => 'Log copied — paste it into a message.';
 }

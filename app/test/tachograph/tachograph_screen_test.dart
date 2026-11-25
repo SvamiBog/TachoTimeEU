@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tachogo/features/tachograph/tachograph_screen.dart';
 import 'package:tachogo/tachograph/exchange_log.dart';
@@ -11,13 +12,19 @@ import 'fake_tachograph_platform.dart';
 void main() {
   late FakeTachographPlatform platform;
 
-  Future<void> pump(WidgetTester tester, FakeTachographPlatform p) {
+  /// [log] — журнал обмена на экране, как в сборке разработчика.
+  Future<void> pump(
+    WidgetTester tester,
+    FakeTachographPlatform p, {
+    bool log = false,
+  }) {
     platform = p;
     return pumpScreen(
       tester,
       const TachographScreen(),
       overrides: [
         tachographPlatformProvider.overrideWithValue(p),
+        tachographLogVisibleProvider.overrideWithValue(log),
         tachographLogProvider.overrideWithValue(
           ExchangeLog(now: () => DateTime.utc(2026, 9, 22, 12)),
         ),
@@ -138,6 +145,95 @@ void main() {
       await exchange(tester);
       expect(find.text('Ищем тахограф рядом…'), findsOneWidget);
       expect(platform.scans, 2);
+      await unmount(tester);
+    });
+
+    testWidgets('не сборка разработчика — журнала на экране нет', (
+      tester,
+    ) async {
+      await pump(tester, FakeTachographPlatform());
+      await tester.tap(find.text('Найти тахограф'));
+      await exchange(tester);
+      expect(find.text('Скопировать журнал'), findsNothing);
+      expect(find.textContaining('scan started'), findsNothing);
+      expect(find.text('Сообщить о проблеме'), findsNothing);
+      await unmount(tester);
+    });
+  });
+
+  group('BT-12: журнал обмена на экране — сборка разработчика', () {
+    testWidgets('пока пусто — подсказка; поиск — строки появляются сразу', (
+      tester,
+    ) async {
+      await pump(tester, FakeTachographPlatform(), log: true);
+      expect(find.text('ЖУРНАЛ ОБМЕНА · СБОРКА РАЗРАБОТЧИКА'), findsOneWidget);
+      expect(find.text('Пока пусто: начните поиск тахографа.'), findsOneWidget);
+      await tester.tap(find.text('Найти тахограф'));
+      await exchange(tester);
+      expect(find.textContaining('scan started'), findsOneWidget);
+      expect(find.textContaining('bluetooth ready'), findsOneWidget);
+      expect(
+        find.textContaining('found DTCO 4.1a AA:BB its=true'),
+        findsOneWidget,
+      );
+      // Чужие устройства рядом в журнал не попадают
+      expect(find.textContaining('Buds'), findsNothing);
+      await unmount(tester);
+    });
+
+    testWidgets('во время поиска — «Скопировать журнал» и «Сообщить о '
+        'проблеме»; копия — весь журнал', (tester) async {
+      String? copied;
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          if (call.method == 'Clipboard.setData') {
+            copied =
+                (call.arguments as Map<Object?, Object?>)['text'] as String?;
+          }
+          return null;
+        },
+      );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        ),
+      );
+      await pump(tester, FakeTachographPlatform(), log: true);
+      await tester.tap(find.text('Найти тахограф'));
+      await exchange(tester);
+      expect(find.text('Сообщить о проблеме'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Скопировать журнал'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Скопировать журнал'));
+      await tester.pump();
+      expect(copied, startsWith('Tachograph Bluetooth log (UTC):'));
+      expect(copied, contains('* scan started'));
+      expect(
+        find.text('Журнал скопирован — вставьте его в сообщение.'),
+        findsOneWidget,
+      );
+      await unmount(tester);
+    });
+
+    testWidgets('ошибка подключения — «Сообщить о проблеме» один раз, в '
+        'разделе журнала', (tester) async {
+      await pump(
+        tester,
+        FakeTachographPlatform(failure: ConnectFailure.notTachograph),
+        log: true,
+      );
+      await tester.tap(find.text('Найти тахограф'));
+      await exchange(tester);
+      await tester.tap(find.text('DTCO 4.1a'));
+      await exchange(tester);
+      expect(find.textContaining('Это не тахограф Smart 2'), findsOneWidget);
+      expect(find.text('Сообщить о проблеме'), findsOneWidget);
+      expect(find.textContaining('failed: notTachograph'), findsOneWidget);
       await unmount(tester);
     });
   });

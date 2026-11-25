@@ -237,8 +237,9 @@ class ReactiveBleTachographPlatform implements TachographPlatform {
         );
     try {
       await connected.future;
+      log.event('requesting mtu $_mtu');
       final mtu = await _ble.requestMtu(deviceId: deviceId, mtu: _mtu);
-      log.event('mtu $mtu');
+      log.event('mtu $mtu, discovering services');
       await _ble.discoverAllServices(deviceId);
       final services = await _ble.getDiscoveredServices(deviceId);
       final ids = [for (final s in services) '${s.id.expanded}'];

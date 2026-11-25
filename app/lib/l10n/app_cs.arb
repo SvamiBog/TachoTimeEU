@@ -734,5 +734,9 @@
   "tachoFailConnect": "Připojení se nezdařilo. Přibližte se k tachografu a zkuste to znovu.",
   "tachoFailNotTacho": "Toto není tachograf Smart 2. Vyberte jiné zařízení.",
   "tachoFailNoAnswer": "Tachograf neodpovídá. Zkontrolujte, že je připojení na tachografu potvrzené a že k němu není připojený jiný telefon.",
-  "tachoFailLost": "Spojení s tachografem se přerušilo."
+  "tachoFailLost": "Spojení s tachografem se přerušilo.",
+  "tachoLogTitle": "Protokol výměny · vývojářská verze",
+  "tachoLogEmpty": "Zatím prázdné: spusťte hledání tachografu.",
+  "tachoLogCopy": "Kopírovat protokol",
+  "tachoLogCopied": "Protokol zkopírován — vložte ho do zprávy."
 }

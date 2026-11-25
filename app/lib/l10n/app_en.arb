@@ -734,5 +734,9 @@
   "tachoFailConnect": "Could not connect. Move closer to the tachograph and try again.",
   "tachoFailNotTacho": "This is not a Smart 2 tachograph. Choose another device.",
   "tachoFailNoAnswer": "The tachograph is not answering. Check that the connection is confirmed on the tachograph and no other phone is connected to it.",
-  "tachoFailLost": "The connection to the tachograph was lost."
+  "tachoFailLost": "The connection to the tachograph was lost.",
+  "tachoLogTitle": "Exchange log · developer build",
+  "tachoLogEmpty": "Empty for now: start searching for the tachograph.",
+  "tachoLogCopy": "Copy log",
+  "tachoLogCopied": "Log copied — paste it into a message."
 }

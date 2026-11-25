@@ -124,6 +124,7 @@ class TachographController extends Notifier<TachoState> {
     final allowed =
         await platform.hasPermissions() || await platform.requestPermissions();
     if (!_current(attempt)) return;
+    _log('permissions ${allowed ? 'granted' : 'denied'}');
     if (!allowed) {
       state = const TachoBlocked(BluetoothReadiness.noPermission);
       return;
@@ -133,6 +134,7 @@ class TachographController extends Notifier<TachoState> {
         .firstWhere((r) => r != BluetoothReadiness.unknown)
         .timeout(_readinessWait, onTimeout: () => BluetoothReadiness.unknown);
     if (!_current(attempt)) return;
+    _log('bluetooth ${readiness.name}');
     if (readiness != BluetoothReadiness.ready &&
         readiness != BluetoothReadiness.unknown) {
       state = TachoBlocked(readiness);
@@ -150,6 +152,14 @@ class TachographController extends Notifier<TachoState> {
     _scan = platform.scan().listen(
       (device) {
         if (!_current(attempt)) return;
+        // Тахограф — в журнал один раз; чужие устройства рядом — нет
+        if (!_found.containsKey(device.id) &&
+            (device.its || device.looksLikeTachograph)) {
+          _log(
+            'found ${device.name} ${device.id} its=${device.its} '
+            'rssi ${device.rssi}',
+          );
+        }
         _found[device.id] = device;
         _emitFound();
       },

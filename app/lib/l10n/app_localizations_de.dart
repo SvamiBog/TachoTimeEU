@@ -2905,4 +2905,18 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get tachoFailLost =>
       'Die Verbindung zum Fahrtenschreiber wurde unterbrochen.';
+
+  @override
+  String get tachoLogTitle => 'Austauschprotokoll · Entwicklerversion';
+
+  @override
+  String get tachoLogEmpty =>
+      'Noch leer: Starten Sie die Suche nach dem Fahrtenschreiber.';
+
+  @override
+  String get tachoLogCopy => 'Protokoll kopieren';
+
+  @override
+  String get tachoLogCopied =>
+      'Protokoll kopiert — fügen Sie es in eine Nachricht ein.';
 }

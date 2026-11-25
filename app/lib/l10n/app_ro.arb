@@ -734,5 +734,9 @@
   "tachoFailConnect": "Conectarea nu a reușit. Apropiați-vă de tahograf și încercați din nou.",
   "tachoFailNotTacho": "Acesta nu este un tahograf Smart 2. Alegeți alt dispozitiv.",
   "tachoFailNoAnswer": "Tahograful nu răspunde. Verificați că ați confirmat conectarea pe tahograf și că nu e conectat alt telefon.",
-  "tachoFailLost": "Legătura cu tahograful s-a întrerupt."
+  "tachoFailLost": "Legătura cu tahograful s-a întrerupt.",
+  "tachoLogTitle": "Jurnal de schimb · versiune de dezvoltare",
+  "tachoLogEmpty": "Deocamdată e gol: porniți căutarea tahografului.",
+  "tachoLogCopy": "Copiați jurnalul",
+  "tachoLogCopied": "Jurnalul a fost copiat — lipiți-l într-un mesaj."
 }

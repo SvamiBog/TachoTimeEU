@@ -2901,4 +2901,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'Связь с тахографом оборвалась.';
+
+  @override
+  String get tachoLogTitle => 'Журнал обмена · сборка разработчика';
+
+  @override
+  String get tachoLogEmpty => 'Пока пусто: начните поиск тахографа.';
+
+  @override
+  String get tachoLogCopy => 'Скопировать журнал';
+
+  @override
+  String get tachoLogCopied => 'Журнал скопирован — вставьте его в сообщение.';
 }

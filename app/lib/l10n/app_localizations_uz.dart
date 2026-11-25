@@ -2890,4 +2890,16 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'Taxograf bilan aloqa uzildi.';
+
+  @override
+  String get tachoLogTitle => 'Almashinuv jurnali · dasturchi versiyasi';
+
+  @override
+  String get tachoLogEmpty => 'Hozircha boʻsh: taxografni qidirishni boshlang.';
+
+  @override
+  String get tachoLogCopy => 'Jurnalni nusxalash';
+
+  @override
+  String get tachoLogCopied => 'Jurnal nusxalandi — uni xabarga qoʻying.';
 }

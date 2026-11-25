@@ -734,5 +734,9 @@
   "tachoFailConnect": "No se pudo conectar. Acérquese al tacógrafo e inténtelo de nuevo.",
   "tachoFailNotTacho": "No es un tacógrafo Smart 2. Elija otro dispositivo.",
   "tachoFailNoAnswer": "El tacógrafo no responde. Compruebe que la conexión está confirmada en el tacógrafo y que no hay otro teléfono conectado.",
-  "tachoFailLost": "Se ha perdido la conexión con el tacógrafo."
+  "tachoFailLost": "Se ha perdido la conexión con el tacógrafo.",
+  "tachoLogTitle": "Registro de intercambio · versión de desarrollo",
+  "tachoLogEmpty": "Vacío por ahora: inicie la búsqueda del tacógrafo.",
+  "tachoLogCopy": "Copiar registro",
+  "tachoLogCopied": "Registro copiado: péguelo en un mensaje."
 }

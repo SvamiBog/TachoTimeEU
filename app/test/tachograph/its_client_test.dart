@@ -296,6 +296,18 @@ void main() {
       expect(log.isEmpty, isTrue);
       expect(log.format(), 'Tachograph Bluetooth log (UTC):');
     });
+
+    test('каждая новая строка и очистка оповещают экран', () {
+      final log = ExchangeLog(now: () => DateTime.utc(2026, 9, 22, 12));
+      var changes = 0;
+      log
+        ..addListener(() => changes++)
+        ..event('scan started')
+        ..sent('credits', [0x20])
+        ..clear();
+      expect(changes, 3);
+      log.dispose();
+    });
   });
 }
 

@@ -2900,4 +2900,18 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'Legătura cu tahograful s-a întrerupt.';
+
+  @override
+  String get tachoLogTitle => 'Jurnal de schimb · versiune de dezvoltare';
+
+  @override
+  String get tachoLogEmpty =>
+      'Deocamdată e gol: porniți căutarea tahografului.';
+
+  @override
+  String get tachoLogCopy => 'Copiați jurnalul';
+
+  @override
+  String get tachoLogCopied =>
+      'Jurnalul a fost copiat — lipiți-l într-un mesaj.';
 }

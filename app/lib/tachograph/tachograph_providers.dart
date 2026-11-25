@@ -32,6 +32,13 @@ final tachographEnabledProvider = Provider<bool>(
   ),
 );
 
+/// Журнал обмена прямо на экране тахографа — только в сборке разработчика
+/// (dev): по нему видно, на каком шаге встало подключение. Водителям беты он
+/// не нужен: журнал и так уходит в «Сообщить о проблеме».
+final tachographLogVisibleProvider = Provider<bool>(
+  (ref) => AppEnv.current == AppEnv.dev,
+);
+
 /// Client and reader of one connected tachograph.
 typedef TachographSession = ({ItsClient client, TachographReader reader});
 

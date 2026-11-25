@@ -734,5 +734,9 @@
   "tachoFailConnect": "Nie udało się połączyć. Podejdź bliżej tachografu i spróbuj ponownie.",
   "tachoFailNotTacho": "To nie jest tachograf Smart 2. Wybierz inne urządzenie.",
   "tachoFailNoAnswer": "Tachograf nie odpowiada. Sprawdź, czy połączenie jest potwierdzone na tachografie i czy nie jest z nim połączony inny telefon.",
-  "tachoFailLost": "Połączenie z tachografem zostało przerwane."
+  "tachoFailLost": "Połączenie z tachografem zostało przerwane.",
+  "tachoLogTitle": "Dziennik wymiany · wersja deweloperska",
+  "tachoLogEmpty": "Na razie pusto: rozpocznij wyszukiwanie tachografu.",
+  "tachoLogCopy": "Kopiuj dziennik",
+  "tachoLogCopied": "Dziennik skopiowany — wklej go do wiadomości."
 }

@@ -2876,4 +2876,16 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'ტაქოგრაფთან კავშირი გაწყდა.';
+
+  @override
+  String get tachoLogTitle => 'გაცვლის ჟურნალი · დეველოპერის ვერსია';
+
+  @override
+  String get tachoLogEmpty => 'ჯერ ცარიელია: დაიწყეთ ტაქოგრაფის ძებნა.';
+
+  @override
+  String get tachoLogCopy => 'ჟურნალის კოპირება';
+
+  @override
+  String get tachoLogCopied => 'ჟურნალი დაკოპირდა — ჩასვით შეტყობინებაში.';
 }

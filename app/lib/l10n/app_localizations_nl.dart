@@ -2888,4 +2888,16 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'De verbinding met de tachograaf is verbroken.';
+
+  @override
+  String get tachoLogTitle => 'Uitwisselingslog · ontwikkelaarsversie';
+
+  @override
+  String get tachoLogEmpty => 'Nog leeg: begin met zoeken naar de tachograaf.';
+
+  @override
+  String get tachoLogCopy => 'Log kopiëren';
+
+  @override
+  String get tachoLogCopied => 'Log gekopieerd — plak het in een bericht.';
 }

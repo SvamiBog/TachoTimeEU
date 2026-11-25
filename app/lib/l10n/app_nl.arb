@@ -734,5 +734,9 @@
   "tachoFailConnect": "Verbinden mislukt. Ga dichter bij de tachograaf staan en probeer het opnieuw.",
   "tachoFailNotTacho": "Dit is geen Smart 2-tachograaf. Kies een ander apparaat.",
   "tachoFailNoAnswer": "De tachograaf reageert niet. Controleer of de verbinding op de tachograaf is bevestigd en of er geen andere telefoon mee verbonden is.",
-  "tachoFailLost": "De verbinding met de tachograaf is verbroken."
+  "tachoFailLost": "De verbinding met de tachograaf is verbroken.",
+  "tachoLogTitle": "Uitwisselingslog · ontwikkelaarsversie",
+  "tachoLogEmpty": "Nog leeg: begin met zoeken naar de tachograaf.",
+  "tachoLogCopy": "Log kopiëren",
+  "tachoLogCopied": "Log gekopieerd — plak het in een bericht."
 }

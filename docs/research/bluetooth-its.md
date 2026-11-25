@@ -135,6 +135,7 @@
 Сделано (BT-01…BT-10, `docs/testing.md`):
 - `app/lib/tachograph/`: порт ITS поверх BLE — пакеты и кредиты (`its_transport.dart`), обмен «запрос — ответ» (`its_client.dart`), ReadDataByIdentifier (`uds.dart`), номера данных и разбор значений (`tachograph_values.dart`), опрос (`tachograph_reader.dart`: режим и движение каждые 5 с, время и остатки раз в 30 с), журнал обмена (`exchange_log.dart`), Bluetooth и разрешения (`tachograph_platform.dart`).
 - Экран «Ещё» → «Тахограф по Bluetooth» (`features/tachograph/`): шаги, поиск (сначала похожие на тахограф, переключатель «Все устройства Bluetooth»), подключение с подсказкой про 6 цифр, данные водителя, ошибки с «Попробовать снова» и «Сообщить о проблеме».
+- В сборке разработчика под экраном — журнал обмена вживую: каждый шаг подключения (разрешения, Bluetooth, найденный тахограф, MTU, сервисы, кредиты ITS) и байты, «Скопировать журнал» и «Сообщить о проблеме» в любом состоянии (BT-12).
 - Android: `BLUETOOTH_SCAN` с `neverForLocation`, `BLUETOOTH_CONNECT`, Bluetooth необязателен (`uses-feature required="false"`); запрос разрешений — `BluetoothAccess.kt` через канал `MainActivity`.
 - Журнал обмена: каждый пакет, кредиты, события подключения и разобранный снимок одной строкой — в отчёте «Сообщить о проблеме».
 

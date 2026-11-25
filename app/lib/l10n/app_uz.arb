@@ -734,5 +734,9 @@
   "tachoFailConnect": "Ulanib boʻlmadi. Taxografga yaqinroq keling va qayta urinib koʻring.",
   "tachoFailNotTacho": "Bu Smart 2 taxografi emas. Boshqa qurilmani tanlang.",
   "tachoFailNoAnswer": "Taxograf javob bermayapti. Ulanish taxografda tasdiqlanganini va unga boshqa telefon ulanmaganini tekshiring.",
-  "tachoFailLost": "Taxograf bilan aloqa uzildi."
+  "tachoFailLost": "Taxograf bilan aloqa uzildi.",
+  "tachoLogTitle": "Almashinuv jurnali · dasturchi versiyasi",
+  "tachoLogEmpty": "Hozircha boʻsh: taxografni qidirishni boshlang.",
+  "tachoLogCopy": "Jurnalni nusxalash",
+  "tachoLogCopied": "Jurnal nusxalandi — uni xabarga qoʻying."
 }

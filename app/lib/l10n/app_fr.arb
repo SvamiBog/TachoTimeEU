@@ -734,5 +734,9 @@
   "tachoFailConnect": "Connexion impossible. Rapprochez-vous du tachygraphe et réessayez.",
   "tachoFailNotTacho": "Ce n’est pas un tachygraphe Smart 2. Choisissez un autre appareil.",
   "tachoFailNoAnswer": "Le tachygraphe ne répond pas. Vérifiez que la connexion est confirmée sur le tachygraphe et qu’aucun autre téléphone n’y est connecté.",
-  "tachoFailLost": "La connexion au tachygraphe a été perdue."
+  "tachoFailLost": "La connexion au tachygraphe a été perdue.",
+  "tachoLogTitle": "Journal d’échange · version développeur",
+  "tachoLogEmpty": "Vide pour l’instant : lancez la recherche du tachygraphe.",
+  "tachoLogCopy": "Copier le journal",
+  "tachoLogCopied": "Journal copié — collez-le dans un message."
 }

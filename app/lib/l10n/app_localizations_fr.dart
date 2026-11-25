@@ -2902,4 +2902,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'La connexion au tachygraphe a été perdue.';
+
+  @override
+  String get tachoLogTitle => 'Journal d’échange · version développeur';
+
+  @override
+  String get tachoLogEmpty =>
+      'Vide pour l’instant : lancez la recherche du tachygraphe.';
+
+  @override
+  String get tachoLogCopy => 'Copier le journal';
+
+  @override
+  String get tachoLogCopied => 'Journal copié — collez-le dans un message.';
 }

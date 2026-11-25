@@ -2904,4 +2904,17 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'Зв’язок із тахографом обірвався.';
+
+  @override
+  String get tachoLogTitle => 'Журнал обміну · збірка розробника';
+
+  @override
+  String get tachoLogEmpty => 'Поки порожньо: почніть пошук тахографа.';
+
+  @override
+  String get tachoLogCopy => 'Скопіювати журнал';
+
+  @override
+  String get tachoLogCopied =>
+      'Журнал скопійовано — вставте його в повідомлення.';
 }

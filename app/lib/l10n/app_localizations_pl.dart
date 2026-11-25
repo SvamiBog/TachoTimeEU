@@ -2910,4 +2910,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'Połączenie z tachografem zostało przerwane.';
+
+  @override
+  String get tachoLogTitle => 'Dziennik wymiany · wersja deweloperska';
+
+  @override
+  String get tachoLogEmpty =>
+      'Na razie pusto: rozpocznij wyszukiwanie tachografu.';
+
+  @override
+  String get tachoLogCopy => 'Kopiuj dziennik';
+
+  @override
+  String get tachoLogCopied => 'Dziennik skopiowany — wklej go do wiadomości.';
 }

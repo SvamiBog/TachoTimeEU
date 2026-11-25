@@ -734,5 +734,9 @@
   "tachoFailConnect": "Connessione non riuscita. Avvicinati al tachigrafo e riprova.",
   "tachoFailNotTacho": "Non è un tachigrafo Smart 2. Scegli un altro dispositivo.",
   "tachoFailNoAnswer": "Il tachigrafo non risponde. Controlla che la connessione sia confermata sul tachigrafo e che non sia collegato un altro telefono.",
-  "tachoFailLost": "La connessione con il tachigrafo si è interrotta."
+  "tachoFailLost": "La connessione con il tachigrafo si è interrotta.",
+  "tachoLogTitle": "Registro di scambio · versione sviluppatore",
+  "tachoLogEmpty": "Ancora vuoto: avvia la ricerca del tachigrafo.",
+  "tachoLogCopy": "Copia registro",
+  "tachoLogCopied": "Registro copiato — incollalo in un messaggio."
 }

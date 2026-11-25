@@ -2906,4 +2906,16 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'Spojenie s tachografom sa prerušilo.';
+
+  @override
+  String get tachoLogTitle => 'Protokol výmeny · vývojárska verzia';
+
+  @override
+  String get tachoLogEmpty => 'Zatiaľ prázdne: spustite hľadanie tachografu.';
+
+  @override
+  String get tachoLogCopy => 'Kopírovať protokol';
+
+  @override
+  String get tachoLogCopied => 'Protokol skopírovaný — vložte ho do správy.';
 }

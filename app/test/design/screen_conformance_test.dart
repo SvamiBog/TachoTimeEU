@@ -117,11 +117,13 @@ _Journal _repaidCompensation() {
   );
 }
 
-/// Экран тахографа на поддельном DTCO: поиск, подключение, ошибка.
-List<Override> _tachograph({ConnectFailure? failure}) => [
+/// Экран тахографа на поддельном DTCO: поиск, подключение, ошибка; [log] —
+/// журнал обмена на экране, как в сборке разработчика.
+List<Override> _tachograph({ConnectFailure? failure, bool log = false}) => [
   tachographPlatformProvider.overrideWithValue(
     FakeTachographPlatform(failure: failure),
   ),
+  tachographLogVisibleProvider.overrideWithValue(log),
   ...fastTachographSession(),
 ];
 
@@ -131,6 +133,7 @@ final _overrides = <String, List<Override> Function()>{
   'Тахограф · поиск': _tachograph,
   'Тахограф · подключён': _tachograph,
   'Тахограф · ошибка': () => _tachograph(failure: ConnectFailure.notTachograph),
+  'Тахограф · журнал обмена': () => _tachograph(log: true),
 };
 
 /// Обмен с поддельным тахографом идёт по поддельному времени теста.
@@ -334,6 +337,10 @@ final _screens = <String, _Screen>{
     open: _openTachograph(connect: true),
   ),
   'Тахограф · ошибка': (
+    build: TachographScreen.new,
+    open: _openTachograph(connect: true),
+  ),
+  'Тахограф · журнал обмена': (
     build: TachographScreen.new,
     open: _openTachograph(connect: true),
   ),

@@ -2902,4 +2902,16 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get tachoFailLost => 'Spojení s tachografem se přerušilo.';
+
+  @override
+  String get tachoLogTitle => 'Protokol výměny · vývojářská verze';
+
+  @override
+  String get tachoLogEmpty => 'Zatím prázdné: spusťte hledání tachografu.';
+
+  @override
+  String get tachoLogCopy => 'Kopírovat protokol';
+
+  @override
+  String get tachoLogCopied => 'Protokol zkopírován — vložte ho do zprávy.';
 }

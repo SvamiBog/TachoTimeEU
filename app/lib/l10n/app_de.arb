@@ -734,5 +734,9 @@
   "tachoFailConnect": "Verbindung fehlgeschlagen. Gehen Sie näher an den Fahrtenschreiber und versuchen Sie es erneut.",
   "tachoFailNotTacho": "Das ist kein Smart-2-Fahrtenschreiber. Wählen Sie ein anderes Gerät.",
   "tachoFailNoAnswer": "Der Fahrtenschreiber antwortet nicht. Prüfen Sie, dass die Verbindung am Fahrtenschreiber bestätigt ist und kein anderes Telefon verbunden ist.",
-  "tachoFailLost": "Die Verbindung zum Fahrtenschreiber wurde unterbrochen."
+  "tachoFailLost": "Die Verbindung zum Fahrtenschreiber wurde unterbrochen.",
+  "tachoLogTitle": "Austauschprotokoll · Entwicklerversion",
+  "tachoLogEmpty": "Noch leer: Starten Sie die Suche nach dem Fahrtenschreiber.",
+  "tachoLogCopy": "Protokoll kopieren",
+  "tachoLogCopied": "Protokoll kopiert — fügen Sie es in eine Nachricht ein."
 }

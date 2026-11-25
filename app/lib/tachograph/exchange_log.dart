@@ -1,6 +1,7 @@
 /// In-memory log of the Bluetooth exchange with the tachograph, for the beta
 /// problem report: the developers see which bytes went where when a
-/// tachograph does not connect or a value looks wrong.
+/// tachograph does not connect or a value looks wrong. The developer build
+/// also shows it live on the tachograph screen.
 ///
 /// It lives only while the app runs and leaves the phone only in a report the
 /// driver chooses to send. Lines are for developers: English, UTC times.
@@ -9,14 +10,16 @@ library;
 import 'dart:collection';
 
 import 'package:clock/clock.dart';
+import 'package:flutter/foundation.dart';
 
 /// Байты в шестнадцатеричном виде: «22 F9 03».
 String hexBytes(List<int> bytes) =>
     [for (final b in bytes) b.toRadixString(16).padLeft(2, '0').toUpperCase()]
         .join(' ');
 
-/// The last [capacity] lines of the exchange with the tachograph.
-class ExchangeLog {
+/// The last [capacity] lines of the exchange with the tachograph; listeners
+/// hear about every new line.
+class ExchangeLog extends ChangeNotifier {
   new({this.capacity = 1500, DateTime Function()? now})
     : _now = now ?? (() => clock.now().toUtc());
 
@@ -44,6 +47,7 @@ class ExchangeLog {
   void clear() {
     _lines.clear();
     _dropped = 0;
+    notifyListeners();
   }
 
   /// Текст для отчёта о проблеме.
@@ -58,6 +62,7 @@ class ExchangeLog {
       _lines.removeFirst();
       _dropped++;
     }
+    notifyListeners();
   }
 
   static String _time(DateTime t) {
