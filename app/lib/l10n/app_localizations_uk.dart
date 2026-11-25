@@ -2917,4 +2917,8 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get tachoLogCopied =>
       'Журнал скопійовано — вставте його в повідомлення.';
+
+  @override
+  String get tachoFailRefused =>
+      'Тахограф не пускає телефон до даних. На стоянці перевірте в меню тахографа, що ввімкнено Bluetooth і передавання даних (ITS), закрийте інші застосунки для тахографа й спробуйте знову.';
 }

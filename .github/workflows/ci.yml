@@ -443,6 +443,10 @@ jobs:
           echo "$key" | grep -E '^\s*SHA256:'
           echo "TACHOGO_DEBUG_KEYSTORE=$keystore" >> "$GITHUB_ENV"
 
+      # Зеркало Maven Central у Google — первым репозиторием Gradle: Maven
+      # Central отвечает раннерам 429 (25.11.2026, CI-14).
+      - name: Зеркало Maven Central
+        run: tool/maven_mirror.sh
       # Плагины и зависимости Gradle — заранее, с повтором при сбое сети или
       # репозитория (CI-14): сборка ниже берёт их из кэша.
       - name: Зависимости Gradle
@@ -664,6 +668,11 @@ jobs:
             echo "BUILD_NUMBER=$((1000 + GITHUB_RUN_NUMBER))"
           } >> "$GITHUB_ENV"
 
+      # Зеркало Maven Central у Google — первым репозиторием Gradle: Maven
+      # Central отвечает раннерам 429 (25.11.2026, CI-14).
+      - name: Зеркало Maven Central
+        run: tool/maven_mirror.sh
+
       # staging — в Sentry и PostHog отдельно от релиза, в «Ещё» —
       # «Сообщить о проблеме». Пустой секрет — сервис в сборке выключен.
       - name: Release AAB
@@ -811,6 +820,10 @@ jobs:
           kotlin.compiler.execution.strategy=in-process
           EOF
           free -h
+      # Зеркало Maven Central у Google — первым репозиторием Gradle: Maven
+      # Central отвечает раннерам 429 (25.11.2026, CI-14).
+      - name: Зеркало Maven Central
+        run: tool/maven_mirror.sh
       # До запуска эмулятора: сбой сети при скачивании повторяется здесь, а
       # не роняет прогон до первого теста (CI-14, 19.11.2026)
       - name: Зависимости Gradle
@@ -920,6 +933,10 @@ jobs:
           kotlin.compiler.execution.strategy=in-process
           EOF
           free -h
+      # Зеркало Maven Central у Google — первым репозиторием Gradle: Maven
+      # Central отвечает раннерам 429 (25.11.2026, CI-14).
+      - name: Зеркало Maven Central
+        run: tool/maven_mirror.sh
       # Как в «Эмуляторе Android», у обеих версий: у прошлой скрипта может
       # ещё не быть — он берётся отсюда
       - name: Зависимости Gradle обеих версий

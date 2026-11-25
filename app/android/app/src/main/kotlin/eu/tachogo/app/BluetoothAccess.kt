@@ -1,7 +1,10 @@
 package eu.tachogo.app
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -52,6 +55,38 @@ class BluetoothAccess {
 
         fun granted(context: Context): Boolean = permissions().all {
             context.checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+        }
+
+        /**
+         * Сопряжение и тип устройства для журнала обмена с тахографом:
+         * «bond bonded, type le». По ним видно, сопряжён ли телефон с
+         * тахографом и по Bluetooth LE ли. Без разрешений или с неверным
+         * адресом — null.
+         */
+        @SuppressLint("MissingPermission") // разрешения проверены выше
+        fun describe(context: Context, address: String): String? {
+            if (!granted(context)) return null
+            val adapter = context.getSystemService(BluetoothManager::class.java)
+                ?.adapter ?: return null
+            return try {
+                val device = adapter.getRemoteDevice(address)
+                val bond = when (device.bondState) {
+                    BluetoothDevice.BOND_BONDED -> "bonded"
+                    BluetoothDevice.BOND_BONDING -> "bonding"
+                    else -> "none"
+                }
+                val type = when (device.type) {
+                    BluetoothDevice.DEVICE_TYPE_LE -> "le"
+                    BluetoothDevice.DEVICE_TYPE_CLASSIC -> "classic"
+                    BluetoothDevice.DEVICE_TYPE_DUAL -> "dual"
+                    else -> "unknown"
+                }
+                "bond $bond, type $type"
+            } catch (e: IllegalArgumentException) {
+                null
+            } catch (e: SecurityException) {
+                null
+            }
         }
     }
 }

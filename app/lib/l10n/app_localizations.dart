@@ -4562,6 +4562,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Журнал скопирован — вставьте его в сообщение.'**
   String get tachoLogCopied;
+
+  /// Ошибка: тахограф отклоняет запись телефона и не даёт читать данные (ответ «запись не разрешена»)
+  ///
+  /// In ru, this message translates to:
+  /// **'Тахограф не пускает телефон к данным. На стоянке проверьте в меню тахографа, что включены Bluetooth и передача данных (ITS), закройте другие приложения для тахографа и попробуйте снова.'**
+  String get tachoFailRefused;
 }
 
 class _AppLocalizationsDelegate

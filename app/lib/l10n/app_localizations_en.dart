@@ -2889,4 +2889,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tachoLogCopied => 'Log copied — paste it into a message.';
+
+  @override
+  String get tachoFailRefused =>
+      'The tachograph won’t let the phone read its data. When parked, check in the tachograph menu that Bluetooth and data sharing (ITS) are on, close other tachograph apps and try again.';
 }

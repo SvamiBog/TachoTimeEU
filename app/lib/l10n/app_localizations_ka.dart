@@ -2888,4 +2888,8 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get tachoLogCopied => 'ჟურნალი დაკოპირდა — ჩასვით შეტყობინებაში.';
+
+  @override
+  String get tachoFailRefused =>
+      'ტაქოგრაფი ტელეფონს მონაცემებთან არ უშვებს. გაჩერებისას შეამოწმეთ ტაქოგრაფის მენიუში, რომ ჩართულია Bluetooth და მონაცემების გადაცემა (ITS), დახურეთ ტაქოგრაფის სხვა აპები და სცადეთ ხელახლა.';
 }

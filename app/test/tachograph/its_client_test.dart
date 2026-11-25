@@ -72,6 +72,32 @@ void main() {
       );
     });
 
+    test('BT-13: тахограф отвечает «запись не разрешена» — refused после '
+        '6 отказов подряд, не ждём до конца', () async {
+      final port = FakeTachographPort(rejectsWrites: true);
+      final client = ItsClient(
+        port,
+        log: log,
+        openTimeout: const Duration(minutes: 5),
+        retryGrant: const Duration(milliseconds: 20),
+      );
+      await expectLater(
+        client.open(),
+        throwsA(
+          isA<ItsException>().having(
+            (e) => e.failure,
+            'failure',
+            ItsFailure.refused,
+          ),
+        ),
+      );
+      expect(
+        log.lines.where((l) => l.contains('credits write rejected')),
+        hasLength(6),
+      );
+      expect(log.lines.last, contains('refuses writes from this phone'));
+    });
+
     test('нет ответа — ошибка timeout', () async {
       final port = FakeTachographPort(answers: false);
       final client = _client(port, log);

@@ -6,7 +6,7 @@ library;
 import 'dart:async';
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show immutable;
+import 'package:flutter/foundation.dart' show immutable, visibleForTesting;
 import 'package:flutter/services.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:geolocator/geolocator.dart';
@@ -244,11 +244,32 @@ class ReactiveBleTachographPlatform implements TachographPlatform {
       final services = await _ble.getDiscoveredServices(deviceId);
       final ids = [for (final s in services) '${s.id.expanded}'];
       log.event('services ${ids.join(', ')}');
-      if (!ids.contains(ItsUuids.diagnosticsService)) {
+      // Какие записи разрешает каждая характеристика и сопряжён ли телефон —
+      // по ним видно, почему тахограф отклоняет запись
+      for (final s in services) {
+        for (final c in s.characteristics) {
+          log.event('char ${c.id.expanded} ${_properties(c)}');
+        }
+      }
+      if (await _describeDevice(deviceId) case final device?) {
+        log.event(device);
+      }
+      final diagnostics = services
+          .where((s) => '${s.id.expanded}' == ItsUuids.diagnosticsService)
+          .firstOrNull;
+      if (diagnostics == null) {
+        throw const TachographConnectException(ConnectFailure.notTachograph);
+      }
+      Characteristic? find(String id) => diagnostics.characteristics
+          .where((c) => '${c.id.expanded}' == id)
+          .firstOrNull;
+      final fifo = find(ItsUuids.diagnosticsFifo);
+      final credits = find(ItsUuids.diagnosticsCredits);
+      if (fifo == null || credits == null) {
         throw const TachographConnectException(ConnectFailure.notTachograph);
       }
       return _BleConnection(
-        _BlePort(_ble, deviceId, maxPacket: mtu - 3),
+        _BlePort(fifo: fifo, credits: credits, log: log, maxPacket: mtu - 3),
         lost.future,
         subscription.cancel,
       );
@@ -259,41 +280,116 @@ class ReactiveBleTachographPlatform implements TachographPlatform {
   }
 }
 
+/// Свойства характеристики для журнала: «write writeNoResponse indicate».
+String _properties(Characteristic c) => [
+  if (c.isReadable) 'read',
+  if (c.isWritableWithResponse) 'write',
+  if (c.isWritableWithoutResponse) 'writeNoResponse',
+  if (c.isNotifiable) 'notify',
+  if (c.isIndicatable) 'indicate',
+].join(' ');
+
+/// Сопряжение и тип устройства глазами Android: «bond bonded, type le».
+Future<String?> _describeDevice(String deviceId) async {
+  try {
+    return await ReactiveBleTachographPlatform._deviceChannel
+        .invokeMethod<String>('bluetoothDevice', deviceId);
+  } on PlatformException catch (e) {
+    return 'bond unknown: ${e.message}';
+  } on MissingPluginException {
+    return null;
+  }
+}
+
+/// Ответ тахографа «запись не разрешена» (ATT 0x03) в тексте ошибки
+/// flutter_reactive_ble: другого признака библиотека не даёт.
+@visibleForTesting
+final writeNotPermitted = RegExp(r'GATT_WRITE_NOT_PERMIT|status 3\b');
+
+/// Writes to one GATT characteristic of the tachograph. The specification
+/// says only "Write", so it writes with response when the characteristic
+/// allows that; when the tachograph answers "write not permitted" and the
+/// characteristic also takes writes without response, it switches to those
+/// for good. Otherwise the refusal is an [ItsWriteRejected].
+class CharacteristicWriter {
+  new({
+    required this.name,
+    required this._write,
+    required this._log,
+    required bool withResponse,
+    required bool withoutResponse,
+  }) : _canWithoutResponse = withoutResponse,
+       _withResponse = withResponse || !withoutResponse;
+
+  /// Имя для журнала: «fifo», «credits».
+  final String name;
+  final Future<void> Function(List<int> value, {required bool withResponse})
+  _write;
+  final ExchangeLog _log;
+  final bool _canWithoutResponse;
+  bool _withResponse;
+
+  Future<void> call(List<int> value) async {
+    if (!_withResponse) {
+      await _write(value, withResponse: false);
+      return;
+    }
+    try {
+      await _write(value, withResponse: true);
+    } on Object catch (e) {
+      if (!writeNotPermitted.hasMatch('$e')) rethrow;
+      if (!_canWithoutResponse) throw ItsWriteRejected('$e');
+      _withResponse = false;
+      _log.event('$name: write rejected, switching to write without response');
+      await _write(value, withResponse: false);
+    }
+  }
+}
+
 /// The diagnostics serial port of a connected tachograph over GATT.
 class _BlePort implements ItsPort {
-  new(this._ble, String deviceId, {required this.maxPacket})
-    : _fifo = QualifiedCharacteristic(
-        serviceId: Uuid.parse(ItsUuids.diagnosticsService),
-        characteristicId: Uuid.parse(ItsUuids.diagnosticsFifo),
-        deviceId: deviceId,
-      ),
-      _credits = QualifiedCharacteristic(
-        serviceId: Uuid.parse(ItsUuids.diagnosticsService),
-        characteristicId: Uuid.parse(ItsUuids.diagnosticsCredits),
-        deviceId: deviceId,
-      );
+  new({
+    required Characteristic fifo,
+    required Characteristic credits,
+    required ExchangeLog log,
+    required this.maxPacket,
+  }) : _fifo = fifo,
+       _credits = credits,
+       _writeFifo = _writer('fifo', fifo, log),
+       _writeCredits = _writer('credits', credits, log);
 
-  final FlutterReactiveBle _ble;
-  final QualifiedCharacteristic _fifo;
-  final QualifiedCharacteristic _credits;
+  final Characteristic _fifo;
+  final Characteristic _credits;
+  final CharacteristicWriter _writeFifo;
+  final CharacteristicWriter _writeCredits;
 
   @override
   final int maxPacket;
 
   // Подписка включает indications; первая запускает сопряжение
   @override
-  Stream<List<int>> get fifo => _ble.subscribeToCharacteristic(_fifo);
+  Stream<List<int>> get fifo => _fifo.subscribe();
 
   @override
-  Stream<List<int>> get credits => _ble.subscribeToCharacteristic(_credits);
+  Stream<List<int>> get credits => _credits.subscribe();
 
   @override
-  Future<void> writeFifo(List<int> packet) =>
-      _ble.writeCharacteristicWithResponse(_fifo, value: packet);
+  Future<void> writeFifo(List<int> packet) => _writeFifo(packet);
 
   @override
-  Future<void> writeCredits(int credits) =>
-      _ble.writeCharacteristicWithResponse(_credits, value: [credits]);
+  Future<void> writeCredits(int credits) => _writeCredits([credits]);
+
+  static CharacteristicWriter _writer(
+    String name,
+    Characteristic c,
+    ExchangeLog log,
+  ) => CharacteristicWriter(
+    name: name,
+    write: c.write,
+    log: log,
+    withResponse: c.isWritableWithResponse,
+    withoutResponse: c.isWritableWithoutResponse,
+  );
 }
 
 /// A tachograph connected over `flutter_reactive_ble`: cancelling the

@@ -39,6 +39,23 @@ enum ItsFailure {
 
   /// Соединение закрыто: тахографом (кредиты 0xFF) или приложением.
   disconnected,
+
+  /// Тахограф отклоняет запись («запись не разрешена»): не пускает этот
+  /// телефон — передача данных (ITS) выключена или занята другим
+  /// приложением.
+  refused,
+}
+
+/// The tachograph answered a write with "write not permitted" (ATT error
+/// 0x03): it does not let this phone in, unlike a write lost in transit.
+class ItsWriteRejected implements Exception {
+  const new(this.detail);
+
+  /// Текст ошибки Bluetooth — для журнала обмена.
+  final String detail;
+
+  @override
+  String toString() => 'write rejected: $detail';
 }
 
 /// A failed exchange with the tachograph.
@@ -60,6 +77,7 @@ class ItsClient {
     this.timeout = const Duration(seconds: 5),
     this.openTimeout = const Duration(seconds: 90),
     this.retryGrant = const Duration(seconds: 5),
+    this.maxRejections = 6,
     int grant = 32,
   }) : _credits = ItsCredits(grant: grant);
 
@@ -76,6 +94,10 @@ class ItsClient {
 
   /// Через сколько повторить свои кредиты, если тахограф молчит.
   final Duration retryGrant;
+
+  /// После скольких отказов подряд («запись не разрешена») не ждать до
+  /// [openTimeout]: тахограф не пускает этот телефон.
+  final int maxRejections;
 
   final _subscriptions = <StreamSubscription<List<int>>>[];
   final _inbox = Queue<Uint8List>();
@@ -101,16 +123,30 @@ class ItsClient {
       ..add(_port.fifo.listen(_onPacket, onError: _onError))
       ..add(_port.credits.listen(_onCredits, onError: _onError));
     final deadline = clock.now().add(openTimeout);
+    var rejected = 0;
     while (!accepted.isCompleted) {
       if (_closed) throw const ItsException(ItsFailure.disconnected);
       if (!clock.now().isBefore(deadline)) {
         _log.event('no credits from the tachograph');
-        throw const ItsException(ItsFailure.noCredits);
+        throw ItsException(
+          rejected > 0 ? ItsFailure.refused : ItsFailure.noCredits,
+        );
       }
       try {
         await _writeCredits(_credits.grant);
+        rejected = 0;
+      } on ItsWriteRejected catch (e) {
+        rejected++;
+        _log.event(
+          'credits write rejected ($rejected of $maxRejections): ${e.detail}',
+        );
+        if (rejected >= maxRejections) {
+          _log.event('the tachograph refuses writes from this phone');
+          throw const ItsException(ItsFailure.refused);
+        }
       } on Object catch (e) {
         // Пока идёт сопряжение, запись отклоняется: повторим
+        rejected = 0;
         _log.event('credits write failed: $e');
       }
       // Пауза до повтора; кредиты пришли — пауза отменена

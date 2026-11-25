@@ -7,6 +7,7 @@ import 'package:tachogo/tachograph/tachograph_platform.dart';
 import 'package:tachogo/tachograph/tachograph_providers.dart';
 
 import '../support/app_harness.dart';
+import 'fake_tachograph.dart';
 import 'fake_tachograph_platform.dart';
 
 void main() {
@@ -145,6 +146,28 @@ void main() {
       await exchange(tester);
       expect(find.text('Ищем тахограф рядом…'), findsOneWidget);
       expect(platform.scans, 2);
+      await unmount(tester);
+    });
+
+    testWidgets('BT-13: тахограф отклоняет запись — «не пускает телефон», '
+        'что проверить', (tester) async {
+      await pump(
+        tester,
+        FakeTachographPlatform(
+          port: () =>
+              FakeTachographPort(values: drivingValues(), rejectsWrites: true),
+        ),
+      );
+      await tester.tap(find.text('Найти тахограф'));
+      await exchange(tester);
+      await tester.tap(find.text('DTCO 4.1a'));
+      await exchange(tester);
+      await exchange(tester);
+      expect(
+        find.textContaining('Тахограф не пускает телефон к данным'),
+        findsOneWidget,
+      );
+      expect(find.text('Попробовать снова'), findsOneWidget);
       await unmount(tester);
     });
 

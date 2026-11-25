@@ -738,5 +738,6 @@
   "tachoLogTitle": "Registro de intercambio · versión de desarrollo",
   "tachoLogEmpty": "Vacío por ahora: inicie la búsqueda del tacógrafo.",
   "tachoLogCopy": "Copiar registro",
-  "tachoLogCopied": "Registro copiado: péguelo en un mensaje."
+  "tachoLogCopied": "Registro copiado: péguelo en un mensaje.",
+  "tachoFailRefused": "El tacógrafo no deja que el teléfono lea los datos. Con el vehículo parado, compruebe en el menú del tacógrafo que el Bluetooth y la transmisión de datos (ITS) están activados, cierre otras apps de tacógrafo e inténtelo de nuevo."
 }

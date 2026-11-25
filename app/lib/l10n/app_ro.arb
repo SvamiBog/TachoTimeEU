@@ -738,5 +738,6 @@
   "tachoLogTitle": "Jurnal de schimb · versiune de dezvoltare",
   "tachoLogEmpty": "Deocamdată e gol: porniți căutarea tahografului.",
   "tachoLogCopy": "Copiați jurnalul",
-  "tachoLogCopied": "Jurnalul a fost copiat — lipiți-l într-un mesaj."
+  "tachoLogCopied": "Jurnalul a fost copiat — lipiți-l într-un mesaj.",
+  "tachoFailRefused": "Tahograful nu lasă telefonul să citească datele. În parcare, verificați în meniul tahografului că sunt activate Bluetooth și transmiterea datelor (ITS), închideți alte aplicații pentru tahograf și încercați din nou."
 }

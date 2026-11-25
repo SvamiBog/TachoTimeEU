@@ -2914,4 +2914,8 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get tachoLogCopied => 'Protokol zkopírován — vložte ho do zprávy.';
+
+  @override
+  String get tachoFailRefused =>
+      'Tachograf nepouští telefon k datům. Při stání zkontrolujte v menu tachografu, že je zapnutý Bluetooth a přenos dat (ITS), zavřete jiné aplikace pro tachograf a zkuste to znovu.';
 }

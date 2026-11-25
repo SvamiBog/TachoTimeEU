@@ -2919,4 +2919,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get tachoLogCopied =>
       'Protokoll kopiert — fügen Sie es in eine Nachricht ein.';
+
+  @override
+  String get tachoFailRefused =>
+      'Der Fahrtenschreiber lässt das Telefon nicht an die Daten. Prüfen Sie im Stand im Menü des Fahrtenschreibers, ob Bluetooth und die Datenübertragung (ITS) eingeschaltet sind, schließen Sie andere Fahrtenschreiber-Apps und versuchen Sie es erneut.';
 }

@@ -2915,4 +2915,8 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tachoLogCopied => 'Journal copié — collez-le dans un message.';
+
+  @override
+  String get tachoFailRefused =>
+      'Le tachygraphe refuse au téléphone l’accès aux données. À l’arrêt, vérifiez dans le menu du tachygraphe que le Bluetooth et la transmission des données (ITS) sont activés, fermez les autres applications de tachygraphe et réessayez.';
 }

@@ -738,5 +738,6 @@
   "tachoLogTitle": "Exchange log · developer build",
   "tachoLogEmpty": "Empty for now: start searching for the tachograph.",
   "tachoLogCopy": "Copy log",
-  "tachoLogCopied": "Log copied — paste it into a message."
+  "tachoLogCopied": "Log copied — paste it into a message.",
+  "tachoFailRefused": "The tachograph won’t let the phone read its data. When parked, check in the tachograph menu that Bluetooth and data sharing (ITS) are on, close other tachograph apps and try again."
 }

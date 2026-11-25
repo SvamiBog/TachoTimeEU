@@ -2913,4 +2913,8 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tachoLogCopied => 'Журнал скопирован — вставьте его в сообщение.';
+
+  @override
+  String get tachoFailRefused =>
+      'Тахограф не пускает телефон к данным. На стоянке проверьте в меню тахографа, что включены Bluetooth и передача данных (ITS), закройте другие приложения для тахографа и попробуйте снова.';
 }

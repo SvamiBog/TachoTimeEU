@@ -2923,4 +2923,8 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tachoLogCopied => 'Dziennik skopiowany — wklej go do wiadomości.';
+
+  @override
+  String get tachoFailRefused =>
+      'Tachograf nie dopuszcza telefonu do danych. Na postoju sprawdź w menu tachografu, czy włączone są Bluetooth i przesyłanie danych (ITS), zamknij inne aplikacje do tachografu i spróbuj ponownie.';
 }

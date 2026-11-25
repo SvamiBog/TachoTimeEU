@@ -17,6 +17,7 @@ class FakeTachographPort implements ItsPort {
     this.answers = true,
     this.pendingFirst = false,
     this.creditFailures = 0,
+    this.rejectsWrites = false,
     this.silent = const {},
   }) : values = values ?? {},
        refusals = refusals ?? {};
@@ -44,6 +45,10 @@ class FakeTachographPort implements ItsPort {
 
   /// Сколько первых записей кредитов отклонить: идёт сопряжение.
   int creditFailures;
+
+  /// Отвечает на каждую запись «запись не разрешена», как DTCO 4.1a
+  /// владельца 25.11.2026: не пускает этот телефон.
+  final bool rejectsWrites;
 
   /// Номера данных, на которые тахограф молчит.
   final Set<int> silent;
@@ -76,6 +81,9 @@ class FakeTachographPort implements ItsPort {
 
   @override
   Future<void> writeCredits(int credits) async {
+    if (rejectsWrites) {
+      throw const ItsWriteRejected('status 3 (GATT_WRITE_NOT_PERMIT)');
+    }
     if (creditFailures > 0) {
       creditFailures--;
       throw StateError('insufficient authentication');

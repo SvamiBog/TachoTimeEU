@@ -2902,4 +2902,8 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get tachoLogCopied => 'Jurnal nusxalandi — uni xabarga qoʻying.';
+
+  @override
+  String get tachoFailRefused =>
+      'Taxograf telefonni maʼlumotlarga kiritmayapti. Toʻxtaganda taxograf menyusida Bluetooth va maʼlumot uzatish (ITS) yoqilganini tekshiring, taxograf uchun boshqa ilovalarni yoping va qayta urinib koʻring.';
 }

@@ -20,6 +20,9 @@ class MainActivity : FlutterActivity() {
                     "bluetoothPermissions" -> result.success(BluetoothAccess.granted(this))
                     "requestBluetoothPermissions" -> bluetoothAccess.request(this, result)
                     "openBluetoothSettings" -> result.success(openBluetoothSettings())
+                    "bluetoothDevice" -> result.success(
+                        BluetoothAccess.describe(this, call.arguments as? String ?: ""),
+                    )
                     else -> result.notImplemented()
                 }
             }

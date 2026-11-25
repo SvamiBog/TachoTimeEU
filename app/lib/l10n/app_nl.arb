@@ -738,5 +738,6 @@
   "tachoLogTitle": "Uitwisselingslog · ontwikkelaarsversie",
   "tachoLogEmpty": "Nog leeg: begin met zoeken naar de tachograaf.",
   "tachoLogCopy": "Log kopiëren",
-  "tachoLogCopied": "Log gekopieerd — plak het in een bericht."
+  "tachoLogCopied": "Log gekopieerd — plak het in een bericht.",
+  "tachoFailRefused": "De tachograaf geeft de telefoon geen toegang tot de gegevens. Controleer bij stilstand in het menu van de tachograaf of Bluetooth en het delen van gegevens (ITS) aan staan, sluit andere tachograaf-apps en probeer het opnieuw."
 }

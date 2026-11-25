@@ -2914,4 +2914,8 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get tachoLogCopied =>
       'Jurnalul a fost copiat — lipiți-l într-un mesaj.';
+
+  @override
+  String get tachoFailRefused =>
+      'Tahograful nu lasă telefonul să citească datele. În parcare, verificați în meniul tahografului că sunt activate Bluetooth și transmiterea datelor (ITS), închideți alte aplicații pentru tahograf și încercați din nou.';
 }

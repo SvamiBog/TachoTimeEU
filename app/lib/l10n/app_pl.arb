@@ -738,5 +738,6 @@
   "tachoLogTitle": "Dziennik wymiany · wersja deweloperska",
   "tachoLogEmpty": "Na razie pusto: rozpocznij wyszukiwanie tachografu.",
   "tachoLogCopy": "Kopiuj dziennik",
-  "tachoLogCopied": "Dziennik skopiowany — wklej go do wiadomości."
+  "tachoLogCopied": "Dziennik skopiowany — wklej go do wiadomości.",
+  "tachoFailRefused": "Tachograf nie dopuszcza telefonu do danych. Na postoju sprawdź w menu tachografu, czy włączone są Bluetooth i przesyłanie danych (ITS), zamknij inne aplikacje do tachografu i spróbuj ponownie."
 }

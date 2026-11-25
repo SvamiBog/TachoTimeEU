@@ -738,5 +738,6 @@
   "tachoLogTitle": "Registro di scambio · versione sviluppatore",
   "tachoLogEmpty": "Ancora vuoto: avvia la ricerca del tachigrafo.",
   "tachoLogCopy": "Copia registro",
-  "tachoLogCopied": "Registro copiato — incollalo in un messaggio."
+  "tachoLogCopied": "Registro copiato — incollalo in un messaggio.",
+  "tachoFailRefused": "Il tachigrafo non lascia leggere i dati al telefono. A veicolo fermo, controlla nel menu del tachigrafo che Bluetooth e trasmissione dei dati (ITS) siano attivi, chiudi le altre app per tachigrafo e riprova."
 }

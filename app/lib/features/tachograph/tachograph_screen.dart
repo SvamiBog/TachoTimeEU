@@ -127,6 +127,7 @@ String _problem(AppLocalizations l, TachoProblem problem) => switch (problem) {
   TachoProblem.notTachograph => l.tachoFailNotTacho,
   TachoProblem.noAnswer => l.tachoFailNoAnswer,
   TachoProblem.lost => l.tachoFailLost,
+  TachoProblem.refused => l.tachoFailRefused,
 };
 
 /// How to connect: what the app does and three steps.
