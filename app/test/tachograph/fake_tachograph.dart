@@ -18,6 +18,7 @@ class FakeTachographPort implements ItsPort {
     this.pendingFirst = false,
     this.creditFailures = 0,
     this.rejectsWrites = false,
+    this.lostReplies = 0,
     this.silent = const {},
   }) : values = values ?? {},
        refusals = refusals ?? {};
@@ -49,6 +50,10 @@ class FakeTachographPort implements ItsPort {
   /// Отвечает на каждую запись «запись не разрешена», как DTCO 4.1a
   /// владельца 25.11.2026: не пускает этот телефон.
   final bool rejectsWrites;
+
+  /// Сколько первых ответов кредитами теряется: тахограф ответил раньше,
+  /// чем клиент подписался (DTCO 4.1a владельца 25.11.2026).
+  int lostReplies;
 
   /// Номера данных, на которые тахограф молчит.
   final Set<int> silent;
@@ -89,13 +94,30 @@ class FakeTachographPort implements ItsPort {
       throw StateError('insufficient authentication');
     }
     writtenCredits.add(credits);
-    if (credits == itsCreditsDisconnect) return;
-    clientCredits += credits;
-    if (accepts && !_greeted) {
-      _greeted = true;
-      _given = grant;
-      _credits.add([grant]);
+    if (credits == itsCreditsDisconnect) {
+      // Соединение ITS закрыто: следующие кредиты откроют его заново
+      _greeted = false;
+      clientCredits = 0;
+      return;
     }
+    clientCredits += credits;
+    if (!accepts) return;
+    if (_greeted) {
+      // Кредиты добавляются: на повтор — 0 новых, как у DTCO 4.1a
+      _indicate([0]);
+      return;
+    }
+    _greeted = true;
+    _given = grant;
+    _indicate([grant]);
+  }
+
+  void _indicate(List<int> value) {
+    if (lostReplies > 0) {
+      lostReplies--;
+      return;
+    }
+    _credits.add(value);
   }
 
   @override

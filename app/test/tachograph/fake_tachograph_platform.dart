@@ -149,6 +149,7 @@ List<Override> fastTachographSession() => [
       timeout: const Duration(milliseconds: 300),
       openTimeout: const Duration(seconds: 1),
       retryGrant: const Duration(milliseconds: 100),
+      subscribeSettle: const Duration(milliseconds: 50),
     );
     return (
       client: client,

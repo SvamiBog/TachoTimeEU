@@ -78,6 +78,8 @@ class ItsClient {
     this.openTimeout = const Duration(seconds: 90),
     this.retryGrant = const Duration(seconds: 5),
     this.maxRejections = 6,
+    this.subscribeSettle = const Duration(milliseconds: 1500),
+    this.maxRestarts = 2,
     int grant = 32,
   }) : _credits = ItsCredits(grant: grant);
 
@@ -99,11 +101,21 @@ class ItsClient {
   /// [openTimeout]: тахограф не пускает этот телефон.
   final int maxRejections;
 
+  /// Пауза между подпиской и первыми кредитами. Подписка (запись CCCD) идёт
+  /// своей очередью, и кредиты могут её обогнать: тахограф ответит на них
+  /// до подписки, и ответ потеряется (DTCO 4.1a владельца, 25.11.2026).
+  final Duration subscribeSettle;
+
+  /// Сколько раз переоткрыть соединение ITS, если тахограф принял его без
+  /// кредитов.
+  final int maxRestarts;
+
   final _subscriptions = <StreamSubscription<List<int>>>[];
   final _inbox = Queue<Uint8List>();
   Completer<Uint8List>? _reply;
   Completer<void>? _creditsArrived;
   Completer<void>? _accepted;
+  Completer<void>? _sleeping;
   Future<void> _queue = Future.value();
   bool _closed = false;
 
@@ -114,15 +126,35 @@ class ItsClient {
   /// запускает сопряжение: телефон и тахограф показывают 6 цифр. Пока
   /// водитель подтверждает, свои кредиты повторяем.
   Future<void> open() async {
-    final accepted = _accepted = Completer<void>();
     _log.event(
-      'opening ITS: subscribe, grant ${_credits.grant} credits, '
-      'wait up to ${openTimeout.inSeconds} s for pairing',
+      'opening ITS: subscribe, wait ${subscribeSettle.inMilliseconds} ms, '
+      'grant ${_credits.grant} credits, wait up to ${openTimeout.inSeconds} s '
+      'for pairing',
     );
     _subscriptions
       ..add(_port.fifo.listen(_onPacket, onError: _onError))
       ..add(_port.credits.listen(_onCredits, onError: _onError));
+    await _sleep(subscribeSettle);
     final deadline = clock.now().add(openTimeout);
+    for (var restart = 0; ; restart++) {
+      await _handshake(deadline);
+      if (_credits.available > 0 || restart >= maxRestarts) return;
+      // Принял без кредитов: ответ на первые кредиты, видимо, пришёл до
+      // подписки и потерялся, а на повтор тахограф добавил 0. Закрыть
+      // соединение ITS (0xFF) и открыть заново
+      _log.event('accepted with 0 credits: restarting the ITS connection');
+      try {
+        await _writeCredits(itsCreditsDisconnect);
+      } on Object catch (e) {
+        _log.event('disconnect write failed: $e');
+      }
+      await _sleep(subscribeSettle);
+    }
+  }
+
+  /// Кредиты тахографу, пока он не ответит своими: соединение принято.
+  Future<void> _handshake(DateTime deadline) async {
+    final accepted = _accepted = Completer<void>();
     var rejected = 0;
     while (!accepted.isCompleted) {
       if (_closed) throw const ItsException(ItsFailure.disconnected);
@@ -155,6 +187,18 @@ class ItsClient {
       await Future.any([accepted.future, retry.future]);
       timer.cancel();
     }
+    if (_closed) throw const ItsException(ItsFailure.disconnected);
+  }
+
+  /// Пауза, которую прерывает закрытие соединения.
+  Future<void> _sleep(Duration duration) async {
+    if (duration <= Duration.zero) return;
+    final done = _sleeping = Completer<void>();
+    final timer = _wait = Timer(duration, () {
+      if (!done.isCompleted) done.complete();
+    });
+    await done.future;
+    timer.cancel();
     if (_closed) throw const ItsException(ItsFailure.disconnected);
   }
 
@@ -297,7 +341,8 @@ class ItsClient {
     for (final c in [_reply, _creditsArrived]) {
       if (c != null && !c.isCompleted) c.completeError(error);
     }
-    final accepted = _accepted;
-    if (accepted != null && !accepted.isCompleted) accepted.complete();
+    for (final c in [_accepted, _sleeping]) {
+      if (c != null && !c.isCompleted) c.complete();
+    }
   }
 }

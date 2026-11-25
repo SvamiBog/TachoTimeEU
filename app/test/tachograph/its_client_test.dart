@@ -16,6 +16,7 @@ ItsClient _client(FakeTachographPort port, ExchangeLog log) => ItsClient(
   timeout: _short,
   openTimeout: const Duration(seconds: 1),
   retryGrant: const Duration(milliseconds: 20),
+  subscribeSettle: Duration.zero,
   grant: 8,
 );
 
@@ -97,6 +98,92 @@ void main() {
       );
       expect(log.lines.last, contains('refuses writes from this phone'));
     });
+
+    test(
+      'BT-14: кредиты — только после подписки: пауза перед первыми',
+      () async {
+        final port = FakeTachographPort();
+        final client = ItsClient(
+          port,
+          log: log,
+          timeout: _short,
+          retryGrant: const Duration(milliseconds: 20),
+          subscribeSettle: const Duration(milliseconds: 150),
+        );
+        final opened = client.open();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        expect(port.writtenCredits, isEmpty);
+        await opened;
+        expect(port.writtenCredits, [32]);
+        await client.close();
+      },
+    );
+
+    test('BT-14: ответ на первые кредиты потерялся, на повтор — 0: '
+        'соединение ITS открывается заново', () async {
+      final port = FakeTachographPort(
+        values: {
+          0xF903: [0x03],
+        },
+        lostReplies: 1,
+      );
+      final client = _client(port, log);
+      await client.open();
+      expect(port.writtenCredits, [8, 8, 0xFF, 8]);
+      expect(
+        log.lines.where((l) => l.contains('accepted with 0 credits')),
+        hasLength(1),
+      );
+      expect(
+        parseUdsReply(await client.request(readDataRequest(0xF903))),
+        isA<UdsData>(),
+      );
+      await client.close();
+    });
+
+    test('BT-14: тахограф раз за разом принимает без кредитов — '
+        'переоткрываем не больше двух раз', () async {
+      final port = FakeTachographPort(grant: 0);
+      final client = _client(port, log);
+      await client.open();
+      expect(port.writtenCredits, [8, 0xFF, 8, 0xFF, 8]);
+      await expectLater(
+        client.request(readDataRequest(0xF903)),
+        throwsA(
+          isA<ItsException>().having(
+            (e) => e.failure,
+            'failure',
+            ItsFailure.noCredits,
+          ),
+        ),
+      );
+      await client.close();
+    });
+
+    test(
+      'закрыли во время паузы перед кредитами — «отключено», не зависает',
+      () async {
+        final client = ItsClient(
+          FakeTachographPort(),
+          log: log,
+          subscribeSettle: const Duration(seconds: 30),
+        );
+        // Ожидание ошибки — до закрытия: иначе она уйдёт необработанной
+        final opened = expectLater(
+          client.open(),
+          throwsA(
+            isA<ItsException>().having(
+              (e) => e.failure,
+              'failure',
+              ItsFailure.disconnected,
+            ),
+          ),
+        );
+        await Future<void>.delayed(Duration.zero);
+        await client.close();
+        await opened;
+      },
+    );
 
     test('нет ответа — ошибка timeout', () async {
       final port = FakeTachographPort(answers: false);
