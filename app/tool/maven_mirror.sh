@@ -39,14 +39,18 @@ def addMirror = { RepositoryHandler repos ->
 def projectRepos = true
 beforeSettings { settings ->
     addMirror(settings.dependencyResolutionManagement.repositories)
+    // Плагины из блока plugins {} файла настроек ищутся во время его
+    // выполнения — зеркало нужно до него (26.11.2026 плагин Kotlin не
+    // скачался: Maven Central и Plugin Portal отказали)
+    addMirror(settings.pluginManagement.repositories)
 }
 settingsEvaluated { settings ->
     projectRepos = settings.dependencyResolutionManagement.repositoriesMode
         .get() == RepositoriesMode.PREFER_PROJECT
-    // Плагины: без своих репозиториев сборка берёт их с Plugin Portal —
-    // он остаётся, зеркало встаёт перед ним
+    // Своих репозиториев плагинов у сборки нет — без зеркала она брала бы
+    // плагины с Plugin Portal: он нужен и теперь, после зеркала
     def plugins = settings.pluginManagement.repositories
-    if (plugins.isEmpty()) plugins.gradlePluginPortal()
+    if (plugins.size() == 1) plugins.gradlePluginPortal()
     addMirror(plugins)
 }
 allprojects {
