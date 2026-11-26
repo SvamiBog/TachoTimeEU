@@ -10,6 +10,7 @@ void main() {
       expect(TachoDid.driveRecognize.id, 0xF905);
       expect(TachoDid.driver1WorkingState.id, 0xF903);
       expect(TachoDid.driver2WorkingState.id, 0xF904);
+      expect(TachoDid.driver2Card.id, 0xF90A);
       expect(TachoDid.driver1ContinuousDrivingTime.id, 0xF923);
       expect(TachoDid.driver1CumulativeBreakTime.id, 0xF925);
       expect(TachoDid.driver1CurrentDurationOfSelectedActivity.id, 0xF927);
@@ -53,6 +54,28 @@ void main() {
       expect(decodeDriveRecognize([]), isNull);
     });
 
+    test('BT-19: карта в слоте: 1 — есть, 0 — нет, остальное — нет данных', () {
+      expect(decodeCardPresent([1]), isTrue);
+      expect(decodeCardPresent([0]), isFalse);
+      expect(decodeCardPresent([3]), isNull);
+      expect(decodeCardPresent([]), isNull);
+    });
+
+    test('BT-19: режим второго водителя — только с его картой', () {
+      DriverMode? driver2(List<int>? card) => decodeReading(
+        at: DateTime.utc(2026),
+        values: {
+          TachoDid.driver2WorkingState: [1],
+          TachoDid.driver2Card: ?card,
+        },
+        consentMissing: false,
+      ).driver2Mode;
+      expect(driver2([1]), DriverMode.availability);
+      expect(driver2([0]), isNull);
+      // Тахограф не сказал про карту — второго водителя не показываем
+      expect(driver2(null), isNull);
+    });
+
     test('длительность — минуты, старшие значения — «нет данных»', () {
       expect(decodeMinutes([0x01, 0x0E]), const Duration(minutes: 270));
       expect(decodeMinutes([45]), const Duration(minutes: 45));
@@ -89,6 +112,7 @@ void main() {
           TachoDid.driveRecognize: [1],
           TachoDid.driver1WorkingState: [3],
           TachoDid.driver2WorkingState: [1],
+          TachoDid.driver2Card: [1],
           TachoDid.driver1ContinuousDrivingTime: [0x00, 0x5A],
           TachoDid.driver1CumulativeBreakTime: [0x00, 0x0F],
           TachoDid.driver1CurrentDurationOfSelectedActivity: [0x00, 0x5A],
@@ -149,6 +173,9 @@ void main() {
       expect(reading.tachographTime, DateTime.utc(2026, 11, 26, 11, 56, 1));
       expect(reading.moving, isFalse);
       expect(reading.driver1Mode, DriverMode.rest);
+      // Второй карты не было, а F904 — 0 («отдых»): без F90A второго
+      // водителя нет (BT-19)
+      expect(reading.driver2Mode, isNull);
       expect(reading.continuousDriving, const Duration(minutes: 5));
       expect(reading.breakTotal, const Duration(hours: 2, minutes: 58));
       expect(reading.currentActivity, const Duration(hours: 2, minutes: 43));

@@ -26,6 +26,7 @@ Map<int, List<int>> drivingValues() => {
   TachoDid.driveRecognize.id: [1],
   TachoDid.driver1WorkingState.id: [3],
   TachoDid.driver2WorkingState.id: [1],
+  TachoDid.driver2Card.id: [1],
   TachoDid.driver1ContinuousDrivingTime.id: [0, 90],
   TachoDid.driver1CumulativeBreakTime.id: [0, 15],
   TachoDid.driver1CurrentDurationOfSelectedActivity.id: [0, 90],

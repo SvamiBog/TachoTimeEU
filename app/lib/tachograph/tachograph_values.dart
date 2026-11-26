@@ -20,6 +20,10 @@ enum TachoDid {
   driveRecognize(0xF905, personal: false),
   driver1WorkingState(0xF903),
   driver2WorkingState(0xF904),
+
+  /// Карта водителя во 2-м слоте: без неё DTCO 4.1a отдаёт режим водителя
+  /// 2 как «отдых» (26.11.2026).
+  driver2Card(0xF90A, personal: false),
   driver1ContinuousDrivingTime(0xF923),
   driver1CumulativeBreakTime(0xF925),
   driver1CurrentDurationOfSelectedActivity(0xF927),
@@ -63,6 +67,11 @@ bool? decodeDriveRecognize(List<int> value) {
     _ => null,
   };
 }
+
+/// Карта водителя в слоте (2 бита, как в J1939): 1 — вставлена, 0 — нет
+/// (или вставлена карта мастерской, контролёра, предприятия), остальное —
+/// нет данных.
+bool? decodeCardPresent(List<int> value) => decodeDriveRecognize(value);
 
 /// Длительность в минутах — целое без знака, старший байт первым. Значения
 /// от FB… и выше — «ошибка» и «нет данных», как в J1939. Единицу (минуты)
@@ -178,7 +187,11 @@ TachographReading decodeReading({
   final time = values[TachoDid.timeDate];
   final moving = values[TachoDid.driveRecognize];
   final driver1 = values[TachoDid.driver1WorkingState];
-  final driver2 = values[TachoDid.driver2WorkingState];
+  // Режим водителя 2 — только когда тахограф подтвердил его карту
+  final card2 = values[TachoDid.driver2Card];
+  final driver2 = card2 != null && decodeCardPresent(card2) == true
+      ? values[TachoDid.driver2WorkingState]
+      : null;
   return TachographReading(
     at: at,
     vin: vin == null ? null : decodeVin(vin),
