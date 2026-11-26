@@ -120,6 +120,46 @@ void main() {
       expect(reading.hasDriverData, isTrue);
     });
 
+    test('BT-11: настоящие ответы DTCO 4.1a владельца (26.11.2026)', () {
+      // Байты из журнала обмена: водитель на отдыхе, машина стоит; F9A1,
+      // F9AF и F9B1 этот тахограф не поддерживает (7F 22 31)
+      final reading = decodeReading(
+        at: DateTime.utc(2026, 11, 26, 11, 56, 9),
+        values: {
+          TachoDid.vehicleIdentificationNumber: [
+            0x57, 0x31, 0x54, 0x39, 0x36, 0x33, 0x34, 0x30, 0x31, //
+            0x31, 0x30, 0x39, 0x30, 0x36, 0x34, 0x30, 0x35,
+          ],
+          TachoDid.timeDate: [0x04, 0x38, 0x0B, 0x0B, 0x66, 0x29, 0x7D, 0x7E],
+          TachoDid.driveRecognize: [0x00],
+          TachoDid.driver1WorkingState: [0x00],
+          TachoDid.driver2WorkingState: [0x00],
+          TachoDid.driver1ContinuousDrivingTime: [0x00, 0x05],
+          TachoDid.driver1CumulativeBreakTime: [0x00, 0xB2],
+          TachoDid.driver1CurrentDurationOfSelectedActivity: [0x00, 0xA3],
+          TachoDid.driver1DrivingTimePreviousAndCurrentWeek: [0x0D, 0x20],
+          TachoDid.driver1CurrentDailyDrivingTime: [0x00, 0x3B],
+          TachoDid.driver1CurrentWeeklyDrivingTime: [0x05, 0x5B],
+          TachoDid.driver1TimeLeftUntilNewDailyRestPeriod: [0x01, 0xD8],
+        },
+        consentMissing: false,
+      );
+      expect(reading.vin, 'W1T96340110906405');
+      // Часы тахографа — UTC; пояс водителя (+1 ч) в последних байтах
+      expect(reading.tachographTime, DateTime.utc(2026, 11, 26, 11, 56, 1));
+      expect(reading.moving, isFalse);
+      expect(reading.driver1Mode, DriverMode.rest);
+      expect(reading.continuousDriving, const Duration(minutes: 5));
+      expect(reading.breakTotal, const Duration(hours: 2, minutes: 58));
+      expect(reading.currentActivity, const Duration(hours: 2, minutes: 43));
+      expect(reading.dailyDriving, const Duration(minutes: 59));
+      expect(reading.weeklyDriving, const Duration(hours: 22, minutes: 51));
+      expect(reading.fortnightDriving, const Duration(hours: 56));
+      expect(reading.untilDailyRest, const Duration(hours: 7, minutes: 52));
+      expect(reading.untilWeeklyRest, isNull);
+      expect(reading.hasDriverData, isTrue);
+    });
+
     test('без согласия данных водителя нет', () {
       final reading = decodeReading(
         at: DateTime.utc(2026),
