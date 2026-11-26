@@ -721,7 +721,7 @@
   "tachoUntilWeeklyRest": "Al riposo settimanale",
   "tachoShiftLeft": "Guida nel turno",
   "tachoWeekLeft": "Guida nella settimana",
-  "tachoNote": "I dati arrivano dal tachigrafo e si aggiornano ogni pochi secondi. Non finiscono nel registro di TachoGo.",
+  "tachoNote": "I valori arrivano dal tachigrafo e si aggiornano ogni pochi secondi. Finché c’è il collegamento, l’attività nel registro di TachoGo segue il tachigrafo.",
   "tachoDisconnect": "Disconnetti",
   "tachoNoPermission": "Consenti l’accesso ai dispositivi nelle vicinanze: senza, il telefono non trova il tachigrafo.",
   "tachoAllow": "Consenti",
@@ -743,5 +743,7 @@
   "tachoFailPairing": "L’associazione non è terminata. Rimuovi il tachigrafo nelle impostazioni Bluetooth del telefono, riapri Bluetooth → associazione sul tachigrafo e sceglilo sul telefono. Non riprovare subito: se non riesce, aspetta qualche minuto.",
   "tachoStepConnect": "Quando sul display del tachigrafo compare il simbolo Bluetooth, tocca il pulsante qui sotto e scegli il tachigrafo.",
   "tachoFailNotBonded": "Il telefono non è ancora associato al tachigrafo. Sul tachigrafo apri Bluetooth → associazione, poi scegli il tachigrafo nelle impostazioni Bluetooth del telefono e conferma le 6 cifre su entrambi. Quindi torna qui.",
-  "tachoOpenBluetooth": "Impostazioni Bluetooth"
+  "tachoOpenBluetooth": "Impostazioni Bluetooth",
+  "tachoLinkTitle": "Attività dal tachigrafo",
+  "tachoLinkHint": "{name}: cambia l’attività sul tachigrafo, l’app la segue da sola."
 }

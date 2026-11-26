@@ -133,6 +133,7 @@ class TachographReading {
     this.untilWeeklyRest,
     this.shiftDrivingLeft,
     this.weekDrivingLeft,
+    this.coDriverCard,
     this.consentMissing = false,
   });
 
@@ -162,6 +163,9 @@ class TachographReading {
   final Duration? shiftDrivingLeft;
   final Duration? weekDrivingLeft;
 
+  /// Карта водителя во 2-м слоте; null — тахограф не сказал.
+  final bool? coDriverCard;
+
   /// Тахограф не даёт данные водителя: в его меню не включено согласие ITS.
   final bool consentMissing;
 
@@ -171,6 +175,16 @@ class TachographReading {
       continuousDriving != null ||
       dailyDriving != null ||
       weeklyDriving != null;
+}
+
+/// Режим, на который переключить журнал по снимку [r], и с какого момента;
+/// null — журнал не трогать. Тахограф главнее журнала (решение 2026-11-26),
+/// но только для одного водителя: с картой во 2-м слоте неизвестно, чья
+/// карта в 1-м, — в экипаже карты меняют местами при смене за рулём.
+({DriverMode mode, DateTime since})? journalModeFrom(TachographReading r) {
+  final mode = r.driver1Mode;
+  if (mode == null || r.consentMissing || r.coDriverCard == true) return null;
+  return (mode: mode, since: r.at.subtract(r.currentActivity ?? Duration.zero));
 }
 
 /// Снимок из прочитанных значений [values] — сырые байты по номерам данных.
@@ -189,7 +203,8 @@ TachographReading decodeReading({
   final driver1 = values[TachoDid.driver1WorkingState];
   // Режим водителя 2 — только когда тахограф подтвердил его карту
   final card2 = values[TachoDid.driver2Card];
-  final driver2 = card2 != null && decodeCardPresent(card2) == true
+  final coDriverCard = card2 == null ? null : decodeCardPresent(card2);
+  final driver2 = coDriverCard == true
       ? values[TachoDid.driver2WorkingState]
       : null;
   return TachographReading(
@@ -213,6 +228,7 @@ TachographReading decodeReading({
       TachoDid.driver1RemainingDrivingTimeOnCurrentShift,
     ),
     weekDrivingLeft: minutes(TachoDid.driver1RemainingDrivingTimeOfCurrentWeek),
+    coDriverCard: coDriverCard,
     consentMissing: consentMissing,
   );
 }

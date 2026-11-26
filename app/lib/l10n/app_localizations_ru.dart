@@ -2855,7 +2855,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tachoNote =>
-      'Цифры — с тахографа, обновляются каждые несколько секунд. В журнал TachoGo они не попадают.';
+      'Цифры — с тахографа, обновляются каждые несколько секунд. Пока связь есть, режим в журнале TachoGo переключается по тахографу.';
 
   @override
   String get tachoDisconnect => 'Отключить';
@@ -2932,4 +2932,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tachoOpenBluetooth => 'Настройки Bluetooth';
+
+  @override
+  String get tachoLinkTitle => 'Режим — с тахографа';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: меняйте режим на тахографе — приложение переключится само.';
+  }
 }

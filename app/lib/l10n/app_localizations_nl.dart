@@ -2842,7 +2842,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tachoNote =>
-      'De cijfers komen van de tachograaf en worden om de paar seconden bijgewerkt. Ze komen niet in het TachoGo-logboek.';
+      'De cijfers komen van de tachograaf en worden om de paar seconden bijgewerkt. Zolang er verbinding is, volgt de activiteit in het TachoGo-logboek de tachograaf.';
 
   @override
   String get tachoDisconnect => 'Verbinding verbreken';
@@ -2919,4 +2919,12 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tachoOpenBluetooth => 'Bluetooth-instellingen';
+
+  @override
+  String get tachoLinkTitle => 'Activiteit van de tachograaf';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: wissel de activiteit op de tachograaf — de app volgt vanzelf.';
+  }
 }

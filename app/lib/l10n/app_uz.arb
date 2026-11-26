@@ -721,7 +721,7 @@
   "tachoUntilWeeklyRest": "Haftalik dam olishgacha",
   "tachoShiftLeft": "Smenada haydash",
   "tachoWeekLeft": "Haftada haydash",
-  "tachoNote": "Raqamlar taxografdan olinadi va har necha soniyada yangilanadi. Ular TachoGo jurnaliga tushmaydi.",
+  "tachoNote": "Raqamlar taxografdan olinadi va har bir necha soniyada yangilanadi. Aloqa bor ekan, TachoGo jurnalidagi rejim taxografga qarab almashadi.",
   "tachoDisconnect": "Uzish",
   "tachoNoPermission": "Yaqin-atrofdagi qurilmalarga ruxsat bering: busiz telefon taxografni topa olmaydi.",
   "tachoAllow": "Ruxsat berish",
@@ -743,5 +743,7 @@
   "tachoFailPairing": "Juftlash tugamadi. Telefonning Bluetooth sozlamalarida taxografni oʻchiring, taxografda yana Bluetooth → juftlash boʻlimini oching va telefonda taxografni tanlang. Ketma-ket takrorlamang: chiqmasa, bir necha daqiqa kuting.",
   "tachoStepConnect": "Taxograf ekranida Bluetooth belgisi paydo boʻlgach, quyidagi tugmani bosing va taxografni tanlang.",
   "tachoFailNotBonded": "Telefon hali taxograf bilan juftlanmagan. Taxografda Bluetooth → juftlash boʻlimini oching, soʻng telefonning Bluetooth sozlamalarida taxografni tanlang va 6 ta raqamni ikkalasida ham tasdiqlang. Keyin bu yerga qayting.",
-  "tachoOpenBluetooth": "Bluetooth sozlamalari"
+  "tachoOpenBluetooth": "Bluetooth sozlamalari",
+  "tachoLinkTitle": "Rejim — taxografdan",
+  "tachoLinkHint": "{name}: rejimni taxografda almashtiring — ilova oʻzi almashadi."
 }

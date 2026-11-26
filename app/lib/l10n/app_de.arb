@@ -721,7 +721,7 @@
   "tachoUntilWeeklyRest": "Bis zur wöchentlichen Ruhezeit",
   "tachoShiftLeft": "Lenkzeit in der Schicht",
   "tachoWeekLeft": "Lenkzeit in der Woche",
-  "tachoNote": "Die Werte kommen vom Fahrtenschreiber und aktualisieren sich alle paar Sekunden. Sie landen nicht im TachoGo-Protokoll.",
+  "tachoNote": "Die Werte kommen vom Fahrtenschreiber und werden alle paar Sekunden aktualisiert. Solange die Verbindung steht, folgt die Tätigkeit im TachoGo-Protokoll dem Fahrtenschreiber.",
   "tachoDisconnect": "Trennen",
   "tachoNoPermission": "Erlauben Sie den Zugriff auf Geräte in der Nähe: Ohne ihn findet das Telefon den Fahrtenschreiber nicht.",
   "tachoAllow": "Erlauben",
@@ -743,5 +743,7 @@
   "tachoFailPairing": "Die Kopplung wurde nicht abgeschlossen. Entfernen Sie den Fahrtenschreiber in den Bluetooth-Einstellungen des Telefons, öffnen Sie am Fahrtenschreiber erneut Bluetooth → Kopplung und wählen Sie ihn auf dem Telefon aus. Nicht sofort wiederholen: Klappt es nicht, warten Sie einige Minuten.",
   "tachoStepConnect": "Sobald das Bluetooth-Symbol auf dem Display des Fahrtenschreibers erscheint, tippen Sie unten auf die Schaltfläche und wählen Sie den Fahrtenschreiber.",
   "tachoFailNotBonded": "Das Telefon ist noch nicht mit dem Fahrtenschreiber gekoppelt. Öffnen Sie am Fahrtenschreiber Bluetooth → Kopplung, wählen Sie dann in den Bluetooth-Einstellungen des Telefons den Fahrtenschreiber und bestätigen Sie die 6 Ziffern auf beiden Geräten. Kehren Sie danach hierher zurück.",
-  "tachoOpenBluetooth": "Bluetooth-Einstellungen"
+  "tachoOpenBluetooth": "Bluetooth-Einstellungen",
+  "tachoLinkTitle": "Tätigkeit vom Fahrtenschreiber",
+  "tachoLinkHint": "{name}: Wechseln Sie die Tätigkeit am Fahrtenschreiber — die App folgt von selbst."
 }

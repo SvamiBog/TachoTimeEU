@@ -2830,7 +2830,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tachoNote =>
-      'The figures come from the tachograph and refresh every few seconds. They do not go into the TachoGo log.';
+      'The figures come from the tachograph and refresh every few seconds. While connected, the activity in the TachoGo log follows the tachograph.';
 
   @override
   String get tachoDisconnect => 'Disconnect';
@@ -2908,4 +2908,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tachoOpenBluetooth => 'Bluetooth settings';
+
+  @override
+  String get tachoLinkTitle => 'Activity from the tachograph';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: change the activity on the tachograph — the app follows by itself.';
+  }
 }

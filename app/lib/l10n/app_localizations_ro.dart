@@ -2854,7 +2854,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tachoNote =>
-      'Cifrele vin din tahograf și se actualizează la câteva secunde. Nu ajung în jurnalul TachoGo.';
+      'Cifrele vin de la tahograf și se actualizează la câteva secunde. Cât timp există conexiune, modul din jurnalul TachoGo se schimbă după tahograf.';
 
   @override
   String get tachoDisconnect => 'Deconectează';
@@ -2933,4 +2933,12 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tachoOpenBluetooth => 'Setări Bluetooth';
+
+  @override
+  String get tachoLinkTitle => 'Modul — de la tahograf';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: schimbați modul pe tahograf — aplicația se va comuta singură.';
+  }
 }

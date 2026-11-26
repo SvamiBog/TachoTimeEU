@@ -2860,7 +2860,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get tachoNote =>
-      'Čísla sú z tachografu a obnovujú sa každých pár sekúnd. Do denníka TachoGo sa neukladajú.';
+      'Čísla sú z tachografu a obnovujú sa každých pár sekúnd. Kým trvá spojenie, režim v denníku TachoGo sa prepína podľa tachografu.';
 
   @override
   String get tachoDisconnect => 'Odpojiť';
@@ -2937,4 +2937,12 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get tachoOpenBluetooth => 'Nastavenia Bluetooth';
+
+  @override
+  String get tachoLinkTitle => 'Režim z tachografu';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: režim meňte na tachografe — aplikácia sa prepne sama.';
+  }
 }

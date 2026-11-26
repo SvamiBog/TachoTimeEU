@@ -2855,7 +2855,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tachoNote =>
-      'Les chiffres viennent du tachygraphe et se mettent à jour toutes les quelques secondes. Ils ne vont pas dans le journal TachoGo.';
+      'Les chiffres viennent du tachygraphe et se mettent à jour toutes les quelques secondes. Tant que la connexion dure, l’activité du journal TachoGo suit le tachygraphe.';
 
   @override
   String get tachoDisconnect => 'Déconnecter';
@@ -2934,4 +2934,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tachoOpenBluetooth => 'Réglages Bluetooth';
+
+  @override
+  String get tachoLinkTitle => 'Activité depuis le tachygraphe';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name : changez d’activité sur le tachygraphe, l’appli suit d’elle-même.';
+  }
 }

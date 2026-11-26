@@ -6,6 +6,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show KeepAliveLink;
+import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/tachograph/its_client.dart';
 import 'package:tachogo/tachograph/tachograph_platform.dart';
 import 'package:tachogo/tachograph/tachograph_providers.dart';
@@ -91,7 +93,24 @@ final class TachoFailed extends TachoState {
   final FoundDevice? device;
 }
 
-/// Экран живёт — живёт и связь: закрыли экран, соединение закрыто.
+/// Подключённый тахограф для главной: пока связь есть, режим журнала
+/// берётся с тахографа (BT-20). null — не подключён.
+final NotifierProvider<TachographLink, FoundDevice?> tachographLinkProvider =
+    NotifierProvider<TachographLink, FoundDevice?>(TachographLink.new);
+
+/// Which tachograph is connected now, for screens other than the tachograph
+/// screen.
+class TachographLink extends Notifier<FoundDevice?> {
+  @override
+  FoundDevice? build() => null;
+
+  FoundDevice? get device => state;
+
+  set device(FoundDevice? value) => state = value;
+}
+
+/// Поиск и ошибки живут, пока открыт экран; подключённый тахограф держит
+/// связь и после ухода с экрана — до «Отключить» или обрыва (BT-20).
 final NotifierProvider<TachographController, TachoState>
 tachographControllerProvider =
     NotifierProvider.autoDispose<TachographController, TachoState>(
@@ -109,6 +128,18 @@ class TachographController extends Notifier<TachoState> {
   final _found = <String, FoundDevice>{};
   bool _showAll = false;
 
+  /// Держит связь, когда экран закрыт.
+  KeepAliveLink? _keepAlive;
+
+  /// Подключённый тахограф для главной.
+  late TachographLink _link;
+
+  /// Главной сообщили о связи — при отключении сообщить, что её нет.
+  bool _linked = false;
+
+  /// Провайдер освобождается: другие провайдеры трогать уже нельзя.
+  bool _disposed = false;
+
   /// Номер попытки: ответ старой попытки состояние не меняет.
   int _attempt = 0;
 
@@ -117,7 +148,11 @@ class TachographController extends Notifier<TachoState> {
 
   @override
   TachoState build() {
-    ref.onDispose(() => unawaited(_release()));
+    _link = ref.read(tachographLinkProvider.notifier);
+    ref.onDispose(() {
+      _disposed = true;
+      unawaited(_release());
+    });
     return const TachoStart();
   }
 
@@ -219,11 +254,16 @@ class TachographController extends Notifier<TachoState> {
       await session.client.open();
       if (!_current(attempt)) return;
       state = TachoConnected(device, null);
+      _keepAlive = ref.keepAlive();
+      _link.device = device;
+      _linked = true;
       var read = false;
       _readings = session.reader.readings().listen(
         (reading) {
           read = true;
-          if (_current(attempt)) state = TachoConnected(device, reading);
+          if (!_current(attempt)) return;
+          state = TachoConnected(device, reading);
+          unawaited(_syncJournal(reading));
         },
         // Ни одного снимка — тахограф не отвечает на запросы, а не оборвался
         onError: (Object error) => read
@@ -298,6 +338,23 @@ class TachographController extends Notifier<TachoState> {
 
   void _log(String text) => ref.read(tachographLogProvider).event(text);
 
+  /// Режим журнала — как на тахографе. Повтор того же режима журнал не
+  /// меняет; момент раньше начала текущей записи репозиторий не берёт.
+  Future<void> _syncJournal(TachographReading reading) async {
+    final target = journalModeFrom(reading);
+    if (target == null) return;
+    try {
+      await ref
+          .read(activityRepositoryProvider)
+          .switchMode(target.mode, at: target.since);
+    } on Object catch (e, st) {
+      _log('journal sync failed: $e');
+      FlutterError.reportError(
+        FlutterErrorDetails(exception: e, stack: st, library: 'tachograph'),
+      );
+    }
+  }
+
   /// Новая попытка: прошлые поиск и соединение закрыты.
   Future<int> _restart() async {
     final attempt = ++_attempt;
@@ -319,6 +376,13 @@ class TachographController extends Notifier<TachoState> {
     _readings = null;
     _client = null;
     _connection = null;
+    if (_linked) {
+      _linked = false;
+      // Освобождается весь контейнер — главная уходит вместе с ним
+      if (!_disposed) _link.device = null;
+    }
+    final keepAlive = _keepAlive;
+    _keepAlive = null;
     // Отмену подписок не ждём: события перестают приходить сразу, а
     // остановка поиска Bluetooth может подтверждаться долго
     for (final cancel in cancels) {
@@ -326,5 +390,7 @@ class TachographController extends Notifier<TachoState> {
     }
     await client?.close();
     await connection?.close();
+    // Экран закрыт — провайдер освободится и сам
+    keepAlive?.close();
   }
 }

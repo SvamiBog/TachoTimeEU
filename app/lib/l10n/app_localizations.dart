@@ -4455,10 +4455,10 @@ abstract class AppLocalizations {
   /// **'Вождения на неделе'**
   String get tachoWeekLeft;
 
-  /// Пояснение под данными: откуда цифры и что они не сохраняются
+  /// Подпись под цифрами тахографа: откуда цифры и что режим журнала переключается по тахографу
   ///
   /// In ru, this message translates to:
-  /// **'Цифры — с тахографа, обновляются каждые несколько секунд. В журнал TachoGo они не попадают.'**
+  /// **'Цифры — с тахографа, обновляются каждые несколько секунд. Пока связь есть, режим в журнале TachoGo переключается по тахографу.'**
   String get tachoNote;
 
   /// Кнопка: отключиться от тахографа
@@ -4592,6 +4592,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Настройки Bluetooth'**
   String get tachoOpenBluetooth;
+
+  /// Плашка на главной, пока подключён тахограф: режим журнала берётся с тахографа
+  ///
+  /// In ru, this message translates to:
+  /// **'Режим — с тахографа'**
+  String get tachoLinkTitle;
+
+  /// Подпись плашки: имя тахографа; режим меняют на тахографе, приложение переключится само
+  ///
+  /// In ru, this message translates to:
+  /// **'{name}: меняйте режим на тахографе — приложение переключится само.'**
+  String tachoLinkHint(String name);
 }
 
 class _AppLocalizationsDelegate

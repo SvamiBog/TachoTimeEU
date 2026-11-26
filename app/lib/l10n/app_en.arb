@@ -721,7 +721,7 @@
   "tachoUntilWeeklyRest": "Until weekly rest",
   "tachoShiftLeft": "Driving in this shift",
   "tachoWeekLeft": "Driving this week",
-  "tachoNote": "The figures come from the tachograph and refresh every few seconds. They do not go into the TachoGo log.",
+  "tachoNote": "The figures come from the tachograph and refresh every few seconds. While connected, the activity in the TachoGo log follows the tachograph.",
   "tachoDisconnect": "Disconnect",
   "tachoNoPermission": "Allow access to nearby devices: without it the phone can’t find the tachograph.",
   "tachoAllow": "Allow",
@@ -743,5 +743,7 @@
   "tachoFailPairing": "Pairing did not finish. Remove the tachograph in the phone’s Bluetooth settings, open Bluetooth → pairing on the tachograph again and pick the tachograph on the phone. Don’t retry right away: if it fails, wait a few minutes.",
   "tachoStepConnect": "When the Bluetooth symbol appears on the tachograph screen, tap the button below and pick the tachograph.",
   "tachoFailNotBonded": "The phone is not paired with the tachograph yet. On the tachograph, open Bluetooth → pairing, then pick the tachograph in the phone’s Bluetooth settings and confirm the 6 digits on both. Then come back here.",
-  "tachoOpenBluetooth": "Bluetooth settings"
+  "tachoOpenBluetooth": "Bluetooth settings",
+  "tachoLinkTitle": "Activity from the tachograph",
+  "tachoLinkHint": "{name}: change the activity on the tachograph — the app follows by itself."
 }

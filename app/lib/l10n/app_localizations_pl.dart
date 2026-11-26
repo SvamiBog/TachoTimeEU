@@ -2864,7 +2864,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tachoNote =>
-      'Liczby pochodzą z tachografu i odświeżają się co kilka sekund. Nie trafiają do dziennika TachoGo.';
+      'Liczby pochodzą z tachografu i odświeżają się co kilka sekund. Dopóki jest połączenie, tryb w dzienniku TachoGo przełącza się według tachografu.';
 
   @override
   String get tachoDisconnect => 'Rozłącz';
@@ -2942,4 +2942,12 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tachoOpenBluetooth => 'Ustawienia Bluetooth';
+
+  @override
+  String get tachoLinkTitle => 'Tryb z tachografu';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: zmieniaj tryb na tachografie — aplikacja przełączy się sama.';
+  }
 }

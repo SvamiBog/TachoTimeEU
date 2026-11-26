@@ -2858,7 +2858,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tachoNote =>
-      'Die Werte kommen vom Fahrtenschreiber und aktualisieren sich alle paar Sekunden. Sie landen nicht im TachoGo-Protokoll.';
+      'Die Werte kommen vom Fahrtenschreiber und werden alle paar Sekunden aktualisiert. Solange die Verbindung steht, folgt die Tätigkeit im TachoGo-Protokoll dem Fahrtenschreiber.';
 
   @override
   String get tachoDisconnect => 'Trennen';
@@ -2938,4 +2938,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tachoOpenBluetooth => 'Bluetooth-Einstellungen';
+
+  @override
+  String get tachoLinkTitle => 'Tätigkeit vom Fahrtenschreiber';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: Wechseln Sie die Tätigkeit am Fahrtenschreiber — die App folgt von selbst.';
+  }
 }

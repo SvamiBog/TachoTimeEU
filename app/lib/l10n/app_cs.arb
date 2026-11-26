@@ -721,7 +721,7 @@
   "tachoUntilWeeklyRest": "Do týdenního odpočinku",
   "tachoShiftLeft": "Řízení ve směně",
   "tachoWeekLeft": "Řízení v týdnu",
-  "tachoNote": "Čísla jsou z tachografu a obnovují se každých pár sekund. Do deníku TachoGo se neukládají.",
+  "tachoNote": "Čísla jsou z tachografu a obnovují se každých pár sekund. Dokud trvá spojení, režim v deníku TachoGo se přepíná podle tachografu.",
   "tachoDisconnect": "Odpojit",
   "tachoNoPermission": "Povolte přístup k zařízením v okolí: bez něj telefon tachograf nenajde.",
   "tachoAllow": "Povolit",
@@ -743,5 +743,7 @@
   "tachoFailPairing": "Párování se nedokončilo. V nastavení Bluetooth telefonu odeberte tachograf, na tachografu znovu otevřete Bluetooth → párování a vyberte tachograf v telefonu. Nezkoušejte to hned znovu: když to nevyjde, počkejte pár minut.",
   "tachoStepConnect": "Až se na displeji tachografu objeví symbol Bluetooth, klepněte na tlačítko níže a vyberte tachograf.",
   "tachoFailNotBonded": "Telefon zatím není spárovaný s tachografem. Na tachografu otevřete Bluetooth → párování, pak v nastavení Bluetooth telefonu vyberte tachograf a potvrďte 6 číslic na obou. Potom se sem vraťte.",
-  "tachoOpenBluetooth": "Nastavení Bluetooth"
+  "tachoOpenBluetooth": "Nastavení Bluetooth",
+  "tachoLinkTitle": "Režim z tachografu",
+  "tachoLinkHint": "{name}: režim měňte na tachografu — aplikace se přepne sama."
 }

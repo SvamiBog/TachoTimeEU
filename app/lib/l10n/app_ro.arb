@@ -721,7 +721,7 @@
   "tachoUntilWeeklyRest": "Până la repausul săptămânal",
   "tachoShiftLeft": "Conducere în tură",
   "tachoWeekLeft": "Conducere în săptămână",
-  "tachoNote": "Cifrele vin din tahograf și se actualizează la câteva secunde. Nu ajung în jurnalul TachoGo.",
+  "tachoNote": "Cifrele vin de la tahograf și se actualizează la câteva secunde. Cât timp există conexiune, modul din jurnalul TachoGo se schimbă după tahograf.",
   "tachoDisconnect": "Deconectează",
   "tachoNoPermission": "Permiteți accesul la dispozitivele din apropiere: fără el telefonul nu găsește tahograful.",
   "tachoAllow": "Permite",
@@ -743,5 +743,7 @@
   "tachoFailPairing": "Asocierea nu s-a încheiat. În setările Bluetooth ale telefonului ștergeți tahograful, pe tahograf deschideți din nou Bluetooth → asociere și alegeți tahograful pe telefon. Nu repetați imediat: dacă nu merge, așteptați câteva minute.",
   "tachoStepConnect": "Când pe ecranul tahografului apare simbolul Bluetooth, apăsați butonul de mai jos și alegeți tahograful.",
   "tachoFailNotBonded": "Telefonul nu este încă asociat cu tahograful. Pe tahograf deschideți Bluetooth → asociere, apoi în setările Bluetooth ale telefonului alegeți tahograful și confirmați cele 6 cifre pe ambele. După aceea reveniți aici.",
-  "tachoOpenBluetooth": "Setări Bluetooth"
+  "tachoOpenBluetooth": "Setări Bluetooth",
+  "tachoLinkTitle": "Modul — de la tahograf",
+  "tachoLinkHint": "{name}: schimbați modul pe tahograf — aplicația se va comuta singură."
 }

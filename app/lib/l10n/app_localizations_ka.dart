@@ -2830,7 +2830,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get tachoNote =>
-      'ციფრები ტაქოგრაფიდანაა და ყოველ რამდენიმე წამში ახლდება. TachoGo-ს ჟურნალში არ ხვდება.';
+      'ციფრები ტაქოგრაფიდანაა და ყოველ რამდენიმე წამში ახლდება. სანამ კავშირი არის, TachoGo-ს ჟურნალში რეჟიმი ტაქოგრაფის მიხედვით იცვლება.';
 
   @override
   String get tachoDisconnect => 'გათიშვა';
@@ -2907,4 +2907,12 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get tachoOpenBluetooth => 'Bluetooth-ის პარამეტრები';
+
+  @override
+  String get tachoLinkTitle => 'რეჟიმი — ტაქოგრაფიდან';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: რეჟიმი ტაქოგრაფზე შეცვალეთ — აპი თავად გადაერთვება.';
+  }
 }

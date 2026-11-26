@@ -92,11 +92,11 @@ void main() {
       expect(find.text('0:15'), findsOneWidget);
       expect(find.text('5:00'), findsOneWidget);
       await tester.scrollUntilVisible(
-        find.textContaining('не попадают'),
+        find.textContaining('переключается по тахографу'),
         200,
         scrollable: find.byType(Scrollable).first,
       );
-      expect(find.textContaining('не попадают'), findsOneWidget);
+      expect(find.textContaining('переключается по тахографу'), findsOneWidget);
       await tester.tap(find.text('Отключить'));
       await exchange(tester);
       expect(platform.last!.closed, isTrue);

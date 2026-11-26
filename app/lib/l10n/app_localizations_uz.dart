@@ -2844,7 +2844,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get tachoNote =>
-      'Raqamlar taxografdan olinadi va har necha soniyada yangilanadi. Ular TachoGo jurnaliga tushmaydi.';
+      'Raqamlar taxografdan olinadi va har bir necha soniyada yangilanadi. Aloqa bor ekan, TachoGo jurnalidagi rejim taxografga qarab almashadi.';
 
   @override
   String get tachoDisconnect => 'Uzish';
@@ -2921,4 +2921,12 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get tachoOpenBluetooth => 'Bluetooth sozlamalari';
+
+  @override
+  String get tachoLinkTitle => 'Rejim — taxografdan';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: rejimni taxografda almashtiring — ilova oʻzi almashadi.';
+  }
 }

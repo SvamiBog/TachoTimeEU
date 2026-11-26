@@ -721,7 +721,7 @@
   "tachoUntilWeeklyRest": "Tot de wekelijkse rust",
   "tachoShiftLeft": "Rijtijd in deze dienst",
   "tachoWeekLeft": "Rijtijd deze week",
-  "tachoNote": "De cijfers komen van de tachograaf en worden om de paar seconden bijgewerkt. Ze komen niet in het TachoGo-logboek.",
+  "tachoNote": "De cijfers komen van de tachograaf en worden om de paar seconden bijgewerkt. Zolang er verbinding is, volgt de activiteit in het TachoGo-logboek de tachograaf.",
   "tachoDisconnect": "Verbinding verbreken",
   "tachoNoPermission": "Sta toegang tot apparaten in de buurt toe: zonder kan de telefoon de tachograaf niet vinden.",
   "tachoAllow": "Toestaan",
@@ -743,5 +743,7 @@
   "tachoFailPairing": "Het koppelen is niet afgerond. Verwijder de tachograaf in de Bluetooth-instellingen van de telefoon, open op de tachograaf opnieuw Bluetooth → koppelen en kies hem op de telefoon. Probeer het niet meteen opnieuw: lukt het niet, wacht dan een paar minuten.",
   "tachoStepConnect": "Zodra het Bluetooth-symbool op het scherm van de tachograaf verschijnt, tik op de knop hieronder en kies de tachograaf.",
   "tachoFailNotBonded": "De telefoon is nog niet gekoppeld met de tachograaf. Open op de tachograaf Bluetooth → koppelen, kies daarna de tachograaf in de Bluetooth-instellingen van de telefoon en bevestig de 6 cijfers op beide. Kom dan hier terug.",
-  "tachoOpenBluetooth": "Bluetooth-instellingen"
+  "tachoOpenBluetooth": "Bluetooth-instellingen",
+  "tachoLinkTitle": "Activiteit van de tachograaf",
+  "tachoLinkHint": "{name}: wissel de activiteit op de tachograaf — de app volgt vanzelf."
 }

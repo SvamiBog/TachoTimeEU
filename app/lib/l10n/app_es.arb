@@ -721,7 +721,7 @@
   "tachoUntilWeeklyRest": "Hasta el descanso semanal",
   "tachoShiftLeft": "Conducción en la jornada",
   "tachoWeekLeft": "Conducción en la semana",
-  "tachoNote": "Las cifras vienen del tacógrafo y se actualizan cada pocos segundos. No pasan al registro de TachoGo.",
+  "tachoNote": "Las cifras vienen del tacógrafo y se actualizan cada pocos segundos. Mientras haya conexión, la actividad del registro de TachoGo sigue al tacógrafo.",
   "tachoDisconnect": "Desconectar",
   "tachoNoPermission": "Permita el acceso a dispositivos cercanos: sin él, el teléfono no encuentra el tacógrafo.",
   "tachoAllow": "Permitir",
@@ -743,5 +743,7 @@
   "tachoFailPairing": "El emparejamiento no terminó. Elimine el tacógrafo en los ajustes de Bluetooth del teléfono, vuelva a abrir Bluetooth → emparejamiento en el tacógrafo y elíjalo en el teléfono. No lo repita enseguida: si falla, espere unos minutos.",
   "tachoStepConnect": "Cuando aparezca el símbolo de Bluetooth en la pantalla del tacógrafo, pulse el botón de abajo y elija el tacógrafo.",
   "tachoFailNotBonded": "El teléfono aún no está emparejado con el tacógrafo. En el tacógrafo, abra Bluetooth → emparejamiento; después elija el tacógrafo en los ajustes de Bluetooth del teléfono y confirme los 6 dígitos en ambos. Luego vuelva aquí.",
-  "tachoOpenBluetooth": "Ajustes de Bluetooth"
+  "tachoOpenBluetooth": "Ajustes de Bluetooth",
+  "tachoLinkTitle": "Actividad desde el tacógrafo",
+  "tachoLinkHint": "{name}: cambie la actividad en el tacógrafo; la app la sigue sola."
 }
