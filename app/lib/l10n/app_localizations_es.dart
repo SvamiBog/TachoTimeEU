@@ -2935,4 +2935,37 @@ class AppLocalizationsEs extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name: cambie la actividad en el tacógrafo; la app la sigue sola.';
   }
+
+  @override
+  String get tachoCardRead => 'Leer la tarjeta';
+
+  @override
+  String get tachoCardConfirmTitle =>
+      '¿Leer la tarjeta a través del tacógrafo?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'El tacógrafo anotará en la tarjeta que se leyó hoy y volverá a contar 28 días hasta el aviso de descarga.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Leyendo la tarjeta… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'No saque la tarjeta ni toque el tacógrafo mientras se lee.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Tarjeta leída: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'La tarjeta solo se lee con el vehículo parado, con una sola tarjeta de conductor y no cerca de las 00:00 o 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'No se pudo leer. Puede que el tacógrafo ya haya anotado la lectura en la tarjeta: inténtelo más tarde.';
 }

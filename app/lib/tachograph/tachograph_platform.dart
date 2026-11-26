@@ -114,6 +114,9 @@ class TachographConnectException implements Exception {
 abstract interface class TachographConnection {
   ItsPort get port;
 
+  /// Порт сервиса выгрузки (доп. 7); null — у тахографа его нет.
+  ItsPort? get downloadPort;
+
   /// Завершается, когда соединение оборвалось.
   Future<void> get lost;
 
@@ -324,8 +327,25 @@ class ReactiveBleTachographPlatform implements TachographPlatform {
       if (fifo == null || credits == null) {
         throw const TachographConnectException(ConnectFailure.notTachograph);
       }
+      // Выгрузка карты — свой сервис с теми же FIFO и кредитами
+      final download = services
+          .where((s) => '${s.id.expanded}' == ItsUuids.downloadService)
+          .firstOrNull;
+      Characteristic? findDownload(String id) => download?.characteristics
+          .where((c) => '${c.id.expanded}' == id)
+          .firstOrNull;
+      final downloadFifo = findDownload(ItsUuids.downloadFifo);
+      final downloadCredits = findDownload(ItsUuids.downloadCredits);
       return _BleConnection(
         _BlePort(fifo: fifo, credits: credits, log: log, maxPacket: mtu - 3),
+        downloadFifo == null || downloadCredits == null
+            ? null
+            : _BlePort(
+                fifo: downloadFifo,
+                credits: downloadCredits,
+                log: log,
+                maxPacket: mtu - 3,
+              ),
         lost.future,
         subscription.cancel,
       );
@@ -491,10 +511,13 @@ class _BlePort implements ItsPort {
 /// A tachograph connected over `flutter_reactive_ble`: cancelling the
 /// connection stream disconnects it.
 class _BleConnection implements TachographConnection {
-  new(this.port, this.lost, this._cancel);
+  new(this.port, this.downloadPort, this.lost, this._cancel);
 
   @override
   final ItsPort port;
+
+  @override
+  final ItsPort? downloadPort;
 
   @override
   final Future<void> lost;

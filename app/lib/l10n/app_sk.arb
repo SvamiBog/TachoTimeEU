@@ -745,5 +745,13 @@
   "tachoFailNotBonded": "Telefón ešte nie je spárovaný s tachografom. Na tachografe otvorte Bluetooth → párovanie, potom v nastaveniach Bluetooth telefónu vyberte tachograf a potvrďte 6 číslic na oboch. Nakoniec sa sem vráťte.",
   "tachoOpenBluetooth": "Nastavenia Bluetooth",
   "tachoLinkTitle": "Režim z tachografu",
-  "tachoLinkHint": "{name}: režim meňte na tachografe — aplikácia sa prepne sama."
+  "tachoLinkHint": "{name}: režim meňte na tachografe — aplikácia sa prepne sama.",
+  "tachoCardRead": "Načítať kartu",
+  "tachoCardConfirmTitle": "Načítať kartu cez tachograf?",
+  "tachoCardConfirmText": "Tachograf si na kartu zapíše, že bola dnes načítaná, a začne znova počítať 28 dní do pripomienky stiahnutia.",
+  "tachoCardReading": "Načítavame kartu… {kb} KB",
+  "tachoCardKeep": "Počas načítavania kartu nevyberajte a na tachograf nesiahajte.",
+  "tachoCardDone": "Karta načítaná: {kb} KB.",
+  "tachoCardNotNow": "Kartu možno načítať iba v státí, s jednou kartou vodiča v tachografe a nie okolo 00:00 a 12:00 UTC.",
+  "tachoCardFailed": "Načítanie zlyhalo. Tachograf už možno načítanie zapísal na kartu — skúste to neskôr."
 }

@@ -2915,4 +2915,36 @@ class AppLocalizationsKa extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name: რეჟიმი ტაქოგრაფზე შეცვალეთ — აპი თავად გადაერთვება.';
   }
+
+  @override
+  String get tachoCardRead => 'ბარათის წაკითხვა';
+
+  @override
+  String get tachoCardConfirmTitle => 'წავიკითხოთ ბარათი ტაქოგრაფით?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'ტაქოგრაფი ბარათზე მონიშნავს, რომ ის დღეს წაიკითხეს, და წაკითხვის შეხსენებამდე 28 დღის თვლას თავიდან დაიწყებს.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'ბარათს ვკითხულობთ… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'წაკითხვის დროს ბარათი არ ამოიღოთ და ტაქოგრაფს არ შეეხოთ.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'ბარათი წაკითხულია: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'ბარათის წაკითხვა შეიძლება მხოლოდ დგომისას, როცა ტაქოგრაფში მძღოლის ერთი ბარათია, და არა 00:00-სა და 12:00 UTC-ის ახლოს.';
+
+  @override
+  String get tachoCardFailed =>
+      'წაკითხვა ვერ მოხერხდა. ტაქოგრაფმა შეიძლება უკვე მონიშნა წაკითხვა ბარათზე — სცადეთ მოგვიანებით.';
 }

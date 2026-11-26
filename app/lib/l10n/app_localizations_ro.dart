@@ -2941,4 +2941,36 @@ class AppLocalizationsRo extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name: schimbați modul pe tahograf — aplicația se va comuta singură.';
   }
+
+  @override
+  String get tachoCardRead => 'Citește cardul';
+
+  @override
+  String get tachoCardConfirmTitle => 'Citiți cardul prin tahograf?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Tahograful va nota pe card că a fost citit azi și va începe din nou să numere 28 de zile până la memento-ul de citire.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Citim cardul… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Nu scoateți cardul și nu atingeți tahograful cât timp durează citirea.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Card citit: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Cardul se poate citi doar în staționare, cu un singur card de șofer în tahograf și nu în jurul orelor 00:00 și 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Citirea a eșuat. Este posibil ca tahograful să fi notat deja citirea pe card — încercați mai târziu.';
 }

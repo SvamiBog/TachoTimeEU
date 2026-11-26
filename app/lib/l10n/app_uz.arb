@@ -745,5 +745,13 @@
   "tachoFailNotBonded": "Telefon hali taxograf bilan juftlanmagan. Taxografda Bluetooth → juftlash boʻlimini oching, soʻng telefonning Bluetooth sozlamalarida taxografni tanlang va 6 ta raqamni ikkalasida ham tasdiqlang. Keyin bu yerga qayting.",
   "tachoOpenBluetooth": "Bluetooth sozlamalari",
   "tachoLinkTitle": "Rejim — taxografdan",
-  "tachoLinkHint": "{name}: rejimni taxografda almashtiring — ilova oʻzi almashadi."
+  "tachoLinkHint": "{name}: rejimni taxografda almashtiring — ilova oʻzi almashadi.",
+  "tachoCardRead": "Kartani oʻqish",
+  "tachoCardConfirmTitle": "Kartani taxograf orqali oʻqiysizmi?",
+  "tachoCardConfirmText": "Taxograf kartaga bugun oʻqilganini belgilaydi va oʻqish eslatmasigacha 28 kunni qaytadan sanay boshlaydi.",
+  "tachoCardReading": "Karta oʻqilmoqda… {kb} KB",
+  "tachoCardKeep": "Oʻqish davomida kartani chiqarmang va taxografga tegmang.",
+  "tachoCardDone": "Karta oʻqildi: {kb} KB.",
+  "tachoCardNotNow": "Kartani faqat toʻxtab turganda, taxografda bitta haydovchi kartasi boʻlganda va 00:00 hamda 12:00 UTC atrofida emas oʻqish mumkin.",
+  "tachoCardFailed": "Oʻqib boʻlmadi. Taxograf kartaga oʻqishni allaqachon belgilagan boʻlishi mumkin — keyinroq urinib koʻring."
 }

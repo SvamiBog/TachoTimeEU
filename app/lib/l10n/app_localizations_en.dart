@@ -2916,4 +2916,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name: change the activity on the tachograph — the app follows by itself.';
   }
+
+  @override
+  String get tachoCardRead => 'Read the card';
+
+  @override
+  String get tachoCardConfirmTitle => 'Read the card through the tachograph?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'The tachograph will mark on the card that it was read today and restart the 28-day count to its download reminder.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Reading the card… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Don’t remove the card or touch the tachograph while it is being read.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Card read: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'The card can only be read when parked, with one driver card in the tachograph, and not around 00:00 or 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Reading failed. The tachograph may already have marked the read on the card — try again later.';
 }

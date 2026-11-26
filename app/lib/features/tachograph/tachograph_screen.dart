@@ -16,6 +16,7 @@ import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
 import 'package:tachogo/core/widgets/buttons.dart';
+import 'package:tachogo/core/widgets/confirm_sheet.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
@@ -62,6 +63,12 @@ class TachographScreen extends ConsumerWidget {
       TachoConnected() => [
         CardGroup(children: [_ProgressRow(l.tachoWaiting)]),
       ],
+      TachoReadingCard(:final bytes) => [
+        CardGroup(
+          children: [_ProgressRow(l.tachoCardReading((bytes + 1023) ~/ 1024))],
+        ),
+        _Note(l.tachoCardKeep),
+      ],
       TachoFailed(:final problem) => [
         _Banner(_problem(l, problem), tone: Tone.violation),
         if (!logVisible) const _ReportRow(),
@@ -88,6 +95,10 @@ class TachographScreen extends ConsumerWidget {
       ),
       TachoConnected() => SecondaryButton(
         label: l.tachoDisconnect,
+        onPressed: () => unawaited(controller.stop()),
+      ),
+      TachoReadingCard() => SecondaryButton(
+        label: l.cancel,
         onPressed: () => unawaited(controller.stop()),
       ),
       TachoFailed(:final problem, :final device) => _FailedButtons(
@@ -486,6 +497,9 @@ class _LogPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final log = ref.watch(tachographLogProvider);
+    final connected = ref.watch(
+      tachographControllerProvider.select((s) => s is TachoConnected),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -503,6 +517,13 @@ class _LogPanel extends ConsumerWidget {
         const SizedBox(height: AppSpacing.betweenCardsMax),
         CardGroup(
           children: [
+            // Проба считывания карты — только по кнопке водителя
+            if (connected)
+              NavRow(
+                icon: Icons.sim_card_download_outlined,
+                title: l.tachoCardRead,
+                onTap: () => unawaited(_readCard(context, ref)),
+              ),
             NavRow(
               icon: Icons.copy_outlined,
               title: l.tachoLogCopy,
@@ -517,6 +538,28 @@ class _LogPanel extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  /// Предупредить про отметку на карте и считать карту.
+  static Future<void> _readCard(BuildContext context, WidgetRef ref) async {
+    final l = context.l10n;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final controller = ref.read(tachographControllerProvider.notifier);
+    final go = await showConfirmSheet(
+      context,
+      title: l.tachoCardConfirmTitle,
+      text: l.tachoCardConfirmText,
+      confirm: l.tachoCardRead,
+      cancel: l.cancel,
+    );
+    if (go != true) return;
+    final result = await controller.readCard();
+    final text = switch (result.outcome) {
+      CardReadOutcome.done => l.tachoCardDone((result.bytes + 1023) ~/ 1024),
+      CardReadOutcome.notNow => l.tachoCardNotNow,
+      CardReadOutcome.failed => l.tachoCardFailed,
+    };
+    messenger?.showSnackBar(SnackBar(content: Text(text)));
   }
 
   /// Весь журнал — в буфер обмена: вставить в сообщение разработчику.

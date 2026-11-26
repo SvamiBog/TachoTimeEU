@@ -12,6 +12,7 @@ import 'package:tachogo/tachograph/tachograph_providers.dart';
 import 'package:tachogo/tachograph/tachograph_reader.dart';
 import 'package:tachogo/tachograph/tachograph_values.dart';
 
+import 'fake_card_vu.dart';
 import 'fake_tachograph.dart';
 
 /// DTCO рядом: объявляет сервис ITS.
@@ -47,10 +48,13 @@ class FakeTachographPlatform implements TachographPlatform {
     this._readiness = BluetoothReadiness.ready,
     this.devices = const [dtco, headphones],
     FakeTachographPort Function()? port,
+    FakeCardVuPort? Function()? downloadPort,
     this.failure,
     this.bond = BondState.bonded,
     this.crash,
-  }) : _port = port ?? (() => FakeTachographPort(values: drivingValues()));
+  }) : _port = port ?? (() => FakeTachographPort(values: drivingValues())),
+       _downloadPort =
+           downloadPort ?? (() => FakeCardVuPort(card: fakeCardFile()));
 
   @override
   final bool supported;
@@ -63,6 +67,7 @@ class FakeTachographPlatform implements TachographPlatform {
   BluetoothReadiness _readiness;
   final List<FoundDevice> devices;
   final FakeTachographPort Function() _port;
+  final FakeCardVuPort? Function() _downloadPort;
 
   /// Подключение не удаётся.
   final ConnectFailure? failure;
@@ -135,17 +140,20 @@ class FakeTachographPlatform implements TachographPlatform {
   }) async {
     final failure = this.failure;
     if (failure != null) throw TachographConnectException(failure);
-    final connection = FakeConnection(_port());
+    final connection = FakeConnection(_port(), _downloadPort());
     connections.add(connection);
     return connection;
   }
 }
 
 class FakeConnection implements TachographConnection {
-  new(this.port);
+  new(this.port, [this.downloadPort]);
 
   @override
   final FakeTachographPort port;
+
+  @override
+  final FakeCardVuPort? downloadPort;
   final _lost = Completer<void>();
   bool closed = false;
 
@@ -181,4 +189,15 @@ List<Override> fastTachographSession() => [
       ),
     );
   }),
+  tachographDownloadClientProvider.overrideWithValue(
+    (port, log) => ItsClient(
+      port,
+      log: log,
+      timeout: const Duration(milliseconds: 300),
+      openTimeout: const Duration(seconds: 1),
+      retryGrant: const Duration(milliseconds: 100),
+      subscribeSettle: const Duration(milliseconds: 20),
+      requestGap: Duration.zero,
+    ),
+  ),
 ];

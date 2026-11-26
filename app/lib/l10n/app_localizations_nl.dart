@@ -2927,4 +2927,36 @@ class AppLocalizationsNl extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name: wissel de activiteit op de tachograaf — de app volgt vanzelf.';
   }
+
+  @override
+  String get tachoCardRead => 'Kaart uitlezen';
+
+  @override
+  String get tachoCardConfirmTitle => 'Kaart uitlezen via de tachograaf?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'De tachograaf noteert op de kaart dat die vandaag is uitgelezen en telt de 28 dagen tot de downloadherinnering opnieuw.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Kaart uitlezen… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Haal de kaart er niet uit en raak de tachograaf niet aan tijdens het uitlezen.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Kaart uitgelezen: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'De kaart kan alleen worden uitgelezen bij stilstand, met één bestuurderskaart in de tachograaf en niet rond 00:00 of 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Uitlezen mislukt. De tachograaf heeft het uitlezen mogelijk al op de kaart genoteerd — probeer het later opnieuw.';
 }

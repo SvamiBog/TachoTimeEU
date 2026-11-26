@@ -2942,4 +2942,36 @@ class AppLocalizationsFr extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name : changez d’activité sur le tachygraphe, l’appli suit d’elle-même.';
   }
+
+  @override
+  String get tachoCardRead => 'Lire la carte';
+
+  @override
+  String get tachoCardConfirmTitle => 'Lire la carte via le tachygraphe ?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Le tachygraphe notera sur la carte qu’elle a été lue aujourd’hui et recommencera à compter 28 jours avant le rappel de lecture.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Lecture de la carte… $kb Ko';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Ne retirez pas la carte et ne touchez pas au tachygraphe pendant la lecture.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Carte lue : $kb Ko.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'La carte ne se lit qu’à l’arrêt, avec une seule carte conducteur dans le tachygraphe, et pas vers 00:00 ou 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Échec de la lecture. Le tachygraphe a peut-être déjà noté la lecture sur la carte — réessayez plus tard.';
 }

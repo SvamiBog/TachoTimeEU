@@ -2950,4 +2950,36 @@ class AppLocalizationsPl extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name: zmieniaj tryb na tachografie — aplikacja przełączy się sama.';
   }
+
+  @override
+  String get tachoCardRead => 'Odczytaj kartę';
+
+  @override
+  String get tachoCardConfirmTitle => 'Odczytać kartę przez tachograf?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Tachograf zapisze na karcie, że odczytano ją dzisiaj, i zacznie od nowa liczyć 28 dni do przypomnienia o odczycie.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Odczyt karty… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Nie wyjmuj karty i nie dotykaj tachografu podczas odczytu.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Karta odczytana: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Kartę można odczytać tylko na postoju, gdy w tachografie jest jedna karta kierowcy, i nie około 00:00 i 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Nie udało się odczytać. Tachograf mógł już zapisać odczyt na karcie — spróbuj później.';
 }

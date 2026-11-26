@@ -2946,4 +2946,37 @@ class AppLocalizationsDe extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name: Wechseln Sie die Tätigkeit am Fahrtenschreiber — die App folgt von selbst.';
   }
+
+  @override
+  String get tachoCardRead => 'Karte auslesen';
+
+  @override
+  String get tachoCardConfirmTitle =>
+      'Karte über den Fahrtenschreiber auslesen?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Der Fahrtenschreiber vermerkt auf der Karte, dass sie heute ausgelesen wurde, und zählt die 28 Tage bis zur Download-Erinnerung neu.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Karte wird ausgelesen… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Karte nicht entnehmen und den Fahrtenschreiber nicht bedienen, solange ausgelesen wird.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Karte ausgelesen: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Die Karte lässt sich nur im Stand auslesen, mit nur einer Fahrerkarte im Gerät und nicht um 00:00 oder 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Auslesen fehlgeschlagen. Der Fahrtenschreiber hat das Auslesen eventuell schon auf der Karte vermerkt — später erneut versuchen.';
 }

@@ -229,6 +229,37 @@ void main() {
   });
 
   group('BT-12: журнал обмена на экране — сборка разработчика', () {
+    testWidgets('BT-21: подключено — «Считать карту» только по кнопке и '
+        'после предупреждения про отметку на карте', (tester) async {
+      await pump(tester, FakeTachographPlatform(), log: true);
+      expect(find.text('Считать карту'), findsNothing);
+      await tester.tap(find.text('Найти тахограф'));
+      await exchange(tester);
+      await tester.tap(find.text('DTCO 4.1a'));
+      await exchange(tester);
+      await exchange(tester);
+      // Строка ниже «Считать карту» видна — значит, и она не под кнопкой
+      await tester.scrollUntilVisible(
+        find.text('Сообщить о проблеме'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+      await tester.tap(find.text('Считать карту'));
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      expect(find.text('Считать карту через тахограф?'), findsOneWidget);
+      expect(find.textContaining('28 дней'), findsOneWidget);
+      // Передумал — карту не трогаем
+      await tester.tap(find.text('Отмена'));
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      expect(platform.last!.downloadPort!.requests, isEmpty);
+      await unmount(tester);
+    });
+
     testWidgets('пока пусто — подсказка; поиск — строки появляются сразу', (
       tester,
     ) async {

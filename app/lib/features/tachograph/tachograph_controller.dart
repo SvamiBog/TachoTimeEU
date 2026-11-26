@@ -4,14 +4,19 @@ library;
 
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show KeepAliveLink;
 import 'package:tachogo/data/journal/journal_providers.dart';
+import 'package:tachogo/tachograph/card_download.dart';
+import 'package:tachogo/tachograph/exchange_log.dart';
 import 'package:tachogo/tachograph/its_client.dart';
 import 'package:tachogo/tachograph/tachograph_platform.dart';
 import 'package:tachogo/tachograph/tachograph_providers.dart';
+import 'package:tachogo/tachograph/tachograph_reader.dart';
 import 'package:tachogo/tachograph/tachograph_values.dart';
+import 'package:tachogo/tachograph/uds.dart';
 
 /// What went wrong with the tachograph.
 enum TachoProblem {
@@ -85,6 +90,24 @@ final class TachoConnected extends TachoState {
   final TachographReading? reading;
 }
 
+/// Reading the driver card through the tachograph: [bytes] received so far.
+final class TachoReadingCard extends TachoState {
+  const new(this.device, this.bytes);
+
+  final FoundDevice device;
+  final int bytes;
+}
+
+/// How reading the card ended.
+enum CardReadOutcome {
+  done,
+
+  /// Нельзя сейчас: едет, вторая карта или тахограф занят.
+  notNow,
+
+  failed,
+}
+
 /// Failed: what happened and with which device.
 final class TachoFailed extends TachoState {
   const new(this.problem, {this.device});
@@ -125,6 +148,7 @@ class TachographController extends Notifier<TachoState> {
   StreamSubscription<TachographReading>? _readings;
   TachographConnection? _connection;
   ItsClient? _client;
+  TachographReader? _reader;
   final _found = <String, FoundDevice>{};
   bool _showAll = false;
 
@@ -251,25 +275,14 @@ class TachographController extends Notifier<TachoState> {
         ref.read(tachographLogProvider),
       );
       _client = session.client;
+      _reader = session.reader;
       await session.client.open();
       if (!_current(attempt)) return;
       state = TachoConnected(device, null);
       _keepAlive = ref.keepAlive();
       _link.device = device;
       _linked = true;
-      var read = false;
-      _readings = session.reader.readings().listen(
-        (reading) {
-          read = true;
-          if (!_current(attempt)) return;
-          state = TachoConnected(device, reading);
-          unawaited(_syncJournal(reading));
-        },
-        // Ни одного снимка — тахограф не отвечает на запросы, а не оборвался
-        onError: (Object error) => read
-            ? _lost(attempt, device, '$error')
-            : _fail(attempt, device, TachoProblem.noAnswer, '$error'),
-      );
+      _startReadings(attempt, device, session.reader, read: false);
       unawaited(connection.lost.then((_) => _lost(attempt, device, 'link')));
     } on TachographConnectException catch (e) {
       _fail(attempt, device, switch (e.failure) {
@@ -290,6 +303,72 @@ class TachographController extends Notifier<TachoState> {
       );
       _fail(attempt, device, TachoProblem.connect, '$e');
     }
+  }
+
+  /// Считать карту водителя через тахограф (проба в сборке разработчика):
+  /// только по кнопке водителя, один раз, без повторов. Опрос на это время
+  /// встаёт; до и после — даты выгрузки по UDS, чтобы видеть, что тахограф
+  /// отметил её на карте. Файл сохраняется байт в байт, в журнал при пробе
+  /// ничего не идёт.
+  Future<({CardReadOutcome outcome, int bytes})> readCard() async {
+    final current = state;
+    final connection = _connection;
+    final client = _client;
+    final reader = _reader;
+    const notNow = (outcome: CardReadOutcome.notNow, bytes: 0);
+    if (current is! TachoConnected ||
+        connection == null ||
+        client == null ||
+        reader == null) {
+      return notNow;
+    }
+    final reading = current.reading;
+    if (!cardReadAllowed(reading, ref.read(clockProvider).toUtc())) {
+      _log(
+        'card read: not now (moving=${reading?.moving} '
+        'card2=${reading?.coDriverCard})',
+      );
+      return notNow;
+    }
+    final port = connection.downloadPort;
+    if (port == null) {
+      _log('card read: no download service');
+      return (outcome: CardReadOutcome.failed, bytes: 0);
+    }
+    final attempt = _attempt;
+    final device = current.device;
+    await _readings?.cancel();
+    _readings = null;
+    state = TachoReadingCard(device, 0);
+    final log = ref.read(tachographLogProvider);
+    await _logDownloadDates(client, 'before');
+    var result = (outcome: CardReadOutcome.failed, bytes: 0);
+    final download = ref.read(tachographDownloadClientProvider)(port, log);
+    try {
+      await download.open();
+      final card = await CardDownloader(download, log: log).download(
+        progress: (_, bytes) {
+          if (_current(attempt)) state = TachoReadingCard(device, bytes);
+        },
+      );
+      _logCardFile(card);
+      final path = await ref.read(tachographCardStoreProvider)(
+        card.bytes,
+        clock.now().toUtc(),
+      );
+      _log('card saved: $path');
+      result = (outcome: CardReadOutcome.done, bytes: card.bytes.length);
+    } on Object catch (e) {
+      _log('card read failed: $e');
+    } finally {
+      await download.close();
+    }
+    if (!_current(attempt)) return result;
+    await _logDownloadDates(client, 'after');
+    if (!_current(attempt)) return result;
+    state = TachoConnected(device, reading);
+    _startReadings(attempt, device, reader, read: true);
+    return result;
   }
 
   /// Остановить поиск или отключиться — снова начало.
@@ -338,6 +417,68 @@ class TachographController extends Notifier<TachoState> {
 
   void _log(String text) => ref.read(tachographLogProvider).event(text);
 
+  /// Опрос тахографа: снимки — на экран и в режим журнала.
+  void _startReadings(
+    int attempt,
+    FoundDevice device,
+    TachographReader reader, {
+    required bool read,
+  }) {
+    var got = read;
+    _readings = reader.readings().listen(
+      (reading) {
+        got = true;
+        if (!_current(attempt)) return;
+        state = TachoConnected(device, reading);
+        unawaited(_syncJournal(reading));
+      },
+      // Ни одного снимка — тахограф не отвечает на запросы, а не оборвался
+      onError: (Object error) => got
+          ? _lost(attempt, device, '$error')
+          : _fail(attempt, device, TachoProblem.noAnswer, '$error'),
+    );
+  }
+
+  /// Даты выгрузки карты по UDS — в журнал обмена: следующая обязательная
+  /// выгрузка, за сколько дней предупреждать, период, срок карты.
+  Future<void> _logDownloadDates(ItsClient client, String label) async {
+    final parts = <String>[];
+    for (final id in const [0xF99E, 0xF994, 0xF990, 0xF99D]) {
+      final name = hexBytes([id >> 8, id & 0xFF]).replaceAll(' ', '');
+      try {
+        final reply = parseUdsReply(await client.request(readDataRequest(id)));
+        parts.add(switch (reply) {
+          UdsData(:final data) => '$name=${hexBytes(data)}',
+          UdsRefused(:final code) => '$name=refused ${hexBytes([code])}',
+          UdsPending() || UdsUnexpected() => '$name=?',
+        });
+      } on ItsException catch (e) {
+        parts.add('$name=${e.failure.name}');
+      }
+    }
+    _log('card dates $label: ${parts.join(' ')}');
+  }
+
+  /// Что прислал тахограф: части, байты, блоки файла и дата прошлой
+  /// выгрузки (блок 050E).
+  void _logCardFile(CardDownloadResult card) {
+    final blocks = cardFileBlocks(card.bytes);
+    String fid(int v) => v.toRadixString(16).padLeft(4, '0');
+    final list = [
+      for (final b in blocks) '${fid(b.fid)}/${b.appendix}:${b.length}',
+    ].join(' ');
+    _log(
+      'card file: ${card.bytes.length} bytes, ${card.parts} parts, '
+      '${card.duration.inSeconds} s, ${blocks.length} blocks: $list',
+    );
+    for (final b in blocks.where((b) => b.fid == 0x050E)) {
+      _log(
+        'card last download (050E/${b.appendix}): '
+        '${hexBytes(card.bytes.sublist(b.offset, b.offset + b.length))}',
+      );
+    }
+  }
+
   /// Режим журнала — как на тахографе. Повтор того же режима журнал не
   /// меняет; момент раньше начала текущей записи репозиторий не берёт.
   Future<void> _syncJournal(TachographReading reading) async {
@@ -375,6 +516,7 @@ class TachographController extends Notifier<TachoState> {
     _readiness = null;
     _readings = null;
     _client = null;
+    _reader = null;
     _connection = null;
     if (_linked) {
       _linked = false;

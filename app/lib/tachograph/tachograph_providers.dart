@@ -1,7 +1,11 @@
 /// Providers of the tachograph link over Bluetooth (beta, read only).
 library;
 
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:tachogo/core/config/app_env.dart';
 import 'package:tachogo/tachograph/exchange_log.dart';
 import 'package:tachogo/tachograph/its_client.dart';
@@ -43,6 +47,34 @@ final tachographLogVisibleProvider = Provider<bool>(
 typedef TachographSession = ({ItsClient client, TachographReader reader});
 
 /// Как экран говорит с подключённым тахографом; тесты делают обмен быстрым.
+/// Клиент порта выгрузки карты: ответ на запрос части может идти дольше,
+/// пока тахограф читает карту.
+final tachographDownloadClientProvider =
+    Provider<ItsClient Function(ItsPort port, ExchangeLog log)>(
+      (ref) =>
+          (port, log) =>
+              ItsClient(port, log: log, timeout: const Duration(seconds: 10)),
+    );
+
+/// Сохранить файл карты байт в байт — в папку приложения, вне журнала;
+/// возвращает путь. Отправить фирме не предлагаем: считывание для фирмы —
+/// забота фирмы (решение 2026-11-26).
+final tachographCardStoreProvider =
+    Provider<Future<String> Function(Uint8List bytes, DateTime atUtc)>(
+      (ref) => (bytes, atUtc) async {
+        final root = await getApplicationDocumentsDirectory();
+        final dir = Directory('${root.path}/tachograph');
+        await dir.create(recursive: true);
+        String two(int v) => v.toString().padLeft(2, '0');
+        final stamp =
+            '${atUtc.year}${two(atUtc.month)}${two(atUtc.day)}_'
+            '${two(atUtc.hour)}${two(atUtc.minute)}${two(atUtc.second)}';
+        final file = File('${dir.path}/card_$stamp.ddd');
+        await file.writeAsBytes(bytes, flush: true);
+        return file.path;
+      },
+    );
+
 final tachographSessionProvider =
     Provider<TachographSession Function(ItsPort port, ExchangeLog log)>(
       (ref) => (port, log) {

@@ -745,5 +745,13 @@
   "tachoFailNotBonded": "Das Telefon ist noch nicht mit dem Fahrtenschreiber gekoppelt. Öffnen Sie am Fahrtenschreiber Bluetooth → Kopplung, wählen Sie dann in den Bluetooth-Einstellungen des Telefons den Fahrtenschreiber und bestätigen Sie die 6 Ziffern auf beiden Geräten. Kehren Sie danach hierher zurück.",
   "tachoOpenBluetooth": "Bluetooth-Einstellungen",
   "tachoLinkTitle": "Tätigkeit vom Fahrtenschreiber",
-  "tachoLinkHint": "{name}: Wechseln Sie die Tätigkeit am Fahrtenschreiber — die App folgt von selbst."
+  "tachoLinkHint": "{name}: Wechseln Sie die Tätigkeit am Fahrtenschreiber — die App folgt von selbst.",
+  "tachoCardRead": "Karte auslesen",
+  "tachoCardConfirmTitle": "Karte über den Fahrtenschreiber auslesen?",
+  "tachoCardConfirmText": "Der Fahrtenschreiber vermerkt auf der Karte, dass sie heute ausgelesen wurde, und zählt die 28 Tage bis zur Download-Erinnerung neu.",
+  "tachoCardReading": "Karte wird ausgelesen… {kb} KB",
+  "tachoCardKeep": "Karte nicht entnehmen und den Fahrtenschreiber nicht bedienen, solange ausgelesen wird.",
+  "tachoCardDone": "Karte ausgelesen: {kb} KB.",
+  "tachoCardNotNow": "Die Karte lässt sich nur im Stand auslesen, mit nur einer Fahrerkarte im Gerät und nicht um 00:00 oder 12:00 UTC.",
+  "tachoCardFailed": "Auslesen fehlgeschlagen. Der Fahrtenschreiber hat das Auslesen eventuell schon auf der Karte vermerkt — später erneut versuchen."
 }

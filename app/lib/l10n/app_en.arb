@@ -745,5 +745,13 @@
   "tachoFailNotBonded": "The phone is not paired with the tachograph yet. On the tachograph, open Bluetooth → pairing, then pick the tachograph in the phone’s Bluetooth settings and confirm the 6 digits on both. Then come back here.",
   "tachoOpenBluetooth": "Bluetooth settings",
   "tachoLinkTitle": "Activity from the tachograph",
-  "tachoLinkHint": "{name}: change the activity on the tachograph — the app follows by itself."
+  "tachoLinkHint": "{name}: change the activity on the tachograph — the app follows by itself.",
+  "tachoCardRead": "Read the card",
+  "tachoCardConfirmTitle": "Read the card through the tachograph?",
+  "tachoCardConfirmText": "The tachograph will mark on the card that it was read today and restart the 28-day count to its download reminder.",
+  "tachoCardReading": "Reading the card… {kb} KB",
+  "tachoCardKeep": "Don’t remove the card or touch the tachograph while it is being read.",
+  "tachoCardDone": "Card read: {kb} KB.",
+  "tachoCardNotNow": "The card can only be read when parked, with one driver card in the tachograph, and not around 00:00 or 12:00 UTC.",
+  "tachoCardFailed": "Reading failed. The tachograph may already have marked the read on the card — try again later."
 }

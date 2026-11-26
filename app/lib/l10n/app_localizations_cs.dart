@@ -2941,4 +2941,36 @@ class AppLocalizationsCs extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name: režim měňte na tachografu — aplikace se přepne sama.';
   }
+
+  @override
+  String get tachoCardRead => 'Načíst kartu';
+
+  @override
+  String get tachoCardConfirmTitle => 'Načíst kartu přes tachograf?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Tachograf si na kartu zapíše, že byla dnes načtena, a začne znovu počítat 28 dní do připomínky stažení.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Načítáme kartu… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Během načítání kartu nevytahujte a na tachograf nesahejte.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Karta načtena: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Kartu lze načíst jen na stání, s jednou kartou řidiče v tachografu a ne kolem 00:00 a 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Načtení se nezdařilo. Tachograf už možná načtení zapsal na kartu — zkuste to později.';
 }

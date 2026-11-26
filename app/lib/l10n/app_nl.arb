@@ -745,5 +745,13 @@
   "tachoFailNotBonded": "De telefoon is nog niet gekoppeld met de tachograaf. Open op de tachograaf Bluetooth → koppelen, kies daarna de tachograaf in de Bluetooth-instellingen van de telefoon en bevestig de 6 cijfers op beide. Kom dan hier terug.",
   "tachoOpenBluetooth": "Bluetooth-instellingen",
   "tachoLinkTitle": "Activiteit van de tachograaf",
-  "tachoLinkHint": "{name}: wissel de activiteit op de tachograaf — de app volgt vanzelf."
+  "tachoLinkHint": "{name}: wissel de activiteit op de tachograaf — de app volgt vanzelf.",
+  "tachoCardRead": "Kaart uitlezen",
+  "tachoCardConfirmTitle": "Kaart uitlezen via de tachograaf?",
+  "tachoCardConfirmText": "De tachograaf noteert op de kaart dat die vandaag is uitgelezen en telt de 28 dagen tot de downloadherinnering opnieuw.",
+  "tachoCardReading": "Kaart uitlezen… {kb} KB",
+  "tachoCardKeep": "Haal de kaart er niet uit en raak de tachograaf niet aan tijdens het uitlezen.",
+  "tachoCardDone": "Kaart uitgelezen: {kb} KB.",
+  "tachoCardNotNow": "De kaart kan alleen worden uitgelezen bij stilstand, met één bestuurderskaart in de tachograaf en niet rond 00:00 of 12:00 UTC.",
+  "tachoCardFailed": "Uitlezen mislukt. De tachograaf heeft het uitlezen mogelijk al op de kaart genoteerd — probeer het later opnieuw."
 }

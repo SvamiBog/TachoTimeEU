@@ -2929,4 +2929,36 @@ class AppLocalizationsUz extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name: rejimni taxografda almashtiring — ilova oʻzi almashadi.';
   }
+
+  @override
+  String get tachoCardRead => 'Kartani oʻqish';
+
+  @override
+  String get tachoCardConfirmTitle => 'Kartani taxograf orqali oʻqiysizmi?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Taxograf kartaga bugun oʻqilganini belgilaydi va oʻqish eslatmasigacha 28 kunni qaytadan sanay boshlaydi.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Karta oʻqilmoqda… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Oʻqish davomida kartani chiqarmang va taxografga tegmang.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Karta oʻqildi: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Kartani faqat toʻxtab turganda, taxografda bitta haydovchi kartasi boʻlganda va 00:00 hamda 12:00 UTC atrofida emas oʻqish mumkin.';
+
+  @override
+  String get tachoCardFailed =>
+      'Oʻqib boʻlmadi. Taxograf kartaga oʻqishni allaqachon belgilagan boʻlishi mumkin — keyinroq urinib koʻring.';
 }

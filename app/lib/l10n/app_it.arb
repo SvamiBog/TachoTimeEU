@@ -745,5 +745,13 @@
   "tachoFailNotBonded": "Il telefono non è ancora associato al tachigrafo. Sul tachigrafo apri Bluetooth → associazione, poi scegli il tachigrafo nelle impostazioni Bluetooth del telefono e conferma le 6 cifre su entrambi. Quindi torna qui.",
   "tachoOpenBluetooth": "Impostazioni Bluetooth",
   "tachoLinkTitle": "Attività dal tachigrafo",
-  "tachoLinkHint": "{name}: cambia l’attività sul tachigrafo, l’app la segue da sola."
+  "tachoLinkHint": "{name}: cambia l’attività sul tachigrafo, l’app la segue da sola.",
+  "tachoCardRead": "Leggi la carta",
+  "tachoCardConfirmTitle": "Leggere la carta tramite il tachigrafo?",
+  "tachoCardConfirmText": "Il tachigrafo segnerà sulla carta che è stata letta oggi e ricomincerà a contare 28 giorni fino al promemoria di scarico.",
+  "tachoCardReading": "Lettura della carta… {kb} KB",
+  "tachoCardKeep": "Non estrarre la carta e non toccare il tachigrafo durante la lettura.",
+  "tachoCardDone": "Carta letta: {kb} KB.",
+  "tachoCardNotNow": "La carta si legge solo a veicolo fermo, con una sola carta conducente nel tachigrafo e non verso le 00:00 o le 12:00 UTC.",
+  "tachoCardFailed": "Lettura non riuscita. Il tachigrafo potrebbe aver già segnato la lettura sulla carta: riprova più tardi."
 }

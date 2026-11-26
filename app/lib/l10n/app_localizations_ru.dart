@@ -2940,4 +2940,36 @@ class AppLocalizationsRu extends AppLocalizations {
   String tachoLinkHint(String name) {
     return '$name: меняйте режим на тахографе — приложение переключится само.';
   }
+
+  @override
+  String get tachoCardRead => 'Считать карту';
+
+  @override
+  String get tachoCardConfirmTitle => 'Считать карту через тахограф?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Тахограф отметит на карте, что её считали сегодня, и начнёт заново считать 28 дней до напоминания о считывании.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Считываем карту… $kb КБ';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Не вынимайте карту и не трогайте тахограф, пока идёт считывание.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Карта считана: $kb КБ.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Считать карту можно только на стоянке, когда в тахографе одна карта водителя, и не около 00:00 и 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Считать не удалось. Тахограф мог уже отметить считывание на карте — повторите позже.';
 }

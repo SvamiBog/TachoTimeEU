@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tacho_engine/tacho_engine.dart';
@@ -12,7 +14,8 @@ import 'package:tachogo/tachograph/tachograph_providers.dart';
 import 'package:tachogo/tachograph/tachograph_values.dart';
 import 'package:tachogo/tachograph/uds.dart';
 
-import '../support/app_harness.dart' show memoryDatabase;
+import '../support/app_harness.dart' show TestClock, memoryDatabase;
+import 'fake_card_vu.dart';
 import 'fake_tachograph.dart';
 import 'fake_tachograph_platform.dart';
 
@@ -21,6 +24,9 @@ void main() {
   late ProviderContainer container;
   late AppDatabase db;
   late ActivityRepository journal;
+
+  /// Сохранённые файлы карты.
+  final saved = <Uint8List>[];
   late ProviderSubscription<TachoState> subscription;
 
   void start(FakeTachographPlatform p) {
@@ -30,6 +36,14 @@ void main() {
     container = ProviderContainer(
       overrides: [
         activityRepositoryProvider.overrideWithValue(journal),
+        // Не около 00:00 и 12:00 UTC: в это время считывать карту нельзя
+        clockProvider.overrideWith(
+          () => TestClock(DateTime.utc(2026, 9, 22, 14)),
+        ),
+        tachographCardStoreProvider.overrideWithValue((bytes, at) async {
+          saved.add(bytes);
+          return 'card.ddd';
+        }),
         tachographPlatformProvider.overrideWithValue(p),
         tachographLogProvider.overrideWithValue(
           ExchangeLog(now: () => DateTime.utc(2026, 9, 22, 12)),
@@ -50,6 +64,7 @@ void main() {
       Future<void>.delayed(d);
 
   tearDown(() async {
+    saved.clear();
     container.dispose();
     await db.close();
   });
@@ -170,6 +185,91 @@ void main() {
       await settle();
       subscription = container.listen(tachographControllerProvider, (_, _) {});
       expect(state(), isA<TachoStart>());
+    });
+  });
+
+  group('BT-21: проба считывания карты', () {
+    /// Стоит, второй карты нет.
+    FakeTachographPlatform standing({FakeCardVuPort? vu}) =>
+        FakeTachographPlatform(
+          port: () => FakeTachographPort(
+            values: {
+              ...drivingValues(),
+              TachoDid.driveRecognize.id: [0],
+              TachoDid.driver2Card.id: [0],
+            },
+          ),
+          downloadPort: () => vu ?? FakeCardVuPort(card: fakeCardFile()),
+        );
+
+    Future<({CardReadOutcome outcome, int bytes})> read() =>
+        controller().readCard();
+
+    test('стоит, одна карта — файл байт в байт, даты до и после — в '
+        'журнал обмена, опрос продолжается', () async {
+      final vu = FakeCardVuPort(card: fakeCardFile());
+      start(standing(vu: vu));
+      await controller().connect(dtco);
+      await settle(const Duration(milliseconds: 300));
+      final states = <TachoState>[];
+      final watch = container.listen(
+        tachographControllerProvider,
+        (_, s) => states.add(s),
+      );
+      final result = await read();
+      watch.close();
+      expect(result.outcome, CardReadOutcome.done);
+      expect(result.bytes, fakeCardFile().length);
+      expect(saved.single, fakeCardFile());
+      expect(states.whereType<TachoReadingCard>(), isNotEmpty);
+      expect(state(), isA<TachoConnected>());
+      final lines = container.read(tachographLogProvider).lines;
+      expect(lines.any((l) => l.contains('card dates before: F99E=')), isTrue);
+      expect(lines.any((l) => l.contains('card dates after: F99E=')), isTrue);
+      expect(
+        lines.any(
+          (l) => l.contains('card last download (050E/0): 6A 01 02 03'),
+        ),
+        isTrue,
+      );
+      expect(vu.closed, isTrue);
+      // Опрос снова идёт
+      final asked = platform.last!.port.requests.length;
+      await settle(const Duration(milliseconds: 1500));
+      expect(platform.last!.port.requests.length, greaterThan(asked));
+    });
+
+    test('едет — «нельзя сейчас», карту не трогаем', () async {
+      final vu = FakeCardVuPort(card: fakeCardFile());
+      start(
+        FakeTachographPlatform(
+          port: () => FakeTachographPort(
+            values: {
+              ...drivingValues(),
+              TachoDid.driver2Card.id: [0],
+            },
+          ),
+          downloadPort: () => vu,
+        ),
+      );
+      await controller().connect(dtco);
+      await settle(const Duration(milliseconds: 300));
+      final result = await read();
+      expect(result.outcome, CardReadOutcome.notNow);
+      expect(vu.requests, isEmpty);
+      expect(saved, isEmpty);
+    });
+
+    test('тахограф отказал — «не удалось», связь и опрос остаются', () async {
+      start(
+        standing(vu: FakeCardVuPort(card: fakeCardFile(), refuseCard: true)),
+      );
+      await controller().connect(dtco);
+      await settle(const Duration(milliseconds: 300));
+      final result = await read();
+      expect(result.outcome, CardReadOutcome.failed);
+      expect(saved, isEmpty);
+      expect(state(), isA<TachoConnected>());
     });
   });
 

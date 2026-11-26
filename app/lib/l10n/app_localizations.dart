@@ -4604,6 +4604,54 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'{name}: меняйте режим на тахографе — приложение переключится само.'**
   String tachoLinkHint(String name);
+
+  /// Кнопка пробы в сборке разработчика: считать карту водителя через тахограф
+  ///
+  /// In ru, this message translates to:
+  /// **'Считать карту'**
+  String get tachoCardRead;
+
+  /// Шторка перед считыванием карты: заголовок
+  ///
+  /// In ru, this message translates to:
+  /// **'Считать карту через тахограф?'**
+  String get tachoCardConfirmTitle;
+
+  /// Шторка перед считыванием: тахограф сам отметит считывание на карте, и его напоминание о 28 днях начнётся заново
+  ///
+  /// In ru, this message translates to:
+  /// **'Тахограф отметит на карте, что её считали сегодня, и начнёт заново считать 28 дней до напоминания о считывании.'**
+  String get tachoCardConfirmText;
+
+  /// Ход считывания карты: сколько килобайт пришло
+  ///
+  /// In ru, this message translates to:
+  /// **'Считываем карту… {kb} КБ'**
+  String tachoCardReading(int kb);
+
+  /// Подсказка во время считывания карты
+  ///
+  /// In ru, this message translates to:
+  /// **'Не вынимайте карту и не трогайте тахограф, пока идёт считывание.'**
+  String get tachoCardKeep;
+
+  /// Карта считана: размер файла в килобайтах
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта считана: {kb} КБ.'**
+  String tachoCardDone(int kb);
+
+  /// Считать карту сейчас нельзя: условия
+  ///
+  /// In ru, this message translates to:
+  /// **'Считать карту можно только на стоянке, когда в тахографе одна карта водителя, и не около 00:00 и 12:00 UTC.'**
+  String get tachoCardNotNow;
+
+  /// Считать карту не удалось
+  ///
+  /// In ru, this message translates to:
+  /// **'Считать не удалось. Тахограф мог уже отметить считывание на карте — повторите позже.'**
+  String get tachoCardFailed;
 }
 
 class _AppLocalizationsDelegate

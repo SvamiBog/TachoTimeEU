@@ -745,5 +745,13 @@
   "tachoFailNotBonded": "Telefon nie jest jeszcze sparowany z tachografem. Na tachografie otwórz Bluetooth → parowanie, potem w ustawieniach Bluetooth telefonu wybierz tachograf i potwierdź 6 cyfr na obu. Następnie wróć tutaj.",
   "tachoOpenBluetooth": "Ustawienia Bluetooth",
   "tachoLinkTitle": "Tryb z tachografu",
-  "tachoLinkHint": "{name}: zmieniaj tryb na tachografie — aplikacja przełączy się sama."
+  "tachoLinkHint": "{name}: zmieniaj tryb na tachografie — aplikacja przełączy się sama.",
+  "tachoCardRead": "Odczytaj kartę",
+  "tachoCardConfirmTitle": "Odczytać kartę przez tachograf?",
+  "tachoCardConfirmText": "Tachograf zapisze na karcie, że odczytano ją dzisiaj, i zacznie od nowa liczyć 28 dni do przypomnienia o odczycie.",
+  "tachoCardReading": "Odczyt karty… {kb} KB",
+  "tachoCardKeep": "Nie wyjmuj karty i nie dotykaj tachografu podczas odczytu.",
+  "tachoCardDone": "Karta odczytana: {kb} KB.",
+  "tachoCardNotNow": "Kartę można odczytać tylko na postoju, gdy w tachografie jest jedna karta kierowcy, i nie około 00:00 i 12:00 UTC.",
+  "tachoCardFailed": "Nie udało się odczytać. Tachograf mógł już zapisać odczyt na karcie — spróbuj później."
 }

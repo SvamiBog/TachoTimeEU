@@ -745,5 +745,13 @@
   "tachoFailNotBonded": "Telefonul nu este încă asociat cu tahograful. Pe tahograf deschideți Bluetooth → asociere, apoi în setările Bluetooth ale telefonului alegeți tahograful și confirmați cele 6 cifre pe ambele. După aceea reveniți aici.",
   "tachoOpenBluetooth": "Setări Bluetooth",
   "tachoLinkTitle": "Modul — de la tahograf",
-  "tachoLinkHint": "{name}: schimbați modul pe tahograf — aplicația se va comuta singură."
+  "tachoLinkHint": "{name}: schimbați modul pe tahograf — aplicația se va comuta singură.",
+  "tachoCardRead": "Citește cardul",
+  "tachoCardConfirmTitle": "Citiți cardul prin tahograf?",
+  "tachoCardConfirmText": "Tahograful va nota pe card că a fost citit azi și va începe din nou să numere 28 de zile până la memento-ul de citire.",
+  "tachoCardReading": "Citim cardul… {kb} KB",
+  "tachoCardKeep": "Nu scoateți cardul și nu atingeți tahograful cât timp durează citirea.",
+  "tachoCardDone": "Card citit: {kb} KB.",
+  "tachoCardNotNow": "Cardul se poate citi doar în staționare, cu un singur card de șofer în tahograf și nu în jurul orelor 00:00 și 12:00 UTC.",
+  "tachoCardFailed": "Citirea a eșuat. Este posibil ca tahograful să fi notat deja citirea pe card — încercați mai târziu."
 }
