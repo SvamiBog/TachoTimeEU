@@ -698,8 +698,8 @@
   "tachoBeta": "Bêta · lecture seule",
   "tachoLead": "L’application lit l’activité et les temps d’un tachygraphe Smart 2 (VDO DTCO 4.1a ou plus récent). Elle n’enregistre rien et ne modifie rien dans le tachygraphe.",
   "tachoStepCard": "Insérez la carte conducteur dans le tachygraphe.",
-  "tachoStepConsent": "Dans le menu du tachygraphe, activez le Bluetooth et autorisez la transmission des données (ITS).",
-  "tachoStepPair": "Appuyez sur le bouton ci-dessous et choisissez le tachygraphe. Quand le téléphone et le tachygraphe affichent les mêmes 6 chiffres, confirmez sur les deux.",
+  "tachoStepConsent": "Dans le menu du tachygraphe, autorisez la transmission des données ITS : sans elle, le Bluetooth du tachygraphe reste éteint.",
+  "tachoStepPair": "Sur le tachygraphe, ouvrez Bluetooth → appairage. Puis, dans les réglages Bluetooth du téléphone, choisissez le tachygraphe et confirmez les mêmes 6 chiffres sur le téléphone et sur le tachygraphe.",
   "tachoFind": "Trouver le tachygraphe",
   "tachoSearching": "Recherche d’un tachygraphe à proximité…",
   "tachoSearchHint": "Le tachygraphe n’est pas dans la liste ? Ouvrez le menu Bluetooth du tachygraphe et lancez la connexion.",
@@ -740,5 +740,8 @@
   "tachoLogCopy": "Copier le journal",
   "tachoLogCopied": "Journal copié — collez-le dans un message.",
   "tachoFailRefused": "Le tachygraphe refuse au téléphone l’accès aux données. À l’arrêt, vérifiez dans le menu du tachygraphe que le Bluetooth et la transmission des données (ITS) sont activés, fermez les autres applications de tachygraphe et réessayez.",
-  "tachoFailPairing": "Le téléphone et le tachygraphe ne sont pas associés. Dans les réglages Bluetooth du téléphone, supprimez le tachygraphe s’il y figure, reconnectez-vous et confirmez les 6 chiffres sur le téléphone et sur le tachygraphe."
+  "tachoFailPairing": "L’appairage n’a pas abouti. Supprimez le tachygraphe dans les réglages Bluetooth du téléphone, rouvrez Bluetooth → appairage sur le tachygraphe et choisissez-le sur le téléphone. Ne réessayez pas tout de suite : en cas d’échec, attendez quelques minutes.",
+  "tachoStepConnect": "Quand le symbole Bluetooth apparaît sur l’écran du tachygraphe, appuyez sur le bouton ci-dessous et choisissez le tachygraphe.",
+  "tachoFailNotBonded": "Le téléphone n’est pas encore associé au tachygraphe. Sur le tachygraphe, ouvrez Bluetooth → appairage, puis choisissez le tachygraphe dans les réglages Bluetooth du téléphone et confirmez les 6 chiffres sur les deux. Revenez ensuite ici.",
+  "tachoOpenBluetooth": "Réglages Bluetooth"
 }

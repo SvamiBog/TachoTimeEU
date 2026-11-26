@@ -2762,11 +2762,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get tachoStepConsent =>
-      'Nel menu del tachigrafo attiva il Bluetooth e consenti la trasmissione dei dati (ITS).';
+      'Nel menu del tachigrafo consenti la trasmissione dei dati ITS: senza, il Bluetooth del tachigrafo resta spento.';
 
   @override
   String get tachoStepPair =>
-      'Tocca il pulsante qui sotto e scegli il tachigrafo. Quando telefono e tachigrafo mostrano le stesse 6 cifre, conferma su entrambi.';
+      'Sul tachigrafo apri Bluetooth → associazione. Poi, nelle impostazioni Bluetooth del telefono, scegli il tachigrafo e conferma le stesse 6 cifre sul telefono e sul tachigrafo.';
 
   @override
   String get tachoFind => 'Trova tachigrafo';
@@ -2905,5 +2905,16 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get tachoFailPairing =>
-      'Telefono e tachigrafo non sono associati. Nelle impostazioni Bluetooth del telefono rimuovi il tachigrafo, se c’è, riconnettiti e conferma le 6 cifre sul telefono e sul tachigrafo.';
+      'L’associazione non è terminata. Rimuovi il tachigrafo nelle impostazioni Bluetooth del telefono, riapri Bluetooth → associazione sul tachigrafo e sceglilo sul telefono. Non riprovare subito: se non riesce, aspetta qualche minuto.';
+
+  @override
+  String get tachoStepConnect =>
+      'Quando sul display del tachigrafo compare il simbolo Bluetooth, tocca il pulsante qui sotto e scegli il tachigrafo.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Il telefono non è ancora associato al tachigrafo. Sul tachigrafo apri Bluetooth → associazione, poi scegli il tachigrafo nelle impostazioni Bluetooth del telefono e conferma le 6 cifre su entrambi. Quindi torna qui.';
+
+  @override
+  String get tachoOpenBluetooth => 'Impostazioni Bluetooth';
 }

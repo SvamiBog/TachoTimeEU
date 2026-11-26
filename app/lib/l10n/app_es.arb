@@ -698,8 +698,8 @@
   "tachoBeta": "Beta · solo lectura",
   "tachoLead": "La aplicación lee la actividad y los tiempos de un tacógrafo Smart 2 (VDO DTCO 4.1a o posterior). No guarda nada ni cambia nada en el tacógrafo.",
   "tachoStepCard": "Introduzca la tarjeta del conductor en el tacógrafo.",
-  "tachoStepConsent": "En el menú del tacógrafo, active el Bluetooth y permita la transmisión de datos (ITS).",
-  "tachoStepPair": "Pulse el botón de abajo y elija el tacógrafo. Cuando el teléfono y el tacógrafo muestren los mismos 6 dígitos, confirme en ambos.",
+  "tachoStepConsent": "En el menú del tacógrafo, permita la transmisión de datos ITS: sin ella, el Bluetooth del tacógrafo no se activa.",
+  "tachoStepPair": "En el tacógrafo, abra Bluetooth → emparejamiento. Después, en los ajustes de Bluetooth del teléfono, elija el tacógrafo y confirme los mismos 6 dígitos en el teléfono y en el tacógrafo.",
   "tachoFind": "Buscar tacógrafo",
   "tachoSearching": "Buscando un tacógrafo cerca…",
   "tachoSearchHint": "¿El tacógrafo no aparece? Abra el menú Bluetooth del tacógrafo e inicie la conexión.",
@@ -740,5 +740,8 @@
   "tachoLogCopy": "Copiar registro",
   "tachoLogCopied": "Registro copiado: péguelo en un mensaje.",
   "tachoFailRefused": "El tacógrafo no deja que el teléfono lea los datos. Con el vehículo parado, compruebe en el menú del tacógrafo que el Bluetooth y la transmisión de datos (ITS) están activados, cierre otras apps de tacógrafo e inténtelo de nuevo.",
-  "tachoFailPairing": "El teléfono y el tacógrafo no están emparejados. En los ajustes de Bluetooth del teléfono, elimine el tacógrafo si aparece, vuelva a conectar y confirme los 6 dígitos en el teléfono y en el tacógrafo."
+  "tachoFailPairing": "El emparejamiento no terminó. Elimine el tacógrafo en los ajustes de Bluetooth del teléfono, vuelva a abrir Bluetooth → emparejamiento en el tacógrafo y elíjalo en el teléfono. No lo repita enseguida: si falla, espere unos minutos.",
+  "tachoStepConnect": "Cuando aparezca el símbolo de Bluetooth en la pantalla del tacógrafo, pulse el botón de abajo y elija el tacógrafo.",
+  "tachoFailNotBonded": "El teléfono aún no está emparejado con el tacógrafo. En el tacógrafo, abra Bluetooth → emparejamiento; después elija el tacógrafo en los ajustes de Bluetooth del teléfono y confirme los 6 dígitos en ambos. Luego vuelva aquí.",
+  "tachoOpenBluetooth": "Ajustes de Bluetooth"
 }

@@ -2784,11 +2784,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get tachoStepConsent =>
-      'V menu tachografu zapnite Bluetooth a povoľte prenos údajov (ITS).';
+      'V menu tachografu povoľte odovzdávanie údajov ITS: bez toho sa Bluetooth tachografu nezapne.';
 
   @override
   String get tachoStepPair =>
-      'Ťuknite na tlačidlo nižšie a vyberte tachograf. Keď telefón a tachograf ukážu rovnakých 6 číslic, potvrďte na oboch.';
+      'Na tachografe otvorte Bluetooth → párovanie. Potom v nastaveniach Bluetooth telefónu vyberte tachograf a potvrďte rovnakých 6 číslic na telefóne aj na tachografe.';
 
   @override
   String get tachoFind => 'Nájsť tachograf';
@@ -2925,5 +2925,16 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get tachoFailPairing =>
-      'Telefón a tachograf nie sú spárované. V nastaveniach Bluetooth telefónu odstráňte tachograf, ak tam je, pripojte sa znova a potvrďte 6 číslic na telefóne aj na tachografe.';
+      'Párovanie sa nedokončilo. V nastaveniach Bluetooth telefónu odstráňte tachograf, na tachografe znova otvorte Bluetooth → párovanie a vyberte tachograf v telefóne. Neskúšajte to hneď znova: ak to nevyjde, počkajte pár minút.';
+
+  @override
+  String get tachoStepConnect =>
+      'Keď sa na displeji tachografu objaví symbol Bluetooth, ťuknite na tlačidlo nižšie a vyberte tachograf.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Telefón ešte nie je spárovaný s tachografom. Na tachografe otvorte Bluetooth → párovanie, potom v nastaveniach Bluetooth telefónu vyberte tachograf a potvrďte 6 číslic na oboch. Nakoniec sa sem vráťte.';
+
+  @override
+  String get tachoOpenBluetooth => 'Nastavenia Bluetooth';
 }

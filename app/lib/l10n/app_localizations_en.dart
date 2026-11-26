@@ -2753,11 +2753,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tachoStepConsent =>
-      'In the tachograph menu, turn on Bluetooth and allow data sharing (ITS).';
+      'In the tachograph menu, allow ITS data sharing: without it the tachograph’s Bluetooth stays off.';
 
   @override
   String get tachoStepPair =>
-      'Tap the button below and choose the tachograph. When the phone and the tachograph show the same 6 digits, confirm on both.';
+      'On the tachograph, open Bluetooth → pairing. Then pick the tachograph in the phone’s Bluetooth settings and confirm the same 6 digits on the phone and on the tachograph.';
 
   @override
   String get tachoFind => 'Find tachograph';
@@ -2896,5 +2896,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tachoFailPairing =>
-      'The phone and the tachograph are not paired. In the phone’s Bluetooth settings, remove the tachograph if it is listed, connect again and confirm the 6 digits on the phone and on the tachograph.';
+      'Pairing did not finish. Remove the tachograph in the phone’s Bluetooth settings, open Bluetooth → pairing on the tachograph again and pick the tachograph on the phone. Don’t retry right away: if it fails, wait a few minutes.';
+
+  @override
+  String get tachoStepConnect =>
+      'When the Bluetooth symbol appears on the tachograph screen, tap the button below and pick the tachograph.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'The phone is not paired with the tachograph yet. On the tachograph, open Bluetooth → pairing, then pick the tachograph in the phone’s Bluetooth settings and confirm the 6 digits on both. Then come back here.';
+
+  @override
+  String get tachoOpenBluetooth => 'Bluetooth settings';
 }

@@ -87,8 +87,17 @@ void main() {
       expect(credits.onPacketReceived(), 0);
     });
 
-    test('выдача — от 2 до 254 пакетов: 0xFF значит разрыв', () {
-      expect(() => ItsCredits(grant: 1), throwsArgumentError);
+    test('BT-16: выдача 1 — по кредиту за каждый принятый пакет', () {
+      final credits = ItsCredits();
+      expect(credits.grant, 1);
+      expect(
+        [for (var i = 0; i < 3; i++) credits.onPacketReceived()],
+        [1, 1, 1],
+      );
+    });
+
+    test('выдача — от 1 до 254 пакетов: 0xFF значит разрыв', () {
+      expect(() => ItsCredits(grant: 0), throwsArgumentError);
       expect(
         () => ItsCredits(grant: itsCreditsDisconnect),
         throwsArgumentError,

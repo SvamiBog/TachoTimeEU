@@ -2777,11 +2777,11 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tachoStepConsent =>
-      'În meniul tahografului activați Bluetooth și permiteți transmiterea datelor (ITS).';
+      'În meniul tahografului permiteți transmiterea datelor ITS: fără asta, Bluetooth-ul tahografului nu pornește.';
 
   @override
   String get tachoStepPair =>
-      'Apăsați butonul de mai jos și alegeți tahograful. Când pe telefon și pe tahograf apar aceleași 6 cifre, confirmați pe ambele.';
+      'Pe tahograf deschideți Bluetooth → asociere. Apoi, în setările Bluetooth ale telefonului, alegeți tahograful și confirmați aceleași 6 cifre pe telefon și pe tahograf.';
 
   @override
   String get tachoFind => 'Caută tahograful';
@@ -2921,5 +2921,16 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tachoFailPairing =>
-      'Telefonul și tahograful nu sunt asociate. În setările Bluetooth ale telefonului ștergeți tahograful, dacă apare acolo, conectați-vă din nou și confirmați cele 6 cifre pe telefon și pe tahograf.';
+      'Asocierea nu s-a încheiat. În setările Bluetooth ale telefonului ștergeți tahograful, pe tahograf deschideți din nou Bluetooth → asociere și alegeți tahograful pe telefon. Nu repetați imediat: dacă nu merge, așteptați câteva minute.';
+
+  @override
+  String get tachoStepConnect =>
+      'Când pe ecranul tahografului apare simbolul Bluetooth, apăsați butonul de mai jos și alegeți tahograful.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Telefonul nu este încă asociat cu tahograful. Pe tahograf deschideți Bluetooth → asociere, apoi în setările Bluetooth ale telefonului alegeți tahograful și confirmați cele 6 cifre pe ambele. După aceea reveniți aici.';
+
+  @override
+  String get tachoOpenBluetooth => 'Setări Bluetooth';
 }

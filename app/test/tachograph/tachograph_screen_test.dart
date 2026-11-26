@@ -43,12 +43,15 @@ void main() {
   }
 
   group('BT-10: экран «Тахограф по Bluetooth»', () {
-    testWidgets('начало: что делает приложение и три шага', (tester) async {
+    testWidgets('начало: что делает приложение и четыре шага', (tester) async {
       await pump(tester, FakeTachographPlatform());
       expect(find.text('Тахограф по Bluetooth'), findsOneWidget);
       expect(find.text('Бета · только чтение'), findsOneWidget);
       expect(find.textContaining('Ничего не сохраняет'), findsOneWidget);
       expect(find.textContaining('карту водителя'), findsOneWidget);
+      // Порядок из руководства DTCO: сопряжение в настройках, потом поиск
+      expect(find.textContaining('Bluetooth → сопряжение'), findsOneWidget);
+      expect(find.textContaining('значок Bluetooth'), findsOneWidget);
       expect(find.text('Найти тахограф'), findsOneWidget);
       await unmount(tester);
     });
@@ -182,11 +185,33 @@ void main() {
       await exchange(tester);
       await tester.tap(find.text('DTCO 4.1a'));
       await exchange(tester);
+      expect(find.textContaining('Сопряжение не завершилось'), findsOneWidget);
+      expect(find.text('Попробовать снова'), findsOneWidget);
+      await tester.tap(find.text('Настройки Bluetooth'));
+      expect(platform.opened, ['bluetooth']);
+      await unmount(tester);
+    });
+
+    testWidgets('BT-17: телефон не сопряжён — инструкция и настройки '
+        'Bluetooth, к тахографу не подключаемся', (tester) async {
+      await pump(tester, FakeTachographPlatform(bond: BondState.none));
+      await tester.tap(find.text('Найти тахограф'));
+      await exchange(tester);
+      await tester.tap(find.text('DTCO 4.1a'));
+      await exchange(tester);
       expect(
-        find.textContaining('Телефон и тахограф не сопряжены'),
+        find.textContaining('Телефон ещё не сопряжён с тахографом'),
         findsOneWidget,
       );
-      expect(find.text('Попробовать снова'), findsOneWidget);
+      expect(platform.connections, isEmpty);
+      await tester.tap(find.text('Настройки Bluetooth'));
+      expect(platform.opened, ['bluetooth']);
+      // Сопрягли в настройках — «Попробовать снова» подключает
+      platform.bond = BondState.bonded;
+      await tester.tap(find.text('Попробовать снова'));
+      await exchange(tester);
+      await exchange(tester);
+      expect(platform.connections, hasLength(1));
       await unmount(tester);
     });
 

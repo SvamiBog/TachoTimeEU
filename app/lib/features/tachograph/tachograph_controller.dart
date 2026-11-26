@@ -34,6 +34,10 @@ enum TachoProblem {
 
   /// Телефон и тахограф не сопряжены, или сопряжение не завершилось.
   pairing,
+
+  /// Телефон ещё не сопряжён с тахографом: сначала сопряжение в настройках
+  /// Bluetooth, подключение — потом.
+  notBonded,
 }
 
 /// A state of the tachograph screen.
@@ -187,6 +191,15 @@ class TachographController extends Notifier<TachoState> {
   Future<void> connect(FoundDevice device) async {
     final attempt = await _restart();
     state = TachoConnecting(device);
+    // Без сопряжения не подключаемся: тахограф посчитает это неудачной
+    // попыткой и после нескольких перестанет отвечать на сопряжение
+    final bond = await _platform.bondState(device.id);
+    if (!_current(attempt)) return;
+    _log('bond ${bond.name}');
+    if (bond == BondState.none || bond == BondState.bonding) {
+      _fail(attempt, device, TachoProblem.notBonded, 'pair first');
+      return;
+    }
     _log('connecting ${device.name} ${device.id}');
     try {
       final connection = _connection = await _platform.connect(

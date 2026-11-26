@@ -2767,11 +2767,11 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get tachoStepConsent =>
-      'Taxograf menyusida Bluetoothni yoqing va maʼlumot uzatishga ruxsat bering (ITS).';
+      'Taxograf menyusida ITS maʼlumotlarini uzatishga ruxsat bering: busiz taxografning Bluetooth funksiyasi yoqilmaydi.';
 
   @override
   String get tachoStepPair =>
-      'Quyidagi tugmani bosing va taxografni tanlang. Telefon va taxografda bir xil 6 raqam chiqqanda, ikkalasida ham tasdiqlang.';
+      'Taxografda Bluetooth → juftlash boʻlimini oching. Soʻng telefonning Bluetooth sozlamalarida taxografni tanlang va bir xil 6 ta raqamni telefonda ham, taxografda ham tasdiqlang.';
 
   @override
   String get tachoFind => 'Taxografni topish';
@@ -2909,5 +2909,16 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get tachoFailPairing =>
-      'Telefon va taxograf juftlanmagan. Telefonning Bluetooth sozlamalarida taxograf boʻlsa, uni oʻchiring, qayta ulaning va 6 ta raqamni telefonda ham, taxografda ham tasdiqlang.';
+      'Juftlash tugamadi. Telefonning Bluetooth sozlamalarida taxografni oʻchiring, taxografda yana Bluetooth → juftlash boʻlimini oching va telefonda taxografni tanlang. Ketma-ket takrorlamang: chiqmasa, bir necha daqiqa kuting.';
+
+  @override
+  String get tachoStepConnect =>
+      'Taxograf ekranida Bluetooth belgisi paydo boʻlgach, quyidagi tugmani bosing va taxografni tanlang.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Telefon hali taxograf bilan juftlanmagan. Taxografda Bluetooth → juftlash boʻlimini oching, soʻng telefonning Bluetooth sozlamalarida taxografni tanlang va 6 ta raqamni ikkalasida ham tasdiqlang. Keyin bu yerga qayting.';
+
+  @override
+  String get tachoOpenBluetooth => 'Bluetooth sozlamalari';
 }

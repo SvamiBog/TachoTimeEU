@@ -698,8 +698,8 @@
   "tachoBeta": "Bèta · alleen lezen",
   "tachoLead": "De app leest activiteit en tijden van een Smart 2-tachograaf (VDO DTCO 4.1a of nieuwer). Hij slaat niets op en verandert niets in de tachograaf.",
   "tachoStepCard": "Steek de bestuurderskaart in de tachograaf.",
-  "tachoStepConsent": "Zet in het menu van de tachograaf Bluetooth aan en sta het delen van gegevens toe (ITS).",
-  "tachoStepPair": "Tik op de knop hieronder en kies de tachograaf. Als de telefoon en de tachograaf dezelfde 6 cijfers tonen, bevestig dan op beide.",
+  "tachoStepConsent": "Sta in het menu van de tachograaf het delen van ITS-gegevens toe: zonder dat blijft Bluetooth van de tachograaf uit.",
+  "tachoStepPair": "Open op de tachograaf Bluetooth → koppelen. Kies daarna in de Bluetooth-instellingen van de telefoon de tachograaf en bevestig dezelfde 6 cijfers op de telefoon en de tachograaf.",
   "tachoFind": "Tachograaf zoeken",
   "tachoSearching": "Zoeken naar een tachograaf in de buurt…",
   "tachoSearchHint": "Staat de tachograaf niet in de lijst? Open het Bluetooth-menu op de tachograaf en start het verbinden.",
@@ -740,5 +740,8 @@
   "tachoLogCopy": "Log kopiëren",
   "tachoLogCopied": "Log gekopieerd — plak het in een bericht.",
   "tachoFailRefused": "De tachograaf geeft de telefoon geen toegang tot de gegevens. Controleer bij stilstand in het menu van de tachograaf of Bluetooth en het delen van gegevens (ITS) aan staan, sluit andere tachograaf-apps en probeer het opnieuw.",
-  "tachoFailPairing": "Telefoon en tachograaf zijn niet gekoppeld. Verwijder de tachograaf in de Bluetooth-instellingen van de telefoon als hij daar staat, maak opnieuw verbinding en bevestig de 6 cijfers op de telefoon en de tachograaf."
+  "tachoFailPairing": "Het koppelen is niet afgerond. Verwijder de tachograaf in de Bluetooth-instellingen van de telefoon, open op de tachograaf opnieuw Bluetooth → koppelen en kies hem op de telefoon. Probeer het niet meteen opnieuw: lukt het niet, wacht dan een paar minuten.",
+  "tachoStepConnect": "Zodra het Bluetooth-symbool op het scherm van de tachograaf verschijnt, tik op de knop hieronder en kies de tachograaf.",
+  "tachoFailNotBonded": "De telefoon is nog niet gekoppeld met de tachograaf. Open op de tachograaf Bluetooth → koppelen, kies daarna de tachograaf in de Bluetooth-instellingen van de telefoon en bevestig de 6 cijfers op beide. Kom dan hier terug.",
+  "tachoOpenBluetooth": "Bluetooth-instellingen"
 }

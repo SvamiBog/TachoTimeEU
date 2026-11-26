@@ -91,7 +91,7 @@ class ItsClient {
     this.maxRejections = 6,
     this.subscribeSettle = const Duration(milliseconds: 1500),
     this.maxRestarts = 2,
-    int grant = 32,
+    int grant = 1,
   }) : _credits = ItsCredits(grant: grant);
 
   final ItsPort _port;
@@ -112,9 +112,11 @@ class ItsClient {
   /// [openTimeout]: тахограф не пускает этот телефон.
   final int maxRejections;
 
-  /// Пауза между подпиской и первыми кредитами. Подписка (запись CCCD) идёт
-  /// своей очередью, и кредиты могут её обогнать: тахограф ответит на них
-  /// до подписки, и ответ потеряется (DTCO 4.1a владельца, 25.11.2026).
+  /// Пауза после каждой подписки: сначала на кредиты, потом на FIFO, затем
+  /// первые кредиты. Подписка (запись CCCD) идёт своей очередью, и
+  /// библиотека не сообщает, когда она дошла: без паузы кредиты обгоняют
+  /// подписку, тахограф отвечает до неё, и ответ теряется (DTCO 4.1a
+  /// владельца, 25.11.2026).
   final Duration subscribeSettle;
 
   /// Сколько раз переоткрыть соединение ITS, если тахограф принял его без
@@ -136,18 +138,22 @@ class ItsClient {
   /// Таймер текущего ожидания: ответа, кредитов или повтора соединения.
   Timer? _wait;
 
-  /// Подписаться на тахограф и обменяться кредитами. Первая подписка
-  /// запускает сопряжение: телефон и тахограф показывают 6 цифр. Пока
-  /// водитель подтверждает, свои кредиты повторяем.
+  /// Подписаться на тахограф и обменяться кредитами. Порядок — как у u-blox,
+  /// на котором построен ITS, и в открытом коде, читающем DTCO 4.1a:
+  /// сначала кредиты, потом FIFO, потом свои кредиты
+  /// (docs/research/dtco-docs-findings.md). Телефон к этому времени уже
+  /// сопряжён в настройках Bluetooth; если тахограф всё же запросил
+  /// сопряжение, свои кредиты повторяем, пока водитель сверяет 6 цифр.
   Future<void> open() async {
+    final settle = subscribeSettle.inMilliseconds;
     _log.event(
-      'opening ITS: subscribe, wait ${subscribeSettle.inMilliseconds} ms, '
-      'grant ${_credits.grant} credits, wait up to ${openTimeout.inSeconds} s '
-      'for pairing',
+      'opening ITS: subscribe credits, wait $settle ms, subscribe fifo, '
+      'wait $settle ms, grant ${_credits.grant} credits, wait up to '
+      '${openTimeout.inSeconds} s',
     );
-    _subscriptions
-      ..add(_port.fifo.listen(_onPacket, onError: _onError))
-      ..add(_port.credits.listen(_onCredits, onError: _onError));
+    _subscriptions.add(_port.credits.listen(_onCredits, onError: _onError));
+    await _sleep(subscribeSettle);
+    _subscriptions.add(_port.fifo.listen(_onPacket, onError: _onError));
     await _sleep(subscribeSettle);
     final deadline = clock.now().add(openTimeout);
     for (var restart = 0; ; restart++) {

@@ -698,8 +698,8 @@
   "tachoBeta": "Beta · jen čtení",
   "tachoLead": "Aplikace čte režim a časy z tachografu Smart 2 (VDO DTCO 4.1a a novější). Nic neukládá a v tachografu nic nemění.",
   "tachoStepCard": "Vložte kartu řidiče do tachografu.",
-  "tachoStepConsent": "V menu tachografu zapněte Bluetooth a povolte přenos dat (ITS).",
-  "tachoStepPair": "Klepněte na tlačítko níže a vyberte tachograf. Až telefon a tachograf ukážou stejných 6 číslic, potvrďte na obou.",
+  "tachoStepConsent": "V menu tachografu povolte předávání dat ITS: bez toho se Bluetooth tachografu nezapne.",
+  "tachoStepPair": "Na tachografu otevřete Bluetooth → párování. Pak v nastavení Bluetooth telefonu vyberte tachograf a potvrďte stejných 6 číslic na telefonu i na tachografu.",
   "tachoFind": "Najít tachograf",
   "tachoSearching": "Hledáme tachograf poblíž…",
   "tachoSearchHint": "Tachograf není v seznamu? Otevřete na tachografu menu Bluetooth a začněte připojování.",
@@ -740,5 +740,8 @@
   "tachoLogCopy": "Kopírovat protokol",
   "tachoLogCopied": "Protokol zkopírován — vložte ho do zprávy.",
   "tachoFailRefused": "Tachograf nepouští telefon k datům. Při stání zkontrolujte v menu tachografu, že je zapnutý Bluetooth a přenos dat (ITS), zavřete jiné aplikace pro tachograf a zkuste to znovu.",
-  "tachoFailPairing": "Telefon a tachograf nejsou spárované. V nastavení Bluetooth telefonu odeberte tachograf, pokud tam je, připojte se znovu a potvrďte 6 číslic na telefonu i na tachografu."
+  "tachoFailPairing": "Párování se nedokončilo. V nastavení Bluetooth telefonu odeberte tachograf, na tachografu znovu otevřete Bluetooth → párování a vyberte tachograf v telefonu. Nezkoušejte to hned znovu: když to nevyjde, počkejte pár minut.",
+  "tachoStepConnect": "Až se na displeji tachografu objeví symbol Bluetooth, klepněte na tlačítko níže a vyberte tachograf.",
+  "tachoFailNotBonded": "Telefon zatím není spárovaný s tachografem. Na tachografu otevřete Bluetooth → párování, pak v nastavení Bluetooth telefonu vyberte tachograf a potvrďte 6 číslic na obou. Potom se sem vraťte.",
+  "tachoOpenBluetooth": "Nastavení Bluetooth"
 }

@@ -2781,11 +2781,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tachoStepConsent =>
-      'Schalten Sie im Menü des Fahrtenschreibers Bluetooth ein und erlauben Sie die Datenübertragung (ITS).';
+      'Erlauben Sie im Menü des Fahrtenschreibers die Weitergabe der ITS-Daten: Ohne sie bleibt Bluetooth am Fahrtenschreiber aus.';
 
   @override
   String get tachoStepPair =>
-      'Tippen Sie unten auf die Taste und wählen Sie den Fahrtenschreiber. Wenn Telefon und Fahrtenschreiber dieselben 6 Ziffern zeigen, bestätigen Sie auf beiden.';
+      'Öffnen Sie am Fahrtenschreiber Bluetooth → Kopplung. Wählen Sie dann in den Bluetooth-Einstellungen des Telefons den Fahrtenschreiber und bestätigen Sie die gleichen 6 Ziffern auf Telefon und Fahrtenschreiber.';
 
   @override
   String get tachoFind => 'Fahrtenschreiber suchen';
@@ -2926,5 +2926,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tachoFailPairing =>
-      'Telefon und Fahrtenschreiber sind nicht gekoppelt. Entfernen Sie den Fahrtenschreiber in den Bluetooth-Einstellungen des Telefons, falls er dort steht, verbinden Sie sich erneut und bestätigen Sie die 6 Ziffern auf Telefon und Fahrtenschreiber.';
+      'Die Kopplung wurde nicht abgeschlossen. Entfernen Sie den Fahrtenschreiber in den Bluetooth-Einstellungen des Telefons, öffnen Sie am Fahrtenschreiber erneut Bluetooth → Kopplung und wählen Sie ihn auf dem Telefon aus. Nicht sofort wiederholen: Klappt es nicht, warten Sie einige Minuten.';
+
+  @override
+  String get tachoStepConnect =>
+      'Sobald das Bluetooth-Symbol auf dem Display des Fahrtenschreibers erscheint, tippen Sie unten auf die Schaltfläche und wählen Sie den Fahrtenschreiber.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Das Telefon ist noch nicht mit dem Fahrtenschreiber gekoppelt. Öffnen Sie am Fahrtenschreiber Bluetooth → Kopplung, wählen Sie dann in den Bluetooth-Einstellungen des Telefons den Fahrtenschreiber und bestätigen Sie die 6 Ziffern auf beiden Geräten. Kehren Sie danach hierher zurück.';
+
+  @override
+  String get tachoOpenBluetooth => 'Bluetooth-Einstellungen';
 }

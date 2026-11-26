@@ -66,4 +66,18 @@ void main() {
       expect(log.isEmpty, isTrue);
     });
   });
+
+  group('BT-17: сопряжение глазами Android', () {
+    test('описание устройства — состояние сопряжения', () {
+      expect(parseBondState('bond bonded, type le'), BondState.bonded);
+      expect(parseBondState('bond bonding, type le'), BondState.bonding);
+      expect(parseBondState('bond none, type unknown'), BondState.none);
+    });
+
+    test('нет разрешения, ошибка или чужой текст — неизвестно', () {
+      expect(parseBondState(null), BondState.unknown);
+      expect(parseBondState('bond unknown: no adapter'), BondState.unknown);
+      expect(parseBondState('type le'), BondState.unknown);
+    });
+  });
 }

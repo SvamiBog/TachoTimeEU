@@ -90,9 +90,12 @@ class TachographScreen extends ConsumerWidget {
         label: l.tachoDisconnect,
         onPressed: () => unawaited(controller.stop()),
       ),
-      TachoFailed(:final problem, :final device) => PrimaryButton(
-        label: l.tachoRetry,
-        onPressed: () => unawaited(
+      TachoFailed(:final problem, :final device) => _FailedButtons(
+        bluetoothSettings:
+            problem == TachoProblem.notBonded || problem == TachoProblem.pairing
+            ? platform.openBluetoothSettings
+            : null,
+        retry: () => unawaited(
           device != null && problem != TachoProblem.notTachograph
               ? controller.connect(device)
               : controller.search(),
@@ -129,16 +132,22 @@ String _problem(AppLocalizations l, TachoProblem problem) => switch (problem) {
   TachoProblem.lost => l.tachoFailLost,
   TachoProblem.refused => l.tachoFailRefused,
   TachoProblem.pairing => l.tachoFailPairing,
+  TachoProblem.notBonded => l.tachoFailNotBonded,
 };
 
-/// How to connect: what the app does and three steps.
+/// How to connect: what the app does and four steps.
 class _Intro extends StatelessWidget {
   const new();
 
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final steps = [l.tachoStepCard, l.tachoStepConsent, l.tachoStepPair];
+    final steps = [
+      l.tachoStepCard,
+      l.tachoStepConsent,
+      l.tachoStepPair,
+      l.tachoStepConnect,
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -592,6 +601,38 @@ class _BlockedButtons extends StatelessWidget {
           const SizedBox(height: AppSpacing.s8),
           retryButton,
         ],
+      ],
+    );
+  }
+}
+
+/// Buttons after a failure: "Try again", and the phone's Bluetooth settings
+/// first when the phone has to be paired there.
+class _FailedButtons extends StatelessWidget {
+  const new({required this.retry, this.bluetoothSettings});
+
+  final VoidCallback retry;
+
+  /// Открыть настройки Bluetooth; null — кнопки нет.
+  final Future<void> Function()? bluetoothSettings;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final settings = bluetoothSettings;
+    if (settings == null) {
+      return PrimaryButton(label: l.tachoRetry, onPressed: retry);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        PrimaryButton(
+          label: l.tachoOpenBluetooth,
+          icon: Icons.bluetooth,
+          onPressed: () => unawaited(settings()),
+        ),
+        const SizedBox(height: AppSpacing.s8),
+        SecondaryButton(label: l.tachoRetry, onPressed: retry),
       ],
     );
   }

@@ -79,18 +79,30 @@ class FakeTachographPort implements ItsPort {
   /// Пакетов от клиента без кредита — нарушение потока.
   int overruns = 0;
 
+  /// На что и в каком порядке подписался клиент.
+  final subscriptions = <String>[];
+
   /// Своих кредитов у клиента — сколько он ещё может прислать.
   int _given = 0;
   bool _greeted = false;
 
-  @override
-  Stream<List<int>> get fifo => _fifo.stream;
+  /// Пакеты ответа, которые ждут кредитов клиента.
+  final _outbox = <List<int>>[];
 
   @override
-  Stream<List<int>> get credits => switch (subscribeError) {
-    final error? => Stream<List<int>>.error(error),
-    null => _credits.stream,
-  };
+  Stream<List<int>> get fifo {
+    subscriptions.add('fifo');
+    return _fifo.stream;
+  }
+
+  @override
+  Stream<List<int>> get credits {
+    subscriptions.add('credits');
+    return switch (subscribeError) {
+      final error? => Stream<List<int>>.error(error),
+      null => _credits.stream,
+    };
+  }
 
   @override
   Future<void> writeCredits(int credits) async {
@@ -109,6 +121,7 @@ class FakeTachographPort implements ItsPort {
       return;
     }
     clientCredits += credits;
+    _flush();
     if (!accepts) return;
     if (_greeted) {
       // Кредиты добавляются: на повтор — 0 новых, как у DTCO 4.1a
@@ -150,14 +163,16 @@ class FakeTachographPort implements ItsPort {
   /// Тахограф закрывает соединение.
   void disconnect() => _credits.add([itsCreditsDisconnect]);
 
+  // Пакеты уходят, пока у клиента есть кредиты; остальные ждут новых
   void _send(List<int> reply) {
-    for (final p in splitItsMessage(reply, maxPacket: maxPacket)) {
-      if (clientCredits == 0) {
-        overruns++;
-        return;
-      }
+    _outbox.addAll(splitItsMessage(reply, maxPacket: maxPacket));
+    _flush();
+  }
+
+  void _flush() {
+    while (clientCredits > 0 && _outbox.isNotEmpty) {
       clientCredits--;
-      _fifo.add(p);
+      _fifo.add(_outbox.removeAt(0));
     }
   }
 

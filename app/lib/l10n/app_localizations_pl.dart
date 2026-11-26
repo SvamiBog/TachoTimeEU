@@ -2787,11 +2787,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tachoStepConsent =>
-      'W menu tachografu włącz Bluetooth i zezwól na przesyłanie danych (ITS).';
+      'W menu tachografu zezwól na przekazywanie danych ITS: bez tego Bluetooth tachografu się nie włączy.';
 
   @override
   String get tachoStepPair =>
-      'Naciśnij przycisk poniżej i wybierz tachograf. Gdy telefon i tachograf pokażą te same 6 cyfr, potwierdź na obu.';
+      'Na tachografie otwórz Bluetooth → parowanie. Następnie w ustawieniach Bluetooth telefonu wybierz tachograf i potwierdź te same 6 cyfr na telefonie i tachografie.';
 
   @override
   String get tachoFind => 'Znajdź tachograf';
@@ -2930,5 +2930,16 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tachoFailPairing =>
-      'Telefon i tachograf nie są sparowane. W ustawieniach Bluetooth telefonu usuń tachograf, jeśli tam jest, połącz się ponownie i potwierdź 6 cyfr na telefonie i tachografie.';
+      'Parowanie się nie zakończyło. W ustawieniach Bluetooth telefonu usuń tachograf, na tachografie ponownie otwórz Bluetooth → parowanie i wybierz tachograf na telefonie. Nie ponawiaj od razu: jeśli się nie uda, odczekaj kilka minut.';
+
+  @override
+  String get tachoStepConnect =>
+      'Gdy na ekranie tachografu pojawi się ikona Bluetooth, naciśnij przycisk poniżej i wybierz tachograf.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Telefon nie jest jeszcze sparowany z tachografem. Na tachografie otwórz Bluetooth → parowanie, potem w ustawieniach Bluetooth telefonu wybierz tachograf i potwierdź 6 cyfr na obu. Następnie wróć tutaj.';
+
+  @override
+  String get tachoOpenBluetooth => 'Ustawienia Bluetooth';
 }

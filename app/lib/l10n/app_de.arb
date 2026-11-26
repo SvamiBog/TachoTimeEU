@@ -698,8 +698,8 @@
   "tachoBeta": "Beta · nur lesen",
   "tachoLead": "Die App liest Tätigkeit und Zeiten aus einem Smart-2-Fahrtenschreiber (VDO DTCO 4.1a oder neuer). Sie speichert nichts und ändert nichts am Fahrtenschreiber.",
   "tachoStepCard": "Stecken Sie die Fahrerkarte in den Fahrtenschreiber.",
-  "tachoStepConsent": "Schalten Sie im Menü des Fahrtenschreibers Bluetooth ein und erlauben Sie die Datenübertragung (ITS).",
-  "tachoStepPair": "Tippen Sie unten auf die Taste und wählen Sie den Fahrtenschreiber. Wenn Telefon und Fahrtenschreiber dieselben 6 Ziffern zeigen, bestätigen Sie auf beiden.",
+  "tachoStepConsent": "Erlauben Sie im Menü des Fahrtenschreibers die Weitergabe der ITS-Daten: Ohne sie bleibt Bluetooth am Fahrtenschreiber aus.",
+  "tachoStepPair": "Öffnen Sie am Fahrtenschreiber Bluetooth → Kopplung. Wählen Sie dann in den Bluetooth-Einstellungen des Telefons den Fahrtenschreiber und bestätigen Sie die gleichen 6 Ziffern auf Telefon und Fahrtenschreiber.",
   "tachoFind": "Fahrtenschreiber suchen",
   "tachoSearching": "Suche nach einem Fahrtenschreiber in der Nähe…",
   "tachoSearchHint": "Fahrtenschreiber nicht in der Liste? Öffnen Sie am Fahrtenschreiber das Bluetooth-Menü und starten Sie die Verbindung.",
@@ -740,5 +740,8 @@
   "tachoLogCopy": "Protokoll kopieren",
   "tachoLogCopied": "Protokoll kopiert — fügen Sie es in eine Nachricht ein.",
   "tachoFailRefused": "Der Fahrtenschreiber lässt das Telefon nicht an die Daten. Prüfen Sie im Stand im Menü des Fahrtenschreibers, ob Bluetooth und die Datenübertragung (ITS) eingeschaltet sind, schließen Sie andere Fahrtenschreiber-Apps und versuchen Sie es erneut.",
-  "tachoFailPairing": "Telefon und Fahrtenschreiber sind nicht gekoppelt. Entfernen Sie den Fahrtenschreiber in den Bluetooth-Einstellungen des Telefons, falls er dort steht, verbinden Sie sich erneut und bestätigen Sie die 6 Ziffern auf Telefon und Fahrtenschreiber."
+  "tachoFailPairing": "Die Kopplung wurde nicht abgeschlossen. Entfernen Sie den Fahrtenschreiber in den Bluetooth-Einstellungen des Telefons, öffnen Sie am Fahrtenschreiber erneut Bluetooth → Kopplung und wählen Sie ihn auf dem Telefon aus. Nicht sofort wiederholen: Klappt es nicht, warten Sie einige Minuten.",
+  "tachoStepConnect": "Sobald das Bluetooth-Symbol auf dem Display des Fahrtenschreibers erscheint, tippen Sie unten auf die Schaltfläche und wählen Sie den Fahrtenschreiber.",
+  "tachoFailNotBonded": "Das Telefon ist noch nicht mit dem Fahrtenschreiber gekoppelt. Öffnen Sie am Fahrtenschreiber Bluetooth → Kopplung, wählen Sie dann in den Bluetooth-Einstellungen des Telefons den Fahrtenschreiber und bestätigen Sie die 6 Ziffern auf beiden Geräten. Kehren Sie danach hierher zurück.",
+  "tachoOpenBluetooth": "Bluetooth-Einstellungen"
 }

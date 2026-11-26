@@ -47,6 +47,7 @@ class FakeTachographPlatform implements TachographPlatform {
     this.devices = const [dtco, headphones],
     FakeTachographPort Function()? port,
     this.failure,
+    this.bond = BondState.bonded,
   }) : _port = port ?? (() => FakeTachographPort(values: drivingValues()));
 
   @override
@@ -63,6 +64,9 @@ class FakeTachographPlatform implements TachographPlatform {
 
   /// Подключение не удаётся.
   final ConnectFailure? failure;
+
+  /// Сопряжён ли телефон с тахографом.
+  BondState bond;
 
   final _readinessChanges = StreamController<BluetoothReadiness>.broadcast();
   int permissionRequests = 0;
@@ -108,6 +112,9 @@ class FakeTachographPlatform implements TachographPlatform {
     scans++;
     return Stream.fromIterable(devices);
   }
+
+  @override
+  Future<BondState> bondState(String deviceId) async => bond;
 
   @override
   Future<TachographConnection> connect(

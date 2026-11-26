@@ -698,8 +698,8 @@
   "tachoBeta": "Beta · doar citire",
   "tachoLead": "Aplicația citește activitatea și timpul din tahograful Smart 2 (VDO DTCO 4.1a și mai noi). Nu salvează nimic și nu schimbă nimic în tahograf.",
   "tachoStepCard": "Introduceți cardul conducătorului auto în tahograf.",
-  "tachoStepConsent": "În meniul tahografului activați Bluetooth și permiteți transmiterea datelor (ITS).",
-  "tachoStepPair": "Apăsați butonul de mai jos și alegeți tahograful. Când pe telefon și pe tahograf apar aceleași 6 cifre, confirmați pe ambele.",
+  "tachoStepConsent": "În meniul tahografului permiteți transmiterea datelor ITS: fără asta, Bluetooth-ul tahografului nu pornește.",
+  "tachoStepPair": "Pe tahograf deschideți Bluetooth → asociere. Apoi, în setările Bluetooth ale telefonului, alegeți tahograful și confirmați aceleași 6 cifre pe telefon și pe tahograf.",
   "tachoFind": "Caută tahograful",
   "tachoSearching": "Căutăm tahograful din apropiere…",
   "tachoSearchHint": "Tahograful nu e în listă? Deschideți pe tahograf meniul Bluetooth și începeți conectarea.",
@@ -740,5 +740,8 @@
   "tachoLogCopy": "Copiați jurnalul",
   "tachoLogCopied": "Jurnalul a fost copiat — lipiți-l într-un mesaj.",
   "tachoFailRefused": "Tahograful nu lasă telefonul să citească datele. În parcare, verificați în meniul tahografului că sunt activate Bluetooth și transmiterea datelor (ITS), închideți alte aplicații pentru tahograf și încercați din nou.",
-  "tachoFailPairing": "Telefonul și tahograful nu sunt asociate. În setările Bluetooth ale telefonului ștergeți tahograful, dacă apare acolo, conectați-vă din nou și confirmați cele 6 cifre pe telefon și pe tahograf."
+  "tachoFailPairing": "Asocierea nu s-a încheiat. În setările Bluetooth ale telefonului ștergeți tahograful, pe tahograf deschideți din nou Bluetooth → asociere și alegeți tahograful pe telefon. Nu repetați imediat: dacă nu merge, așteptați câteva minute.",
+  "tachoStepConnect": "Când pe ecranul tahografului apare simbolul Bluetooth, apăsați butonul de mai jos și alegeți tahograful.",
+  "tachoFailNotBonded": "Telefonul nu este încă asociat cu tahograful. Pe tahograf deschideți Bluetooth → asociere, apoi în setările Bluetooth ale telefonului alegeți tahograful și confirmați cele 6 cifre pe ambele. După aceea reveniți aici.",
+  "tachoOpenBluetooth": "Setări Bluetooth"
 }

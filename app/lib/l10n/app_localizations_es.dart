@@ -2772,11 +2772,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tachoStepConsent =>
-      'En el menú del tacógrafo, active el Bluetooth y permita la transmisión de datos (ITS).';
+      'En el menú del tacógrafo, permita la transmisión de datos ITS: sin ella, el Bluetooth del tacógrafo no se activa.';
 
   @override
   String get tachoStepPair =>
-      'Pulse el botón de abajo y elija el tacógrafo. Cuando el teléfono y el tacógrafo muestren los mismos 6 dígitos, confirme en ambos.';
+      'En el tacógrafo, abra Bluetooth → emparejamiento. Después, en los ajustes de Bluetooth del teléfono, elija el tacógrafo y confirme los mismos 6 dígitos en el teléfono y en el tacógrafo.';
 
   @override
   String get tachoFind => 'Buscar tacógrafo';
@@ -2915,5 +2915,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tachoFailPairing =>
-      'El teléfono y el tacógrafo no están emparejados. En los ajustes de Bluetooth del teléfono, elimine el tacógrafo si aparece, vuelva a conectar y confirme los 6 dígitos en el teléfono y en el tacógrafo.';
+      'El emparejamiento no terminó. Elimine el tacógrafo en los ajustes de Bluetooth del teléfono, vuelva a abrir Bluetooth → emparejamiento en el tacógrafo y elíjalo en el teléfono. No lo repita enseguida: si falla, espere unos minutos.';
+
+  @override
+  String get tachoStepConnect =>
+      'Cuando aparezca el símbolo de Bluetooth en la pantalla del tacógrafo, pulse el botón de abajo y elija el tacógrafo.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'El teléfono aún no está emparejado con el tacógrafo. En el tacógrafo, abra Bluetooth → emparejamiento; después elija el tacógrafo en los ajustes de Bluetooth del teléfono y confirme los 6 dígitos en ambos. Luego vuelva aquí.';
+
+  @override
+  String get tachoOpenBluetooth => 'Ajustes de Bluetooth';
 }

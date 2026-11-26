@@ -109,13 +109,15 @@ class ItsMessageAssembler {
 /// only against a credit from the tachograph and gives the tachograph new
 /// credits as its packets arrive, so no data is lost.
 class ItsCredits {
-  new({this.grant = 32}) {
-    if (grant < 2 || grant >= itsCreditsDisconnect) {
-      throw ArgumentError.value(grant, 'grant', 'must be 2…254');
+  new({this.grant = 1}) {
+    if (grant < 1 || grant >= itsCreditsDisconnect) {
+      throw ArgumentError.value(grant, 'grant', 'must be 1…254');
     }
   }
 
-  /// Сколько пакетов разрешаем тахографу при соединении.
+  /// Сколько пакетов разрешаем тахографу при соединении. 1 — как в
+  /// открытом коде, который читает DTCO 4.1a: кредит при соединении и по
+  /// кредиту за каждый принятый пакет (docs/research/dtco-docs-findings.md).
   final int grant;
 
   /// Кредиты от тахографа: сколько пакетов можем отправить.
@@ -136,7 +138,8 @@ class ItsCredits {
   }
 
   /// Пакет от тахографа принят. Больше нуля — столько кредитов вернуть
-  /// тахографу сейчас: он израсходовал половину выданных.
+  /// тахографу сейчас: он израсходовал половину выданных (при выдаче 1 —
+  /// по кредиту за каждый пакет).
   int onPacketReceived() {
     _received++;
     if (_received < grant ~/ 2) return 0;

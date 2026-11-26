@@ -114,10 +114,52 @@ void main() {
         await Future<void>.delayed(const Duration(milliseconds: 50));
         expect(port.writtenCredits, isEmpty);
         await opened;
-        expect(port.writtenCredits, [32]);
+        expect(port.writtenCredits, [1]);
         await client.close();
       },
     );
+
+    test('BT-16: подписка — сначала кредиты, пауза, потом FIFO, пауза, '
+        'потом свои кредиты', () async {
+      final port = FakeTachographPort();
+      final client = ItsClient(
+        port,
+        log: log,
+        timeout: _short,
+        retryGrant: const Duration(milliseconds: 20),
+        subscribeSettle: const Duration(milliseconds: 100),
+      );
+      final opened = client.open();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(port.subscriptions, ['credits']);
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      expect(port.subscriptions, ['credits', 'fifo']);
+      expect(port.writtenCredits, isEmpty);
+      await opened;
+      expect(port.writtenCredits, [1]);
+      await client.close();
+    });
+
+    test('BT-16: выдача 1 — ответ из нескольких пакетов приходит целиком, '
+        'по кредиту за пакет', () async {
+      final vin = 'WDB9634031L123456'.codeUnits;
+      final port = FakeTachographPort(values: {0xF190: vin}, maxPacket: 8);
+      final client = ItsClient(
+        port,
+        log: log,
+        timeout: _short,
+        retryGrant: const Duration(milliseconds: 20),
+        subscribeSettle: Duration.zero,
+      );
+      await client.open();
+      final reply = await client.request(readDataRequest(0xF190));
+      expect(reply, [0x62, 0xF1, 0x90, ...vin]);
+      // Ответ 20 байт по 6 — 4 пакета: кредит при открытии и по кредиту
+      // за каждый принятый пакет
+      expect(port.writtenCredits, [1, 1, 1, 1, 1]);
+      expect(port.overruns, 0);
+      await client.close();
+    });
 
     test('BT-14: ответ на первые кредиты потерялся, на повтор — 0: '
         'соединение ITS открывается заново', () async {

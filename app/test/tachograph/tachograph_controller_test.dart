@@ -142,6 +142,37 @@ void main() {
     });
   });
 
+  group('BT-17: подключение — только к сопряжённому тахографу', () {
+    test('не сопряжён — «сначала сопрячь», соединения нет', () async {
+      start(FakeTachographPlatform(bond: BondState.none));
+      await controller().connect(dtco);
+      expect(
+        state(),
+        isA<TachoFailed>()
+            .having((s) => s.problem, 'problem', TachoProblem.notBonded)
+            .having((s) => s.device, 'device', dtco),
+      );
+      expect(platform.connections, isEmpty);
+      final log = container.read(tachographLogProvider).lines;
+      expect(log.any((l) => l.contains('bond none')), isTrue);
+    });
+
+    test('сопряжение ещё идёт — тоже не подключаемся', () async {
+      start(FakeTachographPlatform(bond: BondState.bonding));
+      await controller().connect(dtco);
+      expect((state() as TachoFailed).problem, TachoProblem.notBonded);
+      expect(platform.connections, isEmpty);
+    });
+
+    test('Android не сказал — подключаемся, как раньше', () async {
+      start(FakeTachographPlatform(bond: BondState.unknown));
+      await controller().connect(dtco);
+      await settle(const Duration(milliseconds: 300));
+      expect(state(), isA<TachoConnected>());
+      expect(platform.connections, hasLength(1));
+    });
+  });
+
   group('BT-09: экран тахографа — ошибки', () {
     test('не тахограф: нет сервиса ITS', () async {
       start(FakeTachographPlatform(failure: ConnectFailure.notTachograph));

@@ -698,8 +698,8 @@
   "tachoBeta": "Beta · faqat oʻqish",
   "tachoLead": "Ilova Smart 2 taxografidan (VDO DTCO 4.1a va yangilari) rejim va vaqtni oʻqiydi. Hech narsani saqlamaydi va taxografda hech narsani oʻzgartirmaydi.",
   "tachoStepCard": "Haydovchi kartasini taxografga qoʻying.",
-  "tachoStepConsent": "Taxograf menyusida Bluetoothni yoqing va maʼlumot uzatishga ruxsat bering (ITS).",
-  "tachoStepPair": "Quyidagi tugmani bosing va taxografni tanlang. Telefon va taxografda bir xil 6 raqam chiqqanda, ikkalasida ham tasdiqlang.",
+  "tachoStepConsent": "Taxograf menyusida ITS maʼlumotlarini uzatishga ruxsat bering: busiz taxografning Bluetooth funksiyasi yoqilmaydi.",
+  "tachoStepPair": "Taxografda Bluetooth → juftlash boʻlimini oching. Soʻng telefonning Bluetooth sozlamalarida taxografni tanlang va bir xil 6 ta raqamni telefonda ham, taxografda ham tasdiqlang.",
   "tachoFind": "Taxografni topish",
   "tachoSearching": "Yaqindagi taxografni qidiryapmiz…",
   "tachoSearchHint": "Taxograf roʻyxatda yoʻqmi? Taxografda Bluetooth menyusini oching va ulanishni boshlang.",
@@ -740,5 +740,8 @@
   "tachoLogCopy": "Jurnalni nusxalash",
   "tachoLogCopied": "Jurnal nusxalandi — uni xabarga qoʻying.",
   "tachoFailRefused": "Taxograf telefonni maʼlumotlarga kiritmayapti. Toʻxtaganda taxograf menyusida Bluetooth va maʼlumot uzatish (ITS) yoqilganini tekshiring, taxograf uchun boshqa ilovalarni yoping va qayta urinib koʻring.",
-  "tachoFailPairing": "Telefon va taxograf juftlanmagan. Telefonning Bluetooth sozlamalarida taxograf boʻlsa, uni oʻchiring, qayta ulaning va 6 ta raqamni telefonda ham, taxografda ham tasdiqlang."
+  "tachoFailPairing": "Juftlash tugamadi. Telefonning Bluetooth sozlamalarida taxografni oʻchiring, taxografda yana Bluetooth → juftlash boʻlimini oching va telefonda taxografni tanlang. Ketma-ket takrorlamang: chiqmasa, bir necha daqiqa kuting.",
+  "tachoStepConnect": "Taxograf ekranida Bluetooth belgisi paydo boʻlgach, quyidagi tugmani bosing va taxografni tanlang.",
+  "tachoFailNotBonded": "Telefon hali taxograf bilan juftlanmagan. Taxografda Bluetooth → juftlash boʻlimini oching, soʻng telefonning Bluetooth sozlamalarida taxografni tanlang va 6 ta raqamni ikkalasida ham tasdiqlang. Keyin bu yerga qayting.",
+  "tachoOpenBluetooth": "Bluetooth sozlamalari"
 }

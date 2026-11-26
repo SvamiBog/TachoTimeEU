@@ -2765,11 +2765,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tachoStepConsent =>
-      'Zet in het menu van de tachograaf Bluetooth aan en sta het delen van gegevens toe (ITS).';
+      'Sta in het menu van de tachograaf het delen van ITS-gegevens toe: zonder dat blijft Bluetooth van de tachograaf uit.';
 
   @override
   String get tachoStepPair =>
-      'Tik op de knop hieronder en kies de tachograaf. Als de telefoon en de tachograaf dezelfde 6 cijfers tonen, bevestig dan op beide.';
+      'Open op de tachograaf Bluetooth → koppelen. Kies daarna in de Bluetooth-instellingen van de telefoon de tachograaf en bevestig dezelfde 6 cijfers op de telefoon en de tachograaf.';
 
   @override
   String get tachoFind => 'Tachograaf zoeken';
@@ -2907,5 +2907,16 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tachoFailPairing =>
-      'Telefoon en tachograaf zijn niet gekoppeld. Verwijder de tachograaf in de Bluetooth-instellingen van de telefoon als hij daar staat, maak opnieuw verbinding en bevestig de 6 cijfers op de telefoon en de tachograaf.';
+      'Het koppelen is niet afgerond. Verwijder de tachograaf in de Bluetooth-instellingen van de telefoon, open op de tachograaf opnieuw Bluetooth → koppelen en kies hem op de telefoon. Probeer het niet meteen opnieuw: lukt het niet, wacht dan een paar minuten.';
+
+  @override
+  String get tachoStepConnect =>
+      'Zodra het Bluetooth-symbool op het scherm van de tachograaf verschijnt, tik op de knop hieronder en kies de tachograaf.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'De telefoon is nog niet gekoppeld met de tachograaf. Open op de tachograaf Bluetooth → koppelen, kies daarna de tachograaf in de Bluetooth-instellingen van de telefoon en bevestig de 6 cijfers op beide. Kom dan hier terug.';
+
+  @override
+  String get tachoOpenBluetooth => 'Bluetooth-instellingen';
 }

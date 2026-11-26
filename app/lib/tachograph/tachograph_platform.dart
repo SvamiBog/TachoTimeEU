@@ -74,6 +74,31 @@ enum ConnectFailure {
   pairing,
 }
 
+/// Whether Android has the phone paired (bonded) with a device.
+enum BondState {
+  bonded,
+
+  /// Сопряжение идёт: водитель сверяет 6 цифр.
+  bonding,
+
+  /// Не сопряжены.
+  none,
+
+  /// Android не сказал: нет разрешения или нет канала.
+  unknown,
+}
+
+/// Сопряжение из описания устройства «bond bonded, type le»
+/// (`BluetoothAccess.describe` в MainActivity).
+@visibleForTesting
+BondState parseBondState(String? description) =>
+    switch (RegExp(r'^bond (\w+)').firstMatch(description ?? '')?[1]) {
+      'bonded' => BondState.bonded,
+      'bonding' => BondState.bonding,
+      'none' => BondState.none,
+      _ => BondState.unknown,
+    };
+
 /// A failed connection to the device.
 class TachographConnectException implements Exception {
   const new(this.failure);
@@ -118,6 +143,11 @@ abstract interface class TachographPlatform {
 
   /// Устройства рядом, пока слушают.
   Stream<FoundDevice> scan();
+
+  /// Сопряжён ли телефон с [deviceId]. Тахограф сопрягают в настройках
+  /// Bluetooth, открыв на нём «сопряжение»; подключение без сопряжения
+  /// тахограф считает неудачной попыткой (docs/research/dtco-docs-findings.md).
+  Future<BondState> bondState(String deviceId);
 
   /// Подключиться к устройству [deviceId] и найти порт ITS. Ошибка —
   /// [TachographConnectException].
@@ -195,6 +225,10 @@ class ReactiveBleTachographPlatform implements TachographPlatform {
           ),
         );
   }
+
+  @override
+  Future<BondState> bondState(String deviceId) async =>
+      parseBondState(await _describeDevice(deviceId));
 
   @override
   Future<TachographConnection> connect(
@@ -413,7 +447,7 @@ class _BlePort implements ItsPort {
   @override
   final int maxPacket;
 
-  // Подписка включает indications; первая запускает сопряжение
+  // Подписка включает indications; без сопряжения тахограф её отклоняет
   @override
   Stream<List<int>> get fifo => _fifo.subscribe();
 

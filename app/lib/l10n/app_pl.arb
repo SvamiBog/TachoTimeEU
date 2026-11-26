@@ -698,8 +698,8 @@
   "tachoBeta": "Beta · tylko odczyt",
   "tachoLead": "Aplikacja odczytuje tryb i czas z tachografu Smart 2 (VDO DTCO 4.1a i nowsze). Niczego nie zapisuje i niczego nie zmienia w tachografie.",
   "tachoStepCard": "Włóż kartę kierowcy do tachografu.",
-  "tachoStepConsent": "W menu tachografu włącz Bluetooth i zezwól na przesyłanie danych (ITS).",
-  "tachoStepPair": "Naciśnij przycisk poniżej i wybierz tachograf. Gdy telefon i tachograf pokażą te same 6 cyfr, potwierdź na obu.",
+  "tachoStepConsent": "W menu tachografu zezwól na przekazywanie danych ITS: bez tego Bluetooth tachografu się nie włączy.",
+  "tachoStepPair": "Na tachografie otwórz Bluetooth → parowanie. Następnie w ustawieniach Bluetooth telefonu wybierz tachograf i potwierdź te same 6 cyfr na telefonie i tachografie.",
   "tachoFind": "Znajdź tachograf",
   "tachoSearching": "Szukamy tachografu w pobliżu…",
   "tachoSearchHint": "Nie ma tachografu na liście? Otwórz w tachografie menu Bluetooth i rozpocznij łączenie.",
@@ -740,5 +740,8 @@
   "tachoLogCopy": "Kopiuj dziennik",
   "tachoLogCopied": "Dziennik skopiowany — wklej go do wiadomości.",
   "tachoFailRefused": "Tachograf nie dopuszcza telefonu do danych. Na postoju sprawdź w menu tachografu, czy włączone są Bluetooth i przesyłanie danych (ITS), zamknij inne aplikacje do tachografu i spróbuj ponownie.",
-  "tachoFailPairing": "Telefon i tachograf nie są sparowane. W ustawieniach Bluetooth telefonu usuń tachograf, jeśli tam jest, połącz się ponownie i potwierdź 6 cyfr na telefonie i tachografie."
+  "tachoFailPairing": "Parowanie się nie zakończyło. W ustawieniach Bluetooth telefonu usuń tachograf, na tachografie ponownie otwórz Bluetooth → parowanie i wybierz tachograf na telefonie. Nie ponawiaj od razu: jeśli się nie uda, odczekaj kilka minut.",
+  "tachoStepConnect": "Gdy na ekranie tachografu pojawi się ikona Bluetooth, naciśnij przycisk poniżej i wybierz tachograf.",
+  "tachoFailNotBonded": "Telefon nie jest jeszcze sparowany z tachografem. Na tachografie otwórz Bluetooth → parowanie, potem w ustawieniach Bluetooth telefonu wybierz tachograf i potwierdź 6 cyfr na obu. Następnie wróć tutaj.",
+  "tachoOpenBluetooth": "Ustawienia Bluetooth"
 }

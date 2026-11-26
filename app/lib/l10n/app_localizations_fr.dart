@@ -2778,11 +2778,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tachoStepConsent =>
-      'Dans le menu du tachygraphe, activez le Bluetooth et autorisez la transmission des données (ITS).';
+      'Dans le menu du tachygraphe, autorisez la transmission des données ITS : sans elle, le Bluetooth du tachygraphe reste éteint.';
 
   @override
   String get tachoStepPair =>
-      'Appuyez sur le bouton ci-dessous et choisissez le tachygraphe. Quand le téléphone et le tachygraphe affichent les mêmes 6 chiffres, confirmez sur les deux.';
+      'Sur le tachygraphe, ouvrez Bluetooth → appairage. Puis, dans les réglages Bluetooth du téléphone, choisissez le tachygraphe et confirmez les mêmes 6 chiffres sur le téléphone et sur le tachygraphe.';
 
   @override
   String get tachoFind => 'Trouver le tachygraphe';
@@ -2922,5 +2922,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tachoFailPairing =>
-      'Le téléphone et le tachygraphe ne sont pas associés. Dans les réglages Bluetooth du téléphone, supprimez le tachygraphe s’il y figure, reconnectez-vous et confirmez les 6 chiffres sur le téléphone et sur le tachygraphe.';
+      'L’appairage n’a pas abouti. Supprimez le tachygraphe dans les réglages Bluetooth du téléphone, rouvrez Bluetooth → appairage sur le tachygraphe et choisissez-le sur le téléphone. Ne réessayez pas tout de suite : en cas d’échec, attendez quelques minutes.';
+
+  @override
+  String get tachoStepConnect =>
+      'Quand le symbole Bluetooth apparaît sur l’écran du tachygraphe, appuyez sur le bouton ci-dessous et choisissez le tachygraphe.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Le téléphone n’est pas encore associé au tachygraphe. Sur le tachygraphe, ouvrez Bluetooth → appairage, puis choisissez le tachygraphe dans les réglages Bluetooth du téléphone et confirmez les 6 chiffres sur les deux. Revenez ensuite ici.';
+
+  @override
+  String get tachoOpenBluetooth => 'Réglages Bluetooth';
 }
