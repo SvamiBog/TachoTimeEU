@@ -23,6 +23,7 @@ class MainActivity : FlutterActivity() {
                     "bluetoothDevice" -> result.success(
                         BluetoothAccess.describe(this, call.arguments as? String ?: ""),
                     )
+                    "lastNativeCrash" -> result.success(CrashGuard.takeLast(this))
                     else -> result.notImplemented()
                 }
             }

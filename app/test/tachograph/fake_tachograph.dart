@@ -21,6 +21,7 @@ class FakeTachographPort implements ItsPort {
     this.lostReplies = 0,
     this.subscribeError,
     this.silent = const {},
+    this.dropsAfterCredits = Duration.zero,
   }) : values = values ?? {},
        refusals = refusals ?? {};
 
@@ -62,6 +63,15 @@ class FakeTachographPort implements ItsPort {
 
   /// Номера данных, на которые тахограф молчит.
   final Set<int> silent;
+
+  /// Пакет FIFO, пришедший раньше этого после кредитов клиента, теряется:
+  /// ни кредита за него, ни ответа (DTCO 4.1a владельца, 26.11.2026).
+  final Duration dropsAfterCredits;
+
+  /// Пакетов FIFO потеряно.
+  int dropped = 0;
+
+  final _sinceCredits = Stopwatch();
 
   final _fifo = StreamController<List<int>>.broadcast();
   final _credits = StreamController<List<int>>.broadcast();
@@ -114,6 +124,9 @@ class FakeTachographPort implements ItsPort {
       throw StateError('insufficient authentication');
     }
     writtenCredits.add(credits);
+    _sinceCredits
+      ..reset()
+      ..start();
     if (credits == itsCreditsDisconnect) {
       // Соединение ITS закрыто: следующие кредиты откроют его заново
       _greeted = false;
@@ -143,6 +156,10 @@ class FakeTachographPort implements ItsPort {
 
   @override
   Future<void> writeFifo(List<int> packet) async {
+    if (_sinceCredits.isRunning && _sinceCredits.elapsed < dropsAfterCredits) {
+      dropped++;
+      return;
+    }
     if (_given == 0) overruns++;
     _given--;
     final message = _assembler.add(packet);

@@ -48,6 +48,7 @@ class FakeTachographPlatform implements TachographPlatform {
     FakeTachographPort Function()? port,
     this.failure,
     this.bond = BondState.bonded,
+    this.crash,
   }) : _port = port ?? (() => FakeTachographPort(values: drivingValues()));
 
   @override
@@ -67,6 +68,9 @@ class FakeTachographPlatform implements TachographPlatform {
 
   /// Сопряжён ли телефон с тахографом.
   BondState bond;
+
+  /// Сохранённое падение нативной части; читается один раз.
+  String? crash;
 
   final _readinessChanges = StreamController<BluetoothReadiness>.broadcast();
   int permissionRequests = 0;
@@ -117,6 +121,13 @@ class FakeTachographPlatform implements TachographPlatform {
   Future<BondState> bondState(String deviceId) async => bond;
 
   @override
+  Future<String?> lastNativeCrash() async {
+    final value = crash;
+    crash = null;
+    return value;
+  }
+
+  @override
   Future<TachographConnection> connect(
     String deviceId, {
     required ExchangeLog log,
@@ -157,6 +168,7 @@ List<Override> fastTachographSession() => [
       openTimeout: const Duration(seconds: 1),
       retryGrant: const Duration(milliseconds: 100),
       subscribeSettle: const Duration(milliseconds: 50),
+      requestGap: Duration.zero,
     );
     return (
       client: client,

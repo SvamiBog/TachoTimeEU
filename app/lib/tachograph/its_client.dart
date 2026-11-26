@@ -91,6 +91,7 @@ class ItsClient {
     this.maxRejections = 6,
     this.subscribeSettle = const Duration(milliseconds: 1500),
     this.maxRestarts = 2,
+    this.requestGap = const Duration(milliseconds: 350),
     int grant = 1,
   }) : _credits = ItsCredits(grant: grant);
 
@@ -122,6 +123,19 @@ class ItsClient {
   /// Сколько раз переоткрыть соединение ITS, если тахограф принял его без
   /// кредитов.
   final int maxRestarts;
+
+  /// Пауза между своими кредитами и следующим пакетом FIFO. Пакет, ушедший
+  /// через 6 мс после кредитов, DTCO 4.1a теряет: ни кредита за него, ни
+  /// ответа; тот же запрос после паузы проходит (журнал владельца,
+  /// 26.11.2026). Открытый код, читающий DTCO, ждёт между запросами 350 мс.
+  final Duration requestGap;
+
+  /// Когда последний раз писали тахографу кредиты.
+  DateTime? _creditsWrittenAt;
+
+  /// Кредиты от тахографа после отправки текущего запроса: за принятый
+  /// пакет он возвращает кредит, 0 — ответ на наши кредиты.
+  int _returnedSinceSend = 0;
 
   final _subscriptions = <StreamSubscription<List<int>>>[];
   final _inbox = Queue<Uint8List>();
@@ -257,12 +271,27 @@ class ItsClient {
   ) async {
     if (_closed) throw const ItsException(ItsFailure.disconnected);
     _inbox.clear();
-    for (final packet in splitItsMessage(message, maxPacket: _port.maxPacket)) {
+    final packets = splitItsMessage(message, maxPacket: _port.maxPacket);
+    _returnedSinceSend = 0;
+    for (final packet in packets) {
       await _takeCredit();
+      await _afterCredits();
       _log.sent('fifo', packet);
       await _port.writeFifo(packet);
     }
-    var reply = await _next();
+    Uint8List reply;
+    try {
+      reply = await _next();
+    } on ItsException catch (e) {
+      // Ни ответа, ни кредита за запрос: до тахографа он не дошёл, и
+      // кредиты на него не израсходованы — иначе после пары потерь
+      // отправлять станет нечем
+      if (e.failure == ItsFailure.timeout && _returnedSinceSend == 0) {
+        _credits.addFromPeer(packets.length);
+        _log.event('request lost: ${packets.length} credit(s) back');
+      }
+      rethrow;
+    }
     // «Ждите» (UDS 78) — не больше 10 раз подряд
     for (var i = 0; i < 10 && (pending?.call(reply) ?? false); i++) {
       reply = await _next();
@@ -276,7 +305,10 @@ class ItsClient {
     if (_closed) throw const ItsException(ItsFailure.disconnected);
     final reply = _reply = Completer<Uint8List>();
     final timer = _wait = Timer(timeout, () {
-      _log.event('no reply in ${timeout.inMilliseconds} ms');
+      _log.event(
+        'no reply in ${timeout.inMilliseconds} ms '
+        '(credits ${_credits.available})',
+      );
       if (!reply.isCompleted) {
         reply.completeError(const ItsException(ItsFailure.timeout));
       }
@@ -309,7 +341,15 @@ class ItsClient {
 
   Future<void> _writeCredits(int credits) async {
     _log.sent('credits', [credits]);
+    _creditsWrittenAt = clock.now();
     await _port.writeCredits(credits);
+  }
+
+  /// Выждать [requestGap] после своих кредитов.
+  Future<void> _afterCredits() async {
+    final written = _creditsWrittenAt;
+    if (written == null) return;
+    await _sleep(written.add(requestGap).difference(clock.now()));
   }
 
   void _onPacket(List<int> packet) {
@@ -343,6 +383,7 @@ class ItsClient {
       return;
     }
     _credits.addFromPeer(value.first);
+    _returnedSinceSend += value.first;
     final accepted = _accepted;
     if (accepted != null && !accepted.isCompleted) accepted.complete();
     final arrived = _creditsArrived;

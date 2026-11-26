@@ -17,6 +17,7 @@ ItsClient _client(FakeTachographPort port, ExchangeLog log) => ItsClient(
   openTimeout: const Duration(seconds: 1),
   retryGrant: const Duration(milliseconds: 20),
   subscribeSettle: Duration.zero,
+  requestGap: Duration.zero,
   grant: 8,
 );
 
@@ -140,6 +141,73 @@ void main() {
       await client.close();
     });
 
+    test('BT-18: запрос сразу за своими кредитами тахограф теряет — '
+        'ждём паузу, все запросы доходят', () async {
+      final port = FakeTachographPort(
+        values: {
+          0xF905: [0],
+          0xF90B: [1, 2, 3, 4],
+          0xF903: [3],
+        },
+        dropsAfterCredits: const Duration(milliseconds: 60),
+      );
+      final client = ItsClient(
+        port,
+        log: log,
+        timeout: _short,
+        subscribeSettle: Duration.zero,
+        requestGap: const Duration(milliseconds: 120),
+      );
+      await client.open();
+      for (final id in [0xF905, 0xF90B, 0xF903]) {
+        expect(
+          parseUdsReply(await client.request(readDataRequest(id))),
+          isA<UdsData>(),
+        );
+      }
+      expect(port.dropped, 0);
+      await client.close();
+    });
+
+    test('BT-18: запрос потерялся (ни ответа, ни кредита) — кредит '
+        'возвращается, следующий запрос уходит', () async {
+      final port = FakeTachographPort(
+        values: {
+          0xF905: [0],
+          0xF903: [3],
+        },
+        grant: 1,
+        dropsAfterCredits: const Duration(seconds: 1),
+      );
+      final client = ItsClient(
+        port,
+        log: log,
+        timeout: _short,
+        subscribeSettle: Duration.zero,
+        requestGap: Duration.zero,
+      );
+      await client.open();
+      await expectLater(
+        client.request(readDataRequest(0xF905)),
+        throwsA(
+          isA<ItsException>().having(
+            (e) => e.failure,
+            'failure',
+            ItsFailure.timeout,
+          ),
+        ),
+      );
+      expect(port.dropped, 1);
+      expect(log.lines.any((l) => l.contains('request lost')), isTrue);
+      // Кредит вернулся: запрос уходит, а не ждёт кредитов
+      await Future<void>.delayed(const Duration(seconds: 1));
+      expect(
+        parseUdsReply(await client.request(readDataRequest(0xF903))),
+        isA<UdsData>(),
+      );
+      await client.close();
+    });
+
     test('BT-16: выдача 1 — ответ из нескольких пакетов приходит целиком, '
         'по кредиту за пакет', () async {
       final vin = 'WDB9634031L123456'.codeUnits;
@@ -150,6 +218,7 @@ void main() {
         timeout: _short,
         retryGrant: const Duration(milliseconds: 20),
         subscribeSettle: Duration.zero,
+        requestGap: Duration.zero,
       );
       await client.open();
       final reply = await client.request(readDataRequest(0xF190));
@@ -413,15 +482,19 @@ void main() {
         now: () => DateTime.utc(2026),
         interval: Duration.zero,
       );
-      final readings = await reader.readings().take(2).toList();
+      final readings = await reader.readings().take(3).toList();
       expect(readings.last.driver1Mode, isNull);
       expect(readings.last.continuousDriving, const Duration(minutes: 30));
+      // BT-18: промолчал — спросим ещё раз, дважды — больше не спрашиваем
       final asked = [for (final r in port.requests) r[1] << 8 | r[2]];
       expect(
         asked.where((id) => id == TachoDid.driver1WorkingState.id),
-        hasLength(1),
+        hasLength(TachographReader.maxTimeoutsPerValue),
       );
-      expect(log.lines.any((l) => l.contains('no reply to F9 03')), isTrue);
+      expect(
+        log.lines.any((l) => l.contains('no reply to F9 03 (2 of 2)')),
+        isTrue,
+      );
       await client.close();
     });
 

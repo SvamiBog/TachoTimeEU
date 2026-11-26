@@ -131,6 +131,10 @@ class TachographController extends Notifier<TachoState> {
       state = const TachoBlocked(BluetoothReadiness.unsupported);
       return;
     }
+    // Приложение упало в прошлый раз — причина в журнал обмена
+    final crash = await platform.lastNativeCrash();
+    if (!_current(attempt)) return;
+    if (crash != null) _log('previous native error:\n$crash');
     final allowed =
         await platform.hasPermissions() || await platform.requestPermissions();
     if (!_current(attempt)) return;

@@ -44,6 +44,10 @@ class TachographReader {
   /// Сколько запросов подряд без ответа — обрыв связи.
   static const maxSilent = 3;
 
+  /// После скольких промолчанных запросов подряд номер больше не
+  /// спрашиваем: один запрос может потеряться в пути.
+  static const maxTimeoutsPerValue = 2;
+
   /// Читаются один раз.
   static const Set<TachoDid> once = {TachoDid.vehicleIdentificationNumber};
 
@@ -78,8 +82,9 @@ class TachographReader {
   }) async {
     final values = <TachoDid, List<int>>{};
     final skip = <TachoDid>{};
-    // Запросов без ответа подряд
+    // Запросов без ответа подряд — всего и по каждому номеру
     var silent = 0;
+    final timeouts = <TachoDid, int>{};
     try {
       for (var cycle = 0; active(); cycle++) {
         final slow = cycle % slowEvery == 0;
@@ -92,15 +97,20 @@ class TachographReader {
           try {
             reply = await _read(did);
             silent = 0;
+            timeouts.remove(did);
           } on ItsException catch (e) {
-            // Тахограф промолчал на один номер — не спрашиваем его больше;
-            // молчит подряд — связи нет
+            // Тахограф промолчал на номер — спросим в следующий раз, дважды
+            // подряд — больше не спрашиваем; молчит подряд — связи нет
             if (e.failure != ItsFailure.timeout || ++silent >= maxSilent) {
               rethrow;
             }
-            _log.event('no reply to ${hexBytes([did.id >> 8, did.id & 0xFF])}');
+            final count = timeouts[did] = (timeouts[did] ?? 0) + 1;
+            _log.event(
+              'no reply to ${hexBytes([did.id >> 8, did.id & 0xFF])} '
+              '($count of $maxTimeoutsPerValue)',
+            );
             values.remove(did);
-            skip.add(did);
+            if (count >= maxTimeoutsPerValue) skip.add(did);
             continue;
           }
           switch (reply) {

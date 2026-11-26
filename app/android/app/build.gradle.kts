@@ -103,6 +103,10 @@ flutter {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
+    // Обработчик ошибок RxJava для flutter_reactive_ble (CrashGuard, BT-18):
+    // библиотека уже в приложении через плагин, здесь — только для сборки
+    compileOnly("io.reactivex.rxjava2:rxjava:2.2.21")
+
     // Тесты нативной части на JVM (BG-09): ./gradlew :app:testDebugUnitTest
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test:core:1.6.1")

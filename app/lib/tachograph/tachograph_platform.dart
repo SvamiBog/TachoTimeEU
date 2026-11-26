@@ -149,6 +149,10 @@ abstract interface class TachographPlatform {
   /// тахограф считает неудачной попыткой (docs/research/dtco-docs-findings.md).
   Future<BondState> bondState(String deviceId);
 
+  /// Начало стека прошлого падения нативной части или ошибки Bluetooth,
+  /// которую поймал `CrashGuard`; прочитанное удаляется. null — не было.
+  Future<String?> lastNativeCrash();
+
   /// Подключиться к устройству [deviceId] и найти порт ITS. Ошибка —
   /// [TachographConnectException].
   Future<TachographConnection> connect(
@@ -229,6 +233,17 @@ class ReactiveBleTachographPlatform implements TachographPlatform {
   @override
   Future<BondState> bondState(String deviceId) async =>
       parseBondState(await _describeDevice(deviceId));
+
+  @override
+  Future<String?> lastNativeCrash() async {
+    try {
+      return await _deviceChannel.invokeMethod<String>('lastNativeCrash');
+    } on PlatformException catch (e) {
+      return 'crash record unavailable: ${e.message}';
+    } on MissingPluginException {
+      return null;
+    }
+  }
 
   @override
   Future<TachographConnection> connect(

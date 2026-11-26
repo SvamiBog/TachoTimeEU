@@ -142,6 +142,29 @@ void main() {
     });
   });
 
+  group('BT-18: прошлое падение — в журнал обмена', () {
+    test(
+      'при поиске причина прошлого падения попадает в журнал один раз',
+      () async {
+        start(
+          FakeTachographPlatform(
+            crash:
+                'crash 2026-11-26T07:38:17Z\n'
+                'java.lang.IllegalStateException: Reply already submitted',
+          ),
+        );
+        await controller().search();
+        await controller().search();
+        final lines = container.read(tachographLogProvider).lines;
+        expect(
+          lines.where((l) => l.contains('previous native error')),
+          hasLength(1),
+        );
+        expect(lines.any((l) => l.contains('Reply already submitted')), isTrue);
+      },
+    );
+  });
+
   group('BT-17: подключение — только к сопряжённому тахографу', () {
     test('не сопряжён — «сначала сопрячь», соединения нет', () async {
       start(FakeTachographPlatform(bond: BondState.none));

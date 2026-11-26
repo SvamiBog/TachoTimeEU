@@ -9,6 +9,7 @@ import android.app.Application
 class TachoGoApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        CrashGuard.install(this)
         ScreenOnReceiver.register(this)
     }
 }
