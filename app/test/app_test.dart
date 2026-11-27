@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tachogo/app.dart';
+import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/onboarding/onboarding_screen.dart';
 import 'package:tachogo/features/shell/app_shell.dart';
@@ -62,6 +63,66 @@ void main() {
     await launch(tester, overrides);
     expect(find.byType(OnboardingScreen), findsNothing);
     expect(find.byType(AppShell), findsOneWidget);
+    await unmount(tester);
+  });
+
+  testWidgets('журнал читается с первого кадра, не дожидаясь настроек и '
+      'главной', (tester) async {
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    final container = ProviderContainer(
+      overrides: databaseOverrides(db, now: () => DateTime.utc(2026, 9, 23, 8)),
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TachoGoApp(),
+      ),
+    );
+    // Настройки ещё не прочитаны: на экране нет ни онбординга, ни главной
+    expect(find.byType(OnboardingScreen), findsNothing);
+    expect(find.byType(AppShell), findsNothing);
+    for (final source in journalSources) {
+      expect(container.exists(source), isTrue, reason: '$source');
+    }
+    await settle(tester);
+    await unmount(tester);
+  });
+
+  testWidgets('свёрнутое приложение останавливает часы, открытое — '
+      'запускает', (tester) async {
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    final container = ProviderContainer(
+      overrides: databaseOverrides(db, now: () => DateTime.utc(2026, 9, 23, 8)),
+    );
+    addTearDown(container.dispose);
+    addTearDown(
+      () => tester.binding.handleAppLifecycleStateChanged(
+        AppLifecycleState.resumed,
+      ),
+    );
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TachoGoApp(),
+      ),
+    );
+    await settle(tester);
+    expect(container.read(appVisibleProvider), isTrue);
+
+    // Шторка уведомлений или системный диалог: приложение ещё видно
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    expect(container.read(appVisibleProvider), isTrue);
+    for (final hidden in [AppLifecycleState.hidden, AppLifecycleState.paused]) {
+      tester.binding.handleAppLifecycleStateChanged(hidden);
+      expect(container.read(appVisibleProvider), isFalse, reason: '$hidden');
+    }
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    expect(container.read(appVisibleProvider), isTrue);
     await unmount(tester);
   });
 

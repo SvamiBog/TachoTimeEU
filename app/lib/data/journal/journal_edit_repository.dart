@@ -263,10 +263,7 @@ class JournalEditRepository {
   }) async {
     final result = await _db.transaction(() async {
       final now = _clock().toUtc();
-      final periods = [
-        for (final r in await orderedPeriods(_db).get()) periodFromRow(r),
-      ];
-      return await body(periods, now);
+      return await body(await enginePeriods(_db).get(), now);
     });
     if (journal) _onChanged?.call();
     return result;

@@ -73,8 +73,15 @@ Duration drivingBetween(
   DateTime from,
   DateTime to,
 ) {
+  final blocks = timeline.blocks;
   var total = Duration.zero;
-  for (final b in timeline.blocks) {
+  // Блоки идут по времени и не накладываются ([buildBlocks]): все, что
+  // кончились до [from], пропускаем сразу, а на первом, начавшемся с [to],
+  // останавливаемся. Журнал по неделям и журнал нарушений спрашивают
+  // вождение по сотне раз — перебор всех блоков рос бы квадратично.
+  for (var i = _firstEndingAfter(blocks, from); i < blocks.length; i++) {
+    final b = blocks[i];
+    if (!b.start.isBefore(to)) break;
     if (b.mode == DriverMode.driving) {
       total += overlap(b.start, b.end, from, to);
     }
@@ -83,6 +90,22 @@ Duration drivingBetween(
     if (!m.start.isBefore(from) && m.start.isBefore(to)) total += m.driving;
   }
   return total;
+}
+
+/// Индекс первого блока, который кончается после [at]; длина списка — таких
+/// нет. Двоичный поиск: концы блоков не убывают.
+int _firstEndingAfter(List<Block> blocks, DateTime at) {
+  var low = 0;
+  var high = blocks.length;
+  while (low < high) {
+    final middle = (low + high) >> 1;
+    if (blocks[middle].end.isAfter(at)) {
+      high = middle;
+    } else {
+      low = middle + 1;
+    }
+  }
+  return low;
 }
 
 /// Отдых ручной смены [r] — тот же, что отдых из записей [p]: они
