@@ -1,6 +1,7 @@
 // Провайдеры расчёта: ожидание источников, пересчёт, часы, сигнал другому
 // движку. План тестов: PRV-01…04 в docs/testing.md.
 import 'dart:async';
+import 'dart:ui' show AppLifecycleState;
 
 import 'package:drift/native.dart';
 import 'package:fake_async/fake_async.dart';
@@ -276,6 +277,34 @@ void main() {
         expect(ticks, [
           for (var i = 0; i <= 3; i++) t0.add(Duration(seconds: i)),
         ]);
+        c.dispose();
+      }, initialTime: t0);
+    });
+
+    test('в свёрнутом приложении не тикают; на экране — сразу текущее '
+        'время и снова раз в секунду', () {
+      fakeAsync((async) {
+        final c = ProviderContainer();
+        final ticks = <DateTime>[];
+        c.listen(clockProvider, (_, t) => ticks.add(t), fireImmediately: true);
+        async.elapse(const Duration(seconds: 1));
+
+        c
+            .read(appVisibleProvider.notifier)
+            .onLifecycle(AppLifecycleState.paused);
+        async.elapse(Duration.zero);
+        expect(async.periodicTimerCount, 0);
+        async.elapse(const Duration(minutes: 5));
+        expect(ticks.last, t0.add(const Duration(seconds: 1)));
+
+        c
+            .read(appVisibleProvider.notifier)
+            .onLifecycle(AppLifecycleState.resumed);
+        async.elapse(Duration.zero);
+        expect(ticks.last, t0.add(const Duration(minutes: 5, seconds: 1)));
+        async.elapse(const Duration(seconds: 2));
+        expect(ticks.last, t0.add(const Duration(minutes: 5, seconds: 3)));
+        expect(async.periodicTimerCount, 1);
         c.dispose();
       }, initialTime: t0);
     });

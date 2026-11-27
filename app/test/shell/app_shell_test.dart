@@ -72,4 +72,32 @@ void main() {
       expect(homeScroll().pixels, offset);
     },
   );
+
+  testWidgets(
+    'UI-17: вкладка строится при первом открытии и остаётся в памяти',
+    (tester) async {
+      final week = designWeek(driving: true);
+      await pumpScreen(
+        tester,
+        const AppShell(),
+        overrides: journalOverrides(periods: week.periods, now: week.now),
+      );
+      Finder built(Type screen) => find.byType(screen, skipOffstage: false);
+      expect(built(HomeScreen), findsOneWidget);
+      for (final screen in [JournalScreen, SettingsScreen, MoreScreen]) {
+        expect(built(screen), findsNothing, reason: '$screen');
+      }
+
+      await tester.tap(find.text('Журнал'));
+      await tester.pumpAndSettle();
+      expect(find.byType(JournalScreen), findsOneWidget);
+      expect(built(HomeScreen), findsOneWidget);
+      expect(built(SettingsScreen), findsNothing);
+
+      await tester.tap(find.text('Главная'));
+      await tester.pumpAndSettle();
+      expect(find.byType(JournalScreen), findsNothing);
+      expect(built(JournalScreen), findsOneWidget);
+    },
+  );
 }

@@ -7,6 +7,7 @@ import 'package:drift/drift.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/db/app_database.dart';
 import 'package:tachogo/data/db/tables.dart';
+import 'package:tachogo/data/db/utc_date_time_converter.dart';
 
 /// Все записи журнала по возрастанию начала.
 SimpleSelectStatement<$ActivityPeriodsTable, ActivityPeriodRow> orderedPeriods(
@@ -16,6 +17,36 @@ SimpleSelectStatement<$ActivityPeriodsTable, ActivityPeriodRow> orderedPeriods(
     (t) => OrderingTerm.asc(t.startUtc),
     (t) => OrderingTerm.asc(t.id),
   ]);
+
+/// Журнал для расчёта по возрастанию начала — те же записи, что
+/// [orderedPeriods] с [periodFromRow], но быстрее: читаются только колонки,
+/// которые нужны движку, а даты разбирает [parseStoredUtc]. Журнал
+/// перечитывается целиком после каждого переключения режима — в приложении
+/// и в фоновом сервисе, — и за 2 года это около 10 тыс. записей (PERF-03).
+Selectable<ActivityPeriod> enginePeriods(AppDatabase db) {
+  DateTime date(String raw) => parseStoredUtc(
+    raw,
+    (raw) => db.typeMapping.read(DriftSqlType.dateTime, raw)!.toUtc(),
+  );
+  return db
+      .customSelect(
+        'SELECT id, mode, start_utc, end_utc, ferry, day_end, weekly_rest '
+        'FROM activity_periods ORDER BY start_utc, id',
+        readsFrom: {db.activityPeriods},
+      )
+      .map((row) {
+        final end = row.readNullable<String>('end_utc');
+        return ActivityPeriod(
+          id: row.read<int>('id'),
+          mode: DriverMode.values.byName(row.read<String>('mode')),
+          start: date(row.read<String>('start_utc')),
+          end: end == null ? null : date(end),
+          ferry: row.read<bool>('ferry'),
+          dayEnd: row.read<bool>('day_end'),
+          weeklyRest: row.read<bool>('weekly_rest'),
+        );
+      });
+}
 
 ActivityPeriod periodFromRow(ActivityPeriodRow r) => ActivityPeriod(
   id: r.id,

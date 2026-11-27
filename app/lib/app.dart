@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tachogo/core/theme/app_theme.dart';
+import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/data/settings/settings_providers.dart';
 import 'package:tachogo/data/settings/settings_repository.dart';
 import 'package:tachogo/features/onboarding/onboarding_screen.dart';
@@ -13,12 +14,40 @@ import 'package:tachogo/l10n/app_localizations.dart';
 
 /// The app: `MaterialApp` with the theme and language from settings. While the
 /// settings load it uses the dark theme and the phone's language — the same as
-/// on the first launch.
-class TachoGoApp extends ConsumerWidget {
+/// on the first launch. It also starts reading the journal at the first frame
+/// and tells the clock whether the app is on screen.
+class TachoGoApp extends ConsumerStatefulWidget {
   const new({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TachoGoApp> createState() => _TachoGoAppState();
+}
+
+/// Follows the app lifecycle for [appVisibleProvider].
+class _TachoGoAppState extends ConsumerState<TachoGoApp> {
+  late final AppLifecycleListener _lifecycle;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle = AppLifecycleListener(
+      onStateChange: (state) =>
+          ref.read(appVisibleProvider.notifier).onLifecycle(state),
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Журнал читается с первого кадра, а не когда построится главная.
+    for (final source in journalSources) {
+      ref.listen(source, (_, _) {});
+    }
     // Пока настройки читаются — тёмная тема и язык телефона: так выглядит
     // и первый запуск.
     final prefs =

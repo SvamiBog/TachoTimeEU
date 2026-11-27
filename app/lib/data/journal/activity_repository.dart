@@ -24,14 +24,9 @@ class ActivityRepository {
   final void Function()? _onChanged;
 
   /// Все записи журнала по возрастанию начала.
-  Stream<List<ActivityPeriod>> watchPeriods() =>
-      orderedPeriods(_db)
-          .watch()
-          .map((rows) => [for (final r in rows) periodFromRow(r)]);
+  Stream<List<ActivityPeriod>> watchPeriods() => enginePeriods(_db).watch();
 
-  Future<List<ActivityPeriod>> periods() async => [
-    for (final r in await orderedPeriods(_db).get()) periodFromRow(r),
-  ];
+  Future<List<ActivityPeriod>> periods() => enginePeriods(_db).get();
 
   /// Переключает режим. Повторное нажатие на активный режим ничего не
   /// меняет. [ferry] — водитель на пароме / поезде (ст. 9); без него новая

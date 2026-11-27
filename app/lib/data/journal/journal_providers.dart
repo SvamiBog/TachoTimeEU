@@ -3,9 +3,11 @@
 library;
 
 import 'dart:async';
+import 'dart:ui' show AppLifecycleState;
 
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show ProviderBase;
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:tachogo/data/backup/journal_backup.dart';
 import 'package:tachogo/data/db/database_provider.dart';
@@ -76,19 +78,49 @@ final lastCardDownloadProvider = StreamProvider<DateTime?>(
   (ref) => ref.watch(cardDownloadRepositoryProvider).watchLast(),
 );
 
+/// Приложение на экране. Сообщает корневой виджет (`TachoGoApp`); пока он
+/// не сообщил — на экране.
+final appVisibleProvider = NotifierProvider<AppVisibility, bool>(
+  AppVisibility.new,
+);
+
+/// Whether the app is on screen: the clock ticks only while it is.
+class AppVisibility extends Notifier<bool> {
+  @override
+  bool build() => true;
+
+  /// Состояние приложения изменилось. Шторка уведомлений и системный
+  /// диалог (`inactive`) приложение не прячут — часы идут.
+  void onLifecycle(AppLifecycleState lifecycle) => state = switch (lifecycle) {
+    AppLifecycleState.resumed || AppLifecycleState.inactive => true,
+    AppLifecycleState.hidden ||
+    AppLifecycleState.paused ||
+    AppLifecycleState.detached => false,
+  };
+}
+
 /// Текущее время UTC, обновляется раз в секунду: от него пересчитываются
 /// таймеры. Время режима идёт от момента переключения, а не от начала
 /// минуты, поэтому тик по минутам запаздывал бы до 59 с.
+///
+/// В свёрнутом приложении ([appVisibleProvider]) часы стоят: процесс живёт
+/// вместе с фоновым сервисом, и расчёт по всему журналу раз в секунду шёл
+/// бы часами впустую. Уведомления от этих часов не зависят — их ставит
+/// `AlertScheduler` по прогнозу. Вернувшись на экран, часы сразу показывают
+/// текущее время.
 final clockProvider = NotifierProvider<Clock, DateTime>(Clock.new);
 
-/// The current UTC time, updated every second: timers are recomputed from it.
+/// The current UTC time, updated every second while the app is on screen:
+/// timers are recomputed from it.
 class Clock extends Notifier<DateTime> {
   static const tick = Duration(seconds: 1);
 
   @override
   DateTime build() {
-    final timer = Timer.periodic(tick, (_) => state = _now());
-    ref.onDispose(timer.cancel);
+    if (ref.watch(appVisibleProvider)) {
+      final timer = Timer.periodic(tick, (_) => state = _now());
+      ref.onDispose(timer.cancel);
+    }
     return _now();
   }
 
@@ -101,6 +133,17 @@ class Clock extends Notifier<DateTime> {
 final complianceSettingsProvider = StreamProvider<ComplianceSettings>(
   (ref) => ref.watch(settingsRepositoryProvider).watchComplianceSettings(),
 );
+
+/// Всё, что расчёт читает из базы. Корневой виджет подписывается на них с
+/// первого кадра: база отвечает в своём изоляте, пока читаются настройки и
+/// строится главная, — иначе чтение журнала началось бы только после этого.
+final journalSources = <ProviderBase<AsyncValue<Object?>>>[
+  complianceSettingsProvider,
+  activityPeriodsProvider,
+  manualShiftsProvider,
+  lastCardDownloadProvider,
+  shiftMetaProvider,
+];
 
 /// Состояние водителя, таймеры и нарушения на текущий момент.
 final complianceProvider = Provider<AsyncValue<ComplianceSnapshot>>((ref) {
