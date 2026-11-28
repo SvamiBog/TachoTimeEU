@@ -52,8 +52,13 @@ typedef TachographSession = ({ItsClient client, TachographReader reader});
 final tachographDownloadClientProvider =
     Provider<ItsClient Function(ItsPort port, ExchangeLog log)>(
       (ref) =>
-          (port, log) =>
-              ItsClient(port, log: log, timeout: const Duration(seconds: 10)),
+          (port, log) => ItsClient(
+            port,
+            log: log,
+            timeout: const Duration(seconds: 10),
+            // Тахограф готовит карту: после «подождите» — до 45 с
+            pendingTimeout: const Duration(seconds: 45),
+          ),
     );
 
 /// Сохранить файл карты байт в байт — в папку приложения, вне журнала;

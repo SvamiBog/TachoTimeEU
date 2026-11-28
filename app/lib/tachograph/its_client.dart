@@ -92,8 +92,10 @@ class ItsClient {
     this.subscribeSettle = const Duration(milliseconds: 1500),
     this.maxRestarts = 2,
     this.requestGap = const Duration(milliseconds: 350),
+    Duration? pendingTimeout,
     int grant = 1,
-  }) : _credits = ItsCredits(grant: grant);
+  }) : pendingTimeout = pendingTimeout ?? timeout,
+       _credits = ItsCredits(grant: grant);
 
   final ItsPort _port;
   final ExchangeLog _log;
@@ -102,6 +104,20 @@ class ItsClient {
 
   /// Сколько ждать ответа и кредитов на отправку.
   final Duration timeout;
+
+  /// Сколько ждать после «подождите» (78): тахограф готовит данные — при
+  /// выгрузке карты дольше 10 с (журнал владельца 27.11.2026).
+  final Duration pendingTimeout;
+
+  /// Таймер опоздал больше чем на столько — приложение стояло (Android
+  /// замораживает процесс в фоне): ответ мог прийти и ждёт разбора.
+  static const _lateTimer = Duration(seconds: 2);
+
+  /// Сколько ещё ждать после опоздавшего таймера.
+  static const _afterFreeze = Duration(seconds: 1);
+
+  /// Сколько чужих ответов подряд пропустить, ожидая свой.
+  static const _maxStale = 5;
 
   /// Сколько ждать соединения: водитель может подтверждать сопряжение долго.
   final Duration openTimeout;
@@ -237,20 +253,23 @@ class ItsClient {
   }
 
   /// Отправить [message] и вернуть ответ. Пока [pending] говорит «ждите»,
-  /// ждём следующий ответ.
+  /// ждём следующий ответ. Ответ, который [accept] не признал своим
+  /// (запоздавший ответ на прошлый запрос), пропускаем и ждём дальше.
   Future<Uint8List> request(
     List<int> message, {
     bool Function(Uint8List reply)? pending,
+    bool Function(Uint8List reply)? accept,
   }) {
-    final result = _queue.then((_) => _exchange(message, pending));
+    final result = _queue.then((_) => _exchange(message, pending, accept));
     _queue = result.then<void>((_) {}, onError: (Object _) {});
     return result;
   }
 
   /// Закрыть соединение: ожидания прервать сразу, подписки отменить,
-  /// тахографу — кредиты 0xFF.
-  Future<void> close() async {
-    final open = !_closed;
+  /// тахографу — кредиты 0xFF. [notify] false — связь уже оборвалась:
+  /// писать некуда, запись только вызовет ошибку Bluetooth.
+  Future<void> close({bool notify = true}) async {
+    final open = !_closed && notify;
     _disconnected();
     // Отмену не ждём: события перестают приходить сразу
     for (final s in _subscriptions) {
@@ -268,6 +287,7 @@ class ItsClient {
   Future<Uint8List> _exchange(
     List<int> message,
     bool Function(Uint8List reply)? pending,
+    bool Function(Uint8List reply)? accept,
   ) async {
     if (_closed) throw const ItsException(ItsFailure.disconnected);
     _inbox.clear();
@@ -292,31 +312,66 @@ class ItsClient {
       }
       rethrow;
     }
-    // «Ждите» (UDS 78) — не больше 10 раз подряд
-    for (var i = 0; i < 10 && (pending?.call(reply) ?? false); i++) {
-      reply = await _next();
+    var stale = 0;
+    var waits = 0;
+    while (true) {
+      // Чужой ответ — запоздавший на прошлый запрос: свой ещё придёт
+      if (accept != null && !accept(reply) && stale < _maxStale) {
+        stale++;
+        _log.event('stale reply dropped');
+        reply = await _next();
+        continue;
+      }
+      // «Ждите» (78) — не больше 10 раз подряд, ждём дольше обычного
+      if (waits < 10 && (pending?.call(reply) ?? false)) {
+        waits++;
+        reply = await _next(wait: pendingTimeout);
+        continue;
+      }
+      return reply;
     }
-    return reply;
   }
 
-  Future<Uint8List> _next() async {
+  Future<Uint8List> _next({Duration? wait}) async {
     if (_inbox.isNotEmpty) return _inbox.removeFirst();
     // Соединение закрылось, пока запрос уходил: ответа не будет
     if (_closed) throw const ItsException(ItsFailure.disconnected);
+    final limit = wait ?? timeout;
     final reply = _reply = Completer<Uint8List>();
-    final timer = _wait = Timer(timeout, () {
+    final waited = Stopwatch()..start();
+    void expire() {
+      if (reply.isCompleted) return;
+      // Таймер опоздал: процесс стоял, ответ мог лежать в очереди Bluetooth
+      // — даём ему секунду дойти (журнал владельца 27.11.2026: таймер на
+      // 5 с сработал через 22 с, ответ пришёл через 2 мс после)
+      final late = waited.elapsed - limit;
+      if (late > _lateTimer) {
+        _log.event(
+          'timer late by ${late.inMilliseconds} ms: '
+          'waiting ${_afterFreeze.inMilliseconds} ms more',
+        );
+        waited
+          ..reset()
+          ..start();
+        _wait = Timer(_afterFreeze, () {
+          if (reply.isCompleted) return;
+          _log.event('no reply after the pause');
+          reply.completeError(const ItsException(ItsFailure.timeout));
+        });
+        return;
+      }
       _log.event(
-        'no reply in ${timeout.inMilliseconds} ms '
+        'no reply in ${limit.inMilliseconds} ms '
         '(credits ${_credits.available})',
       );
-      if (!reply.isCompleted) {
-        reply.completeError(const ItsException(ItsFailure.timeout));
-      }
-    });
+      reply.completeError(const ItsException(ItsFailure.timeout));
+    }
+
+    _wait = Timer(limit, expire);
     try {
       return await reply.future;
     } finally {
-      timer.cancel();
+      _wait?.cancel();
       _reply = null;
     }
   }

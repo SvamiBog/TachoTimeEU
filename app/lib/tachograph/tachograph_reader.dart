@@ -151,6 +151,11 @@ class TachographReader {
     final bytes = await _client.request(
       readDataRequest(did.id),
       pending: (reply) => parseUdsReply(reply) is UdsPending,
+      // Ответ с чужим номером — запоздавший на прошлый запрос: пропустить
+      accept: (reply) => switch (parseUdsReply(reply)) {
+        UdsData(did: final id) => id == did.id,
+        _ => true,
+      },
     );
     final reply = parseUdsReply(bytes);
     // Ответ на другой номер — не наш

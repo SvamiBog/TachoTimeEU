@@ -103,7 +103,28 @@ void main() {
       expect(port.requests.where((r) => r.startsWith('36')), hasLength(1));
     });
 
-    test('отказ в выгрузке — ошибка, сеанс закрыт', () async {
+    test('BT-22: после «подождите» ждём дольше обычного', () async {
+      final port = FakeCardVuPort(
+        card: fakeCardFile(),
+        pendingBeforeCard: 1,
+        cardDelay: const Duration(milliseconds: 600),
+      );
+      final its = ItsClient(
+        port,
+        log: log,
+        timeout: const Duration(milliseconds: 300),
+        pendingTimeout: const Duration(seconds: 2),
+        openTimeout: const Duration(seconds: 1),
+        subscribeSettle: Duration.zero,
+        requestGap: Duration.zero,
+      );
+      await its.open();
+      final result = await CardDownloader(its, log: log).download();
+      expect(result.parts, 3);
+    });
+
+    test('отказ в выгрузке до первой части — ошибка, сеанс закрыт без '
+        'отмены частей', () async {
       final port = FakeCardVuPort(card: fakeCardFile(), refuseCard: true);
       final its = client(port);
       await its.open();
@@ -113,7 +134,8 @@ void main() {
           isA<CardDownloadException>().having((e) => e.step, 'step', 'card'),
         ),
       );
-      expect(port.requests.skip(4), ['83 65535', '37', '82']);
+      // До первой части отмену частей не шлём — сразу конец сеанса
+      expect(port.requests.skip(4), ['37', '82']);
     });
 
     test('сбой нумерации частей — отмена, повтора нет', () async {

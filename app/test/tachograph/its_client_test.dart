@@ -498,7 +498,8 @@ void main() {
       await client.close();
     });
 
-    test('ответ на чужой номер данных не принимается', () async {
+    test('BT-22: тахограф отвечает только чужими номерами — ответ не '
+        'принимаем, это молчание', () async {
       final port = _WrongDidPort();
       final client = _client(port, log);
       await client.open();
@@ -508,8 +509,30 @@ void main() {
         now: () => DateTime.utc(2026),
         interval: Duration.zero,
       );
-      final reading = await reader.readings().first;
-      expect(reading.driver1Mode, isNull);
+      await expectLater(reader.readings(), emitsError(isA<ItsException>()));
+      expect(log.lines.any((l) => l.contains('stale reply dropped')), isTrue);
+      await client.close();
+    });
+
+    test('BT-22: запоздавший ответ на прошлый номер пропускаем и ждём '
+        'свой', () async {
+      final port = _LateReplyPort();
+      final client = _client(port, log);
+      await client.open();
+      final reply = parseUdsReply(
+        await client.request(
+          readDataRequest(0xF903),
+          accept: (r) => switch (parseUdsReply(r)) {
+            UdsData(:final did) => did == 0xF903,
+            _ => true,
+          },
+        ),
+      );
+      expect(reply, isA<UdsData>().having((r) => r.did, 'did', 0xF903));
+      expect(
+        log.lines.where((l) => l.contains('stale reply dropped')),
+        hasLength(1),
+      );
       await client.close();
     });
 
@@ -561,6 +584,25 @@ void main() {
 }
 
 /// Тахограф отвечает значением другого номера данных.
+/// Перед ответом на запрос присылает запоздавший ответ на F190 — как DTCO
+/// после заморозки приложения (журнал владельца 27.11.2026).
+class _LateReplyPort extends FakeTachographPort {
+  new()
+    : super(
+        values: {
+          0xF190: 'W1T96340110906405'.codeUnits,
+          0xF903: [0],
+        },
+        maxPacket: 240,
+      );
+
+  @override
+  Future<void> writeFifo(List<int> packet) async {
+    await super.writeFifo([...packet.sublist(0, 3), 0xF1, 0x90]);
+    await super.writeFifo(packet);
+  }
+}
+
 class _WrongDidPort extends FakeTachographPort {
   new()
     : super(

@@ -18,6 +18,7 @@ class FakeCardVuPort implements ItsPort {
     this.pendingBeforeCard = 0,
     this.refuseCard = false,
     this.skipCounterAt,
+    this.cardDelay = Duration.zero,
   });
 
   /// Файл карты, который отдаёт тахограф.
@@ -37,6 +38,9 @@ class FakeCardVuPort implements ItsPort {
 
   /// Номер части, вместо которой прислать следующую: сбой нумерации.
   final int? skipCounterAt;
+
+  /// Через сколько после «подождите» прислать первую часть.
+  final Duration cardDelay;
 
   /// SID запросов клиента по порядку; подтверждения — `83` и номер.
   final requests = <String>[];
@@ -96,7 +100,11 @@ class FakeCardVuPort implements ItsPort {
           _reply([0x7F, 0x36, 0x78]);
         }
         if (refuseCard) return _reply([0x7F, 0x36, 0x22]);
-        _part(1);
+        if (cardDelay > Duration.zero) {
+          Timer(cardDelay, () => _part(1));
+        } else {
+          _part(1);
+        }
       case 0x83:
         final next = p[2] << 8 | p[3];
         requests.add('83 $next');

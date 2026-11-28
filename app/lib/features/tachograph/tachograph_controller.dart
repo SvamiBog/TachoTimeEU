@@ -149,6 +149,10 @@ class TachographController extends Notifier<TachoState> {
   TachographConnection? _connection;
   ItsClient? _client;
   TachographReader? _reader;
+
+  /// Порт выгрузки: открывается при первом считывании карты и живёт до
+  /// отключения — закрывать его кредитами 0xFF посреди связи не стоит.
+  ItsClient? _download;
   final _found = <String, FoundDevice>{};
   bool _showAll = false;
 
@@ -283,7 +287,11 @@ class TachographController extends Notifier<TachoState> {
       _link.device = device;
       _linked = true;
       _startReadings(attempt, device, session.reader, read: false);
-      unawaited(connection.lost.then((_) => _lost(attempt, device, 'link')));
+      unawaited(
+        connection.lost.then(
+          (_) => _lost(attempt, device, 'link', linkAlive: false),
+        ),
+      );
     } on TachographConnectException catch (e) {
       _fail(attempt, device, switch (e.failure) {
         ConnectFailure.refused => TachoProblem.connect,
@@ -343,9 +351,8 @@ class TachographController extends Notifier<TachoState> {
     final log = ref.read(tachographLogProvider);
     await _logDownloadDates(client, 'before');
     var result = (outcome: CardReadOutcome.failed, bytes: 0);
-    final download = ref.read(tachographDownloadClientProvider)(port, log);
     try {
-      await download.open();
+      final download = await _openDownload(port, log);
       final card = await CardDownloader(download, log: log).download(
         progress: (_, bytes) {
           if (_current(attempt)) state = TachoReadingCard(device, bytes);
@@ -360,8 +367,6 @@ class TachographController extends Notifier<TachoState> {
       result = (outcome: CardReadOutcome.done, bytes: card.bytes.length);
     } on Object catch (e) {
       _log('card read failed: $e');
-    } finally {
-      await download.close();
     }
     if (!_current(attempt)) return result;
     await _logDownloadDates(client, 'after');
@@ -407,15 +412,30 @@ class TachographController extends Notifier<TachoState> {
     unawaited(_release());
   }
 
-  void _lost(int attempt, FoundDevice device, String why) {
+  /// [linkAlive] false — оборвалась сама связь: тахографу уже не написать.
+  void _lost(
+    int attempt,
+    FoundDevice device,
+    String why, {
+    bool linkAlive = true,
+  }) {
     if (!_current(attempt)) return;
     _attempt++;
     _log('lost: $why');
     state = TachoFailed(TachoProblem.lost, device: device);
-    unawaited(_release());
+    unawaited(_release(linkAlive: linkAlive));
   }
 
   void _log(String text) => ref.read(tachographLogProvider).event(text);
+
+  /// Порт выгрузки — открыть один раз за связь.
+  Future<ItsClient> _openDownload(ItsPort port, ExchangeLog log) async {
+    final opened = _download;
+    if (opened != null) return opened;
+    final client = ref.read(tachographDownloadClientProvider)(port, log);
+    await client.open();
+    return _download = client;
+  }
 
   /// Опрос тахографа: снимки — на экран и в режим журнала.
   void _startReadings(
@@ -503,7 +523,7 @@ class TachographController extends Notifier<TachoState> {
     return attempt;
   }
 
-  Future<void> _release() async {
+  Future<void> _release({bool linkAlive = true}) async {
     // Поля обнуляются сразу: новая попытка не закроет свои подписки
     final cancels = [
       _scan?.cancel(),
@@ -511,11 +531,13 @@ class TachographController extends Notifier<TachoState> {
       _readings?.cancel(),
     ];
     final client = _client;
+    final download = _download;
     final connection = _connection;
     _scan = null;
     _readiness = null;
     _readings = null;
     _client = null;
+    _download = null;
     _reader = null;
     _connection = null;
     if (_linked) {
@@ -530,7 +552,8 @@ class TachographController extends Notifier<TachoState> {
     for (final cancel in cancels) {
       if (cancel != null) unawaited(cancel);
     }
-    await client?.close();
+    await download?.close(notify: linkAlive);
+    await client?.close(notify: linkAlive);
     await connection?.close();
     // Экран закрыт — провайдер освободится и сам
     keepAlive?.close();

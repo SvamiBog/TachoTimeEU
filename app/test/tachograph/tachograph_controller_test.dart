@@ -232,7 +232,9 @@ void main() {
         ),
         isTrue,
       );
-      expect(vu.closed, isTrue);
+      // Порт выгрузки остаётся открытым до отключения: 0xFF посреди связи
+      // не шлём (BT-22)
+      expect(vu.closed, isFalse);
       // Опрос снова идёт
       final asked = platform.last!.port.requests.length;
       await settle(const Duration(milliseconds: 1500));
@@ -445,6 +447,17 @@ void main() {
       expect((state() as TachoFailed).problem, TachoProblem.noAnswer);
       await settle();
       expect(platform.last!.closed, isTrue);
+    });
+
+    test('BT-22: связь оборвалась — тахографу 0xFF не пишем', () async {
+      start(FakeTachographPlatform());
+      await controller().connect(dtco);
+      await settle(const Duration(milliseconds: 300));
+      final port = platform.last!.port;
+      platform.last!.drop();
+      await settle();
+      expect((state() as TachoFailed).problem, TachoProblem.lost);
+      expect(port.writtenCredits, isNot(contains(itsCreditsDisconnect)));
     });
 
     test('связь оборвалась — «оборвалась», старое соединение молчит', () async {

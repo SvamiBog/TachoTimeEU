@@ -150,7 +150,7 @@ class CardDownloader {
     );
     final data = BytesBuilder(copy: false);
     var parts = 0;
-    var transferring = true;
+    var finished = false;
     try {
       var request = ddpRequest([0x36, _trepCard, slot]);
       while (true) {
@@ -177,12 +177,14 @@ class CardDownloader {
         final next = parts + 1;
         request = ddpRequest([0x83, 0x76, next >> 8, next & 0xFF]);
       }
-      transferring = false;
+      finished = true;
       _log.event('card: $parts parts, ${data.length} bytes');
       await _expect('exit', ddpRequest([0x37]), [0x77]);
       await _expect('stop', ddpRequest([0x82]), [0xC2]);
     } on Object {
-      if (transferring) await _abort();
+      // Отмена частей — только если они уже шли: до первой части DTCO её
+      // не принимает (журнал владельца 27.11.2026), сразу конец сеанса
+      if (!finished) await _abort(started: parts > 0);
       rethrow;
     }
     return CardDownloadResult(
@@ -192,11 +194,12 @@ class CardDownloader {
     );
   }
 
-  /// Отменить передачу и закрыть сеанс; ошибки здесь уже не важны.
-  Future<void> _abort() async {
+  /// Отменить передачу (если части уже шли) и закрыть сеанс; ошибки здесь
+  /// уже не важны.
+  Future<void> _abort({required bool started}) async {
     _log.event('card: aborting');
     for (final (step, payload) in [
-      ('abort', [0x83, 0x76, 0xFF, 0xFF]),
+      if (started) ('abort', [0x83, 0x76, 0xFF, 0xFF]),
       ('exit', [0x37]),
       ('stop', [0x82]),
     ]) {
