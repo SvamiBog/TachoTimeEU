@@ -758,10 +758,19 @@
   "tachoReconcile": "Porównaj z dziennikiem",
   "tachoReconcileTitle": "Porównanie z kartą",
   "tachoReconcileSummary": "Dób: {days} · zgodnych: {same} · z różnicami: {diff}",
-  "tachoReconcileNote": "Karta jest ważniejsza niż dziennik: to ją widzi kontroler. Przeniesienie danych karty do dziennika będzie w następnej wersji.",
   "tachoReconcileCard": "Karta",
   "tachoReconcileSame": "zgodne",
   "tachoReconcileDiff": "różnica {time}",
   "tachoReconcileEmpty": "W dzienniku TachoGo nie ma wpisów za dni zapisane na karcie.",
-  "tachoReconcileError": "Nie udało się odczytać pliku karty."
+  "tachoReconcileError": "Nie udało się odczytać pliku karty.",
+  "tachoImport": "Przenieś do dziennika",
+  "tachoImportTitle": "Przenieść dane karty do dziennika?",
+  "tachoImportText": "{holder}. Wpisy TachoGo od {from} do {until} zostaną zastąpione danymi karty. Gdzie karta nie zna trybu, zostaną wpisy dziennika, a gdzie pusto — odpoczynek. Stare wpisy zostaną zachowane: można je przywrócić.",
+  "tachoImportHolder": "{name}, karta …{number}",
+  "tachoImportUnknownHolder": "Karta bez danych właściciela",
+  "tachoImportDone": "Dane karty przeniesiono do dziennika.",
+  "tachoImportUndo": "Przywróć poprzedni stan",
+  "tachoImportUndone": "Dziennik przywrócono do poprzedniego stanu.",
+  "tachoImportForeign": "To karta innego kierowcy: dziennik jest powiązany z inną kartą. Porównanie można obejrzeć, przenieść — nie.",
+  "tachoReconcileImportNote": "Karta jest ważniejsza niż dziennik: to ją widzi kontroler. „Przenieś do dziennika” zastąpi wpisy TachoGo danymi karty."
 }

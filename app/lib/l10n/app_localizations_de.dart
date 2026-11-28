@@ -2995,10 +2995,6 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get tachoReconcileNote =>
-      'Die Karte hat Vorrang vor dem Protokoll: Sie sieht der Kontrolleur. Das Übernehmen der Kartendaten ins Protokoll kommt mit der nächsten Version.';
-
-  @override
   String get tachoReconcileCard => 'Karte';
 
   @override
@@ -3016,4 +3012,41 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get tachoReconcileError =>
       'Die Kartendatei konnte nicht gelesen werden.';
+
+  @override
+  String get tachoImport => 'Ins Protokoll übernehmen';
+
+  @override
+  String get tachoImportTitle => 'Kartendaten ins Protokoll übernehmen?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. TachoGo-Einträge vom $from bis $until werden durch die Kartendaten ersetzt. Wo die Karte die Tätigkeit nicht kennt, bleiben die Protokolleinträge; wo beides leer ist, gilt Ruhezeit. Die alten Einträge bleiben erhalten und lassen sich wiederherstellen.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, Karte …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Karte ohne Inhaberdaten';
+
+  @override
+  String get tachoImportDone =>
+      'Die Kartendaten wurden ins Protokoll übernommen.';
+
+  @override
+  String get tachoImportUndo => 'Rückgängig machen';
+
+  @override
+  String get tachoImportUndone => 'Das Protokoll ist wieder wie vorher.';
+
+  @override
+  String get tachoImportForeign =>
+      'Das ist die Karte eines anderen Fahrers: Das Protokoll gehört zu einer anderen Karte. Den Abgleich ansehen geht, übernehmen nicht.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'Die Karte hat Vorrang vor dem Protokoll: Sie sieht der Kontrolleur. „Ins Protokoll übernehmen“ ersetzt die TachoGo-Einträge durch die Kartendaten.';
 }

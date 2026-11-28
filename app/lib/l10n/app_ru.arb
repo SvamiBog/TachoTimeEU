@@ -2902,10 +2902,6 @@
       }
     }
   },
-  "tachoReconcileNote": "Карта главнее журнала: её видит инспектор. Перенести данные карты в журнал можно будет в следующей версии.",
-  "@tachoReconcileNote": {
-    "description": "Пояснение под итогом сверки: карта главнее журнала; перенос данных карты — в следующей версии"
-  },
   "tachoReconcileCard": "Карта",
   "@tachoReconcileCard": {
     "description": "Подпись полосы карты на экране сверки"
@@ -2931,5 +2927,64 @@
   "tachoReconcileError": "Файл карты не прочитан.",
   "@tachoReconcileError": {
     "description": "Экран сверки: файл карты не удалось прочитать"
+  },
+  "tachoImport": "Перенести в журнал",
+  "@tachoImport": {
+    "description": "Кнопка на экране сверки: перенести данные карты в журнал"
+  },
+  "tachoImportTitle": "Перенести данные карты в журнал?",
+  "@tachoImportTitle": {
+    "description": "Шторка перед переносом карты в журнал: заголовок"
+  },
+  "tachoImportText": "{holder}. Записи TachoGo с {from} по {until} заменятся данными карты. Где карта не знает режима, останутся записи журнала, а где пусто — отдых. Старые записи сохранятся: их можно вернуть.",
+  "@tachoImportText": {
+    "description": "Шторка перед переносом: чья карта, за какие даты журнал заменится картой, пробелы и возврат",
+    "placeholders": {
+      "holder": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "until": {
+        "type": "String"
+      }
+    }
+  },
+  "tachoImportHolder": "{name}, карта …{number}",
+  "@tachoImportHolder": {
+    "description": "Чья карта в шторке переноса: фамилия с инициалом и последние 4 знака номера карты",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "tachoImportUnknownHolder": "Карта без данных о владельце",
+  "@tachoImportUnknownHolder": {
+    "description": "Шторка переноса: в файле нет данных о владельце карты"
+  },
+  "tachoImportDone": "Данные карты перенесены в журнал.",
+  "@tachoImportDone": {
+    "description": "Данные карты перенесены в журнал"
+  },
+  "tachoImportUndo": "Вернуть как было",
+  "@tachoImportUndo": {
+    "description": "Кнопка: вернуть журнал, каким он был до переноса карты"
+  },
+  "tachoImportUndone": "Журнал возвращён, каким был.",
+  "@tachoImportUndone": {
+    "description": "Журнал возвращён, каким был до переноса карты"
+  },
+  "tachoImportForeign": "Это карта другого водителя: журнал привязан к другой карте. Сверку смотреть можно, перенести — нет.",
+  "@tachoImportForeign": {
+    "description": "Перенос отклонён: карта другого водителя, журнал привязан к другой карте"
+  },
+  "tachoReconcileImportNote": "Карта главнее журнала: её видит инспектор. «Перенести в журнал» заменит записи TachoGo данными карты.",
+  "@tachoReconcileImportNote": {
+    "description": "Пояснение под итогом сверки: карта главнее журнала; «Перенести в журнал» заменит записи данными карты"
   }
 }

@@ -758,10 +758,19 @@
   "tachoReconcile": "Mit dem Protokoll abgleichen",
   "tachoReconcileTitle": "Abgleich mit der Karte",
   "tachoReconcileSummary": "Tage: {days} · gleich: {same} · mit Abweichungen: {diff}",
-  "tachoReconcileNote": "Die Karte hat Vorrang vor dem Protokoll: Sie sieht der Kontrolleur. Das Übernehmen der Kartendaten ins Protokoll kommt mit der nächsten Version.",
   "tachoReconcileCard": "Karte",
   "tachoReconcileSame": "gleich",
   "tachoReconcileDiff": "Abweichung {time}",
   "tachoReconcileEmpty": "Im TachoGo-Protokoll gibt es keine Einträge für die Tage auf der Karte.",
-  "tachoReconcileError": "Die Kartendatei konnte nicht gelesen werden."
+  "tachoReconcileError": "Die Kartendatei konnte nicht gelesen werden.",
+  "tachoImport": "Ins Protokoll übernehmen",
+  "tachoImportTitle": "Kartendaten ins Protokoll übernehmen?",
+  "tachoImportText": "{holder}. TachoGo-Einträge vom {from} bis {until} werden durch die Kartendaten ersetzt. Wo die Karte die Tätigkeit nicht kennt, bleiben die Protokolleinträge; wo beides leer ist, gilt Ruhezeit. Die alten Einträge bleiben erhalten und lassen sich wiederherstellen.",
+  "tachoImportHolder": "{name}, Karte …{number}",
+  "tachoImportUnknownHolder": "Karte ohne Inhaberdaten",
+  "tachoImportDone": "Die Kartendaten wurden ins Protokoll übernommen.",
+  "tachoImportUndo": "Rückgängig machen",
+  "tachoImportUndone": "Das Protokoll ist wieder wie vorher.",
+  "tachoImportForeign": "Das ist die Karte eines anderen Fahrers: Das Protokoll gehört zu einer anderen Karte. Den Abgleich ansehen geht, übernehmen nicht.",
+  "tachoReconcileImportNote": "Die Karte hat Vorrang vor dem Protokoll: Sie sieht der Kontrolleur. „Ins Protokoll übernehmen“ ersetzt die TachoGo-Einträge durch die Kartendaten."
 }

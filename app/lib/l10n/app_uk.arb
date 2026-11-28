@@ -758,10 +758,19 @@
   "tachoReconcile": "Звірити з журналом",
   "tachoReconcileTitle": "Звірка з карткою",
   "tachoReconcileSummary": "Діб: {days} · збігається: {same} · з розбіжностями: {diff}",
-  "tachoReconcileNote": "Картка головніша за журнал: її бачить інспектор. Перенести дані картки в журнал можна буде в наступній версії.",
   "tachoReconcileCard": "Картка",
   "tachoReconcileSame": "збігається",
   "tachoReconcileDiff": "розходиться на {time}",
   "tachoReconcileEmpty": "У журналі TachoGo немає записів за дні, які є на картці.",
-  "tachoReconcileError": "Файл картки не прочитано."
+  "tachoReconcileError": "Файл картки не прочитано.",
+  "tachoImport": "Перенести в журнал",
+  "tachoImportTitle": "Перенести дані картки в журнал?",
+  "tachoImportText": "{holder}. Записи TachoGo з {from} по {until} заміняться даними картки. Де картка не знає режиму, залишаться записи журналу, а де порожньо — відпочинок. Старі записи збережуться: їх можна повернути.",
+  "tachoImportHolder": "{name}, картка …{number}",
+  "tachoImportUnknownHolder": "Картка без даних про власника",
+  "tachoImportDone": "Дані картки перенесено в журнал.",
+  "tachoImportUndo": "Повернути як було",
+  "tachoImportUndone": "Журнал повернуто, яким він був.",
+  "tachoImportForeign": "Це картка іншого водія: журнал прив’язаний до іншої картки. Звірку дивитися можна, перенести — ні.",
+  "tachoReconcileImportNote": "Картка головніша за журнал: її бачить інспектор. «Перенести в журнал» замінить записи TachoGo даними картки."
 }

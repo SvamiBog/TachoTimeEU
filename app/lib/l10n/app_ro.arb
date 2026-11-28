@@ -758,10 +758,19 @@
   "tachoReconcile": "Compară cu jurnalul",
   "tachoReconcileTitle": "Comparare cu cardul",
   "tachoReconcileSummary": "Zile: {days} · identice: {same} · cu diferențe: {diff}",
-  "tachoReconcileNote": "Cardul are prioritate față de jurnal: pe el îl vede inspectorul. Mutarea datelor de pe card în jurnal va fi în versiunea următoare.",
   "tachoReconcileCard": "Card",
   "tachoReconcileSame": "identic",
   "tachoReconcileDiff": "diferență {time}",
   "tachoReconcileEmpty": "În jurnalul TachoGo nu există înregistrări pentru zilele de pe card.",
-  "tachoReconcileError": "Fișierul cardului nu a putut fi citit."
+  "tachoReconcileError": "Fișierul cardului nu a putut fi citit.",
+  "tachoImport": "Mută în jurnal",
+  "tachoImportTitle": "Mutați datele cardului în jurnal?",
+  "tachoImportText": "{holder}. Înregistrările TachoGo din {from} până în {until} vor fi înlocuite cu datele cardului. Unde cardul nu cunoaște modul, rămân înregistrările din jurnal, iar unde e gol — odihnă. Înregistrările vechi se păstrează: pot fi readuse.",
+  "tachoImportHolder": "{name}, card …{number}",
+  "tachoImportUnknownHolder": "Card fără date despre titular",
+  "tachoImportDone": "Datele cardului au fost mutate în jurnal.",
+  "tachoImportUndo": "Revino la cum era",
+  "tachoImportUndone": "Jurnalul a revenit la cum era.",
+  "tachoImportForeign": "Este cardul altui șofer: jurnalul e legat de alt card. Comparația se poate vedea, dar nu se poate muta.",
+  "tachoReconcileImportNote": "Cardul are prioritate față de jurnal: pe el îl vede inspectorul. „Mută în jurnal” înlocuiește înregistrările TachoGo cu datele cardului."
 }

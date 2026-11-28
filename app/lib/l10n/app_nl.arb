@@ -758,10 +758,19 @@
   "tachoReconcile": "Vergelijken met het logboek",
   "tachoReconcileTitle": "Vergelijking met de kaart",
   "tachoReconcileSummary": "Dagen: {days} · gelijk: {same} · met verschillen: {diff}",
-  "tachoReconcileNote": "De kaart gaat voor het logboek: die ziet de controleur. Het overnemen van de kaartgegevens in het logboek komt in de volgende versie.",
   "tachoReconcileCard": "Kaart",
   "tachoReconcileSame": "gelijk",
   "tachoReconcileDiff": "verschil {time}",
   "tachoReconcileEmpty": "Het TachoGo-logboek heeft geen regels voor de dagen op de kaart.",
-  "tachoReconcileError": "Het kaartbestand kon niet worden gelezen."
+  "tachoReconcileError": "Het kaartbestand kon niet worden gelezen.",
+  "tachoImport": "Naar het logboek overzetten",
+  "tachoImportTitle": "Kaartgegevens naar het logboek overzetten?",
+  "tachoImportText": "{holder}. TachoGo-regels van {from} tot {until} worden vervangen door de kaartgegevens. Waar de kaart de activiteit niet kent, blijven de logboekregels; waar alles leeg is, rust. De oude regels blijven bewaard en kunnen worden teruggezet.",
+  "tachoImportHolder": "{name}, kaart …{number}",
+  "tachoImportUnknownHolder": "Kaart zonder houdergegevens",
+  "tachoImportDone": "De kaartgegevens zijn naar het logboek overgezet.",
+  "tachoImportUndo": "Terugzetten",
+  "tachoImportUndone": "Het logboek is teruggezet.",
+  "tachoImportForeign": "Dit is de kaart van een andere bestuurder: het logboek hoort bij een andere kaart. De vergelijking kun je bekijken, overzetten niet.",
+  "tachoReconcileImportNote": "De kaart gaat voor het logboek: die ziet de controleur. „Naar het logboek overzetten” vervangt de TachoGo-regels door de kaartgegevens."
 }

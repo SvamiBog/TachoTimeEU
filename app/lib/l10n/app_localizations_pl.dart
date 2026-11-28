@@ -2998,10 +2998,6 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get tachoReconcileNote =>
-      'Karta jest ważniejsza niż dziennik: to ją widzi kontroler. Przeniesienie danych karty do dziennika będzie w następnej wersji.';
-
-  @override
   String get tachoReconcileCard => 'Karta';
 
   @override
@@ -3018,4 +3014,40 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tachoReconcileError => 'Nie udało się odczytać pliku karty.';
+
+  @override
+  String get tachoImport => 'Przenieś do dziennika';
+
+  @override
+  String get tachoImportTitle => 'Przenieść dane karty do dziennika?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Wpisy TachoGo od $from do $until zostaną zastąpione danymi karty. Gdzie karta nie zna trybu, zostaną wpisy dziennika, a gdzie pusto — odpoczynek. Stare wpisy zostaną zachowane: można je przywrócić.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, karta …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Karta bez danych właściciela';
+
+  @override
+  String get tachoImportDone => 'Dane karty przeniesiono do dziennika.';
+
+  @override
+  String get tachoImportUndo => 'Przywróć poprzedni stan';
+
+  @override
+  String get tachoImportUndone => 'Dziennik przywrócono do poprzedniego stanu.';
+
+  @override
+  String get tachoImportForeign =>
+      'To karta innego kierowcy: dziennik jest powiązany z inną kartą. Porównanie można obejrzeć, przenieść — nie.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'Karta jest ważniejsza niż dziennik: to ją widzi kontroler. „Przenieś do dziennika” zastąpi wpisy TachoGo danymi karty.';
 }

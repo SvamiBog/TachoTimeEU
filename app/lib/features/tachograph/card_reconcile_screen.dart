@@ -1,8 +1,10 @@
 /// "Card reconciliation" screen (developer build): for each day the card and
 /// the TachoGo log as two strips coloured by activity, and how long they
-/// differ. Read only for now: moving the card data into the log comes next.
+/// differ; "Move into the log" replaces the log with the card over its period
+/// after a confirmation, "Undo" brings the log back (BT-24).
 library;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -15,9 +17,12 @@ import 'package:tachogo/core/l10n/l10n.dart';
 import 'package:tachogo/core/theme/app_colors.dart';
 import 'package:tachogo/core/theme/app_tokens.dart';
 import 'package:tachogo/core/theme/app_typography.dart';
+import 'package:tachogo/core/widgets/buttons.dart';
+import 'package:tachogo/core/widgets/confirm_sheet.dart';
 import 'package:tachogo/core/widgets/detail_scaffold.dart';
 import 'package:tachogo/core/widgets/mode_style.dart';
 import 'package:tachogo/core/widgets/sections.dart';
+import 'package:tachogo/data/journal/card_import_repository.dart';
 import 'package:tachogo/data/journal/journal_providers.dart';
 import 'package:tachogo/tachograph/card_reconcile.dart';
 
@@ -43,6 +48,12 @@ final FutureProviderFamily<CardReconciliation, String> cardReconcileProvider =
       );
     });
 
+/// Есть ли перенос карты, который можно вернуть.
+final FutureProvider<bool> cardImportUndoProvider =
+    FutureProvider.autoDispose<bool>(
+      (ref) => ref.read(cardImportRepositoryProvider).canUndo(),
+    );
+
 /// The card reconciliation screen.
 class CardReconcileScreen extends ConsumerWidget {
   const new({required this.path, super.key});
@@ -53,9 +64,29 @@ class CardReconcileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final result = ref.watch(cardReconcileProvider(path));
+    final canUndo = ref.watch(cardImportUndoProvider).value ?? false;
+    final loaded = result.value?.days.isNotEmpty ?? false;
     return DetailScaffold(
       title: l.tachoReconcileTitle,
       subtitle: l.tachoBeta,
+      bottom: !loaded && !canUndo
+          ? null
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (loaded)
+                  PrimaryButton(
+                    label: l.tachoImport,
+                    onPressed: () => unawaited(_import(context, ref)),
+                  ),
+                if (loaded && canUndo) const SizedBox(height: AppSpacing.s8),
+                if (canUndo)
+                  SecondaryButton(
+                    label: l.tachoImportUndo,
+                    onPressed: () => unawaited(_undo(context, ref)),
+                  ),
+              ],
+            ),
       children: switch (result) {
         AsyncData(:final value) when value.days.isEmpty => [
           _Text(l.tachoReconcileEmpty),
@@ -68,7 +99,7 @@ class CardReconcileScreen extends ConsumerWidget {
               value.days.length - value.same,
             ),
           ),
-          _Text(l.tachoReconcileNote, secondary: true),
+          _Text(l.tachoReconcileImportNote, secondary: true),
           for (final day in value.days) _DayCompare(day),
         ],
         AsyncError() => [_Text(l.tachoReconcileError)],
@@ -80,6 +111,68 @@ class CardReconcileScreen extends ConsumerWidget {
         ],
       },
     );
+  }
+
+  /// Спросить и перенести карту в журнал.
+  Future<void> _import(BuildContext context, WidgetRef ref) async {
+    final l = context.l10n;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final card = DriverCard.parse(File(path).readAsBytesSync());
+    final periods = cardPeriods(card.days, until: cardReadAt(path));
+    if (periods.isEmpty) return;
+    final holder = card.holder;
+    final go = await showConfirmSheet(
+      context,
+      title: l.tachoImportTitle,
+      text: l.tachoImportText(
+        holder == null
+            ? l.tachoImportUnknownHolder
+            : l.tachoImportHolder(
+                _name(holder),
+                holder.cardNumber.substring(
+                  holder.cardNumber.length > 4
+                      ? holder.cardNumber.length - 4
+                      : 0,
+                ),
+              ),
+        formatDayMonthYear(periods.first.start),
+        formatDayMonthYear(periods.last.end),
+      ),
+      confirm: l.tachoImport,
+      cancel: l.cancel,
+    );
+    if (go != true) return;
+    final outcome = await ref
+        .read(cardImportRepositoryProvider)
+        .import(periods, holder: holder, conditions: card.conditions);
+    ref
+      ..invalidate(cardReconcileProvider(path))
+      ..invalidate(cardImportUndoProvider);
+    messenger?.showSnackBar(
+      SnackBar(
+        content: Text(switch (outcome) {
+          CardImportOutcome.imported => l.tachoImportDone,
+          CardImportOutcome.foreignCard => l.tachoImportForeign,
+        }),
+      ),
+    );
+  }
+
+  /// Вернуть журнал, каким он был до переноса.
+  Future<void> _undo(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final undone = context.l10n.tachoImportUndone;
+    await ref.read(cardImportRepositoryProvider).undo();
+    ref
+      ..invalidate(cardReconcileProvider(path))
+      ..invalidate(cardImportUndoProvider);
+    messenger?.showSnackBar(SnackBar(content: Text(undone)));
+  }
+
+  /// «KOWALSKI J.»: фамилия и первая буква имени.
+  static String _name(CardHolder h) {
+    final initial = h.firstNames.isEmpty ? '' : ' ${h.firstNames[0]}.';
+    return '${h.surname}$initial';
   }
 }
 

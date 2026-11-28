@@ -2989,10 +2989,6 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get tachoReconcileNote =>
-      'Karta má přednost před deníkem: tu vidí kontrolor. Přenos dat z karty do deníku přijde v další verzi.';
-
-  @override
   String get tachoReconcileCard => 'Karta';
 
   @override
@@ -3009,4 +3005,40 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get tachoReconcileError => 'Soubor karty se nepodařilo přečíst.';
+
+  @override
+  String get tachoImport => 'Přenést do deníku';
+
+  @override
+  String get tachoImportTitle => 'Přenést data z karty do deníku?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Záznamy TachoGo od $from do $until nahradí data z karty. Kde karta režim nezná, zůstanou záznamy deníku, a kde je prázdno — odpočinek. Staré záznamy se uchovají a lze je vrátit.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, karta …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Karta bez údajů o držiteli';
+
+  @override
+  String get tachoImportDone => 'Data z karty jsou v deníku.';
+
+  @override
+  String get tachoImportUndo => 'Vrátit, jak bylo';
+
+  @override
+  String get tachoImportUndone => 'Deník je zpět, jak byl.';
+
+  @override
+  String get tachoImportForeign =>
+      'Je to karta jiného řidiče: deník patří k jiné kartě. Porovnání si prohlédnout lze, přenést ne.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'Karta má přednost před deníkem: tu vidí kontrolor. „Přenést do deníku“ nahradí záznamy TachoGo daty z karty.';
 }

@@ -147,6 +147,28 @@ void main() {
   ];
 
   group('разбор выгрузки карты', () {
+    test('BT-24: чья карта — номер, фамилия, имена; водитель — без знаков '
+        'замены и продления', () {
+      List<int> name(String s) => [1, ...s.padRight(35).codeUnits];
+      final data = Uint8List.fromList([
+        0x28,
+        ...'1930317178980001'.codeUnits,
+        ...List.filled(36, 0x20), // орган выдачи
+        ...List.filled(12, 0), // даты
+        ...name('KOWALSKI'),
+        ...name('JAN'),
+        ...List.filled(6, 0),
+      ]);
+      final holder = readHolder(data)!;
+      expect(holder.cardNumber, '1930317178980001');
+      expect(holder.driverKey, '19303171789800');
+      expect(holder.surname, 'KOWALSKI');
+      expect(holder.firstNames, 'JAN');
+      expect(readHolder(Uint8List(40)), isNull);
+      final card = DriverCard.parse(cardFile(activityFile(const [])));
+      expect(card.holder?.cardNumber, 'A' * 16);
+    });
+
     test('блоки: FID, приложение и данные подряд', () {
       final blocks = readBlocks(cardFile(activityFile(shift)));
       expect(blocks.map((b) => (b.fid, b.appendix)), [

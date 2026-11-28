@@ -2984,10 +2984,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get tachoReconcileNote =>
-      'La tarjeta prevalece sobre el registro: es la que ve el inspector. Pasar los datos de la tarjeta al registro llegará en la próxima versión.';
-
-  @override
   String get tachoReconcileCard => 'Tarjeta';
 
   @override
@@ -3004,4 +3000,41 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tachoReconcileError => 'No se pudo leer el archivo de la tarjeta.';
+
+  @override
+  String get tachoImport => 'Pasar al registro';
+
+  @override
+  String get tachoImportTitle => '¿Pasar los datos de la tarjeta al registro?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Las entradas de TachoGo del $from al $until se sustituirán por los datos de la tarjeta. Donde la tarjeta no conoce la actividad, quedan las entradas del registro; donde no hay nada, descanso. Las entradas antiguas se guardan y se pueden recuperar.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, tarjeta …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Tarjeta sin datos del titular';
+
+  @override
+  String get tachoImportDone =>
+      'Los datos de la tarjeta se pasaron al registro.';
+
+  @override
+  String get tachoImportUndo => 'Volver a como estaba';
+
+  @override
+  String get tachoImportUndone => 'El registro volvió a como estaba.';
+
+  @override
+  String get tachoImportForeign =>
+      'Es la tarjeta de otro conductor: el registro está vinculado a otra tarjeta. Puede ver la comparación, pero no pasarla.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'La tarjeta prevalece sobre el registro: es la que ve el inspector. «Pasar al registro» sustituye las entradas de TachoGo por los datos de la tarjeta.';
 }

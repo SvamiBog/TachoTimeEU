@@ -2975,10 +2975,6 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get tachoReconcileNote =>
-      'De kaart gaat voor het logboek: die ziet de controleur. Het overnemen van de kaartgegevens in het logboek komt in de volgende versie.';
-
-  @override
   String get tachoReconcileCard => 'Kaart';
 
   @override
@@ -2995,4 +2991,41 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tachoReconcileError => 'Het kaartbestand kon niet worden gelezen.';
+
+  @override
+  String get tachoImport => 'Naar het logboek overzetten';
+
+  @override
+  String get tachoImportTitle => 'Kaartgegevens naar het logboek overzetten?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. TachoGo-regels van $from tot $until worden vervangen door de kaartgegevens. Waar de kaart de activiteit niet kent, blijven de logboekregels; waar alles leeg is, rust. De oude regels blijven bewaard en kunnen worden teruggezet.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, kaart …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Kaart zonder houdergegevens';
+
+  @override
+  String get tachoImportDone =>
+      'De kaartgegevens zijn naar het logboek overgezet.';
+
+  @override
+  String get tachoImportUndo => 'Terugzetten';
+
+  @override
+  String get tachoImportUndone => 'Het logboek is teruggezet.';
+
+  @override
+  String get tachoImportForeign =>
+      'Dit is de kaart van een andere bestuurder: het logboek hoort bij een andere kaart. De vergelijking kun je bekijken, overzetten niet.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'De kaart gaat voor het logboek: die ziet de controleur. „Naar het logboek overzetten” vervangt de TachoGo-regels door de kaartgegevens.';
 }

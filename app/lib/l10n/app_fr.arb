@@ -758,10 +758,19 @@
   "tachoReconcile": "Comparer avec le journal",
   "tachoReconcileTitle": "Comparaison avec la carte",
   "tachoReconcileSummary": "Jours : {days} · identiques : {same} · avec écarts : {diff}",
-  "tachoReconcileNote": "La carte prime sur le journal : c’est elle que voit le contrôleur. Le transfert des données de la carte dans le journal arrive dans la prochaine version.",
   "tachoReconcileCard": "Carte",
   "tachoReconcileSame": "identique",
   "tachoReconcileDiff": "écart de {time}",
   "tachoReconcileEmpty": "Le journal TachoGo n’a aucune entrée pour les jours présents sur la carte.",
-  "tachoReconcileError": "Le fichier de la carte n’a pas pu être lu."
+  "tachoReconcileError": "Le fichier de la carte n’a pas pu être lu.",
+  "tachoImport": "Transférer dans le journal",
+  "tachoImportTitle": "Transférer les données de la carte dans le journal ?",
+  "tachoImportText": "{holder}. Les entrées TachoGo du {from} au {until} seront remplacées par les données de la carte. Là où la carte ne connaît pas l’activité, les entrées du journal restent ; là où tout est vide, c’est du repos. Les anciennes entrées sont conservées et peuvent être restaurées.",
+  "tachoImportHolder": "{name}, carte …{number}",
+  "tachoImportUnknownHolder": "Carte sans données du titulaire",
+  "tachoImportDone": "Les données de la carte ont été transférées dans le journal.",
+  "tachoImportUndo": "Rétablir comme avant",
+  "tachoImportUndone": "Le journal est revenu à son état précédent.",
+  "tachoImportForeign": "C’est la carte d’un autre conducteur : le journal est lié à une autre carte. La comparaison est visible, le transfert impossible.",
+  "tachoReconcileImportNote": "La carte prime sur le journal : c’est elle que voit le contrôleur. « Transférer dans le journal » remplace les entrées TachoGo par les données de la carte."
 }

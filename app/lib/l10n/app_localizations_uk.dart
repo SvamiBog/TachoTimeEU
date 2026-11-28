@@ -2992,10 +2992,6 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get tachoReconcileNote =>
-      'Картка головніша за журнал: її бачить інспектор. Перенести дані картки в журнал можна буде в наступній версії.';
-
-  @override
   String get tachoReconcileCard => 'Картка';
 
   @override
@@ -3012,4 +3008,40 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get tachoReconcileError => 'Файл картки не прочитано.';
+
+  @override
+  String get tachoImport => 'Перенести в журнал';
+
+  @override
+  String get tachoImportTitle => 'Перенести дані картки в журнал?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Записи TachoGo з $from по $until заміняться даними картки. Де картка не знає режиму, залишаться записи журналу, а де порожньо — відпочинок. Старі записи збережуться: їх можна повернути.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, картка …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Картка без даних про власника';
+
+  @override
+  String get tachoImportDone => 'Дані картки перенесено в журнал.';
+
+  @override
+  String get tachoImportUndo => 'Повернути як було';
+
+  @override
+  String get tachoImportUndone => 'Журнал повернуто, яким він був.';
+
+  @override
+  String get tachoImportForeign =>
+      'Це картка іншого водія: журнал прив’язаний до іншої картки. Звірку дивитися можна, перенести — ні.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'Картка головніша за журнал: її бачить інспектор. «Перенести в журнал» замінить записи TachoGo даними картки.';
 }

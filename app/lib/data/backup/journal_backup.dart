@@ -39,7 +39,8 @@ class JournalBackup {
   final void Function()? _onChanged;
 
   static const formatId = 'tachogo-journal';
-  static const formatVersion = 1;
+  // 2 — записи с карты (источник card): старое приложение их не прочтёт
+  static const formatVersion = 2;
   static const mimeType = 'application/json';
 
   /// Имя файла: `tachogo-journal-2026-09-29.json`, дата — по телефону.

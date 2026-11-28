@@ -758,10 +758,19 @@
   "tachoReconcile": "Porovnat s deníkem",
   "tachoReconcileTitle": "Porovnání s kartou",
   "tachoReconcileSummary": "Dní: {days} · shoda: {same} · s rozdíly: {diff}",
-  "tachoReconcileNote": "Karta má přednost před deníkem: tu vidí kontrolor. Přenos dat z karty do deníku přijde v další verzi.",
   "tachoReconcileCard": "Karta",
   "tachoReconcileSame": "shoda",
   "tachoReconcileDiff": "rozdíl {time}",
   "tachoReconcileEmpty": "Deník TachoGo nemá záznamy za dny, které jsou na kartě.",
-  "tachoReconcileError": "Soubor karty se nepodařilo přečíst."
+  "tachoReconcileError": "Soubor karty se nepodařilo přečíst.",
+  "tachoImport": "Přenést do deníku",
+  "tachoImportTitle": "Přenést data z karty do deníku?",
+  "tachoImportText": "{holder}. Záznamy TachoGo od {from} do {until} nahradí data z karty. Kde karta režim nezná, zůstanou záznamy deníku, a kde je prázdno — odpočinek. Staré záznamy se uchovají a lze je vrátit.",
+  "tachoImportHolder": "{name}, karta …{number}",
+  "tachoImportUnknownHolder": "Karta bez údajů o držiteli",
+  "tachoImportDone": "Data z karty jsou v deníku.",
+  "tachoImportUndo": "Vrátit, jak bylo",
+  "tachoImportUndone": "Deník je zpět, jak byl.",
+  "tachoImportForeign": "Je to karta jiného řidiče: deník patří k jiné kartě. Porovnání si prohlédnout lze, přenést ne.",
+  "tachoReconcileImportNote": "Karta má přednost před deníkem: tu vidí kontrolor. „Přenést do deníku“ nahradí záznamy TachoGo daty z karty."
 }

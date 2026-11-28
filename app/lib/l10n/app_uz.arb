@@ -758,10 +758,19 @@
   "tachoReconcile": "Jurnal bilan solishtirish",
   "tachoReconcileTitle": "Karta bilan solishtirish",
   "tachoReconcileSummary": "Sutka: {days} · mos: {same} · farqli: {diff}",
-  "tachoReconcileNote": "Karta jurnaldan ustun: uni inspektor koʻradi. Karta maʼlumotlarini jurnalga koʻchirish keyingi versiyada boʻladi.",
   "tachoReconcileCard": "Karta",
   "tachoReconcileSame": "mos",
   "tachoReconcileDiff": "farq {time}",
   "tachoReconcileEmpty": "TachoGo jurnalida kartadagi kunlar uchun yozuvlar yoʻq.",
-  "tachoReconcileError": "Karta fayli oʻqilmadi."
+  "tachoReconcileError": "Karta fayli oʻqilmadi.",
+  "tachoImport": "Jurnalga koʻchirish",
+  "tachoImportTitle": "Karta maʼlumotlari jurnalga koʻchirilsinmi?",
+  "tachoImportText": "{holder}. TachoGo yozuvlari {from} dan {until} gacha karta maʼlumotlari bilan almashtiriladi. Karta rejimni bilmagan joyda jurnal yozuvlari qoladi, boʻsh joyda — dam olish. Eski yozuvlar saqlanadi: ularni qaytarish mumkin.",
+  "tachoImportHolder": "{name}, karta …{number}",
+  "tachoImportUnknownHolder": "Egasi haqida maʼlumotsiz karta",
+  "tachoImportDone": "Karta maʼlumotlari jurnalga koʻchirildi.",
+  "tachoImportUndo": "Avvalgi holatga qaytarish",
+  "tachoImportUndone": "Jurnal avvalgi holatiga qaytarildi.",
+  "tachoImportForeign": "Bu boshqa haydovchining kartasi: jurnal boshqa kartaga bogʻlangan. Solishtirishni koʻrish mumkin, koʻchirish — yoʻq.",
+  "tachoReconcileImportNote": "Karta jurnaldan ustun: uni inspektor koʻradi. «Jurnalga koʻchirish» TachoGo yozuvlarini karta maʼlumotlari bilan almashtiradi."
 }

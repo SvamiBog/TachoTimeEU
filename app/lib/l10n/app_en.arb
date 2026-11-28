@@ -758,10 +758,19 @@
   "tachoReconcile": "Compare with the log",
   "tachoReconcileTitle": "Card vs. log",
   "tachoReconcileSummary": "Days: {days} · matching: {same} · with differences: {diff}",
-  "tachoReconcileNote": "The card takes precedence over the log: it is what an inspector sees. Moving the card data into the log comes in the next version.",
   "tachoReconcileCard": "Card",
   "tachoReconcileSame": "matches",
   "tachoReconcileDiff": "differs by {time}",
   "tachoReconcileEmpty": "The TachoGo log has no entries for the days on the card.",
-  "tachoReconcileError": "The card file could not be read."
+  "tachoReconcileError": "The card file could not be read.",
+  "tachoImport": "Move into the log",
+  "tachoImportTitle": "Move the card data into the log?",
+  "tachoImportText": "{holder}. TachoGo entries from {from} to {until} will be replaced with the card data. Where the card does not know the activity, the log entries stay; where both are empty, it is rest. The old entries are kept and can be restored.",
+  "tachoImportHolder": "{name}, card …{number}",
+  "tachoImportUnknownHolder": "Card without holder data",
+  "tachoImportDone": "The card data was moved into the log.",
+  "tachoImportUndo": "Undo",
+  "tachoImportUndone": "The log is back as it was.",
+  "tachoImportForeign": "This is another driver’s card: the log is bound to a different card. You can view the comparison but not move it.",
+  "tachoReconcileImportNote": "The card takes precedence over the log: it is what an inspector sees. “Move into the log” replaces the TachoGo entries with the card data."
 }

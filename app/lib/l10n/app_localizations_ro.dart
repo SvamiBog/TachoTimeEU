@@ -2989,10 +2989,6 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
-  String get tachoReconcileNote =>
-      'Cardul are prioritate față de jurnal: pe el îl vede inspectorul. Mutarea datelor de pe card în jurnal va fi în versiunea următoare.';
-
-  @override
   String get tachoReconcileCard => 'Card';
 
   @override
@@ -3009,4 +3005,40 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tachoReconcileError => 'Fișierul cardului nu a putut fi citit.';
+
+  @override
+  String get tachoImport => 'Mută în jurnal';
+
+  @override
+  String get tachoImportTitle => 'Mutați datele cardului în jurnal?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Înregistrările TachoGo din $from până în $until vor fi înlocuite cu datele cardului. Unde cardul nu cunoaște modul, rămân înregistrările din jurnal, iar unde e gol — odihnă. Înregistrările vechi se păstrează: pot fi readuse.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, card …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Card fără date despre titular';
+
+  @override
+  String get tachoImportDone => 'Datele cardului au fost mutate în jurnal.';
+
+  @override
+  String get tachoImportUndo => 'Revino la cum era';
+
+  @override
+  String get tachoImportUndone => 'Jurnalul a revenit la cum era.';
+
+  @override
+  String get tachoImportForeign =>
+      'Este cardul altui șofer: jurnalul e legat de alt card. Comparația se poate vedea, dar nu se poate muta.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'Cardul are prioritate față de jurnal: pe el îl vede inspectorul. „Mută în jurnal” înlocuiește înregistrările TachoGo cu datele cardului.';
 }

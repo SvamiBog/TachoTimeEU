@@ -12,6 +12,9 @@ enum EntrySource {
 
   /// Добавлено или исправлено вручную задним числом.
   manual,
+
+  /// Перенесено с карты водителя, считанной через тахограф (BT-24).
+  card,
 }
 
 /// Stretches of time in one activity — the basis of the journal and of every

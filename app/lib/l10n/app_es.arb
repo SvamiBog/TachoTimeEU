@@ -758,10 +758,19 @@
   "tachoReconcile": "Comparar con el registro",
   "tachoReconcileTitle": "Comparación con la tarjeta",
   "tachoReconcileSummary": "Días: {days} · coinciden: {same} · con diferencias: {diff}",
-  "tachoReconcileNote": "La tarjeta prevalece sobre el registro: es la que ve el inspector. Pasar los datos de la tarjeta al registro llegará en la próxima versión.",
   "tachoReconcileCard": "Tarjeta",
   "tachoReconcileSame": "coincide",
   "tachoReconcileDiff": "diferencia de {time}",
   "tachoReconcileEmpty": "El registro de TachoGo no tiene entradas para los días de la tarjeta.",
-  "tachoReconcileError": "No se pudo leer el archivo de la tarjeta."
+  "tachoReconcileError": "No se pudo leer el archivo de la tarjeta.",
+  "tachoImport": "Pasar al registro",
+  "tachoImportTitle": "¿Pasar los datos de la tarjeta al registro?",
+  "tachoImportText": "{holder}. Las entradas de TachoGo del {from} al {until} se sustituirán por los datos de la tarjeta. Donde la tarjeta no conoce la actividad, quedan las entradas del registro; donde no hay nada, descanso. Las entradas antiguas se guardan y se pueden recuperar.",
+  "tachoImportHolder": "{name}, tarjeta …{number}",
+  "tachoImportUnknownHolder": "Tarjeta sin datos del titular",
+  "tachoImportDone": "Los datos de la tarjeta se pasaron al registro.",
+  "tachoImportUndo": "Volver a como estaba",
+  "tachoImportUndone": "El registro volvió a como estaba.",
+  "tachoImportForeign": "Es la tarjeta de otro conductor: el registro está vinculado a otra tarjeta. Puede ver la comparación, pero no pasarla.",
+  "tachoReconcileImportNote": "La tarjeta prevalece sobre el registro: es la que ve el inspector. «Pasar al registro» sustituye las entradas de TachoGo por los datos de la tarjeta."
 }

@@ -50,6 +50,7 @@ void main() {
           findsOneWidget,
         );
         expect(find.textContaining('Карта главнее журнала'), findsOneWidget);
+        expect(find.text('Перенести в журнал'), findsOneWidget);
         expect(find.text('расходится на 0:30'), findsOneWidget);
         expect(find.text('совпадает'), findsOneWidget);
         expect(find.text('Карта'), findsNWidgets(2));
