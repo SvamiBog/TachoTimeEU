@@ -2,7 +2,7 @@
 /// `docs/testing.md`; how to build a fixture: `test/fixtures/real/README.md`.
 ///
 /// ```text
-/// dart run tool/ddd.dart summary <card.ddd>
+/// dart run tool/ddd.dart summary <card.ddd> [--until 2026-11-28T13:58:15Z]
 ///     days, activities per day, specific conditions, engine infringements
 /// dart run tool/ddd.dart fixture <card.ddd> --name <name>
 ///     [--from 2026-09-01] [--to 2026-09-29] [--unknown rest|gap] [--crew]
@@ -13,7 +13,10 @@
 ///     DEV-03: the app's log against the card, differences over a minute
 /// ```
 ///
-/// `--from` / `--to` are UTC days; `--to` is exclusive.
+/// `--from` / `--to` are UTC days; `--to` is exclusive. `--until` — when
+/// the card was read (UTC): the last activity ends there, not at midnight;
+/// by default it is taken from a file name `card_YYYYMMDD_HHMMSS.ddd` saved
+/// by the app.
 library;
 
 import 'dart:io';
@@ -32,9 +35,13 @@ void main(List<String> args) {
   final from = _date(options['from']);
   final to = _date(options['to']);
   final unknownAsRest = options['unknown'] != 'gap';
+  final untilOption = options['until'];
+  final until = untilOption == null || untilOption.isEmpty
+      ? cardReadAt(args[1])
+      : DateTime.parse(untilOption).toUtc();
   switch (args.first) {
     case 'summary':
-      stdout.write(summary(card, unknownAsRest: unknownAsRest));
+      stdout.write(summary(card, unknownAsRest: unknownAsRest, until: until));
     case 'fixture':
       final name = options['name'];
       if (name == null) return _usage();
@@ -46,6 +53,7 @@ void main(List<String> args) {
           to: to,
           unknownAsRest: unknownAsRest,
           crew: options.containsKey('crew'),
+          until: until,
         ).encode(),
       );
     case 'compare':
@@ -53,7 +61,7 @@ void main(List<String> args) {
       final app = readAppCsv(File(args[2]).readAsStringSync());
       final result = compareJournals(
         app,
-        cardPeriods(card.days),
+        cardPeriods(card.days, until: until),
         now: DateTime.now().toUtc(),
         from: from,
         to: to,
@@ -67,7 +75,7 @@ void main(List<String> args) {
 
 void _usage() {
   stderr.writeln(
-    'dart run tool/ddd.dart summary <card.ddd>\n'
+    'dart run tool/ddd.dart summary <card.ddd> [--until <UTC>]\n'
     'dart run tool/ddd.dart fixture <card.ddd> --name <name> '
     '[--from YYYY-MM-DD] [--to YYYY-MM-DD] [--unknown rest|gap] [--crew]\n'
     'dart run tool/ddd.dart compare <card.ddd> <tachogo.csv> '
@@ -95,17 +103,18 @@ String _hm(Duration d) =>
 
 /// Сводка по карте: поколение, сутки с суммами режимов, особые условия и
 /// нарушения, которые видит движок.
-String summary(DriverCard card, {bool unknownAsRest = true}) {
+String summary(DriverCard card, {bool unknownAsRest = true, DateTime? until}) {
   final b = StringBuffer()
     ..writeln('Карта: поколение ${card.generation}, суток ${card.days.length}')
     ..writeln(
       'Последнее считывание по карте: '
       '${card.lastDownload?.toIso8601String() ?? '—'}',
     )
+    ..writeln('Считана: ${until?.toIso8601String() ?? '— (до конца суток)'}')
     ..writeln(
       'Сутки (UTC): вождение / работа / готовность / отдых / нет данных',
     );
-  final periods = cardPeriods(card.days);
+  final periods = cardPeriods(card.days, until: until);
   for (final day in card.days) {
     final next = day.date.add(const Duration(days: 1));
     final sums = <DriverMode?, Duration>{};
@@ -156,6 +165,7 @@ RealJournalFixture fixtureOf(
   DateTime? to,
   bool unknownAsRest = true,
   bool crew = false,
+  DateTime? until,
 }) => RealJournalFixture(
   name: name,
   source:
@@ -163,7 +173,7 @@ RealJournalFixture fixtureOf(
       '${unknownAsRest ? 'отдых' : 'разрыв'}',
   settings: ComplianceSettings(crew: crew ? CrewMode.team : CrewMode.solo),
   periods: toEnginePeriods(
-    cardPeriods(card.days),
+    cardPeriods(card.days, until: until),
     unknownAsRest: unknownAsRest,
     conditions: card.conditions,
     from: from,

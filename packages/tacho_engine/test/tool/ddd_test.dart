@@ -119,6 +119,17 @@ Uint8List cardFile(
 }
 
 void main() {
+  group('ENG-20: когда считана карта', () {
+    test('время считывания — из имени файла приложения, UTC', () {
+      expect(
+        cardReadAt('/data/tachograph/card_20261128_135815.ddd'),
+        DateTime.utc(2026, 11, 28, 13, 58, 15),
+      );
+      expect(cardReadAt(r'C:\Downloads\CARD_20261128_135815.DDD'), isNotNull);
+      expect(cardReadAt('C_20260928_1200_X_Y.ddd'), isNull);
+    });
+  });
+
   final shift = <Day>[
     (
       '2026-09-21',
