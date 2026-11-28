@@ -2951,4 +2951,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Share the card file';
+
+  @override
+  String get tachoReconcile => 'Compare with the log';
+
+  @override
+  String get tachoReconcileTitle => 'Card vs. log';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Days: $days · matching: $same · with differences: $diff';
+  }
+
+  @override
+  String get tachoReconcileCard => 'Card';
+
+  @override
+  String get tachoReconcileSame => 'matches';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'differs by $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'The TachoGo log has no entries for the days on the card.';
+
+  @override
+  String get tachoReconcileError => 'The card file could not be read.';
+
+  @override
+  String get tachoImport => 'Move into the log';
+
+  @override
+  String get tachoImportTitle => 'Move the card data into the log?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. TachoGo entries from $from to $until will be replaced with the card data. Where the card does not know the activity, the log entries stay; where both are empty, it is rest. The old entries are kept and can be restored.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, card …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Card without holder data';
+
+  @override
+  String get tachoImportDone => 'The card data was moved into the log.';
+
+  @override
+  String get tachoImportUndo => 'Undo';
+
+  @override
+  String get tachoImportUndone => 'The log is back as it was.';
+
+  @override
+  String get tachoImportForeign =>
+      'This is another driver’s card: the log is bound to a different card. You can view the comparison but not move it.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'The card takes precedence over the log: it is what an inspector sees. “Move into the log” replaces the TachoGo entries with the card data.';
 }

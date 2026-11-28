@@ -2985,4 +2985,69 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Udostępnij plik karty';
+
+  @override
+  String get tachoReconcile => 'Porównaj z dziennikiem';
+
+  @override
+  String get tachoReconcileTitle => 'Porównanie z kartą';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Dób: $days · zgodnych: $same · z różnicami: $diff';
+  }
+
+  @override
+  String get tachoReconcileCard => 'Karta';
+
+  @override
+  String get tachoReconcileSame => 'zgodne';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'różnica $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'W dzienniku TachoGo nie ma wpisów za dni zapisane na karcie.';
+
+  @override
+  String get tachoReconcileError => 'Nie udało się odczytać pliku karty.';
+
+  @override
+  String get tachoImport => 'Przenieś do dziennika';
+
+  @override
+  String get tachoImportTitle => 'Przenieść dane karty do dziennika?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Wpisy TachoGo od $from do $until zostaną zastąpione danymi karty. Gdzie karta nie zna trybu, zostaną wpisy dziennika, a gdzie pusto — odpoczynek. Stare wpisy zostaną zachowane: można je przywrócić.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, karta …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Karta bez danych właściciela';
+
+  @override
+  String get tachoImportDone => 'Dane karty przeniesiono do dziennika.';
+
+  @override
+  String get tachoImportUndo => 'Przywróć poprzedni stan';
+
+  @override
+  String get tachoImportUndone => 'Dziennik przywrócono do poprzedniego stanu.';
+
+  @override
+  String get tachoImportForeign =>
+      'To karta innego kierowcy: dziennik jest powiązany z inną kartą. Porównanie można obejrzeć, przenieść — nie.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'Karta jest ważniejsza niż dziennik: to ją widzi kontroler. „Przenieś do dziennika” zastąpi wpisy TachoGo danymi karty.';
 }

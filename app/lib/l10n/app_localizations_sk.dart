@@ -2980,4 +2980,69 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Zdieľať súbor karty';
+
+  @override
+  String get tachoReconcile => 'Porovnať s denníkom';
+
+  @override
+  String get tachoReconcileTitle => 'Porovnanie s kartou';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Dní: $days · zhoda: $same · s rozdielmi: $diff';
+  }
+
+  @override
+  String get tachoReconcileCard => 'Karta';
+
+  @override
+  String get tachoReconcileSame => 'zhoda';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'rozdiel $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'Denník TachoGo nemá záznamy za dni, ktoré sú na karte.';
+
+  @override
+  String get tachoReconcileError => 'Súbor karty sa nepodarilo prečítať.';
+
+  @override
+  String get tachoImport => 'Preniesť do denníka';
+
+  @override
+  String get tachoImportTitle => 'Preniesť údaje z karty do denníka?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Záznamy TachoGo od $from do $until nahradia údaje z karty. Kde karta režim nepozná, zostanú záznamy denníka, a kde je prázdno — odpočinok. Staré záznamy sa uchovajú a dajú sa vrátiť.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, karta …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Karta bez údajov o držiteľovi';
+
+  @override
+  String get tachoImportDone => 'Údaje z karty sú v denníku.';
+
+  @override
+  String get tachoImportUndo => 'Vrátiť, ako bolo';
+
+  @override
+  String get tachoImportUndone => 'Denník je späť, ako bol.';
+
+  @override
+  String get tachoImportForeign =>
+      'Je to karta iného vodiča: denník patrí k inej karte. Porovnanie si pozrieť možno, preniesť nie.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'Karta má prednosť pred denníkom: tú vidí kontrolór. „Preniesť do denníka“ nahradí záznamy TachoGo údajmi z karty.';
 }

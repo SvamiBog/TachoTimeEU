@@ -2976,4 +2976,69 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Partajează fișierul cardului';
+
+  @override
+  String get tachoReconcile => 'Compară cu jurnalul';
+
+  @override
+  String get tachoReconcileTitle => 'Comparare cu cardul';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Zile: $days · identice: $same · cu diferențe: $diff';
+  }
+
+  @override
+  String get tachoReconcileCard => 'Card';
+
+  @override
+  String get tachoReconcileSame => 'identic';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'diferență $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'În jurnalul TachoGo nu există înregistrări pentru zilele de pe card.';
+
+  @override
+  String get tachoReconcileError => 'Fișierul cardului nu a putut fi citit.';
+
+  @override
+  String get tachoImport => 'Mută în jurnal';
+
+  @override
+  String get tachoImportTitle => 'Mutați datele cardului în jurnal?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Înregistrările TachoGo din $from până în $until vor fi înlocuite cu datele cardului. Unde cardul nu cunoaște modul, rămân înregistrările din jurnal, iar unde e gol — odihnă. Înregistrările vechi se păstrează: pot fi readuse.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, card …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Card fără date despre titular';
+
+  @override
+  String get tachoImportDone => 'Datele cardului au fost mutate în jurnal.';
+
+  @override
+  String get tachoImportUndo => 'Revino la cum era';
+
+  @override
+  String get tachoImportUndone => 'Jurnalul a revenit la cum era.';
+
+  @override
+  String get tachoImportForeign =>
+      'Este cardul altui șofer: jurnalul e legat de alt card. Comparația se poate vedea, dar nu se poate muta.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'Cardul are prioritate față de jurnal: pe el îl vede inspectorul. „Mută în jurnal” înlocuiește înregistrările TachoGo cu datele cardului.';
 }

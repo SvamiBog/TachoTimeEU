@@ -2977,4 +2977,72 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Partager le fichier de la carte';
+
+  @override
+  String get tachoReconcile => 'Comparer avec le journal';
+
+  @override
+  String get tachoReconcileTitle => 'Comparaison avec la carte';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Jours : $days · identiques : $same · avec écarts : $diff';
+  }
+
+  @override
+  String get tachoReconcileCard => 'Carte';
+
+  @override
+  String get tachoReconcileSame => 'identique';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'écart de $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'Le journal TachoGo n’a aucune entrée pour les jours présents sur la carte.';
+
+  @override
+  String get tachoReconcileError =>
+      'Le fichier de la carte n’a pas pu être lu.';
+
+  @override
+  String get tachoImport => 'Transférer dans le journal';
+
+  @override
+  String get tachoImportTitle =>
+      'Transférer les données de la carte dans le journal ?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Les entrées TachoGo du $from au $until seront remplacées par les données de la carte. Là où la carte ne connaît pas l’activité, les entrées du journal restent ; là où tout est vide, c’est du repos. Les anciennes entrées sont conservées et peuvent être restaurées.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, carte …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Carte sans données du titulaire';
+
+  @override
+  String get tachoImportDone =>
+      'Les données de la carte ont été transférées dans le journal.';
+
+  @override
+  String get tachoImportUndo => 'Rétablir comme avant';
+
+  @override
+  String get tachoImportUndone => 'Le journal est revenu à son état précédent.';
+
+  @override
+  String get tachoImportForeign =>
+      'C’est la carte d’un autre conducteur : le journal est lié à une autre carte. La comparaison est visible, le transfert impossible.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'La carte prime sur le journal : c’est elle que voit le contrôleur. « Transférer dans le journal » remplace les entrées TachoGo par les données de la carte.';
 }

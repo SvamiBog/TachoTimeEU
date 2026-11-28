@@ -2975,4 +2975,69 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Поделиться файлом карты';
+
+  @override
+  String get tachoReconcile => 'Сверить с журналом';
+
+  @override
+  String get tachoReconcileTitle => 'Сверка с картой';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Суток: $days · совпадает: $same · с расхождениями: $diff';
+  }
+
+  @override
+  String get tachoReconcileCard => 'Карта';
+
+  @override
+  String get tachoReconcileSame => 'совпадает';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'расходится на $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'В журнале TachoGo нет записей за дни, которые есть на карте.';
+
+  @override
+  String get tachoReconcileError => 'Файл карты не прочитан.';
+
+  @override
+  String get tachoImport => 'Перенести в журнал';
+
+  @override
+  String get tachoImportTitle => 'Перенести данные карты в журнал?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Записи TachoGo с $from по $until заменятся данными карты. Где карта не знает режима, останутся записи журнала, а где пусто — отдых. Старые записи сохранятся: их можно вернуть.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, карта …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Карта без данных о владельце';
+
+  @override
+  String get tachoImportDone => 'Данные карты перенесены в журнал.';
+
+  @override
+  String get tachoImportUndo => 'Вернуть как было';
+
+  @override
+  String get tachoImportUndone => 'Журнал возвращён, каким был.';
+
+  @override
+  String get tachoImportForeign =>
+      'Это карта другого водителя: журнал привязан к другой карте. Сверку смотреть можно, перенести — нет.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'Карта главнее журнала: её видит инспектор. «Перенести в журнал» заменит записи TachoGo данными карты.';
 }

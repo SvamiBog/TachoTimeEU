@@ -4658,6 +4658,114 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Поделиться файлом карты'**
   String get tachoCardShare;
+
+  /// Строка в панели журнала сборки разработчика: открыть сверку последнего файла карты с журналом
+  ///
+  /// In ru, this message translates to:
+  /// **'Сверить с журналом'**
+  String get tachoReconcile;
+
+  /// Заголовок экрана сверки карты с журналом
+  ///
+  /// In ru, this message translates to:
+  /// **'Сверка с картой'**
+  String get tachoReconcileTitle;
+
+  /// Итог сверки: сколько суток сверено, сколько совпало и сколько с расхождениями
+  ///
+  /// In ru, this message translates to:
+  /// **'Суток: {days} · совпадает: {same} · с расхождениями: {diff}'**
+  String tachoReconcileSummary(int days, int same, int diff);
+
+  /// Подпись полосы карты на экране сверки
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта'**
+  String get tachoReconcileCard;
+
+  /// Сутки на экране сверки: карта и журнал совпадают
+  ///
+  /// In ru, this message translates to:
+  /// **'совпадает'**
+  String get tachoReconcileSame;
+
+  /// Сутки на экране сверки: на сколько расходятся карта и журнал (часы:минуты)
+  ///
+  /// In ru, this message translates to:
+  /// **'расходится на {time}'**
+  String tachoReconcileDiff(String time);
+
+  /// Экран сверки: за дни карты в журнале нет записей
+  ///
+  /// In ru, this message translates to:
+  /// **'В журнале TachoGo нет записей за дни, которые есть на карте.'**
+  String get tachoReconcileEmpty;
+
+  /// Экран сверки: файл карты не удалось прочитать
+  ///
+  /// In ru, this message translates to:
+  /// **'Файл карты не прочитан.'**
+  String get tachoReconcileError;
+
+  /// Кнопка на экране сверки: перенести данные карты в журнал
+  ///
+  /// In ru, this message translates to:
+  /// **'Перенести в журнал'**
+  String get tachoImport;
+
+  /// Шторка перед переносом карты в журнал: заголовок
+  ///
+  /// In ru, this message translates to:
+  /// **'Перенести данные карты в журнал?'**
+  String get tachoImportTitle;
+
+  /// Шторка перед переносом: чья карта, за какие даты журнал заменится картой, пробелы и возврат
+  ///
+  /// In ru, this message translates to:
+  /// **'{holder}. Записи TachoGo с {from} по {until} заменятся данными карты. Где карта не знает режима, останутся записи журнала, а где пусто — отдых. Старые записи сохранятся: их можно вернуть.'**
+  String tachoImportText(String holder, String from, String until);
+
+  /// Чья карта в шторке переноса: фамилия с инициалом и последние 4 знака номера карты
+  ///
+  /// In ru, this message translates to:
+  /// **'{name}, карта …{number}'**
+  String tachoImportHolder(String name, String number);
+
+  /// Шторка переноса: в файле нет данных о владельце карты
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта без данных о владельце'**
+  String get tachoImportUnknownHolder;
+
+  /// Данные карты перенесены в журнал
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные карты перенесены в журнал.'**
+  String get tachoImportDone;
+
+  /// Кнопка: вернуть журнал, каким он был до переноса карты
+  ///
+  /// In ru, this message translates to:
+  /// **'Вернуть как было'**
+  String get tachoImportUndo;
+
+  /// Журнал возвращён, каким был до переноса карты
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал возвращён, каким был.'**
+  String get tachoImportUndone;
+
+  /// Перенос отклонён: карта другого водителя, журнал привязан к другой карте
+  ///
+  /// In ru, this message translates to:
+  /// **'Это карта другого водителя: журнал привязан к другой карте. Сверку смотреть можно, перенести — нет.'**
+  String get tachoImportForeign;
+
+  /// Пояснение под итогом сверки: карта главнее журнала; «Перенести в журнал» заменит записи данными карты
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта главнее журнала: её видит инспектор. «Перенести в журнал» заменит записи TachoGo данными карты.'**
+  String get tachoReconcileImportNote;
 }
 
 class _AppLocalizationsDelegate

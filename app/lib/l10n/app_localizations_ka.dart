@@ -2950,4 +2950,69 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'ბარათის ფაილის გაზიარება';
+
+  @override
+  String get tachoReconcile => 'ჟურნალთან შედარება';
+
+  @override
+  String get tachoReconcileTitle => 'ბარათთან შედარება';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'დღე-ღამე: $days · ემთხვევა: $same · განსხვავებით: $diff';
+  }
+
+  @override
+  String get tachoReconcileCard => 'ბარათი';
+
+  @override
+  String get tachoReconcileSame => 'ემთხვევა';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'სხვაობა $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'TachoGo-ს ჟურნალში ბარათზე არსებული დღეების ჩანაწერები არ არის.';
+
+  @override
+  String get tachoReconcileError => 'ბარათის ფაილი ვერ წაიკითხა.';
+
+  @override
+  String get tachoImport => 'ჟურნალში გადატანა';
+
+  @override
+  String get tachoImportTitle => 'გადავიტანოთ ბარათის მონაცემები ჟურნალში?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. TachoGo-ს ჩანაწერები $from-დან $until-მდე ბარათის მონაცემებით შეიცვლება. სადაც ბარათმა რეჟიმი არ იცის, ჟურნალის ჩანაწერები დარჩება, სადაც ცარიელია — დასვენება. ძველი ჩანაწერები შეინახება: მათი დაბრუნება შეიძლება.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, ბარათი …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'ბარათი მფლობელის მონაცემების გარეშე';
+
+  @override
+  String get tachoImportDone => 'ბარათის მონაცემები ჟურნალში გადატანილია.';
+
+  @override
+  String get tachoImportUndo => 'ძველი მდგომარეობის დაბრუნება';
+
+  @override
+  String get tachoImportUndone => 'ჟურნალი ძველ მდგომარეობას დაუბრუნდა.';
+
+  @override
+  String get tachoImportForeign =>
+      'ეს სხვა მძღოლის ბარათია: ჟურნალი სხვა ბარათზეა მიბმული. შედარების ნახვა შეიძლება, გადატანა — არა.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'ბარათი ჟურნალზე მთავარია: მას ინსპექტორი ხედავს. „ჟურნალში გადატანა“ TachoGo-ს ჩანაწერებს ბარათის მონაცემებით შეცვლის.';
 }

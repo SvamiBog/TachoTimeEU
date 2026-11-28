@@ -13,6 +13,7 @@ import 'package:tachogo/data/backup/journal_backup.dart';
 import 'package:tachogo/data/db/database_provider.dart';
 import 'package:tachogo/data/journal/activity_repository.dart';
 import 'package:tachogo/data/journal/card_download_repository.dart';
+import 'package:tachogo/data/journal/card_import_repository.dart';
 import 'package:tachogo/data/journal/journal_cleaner.dart';
 import 'package:tachogo/data/journal/journal_edit_repository.dart';
 import 'package:tachogo/data/journal/shift_meta.dart';
@@ -26,6 +27,14 @@ final journalChangedCallbackProvider = Provider<void Function()?>(
 
 final activityRepositoryProvider = Provider<ActivityRepository>(
   (ref) => ActivityRepository(
+    ref.watch(databaseProvider),
+    onChanged: ref.watch(journalChangedCallbackProvider),
+  ),
+);
+
+/// Перенос считанной карты в журнал и «Вернуть как было» (BT-24).
+final cardImportRepositoryProvider = Provider<CardImportRepository>(
+  (ref) => CardImportRepository(
     ref.watch(databaseProvider),
     onChanged: ref.watch(journalChangedCallbackProvider),
   ),

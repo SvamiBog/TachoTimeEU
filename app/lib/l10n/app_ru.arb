@@ -2878,5 +2878,113 @@
   "tachoCardShare": "Поделиться файлом карты",
   "@tachoCardShare": {
     "description": "Строка в панели журнала сборки разработчика: отправить последний считанный файл карты (.DDD) через «Поделиться»"
+  },
+  "tachoReconcile": "Сверить с журналом",
+  "@tachoReconcile": {
+    "description": "Строка в панели журнала сборки разработчика: открыть сверку последнего файла карты с журналом"
+  },
+  "tachoReconcileTitle": "Сверка с картой",
+  "@tachoReconcileTitle": {
+    "description": "Заголовок экрана сверки карты с журналом"
+  },
+  "tachoReconcileSummary": "Суток: {days} · совпадает: {same} · с расхождениями: {diff}",
+  "@tachoReconcileSummary": {
+    "description": "Итог сверки: сколько суток сверено, сколько совпало и сколько с расхождениями",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "same": {
+        "type": "int"
+      },
+      "diff": {
+        "type": "int"
+      }
+    }
+  },
+  "tachoReconcileCard": "Карта",
+  "@tachoReconcileCard": {
+    "description": "Подпись полосы карты на экране сверки"
+  },
+  "tachoReconcileSame": "совпадает",
+  "@tachoReconcileSame": {
+    "description": "Сутки на экране сверки: карта и журнал совпадают"
+  },
+  "tachoReconcileDiff": "расходится на {time}",
+  "@tachoReconcileDiff": {
+    "description": "Сутки на экране сверки: на сколько расходятся карта и журнал (часы:минуты)",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "1:30"
+      }
+    }
+  },
+  "tachoReconcileEmpty": "В журнале TachoGo нет записей за дни, которые есть на карте.",
+  "@tachoReconcileEmpty": {
+    "description": "Экран сверки: за дни карты в журнале нет записей"
+  },
+  "tachoReconcileError": "Файл карты не прочитан.",
+  "@tachoReconcileError": {
+    "description": "Экран сверки: файл карты не удалось прочитать"
+  },
+  "tachoImport": "Перенести в журнал",
+  "@tachoImport": {
+    "description": "Кнопка на экране сверки: перенести данные карты в журнал"
+  },
+  "tachoImportTitle": "Перенести данные карты в журнал?",
+  "@tachoImportTitle": {
+    "description": "Шторка перед переносом карты в журнал: заголовок"
+  },
+  "tachoImportText": "{holder}. Записи TachoGo с {from} по {until} заменятся данными карты. Где карта не знает режима, останутся записи журнала, а где пусто — отдых. Старые записи сохранятся: их можно вернуть.",
+  "@tachoImportText": {
+    "description": "Шторка перед переносом: чья карта, за какие даты журнал заменится картой, пробелы и возврат",
+    "placeholders": {
+      "holder": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "until": {
+        "type": "String"
+      }
+    }
+  },
+  "tachoImportHolder": "{name}, карта …{number}",
+  "@tachoImportHolder": {
+    "description": "Чья карта в шторке переноса: фамилия с инициалом и последние 4 знака номера карты",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "tachoImportUnknownHolder": "Карта без данных о владельце",
+  "@tachoImportUnknownHolder": {
+    "description": "Шторка переноса: в файле нет данных о владельце карты"
+  },
+  "tachoImportDone": "Данные карты перенесены в журнал.",
+  "@tachoImportDone": {
+    "description": "Данные карты перенесены в журнал"
+  },
+  "tachoImportUndo": "Вернуть как было",
+  "@tachoImportUndo": {
+    "description": "Кнопка: вернуть журнал, каким он был до переноса карты"
+  },
+  "tachoImportUndone": "Журнал возвращён, каким был.",
+  "@tachoImportUndone": {
+    "description": "Журнал возвращён, каким был до переноса карты"
+  },
+  "tachoImportForeign": "Это карта другого водителя: журнал привязан к другой карте. Сверку смотреть можно, перенести — нет.",
+  "@tachoImportForeign": {
+    "description": "Перенос отклонён: карта другого водителя, журнал привязан к другой карте"
+  },
+  "tachoReconcileImportNote": "Карта главнее журнала: её видит инспектор. «Перенести в журнал» заменит записи TachoGo данными карты.",
+  "@tachoReconcileImportNote": {
+    "description": "Пояснение под итогом сверки: карта главнее журнала; «Перенести в журнал» заменит записи данными карты"
   }
 }

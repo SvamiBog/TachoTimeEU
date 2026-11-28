@@ -2960,4 +2960,70 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Condividi il file della carta';
+
+  @override
+  String get tachoReconcile => 'Confronta con il registro';
+
+  @override
+  String get tachoReconcileTitle => 'Confronto con la carta';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Giorni: $days · coincidono: $same · con differenze: $diff';
+  }
+
+  @override
+  String get tachoReconcileCard => 'Carta';
+
+  @override
+  String get tachoReconcileSame => 'coincide';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'differenza di $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'Il registro di TachoGo non ha voci per i giorni presenti sulla carta.';
+
+  @override
+  String get tachoReconcileError => 'Impossibile leggere il file della carta.';
+
+  @override
+  String get tachoImport => 'Trasferisci nel registro';
+
+  @override
+  String get tachoImportTitle => 'Trasferire i dati della carta nel registro?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. Le voci di TachoGo dal $from al $until saranno sostituite dai dati della carta. Dove la carta non conosce l’attività restano le voci del registro; dove è tutto vuoto, riposo. Le vecchie voci restano salvate e si possono ripristinare.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, carta …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Carta senza dati del titolare';
+
+  @override
+  String get tachoImportDone =>
+      'I dati della carta sono stati trasferiti nel registro.';
+
+  @override
+  String get tachoImportUndo => 'Ripristina com’era';
+
+  @override
+  String get tachoImportUndone => 'Il registro è tornato com’era.';
+
+  @override
+  String get tachoImportForeign =>
+      'È la carta di un altro conducente: il registro è legato a un’altra carta. Il confronto si può vedere, trasferire no.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'La carta prevale sul registro: è quella che vede l’ispettore. «Trasferisci nel registro» sostituisce le voci di TachoGo con i dati della carta.';
 }

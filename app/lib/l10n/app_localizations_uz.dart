@@ -2964,4 +2964,69 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Karta faylini ulashish';
+
+  @override
+  String get tachoReconcile => 'Jurnal bilan solishtirish';
+
+  @override
+  String get tachoReconcileTitle => 'Karta bilan solishtirish';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Sutka: $days · mos: $same · farqli: $diff';
+  }
+
+  @override
+  String get tachoReconcileCard => 'Karta';
+
+  @override
+  String get tachoReconcileSame => 'mos';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'farq $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'TachoGo jurnalida kartadagi kunlar uchun yozuvlar yoʻq.';
+
+  @override
+  String get tachoReconcileError => 'Karta fayli oʻqilmadi.';
+
+  @override
+  String get tachoImport => 'Jurnalga koʻchirish';
+
+  @override
+  String get tachoImportTitle => 'Karta maʼlumotlari jurnalga koʻchirilsinmi?';
+
+  @override
+  String tachoImportText(String holder, String from, String until) {
+    return '$holder. TachoGo yozuvlari $from dan $until gacha karta maʼlumotlari bilan almashtiriladi. Karta rejimni bilmagan joyda jurnal yozuvlari qoladi, boʻsh joyda — dam olish. Eski yozuvlar saqlanadi: ularni qaytarish mumkin.';
+  }
+
+  @override
+  String tachoImportHolder(String name, String number) {
+    return '$name, karta …$number';
+  }
+
+  @override
+  String get tachoImportUnknownHolder => 'Egasi haqida maʼlumotsiz karta';
+
+  @override
+  String get tachoImportDone => 'Karta maʼlumotlari jurnalga koʻchirildi.';
+
+  @override
+  String get tachoImportUndo => 'Avvalgi holatga qaytarish';
+
+  @override
+  String get tachoImportUndone => 'Jurnal avvalgi holatiga qaytarildi.';
+
+  @override
+  String get tachoImportForeign =>
+      'Bu boshqa haydovchining kartasi: jurnal boshqa kartaga bogʻlangan. Solishtirishni koʻrish mumkin, koʻchirish — yoʻq.';
+
+  @override
+  String get tachoReconcileImportNote =>
+      'Karta jurnaldan ustun: uni inspektor koʻradi. «Jurnalga koʻchirish» TachoGo yozuvlarini karta maʼlumotlari bilan almashtiradi.';
 }
