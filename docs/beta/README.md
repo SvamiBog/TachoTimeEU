@@ -70,7 +70,7 @@ Windows (PowerShell): `[Convert]::ToBase64String([IO.File]::ReadAllBytes("debug.
 
 Содержимое `debug.keystore.b64` — секрет `ANDROID_DEBUG_KEYSTORE_BASE64` (Settings → Secrets and variables → Actions); `debug.keystore` — в менеджер паролей, в git не класть (CI это проверяет). Первая APK с этим ключом встаёт только после удаления прошлой — журнал перед этим сохранить: «Ещё» → «Перенос на другой телефон», и загрузить в новой. Дальше — поверх. Сборки с пакетом `eu.tachogo.app` (с 30.09.2026) — для телефона другое приложение, чем прежний `eu.tachogo.tachogo`: встают рядом, журнал переносится так же, старое — удалить.
 
-Установленную из Google Play (внутренний или закрытый тест) APK из CI не обновит и наоборот: у Play свой ключ подписи. На одном телефоне — что-то одно.
+APK из CI — отдельное приложение «TachoGo Dev» с пакетом `eu.tachogo.app.dev` (с 25.11.2026, BETA-03): ставится рядом с версией из Google Play (внутренний или закрытый тест) и её не трогает, журналы у них разные — перенести можно файлом («Ещё» → «Перенос на другой телефон»). Пакет задаёт переменная `TACHOGO_SIDE_BY_SIDE` у шага «Debug APK (dev)»; тесты на эмуляторе собирают обычный `eu.tachogo.app`. APK из CI до 25.11.2026 — с пакетом `eu.tachogo.app`: с версией из Google Play не уживаются, их удалить.
 
 ## Требование Google Play к новым аккаунтам
 
@@ -87,7 +87,7 @@ Windows (PowerShell): `[Convert]::ToBase64String([IO.File]::ReadAllBytes("debug.
 | Вычитка перевода | Носитель каждого языка Tier 1 | `translation-review.md` | `dart run tool/l10n_review.dart import` (`app/`) |
 | Анкета KK, KY, BE | Водители из Казахстана, Кыргызстана, Беларуси | Вопросы в `translation-review.md` | Решение в `docs/PRD.md` |
 | Замер скорости на телефоне | 1–2 телефона разработчика, в том числе недорогой | `flutter drive --profile` (`app/integration_test/performance_test.dart`) | PERF-03 в `docs/testing.md` |
-| Bluetooth с тахографом | Водители с DTCO 4.1 и SE5000 Smart 2 | Раздел «Bluetooth» инструкции | `docs/research/bluetooth-its.md` |
+| Bluetooth с тахографом | Владелец (DTCO 4.1a) на debug APK из CI — в сборках из Google Play строки пока нет; после проверки — водители с DTCO 4.1a и SE5000 Smart 2 обновлением из Play | «Ещё» → «Тахограф по Bluetooth», затем «Сообщить о проблеме» — в отчёте журнал обмена (раздел «Bluetooth» инструкции) | BT-11, `docs/research/bluetooth-its.md` |
 
 Личные данные: отчёт о проблеме и CSV содержат журнал режимов, файл карты — ещё и имя и номер карты. В репозиторий попадает только обезличенное: фикстура из `tool/ddd.dart fixture` без имени и номера, CSV — только в issue с согласия водителя. Сами файлы `.DDD` в git не кладём.
 

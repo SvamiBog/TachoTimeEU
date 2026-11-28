@@ -31,8 +31,10 @@ pause=${GRADLE_DEPS_PAUSE:-30}
 log=$(mktemp)
 trap 'rm -f "$log"' EXIT
 
-# Признаки сбоя сети или репозитория, а не проекта
-network='Could not (resolve|parse POM|GET|HEAD|download|get resource)|Received status code (429|5[0-9][0-9])|Connection (reset|refused|timed out)|Read timed out|Remote host terminated|SSLHandshakeException|SocketException|Premature end of'
+# Признаки сбоя сети или репозитория, а не проекта. Плагин из блока
+# plugins {} Gradle не нашёл ни в одном репозитории — тоже сбой сети:
+# версии плагинов в проекте закреплены (26.11.2026 так упал плагин Kotlin)
+network='Could not (resolve|parse POM|GET|HEAD|download|get resource)|could not resolve plugin artifact|Received status code (429|5[0-9][0-9])|Connection (reset|refused|timed out)|Read timed out|Remote host terminated|SSLHandshakeException|SocketException|Premature end of'
 # Репозиторий ограничил частоту запросов — ждать дольше
 rate_limited='Received status code 429'
 rate_limited_factor=4

@@ -2745,4 +2745,218 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get violationsNote => 'Toelichting';
+
+  @override
+  String get tachoTitle => 'Tachograaf via Bluetooth';
+
+  @override
+  String get tachoHint =>
+      'Bèta: activiteit en tijden rechtstreeks van de tachograaf';
+
+  @override
+  String get tachoBeta => 'Bèta · alleen lezen';
+
+  @override
+  String get tachoLead =>
+      'De app leest activiteit en tijden van een Smart 2-tachograaf (VDO DTCO 4.1a of nieuwer). Hij slaat niets op en verandert niets in de tachograaf.';
+
+  @override
+  String get tachoStepCard => 'Steek de bestuurderskaart in de tachograaf.';
+
+  @override
+  String get tachoStepConsent =>
+      'Sta in het menu van de tachograaf het delen van ITS-gegevens toe: zonder dat blijft Bluetooth van de tachograaf uit.';
+
+  @override
+  String get tachoStepPair =>
+      'Open op de tachograaf Bluetooth → koppelen. Kies daarna in de Bluetooth-instellingen van de telefoon de tachograaf en bevestig dezelfde 6 cijfers op de telefoon en de tachograaf.';
+
+  @override
+  String get tachoFind => 'Tachograaf zoeken';
+
+  @override
+  String get tachoSearching => 'Zoeken naar een tachograaf in de buurt…';
+
+  @override
+  String get tachoSearchHint =>
+      'Staat de tachograaf niet in de lijst? Open het Bluetooth-menu op de tachograaf en start het verbinden.';
+
+  @override
+  String get tachoShowAll => 'Alle Bluetooth-apparaten';
+
+  @override
+  String get tachoUnnamed => 'Zonder naam';
+
+  @override
+  String get tachoStop => 'Stoppen';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Verbinden met $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Zie je 6 cijfers? Controleer of ze op de telefoon en de tachograaf gelijk zijn en bevestig op beide.';
+
+  @override
+  String get tachoWaiting => 'Wachten op gegevens van de tachograaf…';
+
+  @override
+  String get tachoNoConsent =>
+      'De tachograaf deelt de gegevens van de bestuurder niet. Zet het delen van gegevens (ITS) aan in het menu.';
+
+  @override
+  String get tachoNoDriverData =>
+      'De tachograaf heeft de gegevens van de bestuurder nog niet gestuurd.';
+
+  @override
+  String get tachoMoving => 'rijdt';
+
+  @override
+  String get tachoStanding => 'staat stil';
+
+  @override
+  String get tachoModeUnknown => 'Activiteit onbekend';
+
+  @override
+  String get tachoCoDriver => 'Tweede bestuurder';
+
+  @override
+  String get tachoCurrentActivity => 'Activiteit duurt';
+
+  @override
+  String get tachoLeftSection => 'Resterend';
+
+  @override
+  String get tachoUntilDailyRest => 'Tot de dagelijkse rust';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Tot de wekelijkse rust';
+
+  @override
+  String get tachoShiftLeft => 'Rijtijd in deze dienst';
+
+  @override
+  String get tachoWeekLeft => 'Rijtijd deze week';
+
+  @override
+  String get tachoNote =>
+      'De cijfers komen van de tachograaf en worden om de paar seconden bijgewerkt. Zolang er verbinding is, volgt de activiteit in het TachoGo-logboek de tachograaf.';
+
+  @override
+  String get tachoDisconnect => 'Verbinding verbreken';
+
+  @override
+  String get tachoNoPermission =>
+      'Sta toegang tot apparaten in de buurt toe: zonder kan de telefoon de tachograaf niet vinden.';
+
+  @override
+  String get tachoAllow => 'Toestaan';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth staat uit op de telefoon.';
+
+  @override
+  String get tachoTurnOn => 'Bluetooth aanzetten';
+
+  @override
+  String get tachoLocationOff =>
+      'Op deze telefoon werkt zoeken via Bluetooth alleen met locatie aan.';
+
+  @override
+  String get tachoUnsupported =>
+      'Deze telefoon ondersteunt geen Bluetooth LE: verbinden met de tachograaf lukt niet.';
+
+  @override
+  String get tachoRetry => 'Opnieuw proberen';
+
+  @override
+  String get tachoFailScan => 'Het zoeken is niet gestart.';
+
+  @override
+  String get tachoFailConnect =>
+      'Verbinden mislukt. Ga dichter bij de tachograaf staan en probeer het opnieuw.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Dit is geen Smart 2-tachograaf. Kies een ander apparaat.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'De tachograaf reageert niet. Controleer of de verbinding op de tachograaf is bevestigd en of er geen andere telefoon mee verbonden is.';
+
+  @override
+  String get tachoFailLost => 'De verbinding met de tachograaf is verbroken.';
+
+  @override
+  String get tachoLogTitle => 'Uitwisselingslog · ontwikkelaarsversie';
+
+  @override
+  String get tachoLogEmpty => 'Nog leeg: begin met zoeken naar de tachograaf.';
+
+  @override
+  String get tachoLogCopy => 'Log kopiëren';
+
+  @override
+  String get tachoLogCopied => 'Log gekopieerd — plak het in een bericht.';
+
+  @override
+  String get tachoFailRefused =>
+      'De tachograaf geeft de telefoon geen toegang tot de gegevens. Controleer bij stilstand in het menu van de tachograaf of Bluetooth en het delen van gegevens (ITS) aan staan, sluit andere tachograaf-apps en probeer het opnieuw.';
+
+  @override
+  String get tachoFailPairing =>
+      'Het koppelen is niet afgerond. Verwijder de tachograaf in de Bluetooth-instellingen van de telefoon, open op de tachograaf opnieuw Bluetooth → koppelen en kies hem op de telefoon. Probeer het niet meteen opnieuw: lukt het niet, wacht dan een paar minuten.';
+
+  @override
+  String get tachoStepConnect =>
+      'Zodra het Bluetooth-symbool op het scherm van de tachograaf verschijnt, tik op de knop hieronder en kies de tachograaf.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'De telefoon is nog niet gekoppeld met de tachograaf. Open op de tachograaf Bluetooth → koppelen, kies daarna de tachograaf in de Bluetooth-instellingen van de telefoon en bevestig de 6 cijfers op beide. Kom dan hier terug.';
+
+  @override
+  String get tachoOpenBluetooth => 'Bluetooth-instellingen';
+
+  @override
+  String get tachoLinkTitle => 'Activiteit van de tachograaf';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: wissel de activiteit op de tachograaf — de app volgt vanzelf.';
+  }
+
+  @override
+  String get tachoCardRead => 'Kaart uitlezen';
+
+  @override
+  String get tachoCardConfirmTitle => 'Kaart uitlezen via de tachograaf?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'De tachograaf noteert op de kaart dat die vandaag is uitgelezen en telt de 28 dagen tot de downloadherinnering opnieuw.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Kaart uitlezen… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Haal de kaart er niet uit en raak de tachograaf niet aan tijdens het uitlezen.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Kaart uitgelezen: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'De kaart kan alleen worden uitgelezen bij stilstand, met één bestuurderskaart in de tachograaf en niet rond 00:00 of 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Uitlezen mislukt. De tachograaf heeft het uitlezen mogelijk al op de kaart genoteerd — probeer het later opnieuw.';
 }

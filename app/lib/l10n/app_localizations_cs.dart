@@ -2761,4 +2761,216 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get violationsNote => 'Vysvětlení';
+
+  @override
+  String get tachoTitle => 'Tachograf přes Bluetooth';
+
+  @override
+  String get tachoHint => 'Beta: režim a časy přímo z tachografu';
+
+  @override
+  String get tachoBeta => 'Beta · jen čtení';
+
+  @override
+  String get tachoLead =>
+      'Aplikace čte režim a časy z tachografu Smart 2 (VDO DTCO 4.1a a novější). Nic neukládá a v tachografu nic nemění.';
+
+  @override
+  String get tachoStepCard => 'Vložte kartu řidiče do tachografu.';
+
+  @override
+  String get tachoStepConsent =>
+      'V menu tachografu povolte předávání dat ITS: bez toho se Bluetooth tachografu nezapne.';
+
+  @override
+  String get tachoStepPair =>
+      'Na tachografu otevřete Bluetooth → párování. Pak v nastavení Bluetooth telefonu vyberte tachograf a potvrďte stejných 6 číslic na telefonu i na tachografu.';
+
+  @override
+  String get tachoFind => 'Najít tachograf';
+
+  @override
+  String get tachoSearching => 'Hledáme tachograf poblíž…';
+
+  @override
+  String get tachoSearchHint =>
+      'Tachograf není v seznamu? Otevřete na tachografu menu Bluetooth a začněte připojování.';
+
+  @override
+  String get tachoShowAll => 'Všechna zařízení Bluetooth';
+
+  @override
+  String get tachoUnnamed => 'Bez názvu';
+
+  @override
+  String get tachoStop => 'Zastavit';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Připojujeme k $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Objevilo se 6 číslic? Zkontrolujte, že jsou na telefonu a tachografu stejné, a potvrďte na obou.';
+
+  @override
+  String get tachoWaiting => 'Čekáme na data z tachografu…';
+
+  @override
+  String get tachoNoConsent =>
+      'Tachograf nesdílí data řidiče. Zapněte v jeho menu přenos dat (ITS).';
+
+  @override
+  String get tachoNoDriverData => 'Tachograf zatím neposlal data řidiče.';
+
+  @override
+  String get tachoMoving => 'jede';
+
+  @override
+  String get tachoStanding => 'stojí';
+
+  @override
+  String get tachoModeUnknown => 'Režim neznámý';
+
+  @override
+  String get tachoCoDriver => 'Druhý řidič';
+
+  @override
+  String get tachoCurrentActivity => 'Režim trvá';
+
+  @override
+  String get tachoLeftSection => 'Zbývá';
+
+  @override
+  String get tachoUntilDailyRest => 'Do denního odpočinku';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Do týdenního odpočinku';
+
+  @override
+  String get tachoShiftLeft => 'Řízení ve směně';
+
+  @override
+  String get tachoWeekLeft => 'Řízení v týdnu';
+
+  @override
+  String get tachoNote =>
+      'Čísla jsou z tachografu a obnovují se každých pár sekund. Dokud trvá spojení, režim v deníku TachoGo se přepíná podle tachografu.';
+
+  @override
+  String get tachoDisconnect => 'Odpojit';
+
+  @override
+  String get tachoNoPermission =>
+      'Povolte přístup k zařízením v okolí: bez něj telefon tachograf nenajde.';
+
+  @override
+  String get tachoAllow => 'Povolit';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth je v telefonu vypnutý.';
+
+  @override
+  String get tachoTurnOn => 'Zapnout Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'Na tomto telefonu funguje hledání Bluetooth jen se zapnutou polohou.';
+
+  @override
+  String get tachoUnsupported =>
+      'Tento telefon nepodporuje Bluetooth LE: k tachografu se nepřipojí.';
+
+  @override
+  String get tachoRetry => 'Zkusit znovu';
+
+  @override
+  String get tachoFailScan => 'Hledání se nespustilo.';
+
+  @override
+  String get tachoFailConnect =>
+      'Připojení se nezdařilo. Přibližte se k tachografu a zkuste to znovu.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Toto není tachograf Smart 2. Vyberte jiné zařízení.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Tachograf neodpovídá. Zkontrolujte, že je připojení na tachografu potvrzené a že k němu není připojený jiný telefon.';
+
+  @override
+  String get tachoFailLost => 'Spojení s tachografem se přerušilo.';
+
+  @override
+  String get tachoLogTitle => 'Protokol výměny · vývojářská verze';
+
+  @override
+  String get tachoLogEmpty => 'Zatím prázdné: spusťte hledání tachografu.';
+
+  @override
+  String get tachoLogCopy => 'Kopírovat protokol';
+
+  @override
+  String get tachoLogCopied => 'Protokol zkopírován — vložte ho do zprávy.';
+
+  @override
+  String get tachoFailRefused =>
+      'Tachograf nepouští telefon k datům. Při stání zkontrolujte v menu tachografu, že je zapnutý Bluetooth a přenos dat (ITS), zavřete jiné aplikace pro tachograf a zkuste to znovu.';
+
+  @override
+  String get tachoFailPairing =>
+      'Párování se nedokončilo. V nastavení Bluetooth telefonu odeberte tachograf, na tachografu znovu otevřete Bluetooth → párování a vyberte tachograf v telefonu. Nezkoušejte to hned znovu: když to nevyjde, počkejte pár minut.';
+
+  @override
+  String get tachoStepConnect =>
+      'Až se na displeji tachografu objeví symbol Bluetooth, klepněte na tlačítko níže a vyberte tachograf.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Telefon zatím není spárovaný s tachografem. Na tachografu otevřete Bluetooth → párování, pak v nastavení Bluetooth telefonu vyberte tachograf a potvrďte 6 číslic na obou. Potom se sem vraťte.';
+
+  @override
+  String get tachoOpenBluetooth => 'Nastavení Bluetooth';
+
+  @override
+  String get tachoLinkTitle => 'Režim z tachografu';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: režim měňte na tachografu — aplikace se přepne sama.';
+  }
+
+  @override
+  String get tachoCardRead => 'Načíst kartu';
+
+  @override
+  String get tachoCardConfirmTitle => 'Načíst kartu přes tachograf?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Tachograf si na kartu zapíše, že byla dnes načtena, a začne znovu počítat 28 dní do připomínky stažení.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Načítáme kartu… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Během načítání kartu nevytahujte a na tachograf nesahejte.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Karta načtena: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Kartu lze načíst jen na stání, s jednou kartou řidiče v tachografu a ne kolem 00:00 a 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Načtení se nezdařilo. Tachograf už možná načtení zapsal na kartu — zkuste to později.';
 }

@@ -2768,4 +2768,218 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get violationsNote => 'Wyjaśnienie';
+
+  @override
+  String get tachoTitle => 'Tachograf przez Bluetooth';
+
+  @override
+  String get tachoHint => 'Beta: tryb i czas prosto z tachografu';
+
+  @override
+  String get tachoBeta => 'Beta · tylko odczyt';
+
+  @override
+  String get tachoLead =>
+      'Aplikacja odczytuje tryb i czas z tachografu Smart 2 (VDO DTCO 4.1a i nowsze). Niczego nie zapisuje i niczego nie zmienia w tachografie.';
+
+  @override
+  String get tachoStepCard => 'Włóż kartę kierowcy do tachografu.';
+
+  @override
+  String get tachoStepConsent =>
+      'W menu tachografu zezwól na przekazywanie danych ITS: bez tego Bluetooth tachografu się nie włączy.';
+
+  @override
+  String get tachoStepPair =>
+      'Na tachografie otwórz Bluetooth → parowanie. Następnie w ustawieniach Bluetooth telefonu wybierz tachograf i potwierdź te same 6 cyfr na telefonie i tachografie.';
+
+  @override
+  String get tachoFind => 'Znajdź tachograf';
+
+  @override
+  String get tachoSearching => 'Szukamy tachografu w pobliżu…';
+
+  @override
+  String get tachoSearchHint =>
+      'Nie ma tachografu na liście? Otwórz w tachografie menu Bluetooth i rozpocznij łączenie.';
+
+  @override
+  String get tachoShowAll => 'Wszystkie urządzenia Bluetooth';
+
+  @override
+  String get tachoUnnamed => 'Bez nazwy';
+
+  @override
+  String get tachoStop => 'Zatrzymaj';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Łączymy z $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Pojawiło się 6 cyfr? Sprawdź, czy na telefonie i tachografie są takie same, i potwierdź na obu.';
+
+  @override
+  String get tachoWaiting => 'Czekamy na dane z tachografu…';
+
+  @override
+  String get tachoNoConsent =>
+      'Tachograf nie udostępnia danych kierowcy. Włącz w jego menu przesyłanie danych (ITS).';
+
+  @override
+  String get tachoNoDriverData =>
+      'Tachograf nie przysłał jeszcze danych kierowcy.';
+
+  @override
+  String get tachoMoving => 'jedzie';
+
+  @override
+  String get tachoStanding => 'stoi';
+
+  @override
+  String get tachoModeUnknown => 'Tryb nieznany';
+
+  @override
+  String get tachoCoDriver => 'Drugi kierowca';
+
+  @override
+  String get tachoCurrentActivity => 'Tryb trwa';
+
+  @override
+  String get tachoLeftSection => 'Pozostało';
+
+  @override
+  String get tachoUntilDailyRest => 'Do odpoczynku dobowego';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Do odpoczynku tygodniowego';
+
+  @override
+  String get tachoShiftLeft => 'Jazdy w zmianie';
+
+  @override
+  String get tachoWeekLeft => 'Jazdy w tygodniu';
+
+  @override
+  String get tachoNote =>
+      'Liczby pochodzą z tachografu i odświeżają się co kilka sekund. Dopóki jest połączenie, tryb w dzienniku TachoGo przełącza się według tachografu.';
+
+  @override
+  String get tachoDisconnect => 'Rozłącz';
+
+  @override
+  String get tachoNoPermission =>
+      'Zezwól na dostęp do urządzeń w pobliżu: bez tego telefon nie znajdzie tachografu.';
+
+  @override
+  String get tachoAllow => 'Zezwól';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth w telefonie jest wyłączony.';
+
+  @override
+  String get tachoTurnOn => 'Włącz Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'Na tym telefonie wyszukiwanie Bluetooth działa tylko z włączoną lokalizacją.';
+
+  @override
+  String get tachoUnsupported =>
+      'Ten telefon nie obsługuje Bluetooth LE: połączenie z tachografem nie jest możliwe.';
+
+  @override
+  String get tachoRetry => 'Spróbuj ponownie';
+
+  @override
+  String get tachoFailScan => 'Nie udało się rozpocząć wyszukiwania.';
+
+  @override
+  String get tachoFailConnect =>
+      'Nie udało się połączyć. Podejdź bliżej tachografu i spróbuj ponownie.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'To nie jest tachograf Smart 2. Wybierz inne urządzenie.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Tachograf nie odpowiada. Sprawdź, czy połączenie jest potwierdzone na tachografie i czy nie jest z nim połączony inny telefon.';
+
+  @override
+  String get tachoFailLost => 'Połączenie z tachografem zostało przerwane.';
+
+  @override
+  String get tachoLogTitle => 'Dziennik wymiany · wersja deweloperska';
+
+  @override
+  String get tachoLogEmpty =>
+      'Na razie pusto: rozpocznij wyszukiwanie tachografu.';
+
+  @override
+  String get tachoLogCopy => 'Kopiuj dziennik';
+
+  @override
+  String get tachoLogCopied => 'Dziennik skopiowany — wklej go do wiadomości.';
+
+  @override
+  String get tachoFailRefused =>
+      'Tachograf nie dopuszcza telefonu do danych. Na postoju sprawdź w menu tachografu, czy włączone są Bluetooth i przesyłanie danych (ITS), zamknij inne aplikacje do tachografu i spróbuj ponownie.';
+
+  @override
+  String get tachoFailPairing =>
+      'Parowanie się nie zakończyło. W ustawieniach Bluetooth telefonu usuń tachograf, na tachografie ponownie otwórz Bluetooth → parowanie i wybierz tachograf na telefonie. Nie ponawiaj od razu: jeśli się nie uda, odczekaj kilka minut.';
+
+  @override
+  String get tachoStepConnect =>
+      'Gdy na ekranie tachografu pojawi się ikona Bluetooth, naciśnij przycisk poniżej i wybierz tachograf.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Telefon nie jest jeszcze sparowany z tachografem. Na tachografie otwórz Bluetooth → parowanie, potem w ustawieniach Bluetooth telefonu wybierz tachograf i potwierdź 6 cyfr na obu. Następnie wróć tutaj.';
+
+  @override
+  String get tachoOpenBluetooth => 'Ustawienia Bluetooth';
+
+  @override
+  String get tachoLinkTitle => 'Tryb z tachografu';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: zmieniaj tryb na tachografie — aplikacja przełączy się sama.';
+  }
+
+  @override
+  String get tachoCardRead => 'Odczytaj kartę';
+
+  @override
+  String get tachoCardConfirmTitle => 'Odczytać kartę przez tachograf?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Tachograf zapisze na karcie, że odczytano ją dzisiaj, i zacznie od nowa liczyć 28 dni do przypomnienia o odczycie.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Odczyt karty… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Nie wyjmuj karty i nie dotykaj tachografu podczas odczytu.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Karta odczytana: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Kartę można odczytać tylko na postoju, gdy w tachografie jest jedna karta kierowcy, i nie około 00:00 i 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Nie udało się odczytać. Tachograf mógł już zapisać odczyt na karcie — spróbuj później.';
 }

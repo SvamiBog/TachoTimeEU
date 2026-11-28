@@ -2757,4 +2757,220 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get violationsNote => 'Explicație';
+
+  @override
+  String get tachoTitle => 'Tahograf prin Bluetooth';
+
+  @override
+  String get tachoHint => 'Beta: activitatea și timpul direct din tahograf';
+
+  @override
+  String get tachoBeta => 'Beta · doar citire';
+
+  @override
+  String get tachoLead =>
+      'Aplicația citește activitatea și timpul din tahograful Smart 2 (VDO DTCO 4.1a și mai noi). Nu salvează nimic și nu schimbă nimic în tahograf.';
+
+  @override
+  String get tachoStepCard =>
+      'Introduceți cardul conducătorului auto în tahograf.';
+
+  @override
+  String get tachoStepConsent =>
+      'În meniul tahografului permiteți transmiterea datelor ITS: fără asta, Bluetooth-ul tahografului nu pornește.';
+
+  @override
+  String get tachoStepPair =>
+      'Pe tahograf deschideți Bluetooth → asociere. Apoi, în setările Bluetooth ale telefonului, alegeți tahograful și confirmați aceleași 6 cifre pe telefon și pe tahograf.';
+
+  @override
+  String get tachoFind => 'Caută tahograful';
+
+  @override
+  String get tachoSearching => 'Căutăm tahograful din apropiere…';
+
+  @override
+  String get tachoSearchHint =>
+      'Tahograful nu e în listă? Deschideți pe tahograf meniul Bluetooth și începeți conectarea.';
+
+  @override
+  String get tachoShowAll => 'Toate dispozitivele Bluetooth';
+
+  @override
+  String get tachoUnnamed => 'Fără nume';
+
+  @override
+  String get tachoStop => 'Oprește';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Ne conectăm la $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Au apărut 6 cifre? Verificați că pe telefon și pe tahograf sunt aceleași și confirmați pe ambele.';
+
+  @override
+  String get tachoWaiting => 'Așteptăm datele din tahograf…';
+
+  @override
+  String get tachoNoConsent =>
+      'Tahograful nu transmite datele conducătorului. Activați în meniul lui transmiterea datelor (ITS).';
+
+  @override
+  String get tachoNoDriverData =>
+      'Tahograful nu a trimis încă datele conducătorului.';
+
+  @override
+  String get tachoMoving => 'în mers';
+
+  @override
+  String get tachoStanding => 'oprit';
+
+  @override
+  String get tachoModeUnknown => 'Activitate necunoscută';
+
+  @override
+  String get tachoCoDriver => 'Al doilea conducător';
+
+  @override
+  String get tachoCurrentActivity => 'Activitatea durează';
+
+  @override
+  String get tachoLeftSection => 'Rămas';
+
+  @override
+  String get tachoUntilDailyRest => 'Până la repausul zilnic';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Până la repausul săptămânal';
+
+  @override
+  String get tachoShiftLeft => 'Conducere în tură';
+
+  @override
+  String get tachoWeekLeft => 'Conducere în săptămână';
+
+  @override
+  String get tachoNote =>
+      'Cifrele vin de la tahograf și se actualizează la câteva secunde. Cât timp există conexiune, modul din jurnalul TachoGo se schimbă după tahograf.';
+
+  @override
+  String get tachoDisconnect => 'Deconectează';
+
+  @override
+  String get tachoNoPermission =>
+      'Permiteți accesul la dispozitivele din apropiere: fără el telefonul nu găsește tahograful.';
+
+  @override
+  String get tachoAllow => 'Permite';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth este oprit pe telefon.';
+
+  @override
+  String get tachoTurnOn => 'Activează Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'Pe acest telefon căutarea Bluetooth funcționează doar cu locația activată.';
+
+  @override
+  String get tachoUnsupported =>
+      'Acest telefon nu suportă Bluetooth LE: conectarea la tahograf nu este posibilă.';
+
+  @override
+  String get tachoRetry => 'Încearcă din nou';
+
+  @override
+  String get tachoFailScan => 'Căutarea nu a pornit.';
+
+  @override
+  String get tachoFailConnect =>
+      'Conectarea nu a reușit. Apropiați-vă de tahograf și încercați din nou.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Acesta nu este un tahograf Smart 2. Alegeți alt dispozitiv.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Tahograful nu răspunde. Verificați că ați confirmat conectarea pe tahograf și că nu e conectat alt telefon.';
+
+  @override
+  String get tachoFailLost => 'Legătura cu tahograful s-a întrerupt.';
+
+  @override
+  String get tachoLogTitle => 'Jurnal de schimb · versiune de dezvoltare';
+
+  @override
+  String get tachoLogEmpty =>
+      'Deocamdată e gol: porniți căutarea tahografului.';
+
+  @override
+  String get tachoLogCopy => 'Copiați jurnalul';
+
+  @override
+  String get tachoLogCopied =>
+      'Jurnalul a fost copiat — lipiți-l într-un mesaj.';
+
+  @override
+  String get tachoFailRefused =>
+      'Tahograful nu lasă telefonul să citească datele. În parcare, verificați în meniul tahografului că sunt activate Bluetooth și transmiterea datelor (ITS), închideți alte aplicații pentru tahograf și încercați din nou.';
+
+  @override
+  String get tachoFailPairing =>
+      'Asocierea nu s-a încheiat. În setările Bluetooth ale telefonului ștergeți tahograful, pe tahograf deschideți din nou Bluetooth → asociere și alegeți tahograful pe telefon. Nu repetați imediat: dacă nu merge, așteptați câteva minute.';
+
+  @override
+  String get tachoStepConnect =>
+      'Când pe ecranul tahografului apare simbolul Bluetooth, apăsați butonul de mai jos și alegeți tahograful.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Telefonul nu este încă asociat cu tahograful. Pe tahograf deschideți Bluetooth → asociere, apoi în setările Bluetooth ale telefonului alegeți tahograful și confirmați cele 6 cifre pe ambele. După aceea reveniți aici.';
+
+  @override
+  String get tachoOpenBluetooth => 'Setări Bluetooth';
+
+  @override
+  String get tachoLinkTitle => 'Modul — de la tahograf';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: schimbați modul pe tahograf — aplicația se va comuta singură.';
+  }
+
+  @override
+  String get tachoCardRead => 'Citește cardul';
+
+  @override
+  String get tachoCardConfirmTitle => 'Citiți cardul prin tahograf?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Tahograful va nota pe card că a fost citit azi și va începe din nou să numere 28 de zile până la memento-ul de citire.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Citim cardul… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Nu scoateți cardul și nu atingeți tahograful cât timp durează citirea.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Card citit: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Cardul se poate citi doar în staționare, cu un singur card de șofer în tahograf și nu în jurul orelor 00:00 și 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Citirea a eșuat. Este posibil ca tahograful să fi notat deja citirea pe card — încercați mai târziu.';
 }

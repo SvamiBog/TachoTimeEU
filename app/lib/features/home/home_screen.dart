@@ -22,6 +22,7 @@ import 'package:tachogo/features/home/snapshot_select.dart';
 import 'package:tachogo/features/home/today_section.dart';
 import 'package:tachogo/features/home/week_section.dart';
 import 'package:tachogo/features/settings/base_country.dart';
+import 'package:tachogo/features/tachograph/tachograph_link_tile.dart';
 
 /// Whether the calculation is loading, ready or failed.
 enum _Load { loading, ready, failed }
@@ -55,6 +56,7 @@ class HomeScreen extends ConsumerWidget {
               HomeHeader(),
               HeroCard(),
               ModeButtons(),
+              TachographLinkTile(),
               BaseCountryCard(),
               BanCard(),
               AlertsSection(),

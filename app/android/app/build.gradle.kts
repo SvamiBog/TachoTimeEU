@@ -17,7 +17,10 @@ android {
     // Идентификатор закреплён за приложением в Google Play с первой загрузкой —
     // не менять (вопрос 14 PRD, решение 2026-09-30).
     namespace = "eu.tachogo.app"
-    compileSdk = flutter.compileSdkVersion
+    // 37, а не flutter.compileSdkVersion (36): плагин Bluetooth reactive_ble_mobile 5.6
+    // собран под 37 и иначе не пускает сборку (checkDebugAarMetadata). Это только
+    // API для компиляции, поведение на телефонах задаёт targetSdk — он прежний.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -33,6 +36,8 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Имя под значком; у тестовой APK — своё (buildTypes.debug).
+        manifestPlaceholders["appLabel"] = "TachoGo"
     }
 
     signingConfigs {
@@ -62,6 +67,17 @@ android {
     }
 
     buildTypes {
+        // Тестовая APK для телефона (CI, шаг «Debug APK (dev)»,
+        // TACHOGO_SIDE_BY_SIDE=true) — отдельное приложение «TachoGo Dev»
+        // с пакетом eu.tachogo.app.dev: ставится рядом с версией из Google
+        // Play, а не пытается её обновить. Без переменной пакет обычный:
+        // тесты на эмуляторе и «Обновление поверх» ставят eu.tachogo.app.
+        debug {
+            if (System.getenv("TACHOGO_SIDE_BY_SIDE") == "true") {
+                applicationIdSuffix = ".dev"
+                manifestPlaceholders["appLabel"] = "TachoGo Dev"
+            }
+        }
         release {
             signingConfig = signingConfigs.findByName("release")
                 ?: signingConfigs.getByName("debug").also {
@@ -86,6 +102,10 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+
+    // Обработчик ошибок RxJava для flutter_reactive_ble (CrashGuard, BT-18):
+    // библиотека уже в приложении через плагин, здесь — только для сборки
+    compileOnly("io.reactivex.rxjava2:rxjava:2.2.21")
 
     // Тесты нативной части на JVM (BG-09): ./gradlew :app:testDebugUnitTest
     testImplementation("junit:junit:4.13.2")

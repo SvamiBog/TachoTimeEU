@@ -2734,4 +2734,217 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get violationsNote => 'განმარტება';
+
+  @override
+  String get tachoTitle => 'ტაქოგრაფი Bluetooth-ით';
+
+  @override
+  String get tachoHint => 'ბეტა: რეჟიმი და დრო პირდაპირ ტაქოგრაფიდან';
+
+  @override
+  String get tachoBeta => 'ბეტა · მხოლოდ წაკითხვა';
+
+  @override
+  String get tachoLead =>
+      'აპლიკაცია კითხულობს რეჟიმსა და დროს Smart 2 ტაქოგრაფიდან (VDO DTCO 4.1a და უფრო ახალი). არაფერს ინახავს და არაფერს ცვლის ტაქოგრაფში.';
+
+  @override
+  String get tachoStepCard => 'ჩადეთ მძღოლის ბარათი ტაქოგრაფში.';
+
+  @override
+  String get tachoStepConsent =>
+      'ტაქოგრაფის მენიუში დაუშვით ITS მონაცემების გადაცემა: ამის გარეშე ტაქოგრაფის Bluetooth არ ჩაირთვება.';
+
+  @override
+  String get tachoStepPair =>
+      'ტაქოგრაფზე გახსენით Bluetooth → დაწყვილება. შემდეგ ტელეფონის Bluetooth-ის პარამეტრებში აირჩიეთ ტაქოგრაფი და დაადასტურეთ ერთნაირი 6 ციფრი ტელეფონზეც და ტაქოგრაფზეც.';
+
+  @override
+  String get tachoFind => 'ტაქოგრაფის პოვნა';
+
+  @override
+  String get tachoSearching => 'ვეძებთ ახლომდებარე ტაქოგრაფს…';
+
+  @override
+  String get tachoSearchHint =>
+      'ტაქოგრაფი სიაში არ არის? გახსენით ტაქოგრაფზე Bluetooth-ის მენიუ და დაიწყეთ დაკავშირება.';
+
+  @override
+  String get tachoShowAll => 'ყველა Bluetooth მოწყობილობა';
+
+  @override
+  String get tachoUnnamed => 'უსახელო';
+
+  @override
+  String get tachoStop => 'შეჩერება';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'ვუკავშირდებით: $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'გამოჩნდა 6 ციფრი? შეამოწმეთ, რომ ტელეფონზე და ტაქოგრაფზე ერთნაირია, და დაადასტურეთ ორივეზე.';
+
+  @override
+  String get tachoWaiting => 'ველოდებით მონაცემებს ტაქოგრაფიდან…';
+
+  @override
+  String get tachoNoConsent =>
+      'ტაქოგრაფი მძღოლის მონაცემებს არ გადასცემს. ჩართეთ მის მენიუში მონაცემების გადაცემა (ITS).';
+
+  @override
+  String get tachoNoDriverData =>
+      'ტაქოგრაფს მძღოლის მონაცემები ჯერ არ გამოუგზავნია.';
+
+  @override
+  String get tachoMoving => 'მოძრაობს';
+
+  @override
+  String get tachoStanding => 'დგას';
+
+  @override
+  String get tachoModeUnknown => 'რეჟიმი უცნობია';
+
+  @override
+  String get tachoCoDriver => 'მეორე მძღოლი';
+
+  @override
+  String get tachoCurrentActivity => 'რეჟიმი გრძელდება';
+
+  @override
+  String get tachoLeftSection => 'დარჩა';
+
+  @override
+  String get tachoUntilDailyRest => 'დღიურ დასვენებამდე';
+
+  @override
+  String get tachoUntilWeeklyRest => 'კვირეულ დასვენებამდე';
+
+  @override
+  String get tachoShiftLeft => 'მართვა ცვლაში';
+
+  @override
+  String get tachoWeekLeft => 'მართვა კვირაში';
+
+  @override
+  String get tachoNote =>
+      'ციფრები ტაქოგრაფიდანაა და ყოველ რამდენიმე წამში ახლდება. სანამ კავშირი არის, TachoGo-ს ჟურნალში რეჟიმი ტაქოგრაფის მიხედვით იცვლება.';
+
+  @override
+  String get tachoDisconnect => 'გათიშვა';
+
+  @override
+  String get tachoNoPermission =>
+      'დაუშვით ახლომდებარე მოწყობილობებზე წვდომა: მის გარეშე ტელეფონი ტაქოგრაფს ვერ იპოვის.';
+
+  @override
+  String get tachoAllow => 'დაშვება';
+
+  @override
+  String get tachoBluetoothOff => 'ტელეფონზე Bluetooth გამორთულია.';
+
+  @override
+  String get tachoTurnOn => 'Bluetooth-ის ჩართვა';
+
+  @override
+  String get tachoLocationOff =>
+      'ამ ტელეფონზე Bluetooth-ის ძებნა მხოლოდ ჩართული მდებარეობით მუშაობს.';
+
+  @override
+  String get tachoUnsupported =>
+      'ეს ტელეფონი Bluetooth LE-ს არ უჭერს მხარს: ტაქოგრაფთან დაკავშირება ვერ მოხერხდება.';
+
+  @override
+  String get tachoRetry => 'ხელახლა ცდა';
+
+  @override
+  String get tachoFailScan => 'ძებნა ვერ დაიწყო.';
+
+  @override
+  String get tachoFailConnect =>
+      'დაკავშირება ვერ მოხერხდა. მიუახლოვდით ტაქოგრაფს და სცადეთ ხელახლა.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'ეს არ არის Smart 2 ტაქოგრაფი. აირჩიეთ სხვა მოწყობილობა.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'ტაქოგრაფი არ პასუხობს. შეამოწმეთ, რომ დაკავშირება ტაქოგრაფზე დადასტურებულია და მას სხვა ტელეფონი არ უკავშირდება.';
+
+  @override
+  String get tachoFailLost => 'ტაქოგრაფთან კავშირი გაწყდა.';
+
+  @override
+  String get tachoLogTitle => 'გაცვლის ჟურნალი · დეველოპერის ვერსია';
+
+  @override
+  String get tachoLogEmpty => 'ჯერ ცარიელია: დაიწყეთ ტაქოგრაფის ძებნა.';
+
+  @override
+  String get tachoLogCopy => 'ჟურნალის კოპირება';
+
+  @override
+  String get tachoLogCopied => 'ჟურნალი დაკოპირდა — ჩასვით შეტყობინებაში.';
+
+  @override
+  String get tachoFailRefused =>
+      'ტაქოგრაფი ტელეფონს მონაცემებთან არ უშვებს. გაჩერებისას შეამოწმეთ ტაქოგრაფის მენიუში, რომ ჩართულია Bluetooth და მონაცემების გადაცემა (ITS), დახურეთ ტაქოგრაფის სხვა აპები და სცადეთ ხელახლა.';
+
+  @override
+  String get tachoFailPairing =>
+      'დაწყვილება არ დასრულდა. ტელეფონის Bluetooth-ის პარამეტრებში წაშალეთ ტაქოგრაფი, ტაქოგრაფზე ისევ გახსენით Bluetooth → დაწყვილება და აირჩიეთ ტაქოგრაფი ტელეფონზე. ზედიზედ ნუ გაიმეორებთ: თუ არ გამოვიდა, დაელოდეთ რამდენიმე წუთს.';
+
+  @override
+  String get tachoStepConnect =>
+      'როცა ტაქოგრაფის ეკრანზე Bluetooth-ის ნიშანი გამოჩნდება, დააჭირეთ ქვემოთ ღილაკს და აირჩიეთ ტაქოგრაფი.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'ტელეფონი ჯერ არ არის დაწყვილებული ტაქოგრაფთან. ტაქოგრაფზე გახსენით Bluetooth → დაწყვილება, შემდეგ ტელეფონის Bluetooth-ის პარამეტრებში აირჩიეთ ტაქოგრაფი და დაადასტურეთ 6 ციფრი ორივეზე. ამის შემდეგ დაბრუნდით აქ.';
+
+  @override
+  String get tachoOpenBluetooth => 'Bluetooth-ის პარამეტრები';
+
+  @override
+  String get tachoLinkTitle => 'რეჟიმი — ტაქოგრაფიდან';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: რეჟიმი ტაქოგრაფზე შეცვალეთ — აპი თავად გადაერთვება.';
+  }
+
+  @override
+  String get tachoCardRead => 'ბარათის წაკითხვა';
+
+  @override
+  String get tachoCardConfirmTitle => 'წავიკითხოთ ბარათი ტაქოგრაფით?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'ტაქოგრაფი ბარათზე მონიშნავს, რომ ის დღეს წაიკითხეს, და წაკითხვის შეხსენებამდე 28 დღის თვლას თავიდან დაიწყებს.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'ბარათს ვკითხულობთ… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'წაკითხვის დროს ბარათი არ ამოიღოთ და ტაქოგრაფს არ შეეხოთ.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'ბარათი წაკითხულია: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'ბარათის წაკითხვა შეიძლება მხოლოდ დგომისას, როცა ტაქოგრაფში მძღოლის ერთი ბარათია, და არა 00:00-სა და 12:00 UTC-ის ახლოს.';
+
+  @override
+  String get tachoCardFailed =>
+      'წაკითხვა ვერ მოხერხდა. ტაქოგრაფმა შეიძლება უკვე მონიშნა წაკითხვა ბარათზე — სცადეთ მოგვიანებით.';
 }

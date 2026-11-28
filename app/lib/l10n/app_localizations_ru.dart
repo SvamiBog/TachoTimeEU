@@ -2760,4 +2760,216 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get violationsNote => 'Пояснение';
+
+  @override
+  String get tachoTitle => 'Тахограф по Bluetooth';
+
+  @override
+  String get tachoHint => 'Бета: режим и время прямо с тахографа';
+
+  @override
+  String get tachoBeta => 'Бета · только чтение';
+
+  @override
+  String get tachoLead =>
+      'Приложение читает режим и время с тахографа Smart 2 (VDO DTCO 4.1a и новее). Ничего не сохраняет и ничего не меняет в тахографе.';
+
+  @override
+  String get tachoStepCard => 'Вставьте карту водителя в тахограф.';
+
+  @override
+  String get tachoStepConsent =>
+      'В меню тахографа разрешите передачу данных ITS: без этого Bluetooth тахографа не включится.';
+
+  @override
+  String get tachoStepPair =>
+      'На тахографе откройте Bluetooth → сопряжение. Затем в настройках Bluetooth телефона выберите тахограф и подтвердите одинаковые 6 цифр на телефоне и на тахографе.';
+
+  @override
+  String get tachoFind => 'Найти тахограф';
+
+  @override
+  String get tachoSearching => 'Ищем тахограф рядом…';
+
+  @override
+  String get tachoSearchHint =>
+      'Тахографа нет в списке? Откройте на тахографе меню Bluetooth и начните подключение.';
+
+  @override
+  String get tachoShowAll => 'Все устройства Bluetooth';
+
+  @override
+  String get tachoUnnamed => 'Без имени';
+
+  @override
+  String get tachoStop => 'Остановить';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Подключаемся к $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Появились 6 цифр? Проверьте, что на телефоне и тахографе они одинаковые, и подтвердите на обоих.';
+
+  @override
+  String get tachoWaiting => 'Ждём данные с тахографа…';
+
+  @override
+  String get tachoNoConsent =>
+      'Тахограф не отдаёт данные водителя. Включите в его меню передачу данных (ITS).';
+
+  @override
+  String get tachoNoDriverData => 'Тахограф пока не прислал данные водителя.';
+
+  @override
+  String get tachoMoving => 'едет';
+
+  @override
+  String get tachoStanding => 'стоит';
+
+  @override
+  String get tachoModeUnknown => 'Режим неизвестен';
+
+  @override
+  String get tachoCoDriver => 'Второй водитель';
+
+  @override
+  String get tachoCurrentActivity => 'Режим идёт';
+
+  @override
+  String get tachoLeftSection => 'Осталось';
+
+  @override
+  String get tachoUntilDailyRest => 'До суточного отдыха';
+
+  @override
+  String get tachoUntilWeeklyRest => 'До недельного отдыха';
+
+  @override
+  String get tachoShiftLeft => 'Вождения в смене';
+
+  @override
+  String get tachoWeekLeft => 'Вождения на неделе';
+
+  @override
+  String get tachoNote =>
+      'Цифры — с тахографа, обновляются каждые несколько секунд. Пока связь есть, режим в журнале TachoGo переключается по тахографу.';
+
+  @override
+  String get tachoDisconnect => 'Отключить';
+
+  @override
+  String get tachoNoPermission =>
+      'Разрешите доступ к устройствам поблизости: без него телефон не найдёт тахограф.';
+
+  @override
+  String get tachoAllow => 'Разрешить';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth на телефоне выключен.';
+
+  @override
+  String get tachoTurnOn => 'Включить Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'На этом телефоне поиск Bluetooth работает только с включённой геолокацией.';
+
+  @override
+  String get tachoUnsupported =>
+      'Этот телефон не поддерживает Bluetooth LE: подключиться к тахографу не получится.';
+
+  @override
+  String get tachoRetry => 'Попробовать снова';
+
+  @override
+  String get tachoFailScan => 'Поиск не запустился.';
+
+  @override
+  String get tachoFailConnect =>
+      'Не удалось подключиться. Подойдите ближе к тахографу и попробуйте снова.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Это не тахограф Smart 2. Выберите другое устройство.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Тахограф не отвечает. Проверьте, что подключение подтверждено на тахографе и к нему не подключён другой телефон.';
+
+  @override
+  String get tachoFailLost => 'Связь с тахографом оборвалась.';
+
+  @override
+  String get tachoLogTitle => 'Журнал обмена · сборка разработчика';
+
+  @override
+  String get tachoLogEmpty => 'Пока пусто: начните поиск тахографа.';
+
+  @override
+  String get tachoLogCopy => 'Скопировать журнал';
+
+  @override
+  String get tachoLogCopied => 'Журнал скопирован — вставьте его в сообщение.';
+
+  @override
+  String get tachoFailRefused =>
+      'Тахограф не пускает телефон к данным. На стоянке проверьте в меню тахографа, что включены Bluetooth и передача данных (ITS), закройте другие приложения для тахографа и попробуйте снова.';
+
+  @override
+  String get tachoFailPairing =>
+      'Сопряжение не завершилось. В настройках Bluetooth телефона удалите тахограф, на тахографе снова откройте Bluetooth → сопряжение и выберите тахограф на телефоне. Не повторяйте подряд: не вышло — подождите несколько минут.';
+
+  @override
+  String get tachoStepConnect =>
+      'Когда на экране тахографа появится значок Bluetooth, нажмите кнопку ниже и выберите тахограф.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Телефон ещё не сопряжён с тахографом. На тахографе откройте Bluetooth → сопряжение, затем в настройках Bluetooth телефона выберите тахограф и подтвердите 6 цифр на обоих. Потом вернитесь сюда.';
+
+  @override
+  String get tachoOpenBluetooth => 'Настройки Bluetooth';
+
+  @override
+  String get tachoLinkTitle => 'Режим — с тахографа';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: меняйте режим на тахографе — приложение переключится само.';
+  }
+
+  @override
+  String get tachoCardRead => 'Считать карту';
+
+  @override
+  String get tachoCardConfirmTitle => 'Считать карту через тахограф?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Тахограф отметит на карте, что её считали сегодня, и начнёт заново считать 28 дней до напоминания о считывании.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Считываем карту… $kb КБ';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Не вынимайте карту и не трогайте тахограф, пока идёт считывание.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Карта считана: $kb КБ.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Считать карту можно только на стоянке, когда в тахографе одна карта водителя, и не около 00:00 и 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Считать не удалось. Тахограф мог уже отметить считывание на карте — повторите позже.';
 }

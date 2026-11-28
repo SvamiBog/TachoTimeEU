@@ -20,15 +20,18 @@ import 'package:tachogo/features/more/about_screen.dart';
 import 'package:tachogo/features/more/problem_report.dart';
 import 'package:tachogo/features/more/transfer_sheet.dart';
 import 'package:tachogo/features/more/working_days_screen.dart';
+import 'package:tachogo/features/tachograph/tachograph_screen.dart';
 import 'package:tachogo/features/violations/violations_screen.dart';
+import 'package:tachogo/tachograph/tachograph_providers.dart';
 
 /// "More" (screen 4): driving bans, the infringements of the last 56 days with
 /// the driver's explanations, report export, working days for pay,
 /// moving the journal to another phone, guide and rules, about (with the
 /// licenses), the privacy policy (Google Play requires the link inside the app
-/// too, `docs/store/play-audit.md`) and the terms of use. In the beta — "Report a problem" (Phase
-/// 4). The Premium banner comes with purchases (Phase 5), the account with sync
-/// (Phase 6), feedback and "Share" with the release (Phase 7).
+/// too, `docs/store/play-audit.md`) and the terms of use. In the beta —
+/// "Report a problem" (Phase 4) and "Tachograph over Bluetooth" (read only,
+/// Android). The Premium banner comes with purchases (Phase 5), the account
+/// with sync (Phase 6), feedback and "Share" with the release (Phase 7).
 class MoreScreen extends ConsumerWidget {
   const new({super.key});
 
@@ -36,6 +39,7 @@ class MoreScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final problemReport = ref.watch(problemReportEnabledProvider);
+    final tachograph = ref.watch(tachographEnabledProvider);
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -55,6 +59,19 @@ class MoreScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.betweenCardsMax),
             const _JournalTools(),
+            if (tachograph) ...[
+              const SizedBox(height: AppSpacing.betweenCardsMax),
+              CardGroup(
+                children: [
+                  NavRow(
+                    icon: Icons.bluetooth,
+                    title: l.tachoTitle,
+                    subtitle: l.tachoHint,
+                    onTap: () => openTachograph(context),
+                  ),
+                ],
+              ),
+            ],
             if (problemReport) ...[
               const SizedBox(height: AppSpacing.betweenCardsMax),
               CardGroup(

@@ -2748,4 +2748,217 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get violationsNote => 'Izoh';
+
+  @override
+  String get tachoTitle => 'Taxograf Bluetooth orqali';
+
+  @override
+  String get tachoHint => 'Beta: rejim va vaqt toʻgʻridan-toʻgʻri taxografdan';
+
+  @override
+  String get tachoBeta => 'Beta · faqat oʻqish';
+
+  @override
+  String get tachoLead =>
+      'Ilova Smart 2 taxografidan (VDO DTCO 4.1a va yangilari) rejim va vaqtni oʻqiydi. Hech narsani saqlamaydi va taxografda hech narsani oʻzgartirmaydi.';
+
+  @override
+  String get tachoStepCard => 'Haydovchi kartasini taxografga qoʻying.';
+
+  @override
+  String get tachoStepConsent =>
+      'Taxograf menyusida ITS maʼlumotlarini uzatishga ruxsat bering: busiz taxografning Bluetooth funksiyasi yoqilmaydi.';
+
+  @override
+  String get tachoStepPair =>
+      'Taxografda Bluetooth → juftlash boʻlimini oching. Soʻng telefonning Bluetooth sozlamalarida taxografni tanlang va bir xil 6 ta raqamni telefonda ham, taxografda ham tasdiqlang.';
+
+  @override
+  String get tachoFind => 'Taxografni topish';
+
+  @override
+  String get tachoSearching => 'Yaqindagi taxografni qidiryapmiz…';
+
+  @override
+  String get tachoSearchHint =>
+      'Taxograf roʻyxatda yoʻqmi? Taxografda Bluetooth menyusini oching va ulanishni boshlang.';
+
+  @override
+  String get tachoShowAll => 'Barcha Bluetooth qurilmalari';
+
+  @override
+  String get tachoUnnamed => 'Nomsiz';
+
+  @override
+  String get tachoStop => 'Toʻxtatish';
+
+  @override
+  String tachoConnecting(String name) {
+    return '$name ga ulanmoqdamiz…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      '6 ta raqam chiqdimi? Telefon va taxografda bir xil ekanini tekshiring va ikkalasida ham tasdiqlang.';
+
+  @override
+  String get tachoWaiting => 'Taxografdan maʼlumot kutyapmiz…';
+
+  @override
+  String get tachoNoConsent =>
+      'Taxograf haydovchi maʼlumotlarini bermayapti. Uning menyusida maʼlumot uzatishni yoqing (ITS).';
+
+  @override
+  String get tachoNoDriverData =>
+      'Taxograf hali haydovchi maʼlumotlarini yubormadi.';
+
+  @override
+  String get tachoMoving => 'harakatda';
+
+  @override
+  String get tachoStanding => 'turibdi';
+
+  @override
+  String get tachoModeUnknown => 'Rejim nomaʼlum';
+
+  @override
+  String get tachoCoDriver => 'Ikkinchi haydovchi';
+
+  @override
+  String get tachoCurrentActivity => 'Rejim davom etmoqda';
+
+  @override
+  String get tachoLeftSection => 'Qoldi';
+
+  @override
+  String get tachoUntilDailyRest => 'Kunlik dam olishgacha';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Haftalik dam olishgacha';
+
+  @override
+  String get tachoShiftLeft => 'Smenada haydash';
+
+  @override
+  String get tachoWeekLeft => 'Haftada haydash';
+
+  @override
+  String get tachoNote =>
+      'Raqamlar taxografdan olinadi va har bir necha soniyada yangilanadi. Aloqa bor ekan, TachoGo jurnalidagi rejim taxografga qarab almashadi.';
+
+  @override
+  String get tachoDisconnect => 'Uzish';
+
+  @override
+  String get tachoNoPermission =>
+      'Yaqin-atrofdagi qurilmalarga ruxsat bering: busiz telefon taxografni topa olmaydi.';
+
+  @override
+  String get tachoAllow => 'Ruxsat berish';
+
+  @override
+  String get tachoBluetoothOff => 'Telefonda Bluetooth oʻchirilgan.';
+
+  @override
+  String get tachoTurnOn => 'Bluetoothni yoqish';
+
+  @override
+  String get tachoLocationOff =>
+      'Bu telefonda Bluetooth qidiruvi faqat joylashuv yoqilganda ishlaydi.';
+
+  @override
+  String get tachoUnsupported =>
+      'Bu telefon Bluetooth LE ni qoʻllamaydi: taxografga ulanib boʻlmaydi.';
+
+  @override
+  String get tachoRetry => 'Qayta urinish';
+
+  @override
+  String get tachoFailScan => 'Qidiruv boshlanmadi.';
+
+  @override
+  String get tachoFailConnect =>
+      'Ulanib boʻlmadi. Taxografga yaqinroq keling va qayta urinib koʻring.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Bu Smart 2 taxografi emas. Boshqa qurilmani tanlang.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Taxograf javob bermayapti. Ulanish taxografda tasdiqlanganini va unga boshqa telefon ulanmaganini tekshiring.';
+
+  @override
+  String get tachoFailLost => 'Taxograf bilan aloqa uzildi.';
+
+  @override
+  String get tachoLogTitle => 'Almashinuv jurnali · dasturchi versiyasi';
+
+  @override
+  String get tachoLogEmpty => 'Hozircha boʻsh: taxografni qidirishni boshlang.';
+
+  @override
+  String get tachoLogCopy => 'Jurnalni nusxalash';
+
+  @override
+  String get tachoLogCopied => 'Jurnal nusxalandi — uni xabarga qoʻying.';
+
+  @override
+  String get tachoFailRefused =>
+      'Taxograf telefonni maʼlumotlarga kiritmayapti. Toʻxtaganda taxograf menyusida Bluetooth va maʼlumot uzatish (ITS) yoqilganini tekshiring, taxograf uchun boshqa ilovalarni yoping va qayta urinib koʻring.';
+
+  @override
+  String get tachoFailPairing =>
+      'Juftlash tugamadi. Telefonning Bluetooth sozlamalarida taxografni oʻchiring, taxografda yana Bluetooth → juftlash boʻlimini oching va telefonda taxografni tanlang. Ketma-ket takrorlamang: chiqmasa, bir necha daqiqa kuting.';
+
+  @override
+  String get tachoStepConnect =>
+      'Taxograf ekranida Bluetooth belgisi paydo boʻlgach, quyidagi tugmani bosing va taxografni tanlang.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Telefon hali taxograf bilan juftlanmagan. Taxografda Bluetooth → juftlash boʻlimini oching, soʻng telefonning Bluetooth sozlamalarida taxografni tanlang va 6 ta raqamni ikkalasida ham tasdiqlang. Keyin bu yerga qayting.';
+
+  @override
+  String get tachoOpenBluetooth => 'Bluetooth sozlamalari';
+
+  @override
+  String get tachoLinkTitle => 'Rejim — taxografdan';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: rejimni taxografda almashtiring — ilova oʻzi almashadi.';
+  }
+
+  @override
+  String get tachoCardRead => 'Kartani oʻqish';
+
+  @override
+  String get tachoCardConfirmTitle => 'Kartani taxograf orqali oʻqiysizmi?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Taxograf kartaga bugun oʻqilganini belgilaydi va oʻqish eslatmasigacha 28 kunni qaytadan sanay boshlaydi.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Karta oʻqilmoqda… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Oʻqish davomida kartani chiqarmang va taxografga tegmang.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Karta oʻqildi: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Kartani faqat toʻxtab turganda, taxografda bitta haydovchi kartasi boʻlganda va 00:00 hamda 12:00 UTC atrofida emas oʻqish mumkin.';
+
+  @override
+  String get tachoCardFailed =>
+      'Oʻqib boʻlmadi. Taxograf kartaga oʻqishni allaqachon belgilagan boʻlishi mumkin — keyinroq urinib koʻring.';
 }

@@ -2733,4 +2733,219 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get violationsNote => 'Explanation';
+
+  @override
+  String get tachoTitle => 'Tachograph over Bluetooth';
+
+  @override
+  String get tachoHint =>
+      'Beta: activity and times straight from the tachograph';
+
+  @override
+  String get tachoBeta => 'Beta · read only';
+
+  @override
+  String get tachoLead =>
+      'The app reads the activity and times from a Smart 2 tachograph (VDO DTCO 4.1a or newer). It saves nothing and changes nothing in the tachograph.';
+
+  @override
+  String get tachoStepCard => 'Insert the driver card into the tachograph.';
+
+  @override
+  String get tachoStepConsent =>
+      'In the tachograph menu, allow ITS data sharing: without it the tachograph’s Bluetooth stays off.';
+
+  @override
+  String get tachoStepPair =>
+      'On the tachograph, open Bluetooth → pairing. Then pick the tachograph in the phone’s Bluetooth settings and confirm the same 6 digits on the phone and on the tachograph.';
+
+  @override
+  String get tachoFind => 'Find tachograph';
+
+  @override
+  String get tachoSearching => 'Looking for a tachograph nearby…';
+
+  @override
+  String get tachoSearchHint =>
+      'Tachograph not in the list? Open the Bluetooth menu on the tachograph and start connecting.';
+
+  @override
+  String get tachoShowAll => 'All Bluetooth devices';
+
+  @override
+  String get tachoUnnamed => 'No name';
+
+  @override
+  String get tachoStop => 'Stop';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Connecting to $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      'Seeing 6 digits? Check they are the same on the phone and the tachograph, then confirm on both.';
+
+  @override
+  String get tachoWaiting => 'Waiting for data from the tachograph…';
+
+  @override
+  String get tachoNoConsent =>
+      'The tachograph does not share the driver’s data. Turn on data sharing (ITS) in its menu.';
+
+  @override
+  String get tachoNoDriverData =>
+      'The tachograph has not sent the driver’s data yet.';
+
+  @override
+  String get tachoMoving => 'moving';
+
+  @override
+  String get tachoStanding => 'stopped';
+
+  @override
+  String get tachoModeUnknown => 'Activity unknown';
+
+  @override
+  String get tachoCoDriver => 'Co-driver';
+
+  @override
+  String get tachoCurrentActivity => 'Current activity for';
+
+  @override
+  String get tachoLeftSection => 'Left';
+
+  @override
+  String get tachoUntilDailyRest => 'Until daily rest';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Until weekly rest';
+
+  @override
+  String get tachoShiftLeft => 'Driving in this shift';
+
+  @override
+  String get tachoWeekLeft => 'Driving this week';
+
+  @override
+  String get tachoNote =>
+      'The figures come from the tachograph and refresh every few seconds. While connected, the activity in the TachoGo log follows the tachograph.';
+
+  @override
+  String get tachoDisconnect => 'Disconnect';
+
+  @override
+  String get tachoNoPermission =>
+      'Allow access to nearby devices: without it the phone can’t find the tachograph.';
+
+  @override
+  String get tachoAllow => 'Allow';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth is off on the phone.';
+
+  @override
+  String get tachoTurnOn => 'Turn on Bluetooth';
+
+  @override
+  String get tachoLocationOff =>
+      'On this phone, Bluetooth search works only with location turned on.';
+
+  @override
+  String get tachoUnsupported =>
+      'This phone does not support Bluetooth LE, so it can’t connect to the tachograph.';
+
+  @override
+  String get tachoRetry => 'Try again';
+
+  @override
+  String get tachoFailScan => 'The search did not start.';
+
+  @override
+  String get tachoFailConnect =>
+      'Could not connect. Move closer to the tachograph and try again.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'This is not a Smart 2 tachograph. Choose another device.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'The tachograph is not answering. Check that the connection is confirmed on the tachograph and no other phone is connected to it.';
+
+  @override
+  String get tachoFailLost => 'The connection to the tachograph was lost.';
+
+  @override
+  String get tachoLogTitle => 'Exchange log · developer build';
+
+  @override
+  String get tachoLogEmpty =>
+      'Empty for now: start searching for the tachograph.';
+
+  @override
+  String get tachoLogCopy => 'Copy log';
+
+  @override
+  String get tachoLogCopied => 'Log copied — paste it into a message.';
+
+  @override
+  String get tachoFailRefused =>
+      'The tachograph won’t let the phone read its data. When parked, check in the tachograph menu that Bluetooth and data sharing (ITS) are on, close other tachograph apps and try again.';
+
+  @override
+  String get tachoFailPairing =>
+      'Pairing did not finish. Remove the tachograph in the phone’s Bluetooth settings, open Bluetooth → pairing on the tachograph again and pick the tachograph on the phone. Don’t retry right away: if it fails, wait a few minutes.';
+
+  @override
+  String get tachoStepConnect =>
+      'When the Bluetooth symbol appears on the tachograph screen, tap the button below and pick the tachograph.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'The phone is not paired with the tachograph yet. On the tachograph, open Bluetooth → pairing, then pick the tachograph in the phone’s Bluetooth settings and confirm the 6 digits on both. Then come back here.';
+
+  @override
+  String get tachoOpenBluetooth => 'Bluetooth settings';
+
+  @override
+  String get tachoLinkTitle => 'Activity from the tachograph';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: change the activity on the tachograph — the app follows by itself.';
+  }
+
+  @override
+  String get tachoCardRead => 'Read the card';
+
+  @override
+  String get tachoCardConfirmTitle => 'Read the card through the tachograph?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'The tachograph will mark on the card that it was read today and restart the 28-day count to its download reminder.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Reading the card… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Don’t remove the card or touch the tachograph while it is being read.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Card read: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'The card can only be read when parked, with one driver card in the tachograph, and not around 00:00 or 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Reading failed. The tachograph may already have marked the read on the card — try again later.';
 }

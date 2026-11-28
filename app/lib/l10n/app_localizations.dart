@@ -4286,6 +4286,372 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Пояснение'**
   String get violationsNote;
+
+  /// Заголовок экрана и строка в «Ещё»: подключение к тахографу по Bluetooth
+  ///
+  /// In ru, this message translates to:
+  /// **'Тахограф по Bluetooth'**
+  String get tachoTitle;
+
+  /// Подпись строки в «Ещё» (только в бете)
+  ///
+  /// In ru, this message translates to:
+  /// **'Бета: режим и время прямо с тахографа'**
+  String get tachoHint;
+
+  /// Подзаголовок экрана: функция в бете, приложение только читает
+  ///
+  /// In ru, this message translates to:
+  /// **'Бета · только чтение'**
+  String get tachoBeta;
+
+  /// Вступление на экране до подключения
+  ///
+  /// In ru, this message translates to:
+  /// **'Приложение читает режим и время с тахографа Smart 2 (VDO DTCO 4.1a и новее). Ничего не сохраняет и ничего не меняет в тахографе.'**
+  String get tachoLead;
+
+  /// Шаг 1 подключения
+  ///
+  /// In ru, this message translates to:
+  /// **'Вставьте карту водителя в тахограф.'**
+  String get tachoStepCard;
+
+  /// Шаг 2: разрешить в меню тахографа передачу данных ITS — без этого Bluetooth тахографа выключен
+  ///
+  /// In ru, this message translates to:
+  /// **'В меню тахографа разрешите передачу данных ITS: без этого Bluetooth тахографа не включится.'**
+  String get tachoStepConsent;
+
+  /// Шаг 3: на тахографе открыть Bluetooth → сопряжение, затем выбрать тахограф в настройках Bluetooth телефона и подтвердить одинаковые 6 цифр
+  ///
+  /// In ru, this message translates to:
+  /// **'На тахографе откройте Bluetooth → сопряжение. Затем в настройках Bluetooth телефона выберите тахограф и подтвердите одинаковые 6 цифр на телефоне и на тахографе.'**
+  String get tachoStepPair;
+
+  /// Кнопка: начать поиск тахографа
+  ///
+  /// In ru, this message translates to:
+  /// **'Найти тахограф'**
+  String get tachoFind;
+
+  /// Идёт поиск, тахограф ещё не найден
+  ///
+  /// In ru, this message translates to:
+  /// **'Ищем тахограф рядом…'**
+  String get tachoSearching;
+
+  /// Подсказка, если тахографа нет в списке
+  ///
+  /// In ru, this message translates to:
+  /// **'Тахографа нет в списке? Откройте на тахографе меню Bluetooth и начните подключение.'**
+  String get tachoSearchHint;
+
+  /// Переключатель: показать все устройства Bluetooth, а не только тахографы
+  ///
+  /// In ru, this message translates to:
+  /// **'Все устройства Bluetooth'**
+  String get tachoShowAll;
+
+  /// Устройство Bluetooth без имени
+  ///
+  /// In ru, this message translates to:
+  /// **'Без имени'**
+  String get tachoUnnamed;
+
+  /// Кнопка: остановить поиск
+  ///
+  /// In ru, this message translates to:
+  /// **'Остановить'**
+  String get tachoStop;
+
+  /// Идёт подключение к устройству {name}
+  ///
+  /// In ru, this message translates to:
+  /// **'Подключаемся к {name}…'**
+  String tachoConnecting(String name);
+
+  /// Подсказка во время подключения: проверить и подтвердить 6 цифр
+  ///
+  /// In ru, this message translates to:
+  /// **'Появились 6 цифр? Проверьте, что на телефоне и тахографе они одинаковые, и подтвердите на обоих.'**
+  String get tachoPairHint;
+
+  /// Подключено, первые данные ещё не пришли
+  ///
+  /// In ru, this message translates to:
+  /// **'Ждём данные с тахографа…'**
+  String get tachoWaiting;
+
+  /// Плашка: тахограф не даёт данные водителя без согласия ITS в его меню
+  ///
+  /// In ru, this message translates to:
+  /// **'Тахограф не отдаёт данные водителя. Включите в его меню передачу данных (ITS).'**
+  String get tachoNoConsent;
+
+  /// Подключено, но данных водителя пока нет
+  ///
+  /// In ru, this message translates to:
+  /// **'Тахограф пока не прислал данные водителя.'**
+  String get tachoNoDriverData;
+
+  /// Чип: машина едет (по тахографу)
+  ///
+  /// In ru, this message translates to:
+  /// **'едет'**
+  String get tachoMoving;
+
+  /// Чип: машина стоит (по тахографу)
+  ///
+  /// In ru, this message translates to:
+  /// **'стоит'**
+  String get tachoStanding;
+
+  /// Тахограф не сообщил режим водителя
+  ///
+  /// In ru, this message translates to:
+  /// **'Режим неизвестен'**
+  String get tachoModeUnknown;
+
+  /// Строка: режим второго водителя (экипаж)
+  ///
+  /// In ru, this message translates to:
+  /// **'Второй водитель'**
+  String get tachoCoDriver;
+
+  /// Строка: сколько идёт текущий режим
+  ///
+  /// In ru, this message translates to:
+  /// **'Режим идёт'**
+  String get tachoCurrentActivity;
+
+  /// Заголовок раздела: сколько осталось до отдыха и вождения
+  ///
+  /// In ru, this message translates to:
+  /// **'Осталось'**
+  String get tachoLeftSection;
+
+  /// Строка: время до суточного отдыха (по тахографу)
+  ///
+  /// In ru, this message translates to:
+  /// **'До суточного отдыха'**
+  String get tachoUntilDailyRest;
+
+  /// Строка: время до недельного отдыха (по тахографу)
+  ///
+  /// In ru, this message translates to:
+  /// **'До недельного отдыха'**
+  String get tachoUntilWeeklyRest;
+
+  /// Строка: сколько ещё можно вести в этой смене (по тахографу)
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождения в смене'**
+  String get tachoShiftLeft;
+
+  /// Строка: сколько ещё можно вести на этой неделе (по тахографу)
+  ///
+  /// In ru, this message translates to:
+  /// **'Вождения на неделе'**
+  String get tachoWeekLeft;
+
+  /// Подпись под цифрами тахографа: откуда цифры и что режим журнала переключается по тахографу
+  ///
+  /// In ru, this message translates to:
+  /// **'Цифры — с тахографа, обновляются каждые несколько секунд. Пока связь есть, режим в журнале TachoGo переключается по тахографу.'**
+  String get tachoNote;
+
+  /// Кнопка: отключиться от тахографа
+  ///
+  /// In ru, this message translates to:
+  /// **'Отключить'**
+  String get tachoDisconnect;
+
+  /// Нет разрешения на доступ к устройствам поблизости (Bluetooth)
+  ///
+  /// In ru, this message translates to:
+  /// **'Разрешите доступ к устройствам поблизости: без него телефон не найдёт тахограф.'**
+  String get tachoNoPermission;
+
+  /// Кнопка: дать разрешение
+  ///
+  /// In ru, this message translates to:
+  /// **'Разрешить'**
+  String get tachoAllow;
+
+  /// Bluetooth на телефоне выключен
+  ///
+  /// In ru, this message translates to:
+  /// **'Bluetooth на телефоне выключен.'**
+  String get tachoBluetoothOff;
+
+  /// Кнопка: включить Bluetooth в настройках телефона
+  ///
+  /// In ru, this message translates to:
+  /// **'Включить Bluetooth'**
+  String get tachoTurnOn;
+
+  /// Старый Android: поиск Bluetooth работает только с включённой геолокацией
+  ///
+  /// In ru, this message translates to:
+  /// **'На этом телефоне поиск Bluetooth работает только с включённой геолокацией.'**
+  String get tachoLocationOff;
+
+  /// Телефон без Bluetooth LE
+  ///
+  /// In ru, this message translates to:
+  /// **'Этот телефон не поддерживает Bluetooth LE: подключиться к тахографу не получится.'**
+  String get tachoUnsupported;
+
+  /// Кнопка: попробовать подключиться снова
+  ///
+  /// In ru, this message translates to:
+  /// **'Попробовать снова'**
+  String get tachoRetry;
+
+  /// Ошибка: поиск Bluetooth не запустился
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск не запустился.'**
+  String get tachoFailScan;
+
+  /// Ошибка: не удалось подключиться к устройству
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось подключиться. Подойдите ближе к тахографу и попробуйте снова.'**
+  String get tachoFailConnect;
+
+  /// Ошибка: выбранное устройство — не тахограф Smart 2
+  ///
+  /// In ru, this message translates to:
+  /// **'Это не тахограф Smart 2. Выберите другое устройство.'**
+  String get tachoFailNotTacho;
+
+  /// Ошибка: тахограф подключился, но не отвечает
+  ///
+  /// In ru, this message translates to:
+  /// **'Тахограф не отвечает. Проверьте, что подключение подтверждено на тахографе и к нему не подключён другой телефон.'**
+  String get tachoFailNoAnswer;
+
+  /// Ошибка: связь с тахографом оборвалась
+  ///
+  /// In ru, this message translates to:
+  /// **'Связь с тахографом оборвалась.'**
+  String get tachoFailLost;
+
+  /// Заголовок раздела с журналом обмена на экране тахографа: виден только в сборке для разработчика
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал обмена · сборка разработчика'**
+  String get tachoLogTitle;
+
+  /// Журнал обмена пока пуст
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока пусто: начните поиск тахографа.'**
+  String get tachoLogEmpty;
+
+  /// Кнопка: скопировать журнал обмена с тахографом
+  ///
+  /// In ru, this message translates to:
+  /// **'Скопировать журнал'**
+  String get tachoLogCopy;
+
+  /// Сообщение: журнал обмена скопирован, его можно вставить в сообщение
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал скопирован — вставьте его в сообщение.'**
+  String get tachoLogCopied;
+
+  /// Ошибка: тахограф отклоняет запись телефона и не даёт читать данные (ответ «запись не разрешена»)
+  ///
+  /// In ru, this message translates to:
+  /// **'Тахограф не пускает телефон к данным. На стоянке проверьте в меню тахографа, что включены Bluetooth и передача данных (ITS), закройте другие приложения для тахографа и попробуйте снова.'**
+  String get tachoFailRefused;
+
+  /// Ошибка: сопряжение не завершилось; как сопрячь заново и не повторять подряд
+  ///
+  /// In ru, this message translates to:
+  /// **'Сопряжение не завершилось. В настройках Bluetooth телефона удалите тахограф, на тахографе снова откройте Bluetooth → сопряжение и выберите тахограф на телефоне. Не повторяйте подряд: не вышло — подождите несколько минут.'**
+  String get tachoFailPairing;
+
+  /// Шаг 4: когда на тахографе появился значок Bluetooth, нажать кнопку «Найти тахограф» и выбрать его
+  ///
+  /// In ru, this message translates to:
+  /// **'Когда на экране тахографа появится значок Bluetooth, нажмите кнопку ниже и выберите тахограф.'**
+  String get tachoStepConnect;
+
+  /// Ошибка: телефон ещё не сопряжён с тахографом; как сопрячь в настройках Bluetooth и вернуться
+  ///
+  /// In ru, this message translates to:
+  /// **'Телефон ещё не сопряжён с тахографом. На тахографе откройте Bluetooth → сопряжение, затем в настройках Bluetooth телефона выберите тахограф и подтвердите 6 цифр на обоих. Потом вернитесь сюда.'**
+  String get tachoFailNotBonded;
+
+  /// Кнопка: открыть настройки Bluetooth телефона, чтобы сопрячь тахограф
+  ///
+  /// In ru, this message translates to:
+  /// **'Настройки Bluetooth'**
+  String get tachoOpenBluetooth;
+
+  /// Плашка на главной, пока подключён тахограф: режим журнала берётся с тахографа
+  ///
+  /// In ru, this message translates to:
+  /// **'Режим — с тахографа'**
+  String get tachoLinkTitle;
+
+  /// Подпись плашки: имя тахографа; режим меняют на тахографе, приложение переключится само
+  ///
+  /// In ru, this message translates to:
+  /// **'{name}: меняйте режим на тахографе — приложение переключится само.'**
+  String tachoLinkHint(String name);
+
+  /// Кнопка пробы в сборке разработчика: считать карту водителя через тахограф
+  ///
+  /// In ru, this message translates to:
+  /// **'Считать карту'**
+  String get tachoCardRead;
+
+  /// Шторка перед считыванием карты: заголовок
+  ///
+  /// In ru, this message translates to:
+  /// **'Считать карту через тахограф?'**
+  String get tachoCardConfirmTitle;
+
+  /// Шторка перед считыванием: тахограф сам отметит считывание на карте, и его напоминание о 28 днях начнётся заново
+  ///
+  /// In ru, this message translates to:
+  /// **'Тахограф отметит на карте, что её считали сегодня, и начнёт заново считать 28 дней до напоминания о считывании.'**
+  String get tachoCardConfirmText;
+
+  /// Ход считывания карты: сколько килобайт пришло
+  ///
+  /// In ru, this message translates to:
+  /// **'Считываем карту… {kb} КБ'**
+  String tachoCardReading(int kb);
+
+  /// Подсказка во время считывания карты
+  ///
+  /// In ru, this message translates to:
+  /// **'Не вынимайте карту и не трогайте тахограф, пока идёт считывание.'**
+  String get tachoCardKeep;
+
+  /// Карта считана: размер файла в килобайтах
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта считана: {kb} КБ.'**
+  String tachoCardDone(int kb);
+
+  /// Считать карту сейчас нельзя: условия
+  ///
+  /// In ru, this message translates to:
+  /// **'Считать карту можно только на стоянке, когда в тахографе одна карта водителя, и не около 00:00 и 12:00 UTC.'**
+  String get tachoCardNotNow;
+
+  /// Считать карту не удалось
+  ///
+  /// In ru, this message translates to:
+  /// **'Считать не удалось. Тахограф мог уже отметить считывание на карте — повторите позже.'**
+  String get tachoCardFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -443,6 +443,10 @@ jobs:
           echo "$key" | grep -E '^\s*SHA256:'
           echo "TACHOGO_DEBUG_KEYSTORE=$keystore" >> "$GITHUB_ENV"
 
+      # Зеркало Maven Central у Google — первым репозиторием Gradle: Maven
+      # Central отвечает раннерам 429 (25.11.2026, CI-14).
+      - name: Зеркало Maven Central
+        run: tool/maven_mirror.sh
       # Плагины и зависимости Gradle — заранее, с повтором при сбое сети или
       # репозитория (CI-14): сборка ниже берёт их из кэша.
       - name: Зависимости Gradle
@@ -450,7 +454,11 @@ jobs:
 
       # versionCode растёт с каждым запуском CI, как у выпусков в Google
       # Play: Android не ставит сборку с номером меньше установленной.
+      # Отдельный пакет eu.tachogo.app.dev: APK встаёт рядом с версией из
+      # Google Play (android/app/build.gradle.kts, buildTypes.debug).
       - name: Debug APK (dev)
+        env:
+          TACHOGO_SIDE_BY_SIDE: 'true'
         run: >-
           flutter build apk --debug --dart-define-from-file=env/dev.json
           --build-number=$((1000 + GITHUB_RUN_NUMBER))
@@ -485,11 +493,19 @@ jobs:
             exit 1
           fi
 
-      # Нативная часть на JVM (Robolectric): экран автозапуска, BG-09.
-      # gradlew создаёт сборка выше.
+      # Образ Android для Robolectric (~100 МБ) — из кэша: тесты сами качают
+      # его с Maven Central, а тот отвечает раннерам 429 (25.11.2026, CI-14).
+      - name: Кэш Robolectric
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-${{ hashFiles('app/android/app/build.gradle.kts') }}
+          restore-keys: robolectric-
+
+      # Нативная часть на JVM (Robolectric): экран автозапуска, BG-09,
+      # Bluetooth, BT-08. Повтор — только при сбое скачивания (CI-14).
       - name: Тесты Kotlin (Robolectric)
-        working-directory: app/android
-        run: ./gradlew :app:testDebugUnitTest
+        run: tool/robolectric_tests.sh
 
       # Плагины могут добавить разрешения, которых нет в нашем манифесте.
       - name: Итоговый манифест с плагинами
@@ -652,6 +668,11 @@ jobs:
             echo "BUILD_NUMBER=$((1000 + GITHUB_RUN_NUMBER))"
           } >> "$GITHUB_ENV"
 
+      # Зеркало Maven Central у Google — первым репозиторием Gradle: Maven
+      # Central отвечает раннерам 429 (25.11.2026, CI-14).
+      - name: Зеркало Maven Central
+        run: tool/maven_mirror.sh
+
       # staging — в Sentry и PostHog отдельно от релиза, в «Ещё» —
       # «Сообщить о проблеме». Пустой секрет — сервис в сборке выключен.
       - name: Release AAB
@@ -799,6 +820,10 @@ jobs:
           kotlin.compiler.execution.strategy=in-process
           EOF
           free -h
+      # Зеркало Maven Central у Google — первым репозиторием Gradle: Maven
+      # Central отвечает раннерам 429 (25.11.2026, CI-14).
+      - name: Зеркало Maven Central
+        run: tool/maven_mirror.sh
       # До запуска эмулятора: сбой сети при скачивании повторяется здесь, а
       # не роняет прогон до первого теста (CI-14, 19.11.2026)
       - name: Зависимости Gradle
@@ -822,7 +847,7 @@ jobs:
   # UPG-01: обновление поверх прошлой версии, как из Google Play, — журнал
   # на месте (tool/integration/upgrade_on_emulator.sh, docs/testing.md,
   # раздел 14). Прошлая версия: у PR — его база, у main — main до push, у
-  # тега — прошлый тег.
+  # тега — прошлый тег, у ручного запуска на ветке — точка ответвления от main.
   upgrade-android:
     name: Обновление поверх прошлой версии
     needs: [plan, engine, app]
@@ -855,6 +880,12 @@ jobs:
               base=$(git describe --tags --abbrev=0 --match 'v[0-9]*' HEAD^ 2>/dev/null || true) ;;
             *) base=${PR_BASE:-$BEFORE} ;;
           esac
+          # Ручной запуск на ветке: прошлая версия — main в точке ответвления,
+          # а не прошлый коммит ветки (он мог и не собираться).
+          if [ -z "$base" ] && [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] &&
+            [ "$GITHUB_REF" != refs/heads/main ]; then
+            base=$(git merge-base HEAD origin/main 2>/dev/null || true)
+          fi
           if [ -z "$base" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
             base=$(git rev-parse HEAD^)
           fi
@@ -902,6 +933,10 @@ jobs:
           kotlin.compiler.execution.strategy=in-process
           EOF
           free -h
+      # Зеркало Maven Central у Google — первым репозиторием Gradle: Maven
+      # Central отвечает раннерам 429 (25.11.2026, CI-14).
+      - name: Зеркало Maven Central
+        run: tool/maven_mirror.sh
       # Как в «Эмуляторе Android», у обеих версий: у прошлой скрипта может
       # ещё не быть — он берётся отсюда
       - name: Зависимости Gradle обеих версий

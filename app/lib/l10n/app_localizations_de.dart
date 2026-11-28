@@ -2760,4 +2760,223 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get violationsNote => 'Erklärung';
+
+  @override
+  String get tachoTitle => 'Fahrtenschreiber über Bluetooth';
+
+  @override
+  String get tachoHint =>
+      'Beta: Tätigkeit und Zeiten direkt vom Fahrtenschreiber';
+
+  @override
+  String get tachoBeta => 'Beta · nur lesen';
+
+  @override
+  String get tachoLead =>
+      'Die App liest Tätigkeit und Zeiten aus einem Smart-2-Fahrtenschreiber (VDO DTCO 4.1a oder neuer). Sie speichert nichts und ändert nichts am Fahrtenschreiber.';
+
+  @override
+  String get tachoStepCard =>
+      'Stecken Sie die Fahrerkarte in den Fahrtenschreiber.';
+
+  @override
+  String get tachoStepConsent =>
+      'Erlauben Sie im Menü des Fahrtenschreibers die Weitergabe der ITS-Daten: Ohne sie bleibt Bluetooth am Fahrtenschreiber aus.';
+
+  @override
+  String get tachoStepPair =>
+      'Öffnen Sie am Fahrtenschreiber Bluetooth → Kopplung. Wählen Sie dann in den Bluetooth-Einstellungen des Telefons den Fahrtenschreiber und bestätigen Sie die gleichen 6 Ziffern auf Telefon und Fahrtenschreiber.';
+
+  @override
+  String get tachoFind => 'Fahrtenschreiber suchen';
+
+  @override
+  String get tachoSearching => 'Suche nach einem Fahrtenschreiber in der Nähe…';
+
+  @override
+  String get tachoSearchHint =>
+      'Fahrtenschreiber nicht in der Liste? Öffnen Sie am Fahrtenschreiber das Bluetooth-Menü und starten Sie die Verbindung.';
+
+  @override
+  String get tachoShowAll => 'Alle Bluetooth-Geräte';
+
+  @override
+  String get tachoUnnamed => 'Ohne Namen';
+
+  @override
+  String get tachoStop => 'Anhalten';
+
+  @override
+  String tachoConnecting(String name) {
+    return 'Verbindung mit $name…';
+  }
+
+  @override
+  String get tachoPairHint =>
+      '6 Ziffern erschienen? Prüfen Sie, dass sie auf Telefon und Fahrtenschreiber gleich sind, und bestätigen Sie auf beiden.';
+
+  @override
+  String get tachoWaiting => 'Warten auf Daten vom Fahrtenschreiber…';
+
+  @override
+  String get tachoNoConsent =>
+      'Der Fahrtenschreiber gibt die Fahrerdaten nicht heraus. Schalten Sie in seinem Menü die Datenübertragung (ITS) ein.';
+
+  @override
+  String get tachoNoDriverData =>
+      'Der Fahrtenschreiber hat noch keine Fahrerdaten gesendet.';
+
+  @override
+  String get tachoMoving => 'fährt';
+
+  @override
+  String get tachoStanding => 'steht';
+
+  @override
+  String get tachoModeUnknown => 'Tätigkeit unbekannt';
+
+  @override
+  String get tachoCoDriver => 'Beifahrer';
+
+  @override
+  String get tachoCurrentActivity => 'Tätigkeit seit';
+
+  @override
+  String get tachoLeftSection => 'Verbleibend';
+
+  @override
+  String get tachoUntilDailyRest => 'Bis zur täglichen Ruhezeit';
+
+  @override
+  String get tachoUntilWeeklyRest => 'Bis zur wöchentlichen Ruhezeit';
+
+  @override
+  String get tachoShiftLeft => 'Lenkzeit in der Schicht';
+
+  @override
+  String get tachoWeekLeft => 'Lenkzeit in der Woche';
+
+  @override
+  String get tachoNote =>
+      'Die Werte kommen vom Fahrtenschreiber und werden alle paar Sekunden aktualisiert. Solange die Verbindung steht, folgt die Tätigkeit im TachoGo-Protokoll dem Fahrtenschreiber.';
+
+  @override
+  String get tachoDisconnect => 'Trennen';
+
+  @override
+  String get tachoNoPermission =>
+      'Erlauben Sie den Zugriff auf Geräte in der Nähe: Ohne ihn findet das Telefon den Fahrtenschreiber nicht.';
+
+  @override
+  String get tachoAllow => 'Erlauben';
+
+  @override
+  String get tachoBluetoothOff => 'Bluetooth ist am Telefon ausgeschaltet.';
+
+  @override
+  String get tachoTurnOn => 'Bluetooth einschalten';
+
+  @override
+  String get tachoLocationOff =>
+      'Auf diesem Telefon funktioniert die Bluetooth-Suche nur mit eingeschaltetem Standort.';
+
+  @override
+  String get tachoUnsupported =>
+      'Dieses Telefon unterstützt kein Bluetooth LE: Eine Verbindung zum Fahrtenschreiber ist nicht möglich.';
+
+  @override
+  String get tachoRetry => 'Erneut versuchen';
+
+  @override
+  String get tachoFailScan => 'Die Suche ist nicht gestartet.';
+
+  @override
+  String get tachoFailConnect =>
+      'Verbindung fehlgeschlagen. Gehen Sie näher an den Fahrtenschreiber und versuchen Sie es erneut.';
+
+  @override
+  String get tachoFailNotTacho =>
+      'Das ist kein Smart-2-Fahrtenschreiber. Wählen Sie ein anderes Gerät.';
+
+  @override
+  String get tachoFailNoAnswer =>
+      'Der Fahrtenschreiber antwortet nicht. Prüfen Sie, dass die Verbindung am Fahrtenschreiber bestätigt ist und kein anderes Telefon verbunden ist.';
+
+  @override
+  String get tachoFailLost =>
+      'Die Verbindung zum Fahrtenschreiber wurde unterbrochen.';
+
+  @override
+  String get tachoLogTitle => 'Austauschprotokoll · Entwicklerversion';
+
+  @override
+  String get tachoLogEmpty =>
+      'Noch leer: Starten Sie die Suche nach dem Fahrtenschreiber.';
+
+  @override
+  String get tachoLogCopy => 'Protokoll kopieren';
+
+  @override
+  String get tachoLogCopied =>
+      'Protokoll kopiert — fügen Sie es in eine Nachricht ein.';
+
+  @override
+  String get tachoFailRefused =>
+      'Der Fahrtenschreiber lässt das Telefon nicht an die Daten. Prüfen Sie im Stand im Menü des Fahrtenschreibers, ob Bluetooth und die Datenübertragung (ITS) eingeschaltet sind, schließen Sie andere Fahrtenschreiber-Apps und versuchen Sie es erneut.';
+
+  @override
+  String get tachoFailPairing =>
+      'Die Kopplung wurde nicht abgeschlossen. Entfernen Sie den Fahrtenschreiber in den Bluetooth-Einstellungen des Telefons, öffnen Sie am Fahrtenschreiber erneut Bluetooth → Kopplung und wählen Sie ihn auf dem Telefon aus. Nicht sofort wiederholen: Klappt es nicht, warten Sie einige Minuten.';
+
+  @override
+  String get tachoStepConnect =>
+      'Sobald das Bluetooth-Symbol auf dem Display des Fahrtenschreibers erscheint, tippen Sie unten auf die Schaltfläche und wählen Sie den Fahrtenschreiber.';
+
+  @override
+  String get tachoFailNotBonded =>
+      'Das Telefon ist noch nicht mit dem Fahrtenschreiber gekoppelt. Öffnen Sie am Fahrtenschreiber Bluetooth → Kopplung, wählen Sie dann in den Bluetooth-Einstellungen des Telefons den Fahrtenschreiber und bestätigen Sie die 6 Ziffern auf beiden Geräten. Kehren Sie danach hierher zurück.';
+
+  @override
+  String get tachoOpenBluetooth => 'Bluetooth-Einstellungen';
+
+  @override
+  String get tachoLinkTitle => 'Tätigkeit vom Fahrtenschreiber';
+
+  @override
+  String tachoLinkHint(String name) {
+    return '$name: Wechseln Sie die Tätigkeit am Fahrtenschreiber — die App folgt von selbst.';
+  }
+
+  @override
+  String get tachoCardRead => 'Karte auslesen';
+
+  @override
+  String get tachoCardConfirmTitle =>
+      'Karte über den Fahrtenschreiber auslesen?';
+
+  @override
+  String get tachoCardConfirmText =>
+      'Der Fahrtenschreiber vermerkt auf der Karte, dass sie heute ausgelesen wurde, und zählt die 28 Tage bis zur Download-Erinnerung neu.';
+
+  @override
+  String tachoCardReading(int kb) {
+    return 'Karte wird ausgelesen… $kb KB';
+  }
+
+  @override
+  String get tachoCardKeep =>
+      'Karte nicht entnehmen und den Fahrtenschreiber nicht bedienen, solange ausgelesen wird.';
+
+  @override
+  String tachoCardDone(int kb) {
+    return 'Karte ausgelesen: $kb KB.';
+  }
+
+  @override
+  String get tachoCardNotNow =>
+      'Die Karte lässt sich nur im Stand auslesen, mit nur einer Fahrerkarte im Gerät und nicht um 00:00 oder 12:00 UTC.';
+
+  @override
+  String get tachoCardFailed =>
+      'Auslesen fehlgeschlagen. Der Fahrtenschreiber hat das Auslesen eventuell schon auf der Karte vermerkt — später erneut versuchen.';
 }
