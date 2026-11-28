@@ -2977,4 +2977,7 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'Načítanie zlyhalo. Tachograf už možno načítanie zapísal na kartu — skúste to neskôr.';
+
+  @override
+  String get tachoCardShare => 'Zdieľať súbor karty';
 }

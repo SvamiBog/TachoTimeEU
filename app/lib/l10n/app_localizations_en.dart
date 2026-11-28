@@ -2948,4 +2948,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'Reading failed. The tachograph may already have marked the read on the card — try again later.';
+
+  @override
+  String get tachoCardShare => 'Share the card file';
 }

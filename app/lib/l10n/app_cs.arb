@@ -753,5 +753,6 @@
   "tachoCardKeep": "Během načítání kartu nevytahujte a na tachograf nesahejte.",
   "tachoCardDone": "Karta načtena: {kb} KB.",
   "tachoCardNotNow": "Kartu lze načíst jen na stání, s jednou kartou řidiče v tachografu a ne kolem 00:00 a 12:00 UTC.",
-  "tachoCardFailed": "Načtení se nezdařilo. Tachograf už možná načtení zapsal na kartu — zkuste to později."
+  "tachoCardFailed": "Načtení se nezdařilo. Tachograf už možná načtení zapsal na kartu — zkuste to později.",
+  "tachoCardShare": "Sdílet soubor karty"
 }

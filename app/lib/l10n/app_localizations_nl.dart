@@ -2959,4 +2959,7 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'Uitlezen mislukt. De tachograaf heeft het uitlezen mogelijk al op de kaart genoteerd — probeer het later opnieuw.';
+
+  @override
+  String get tachoCardShare => 'Kaartbestand delen';
 }

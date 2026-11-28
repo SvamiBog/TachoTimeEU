@@ -364,6 +364,7 @@ class TachographController extends Notifier<TachoState> {
         clock.now().toUtc(),
       );
       _log('card saved: $path');
+      ref.invalidate(tachographLastCardFileProvider);
       result = (outcome: CardReadOutcome.done, bytes: card.bytes.length);
     } on Object catch (e) {
       _log('card read failed: $e');

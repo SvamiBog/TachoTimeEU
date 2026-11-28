@@ -2976,4 +2976,7 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'Зчитати не вдалося. Тахограф міг уже позначити зчитування на картці — повторіть пізніше.';
+
+  @override
+  String get tachoCardShare => 'Поділитися файлом картки';
 }

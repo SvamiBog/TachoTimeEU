@@ -2973,4 +2973,7 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'Citirea a eșuat. Este posibil ca tahograful să fi notat deja citirea pe card — încercați mai târziu.';
+
+  @override
+  String get tachoCardShare => 'Partajează fișierul cardului';
 }

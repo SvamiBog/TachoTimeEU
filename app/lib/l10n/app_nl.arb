@@ -753,5 +753,6 @@
   "tachoCardKeep": "Haal de kaart er niet uit en raak de tachograaf niet aan tijdens het uitlezen.",
   "tachoCardDone": "Kaart uitgelezen: {kb} KB.",
   "tachoCardNotNow": "De kaart kan alleen worden uitgelezen bij stilstand, met één bestuurderskaart in de tachograaf en niet rond 00:00 of 12:00 UTC.",
-  "tachoCardFailed": "Uitlezen mislukt. De tachograaf heeft het uitlezen mogelijk al op de kaart genoteerd — probeer het later opnieuw."
+  "tachoCardFailed": "Uitlezen mislukt. De tachograaf heeft het uitlezen mogelijk al op de kaart genoteerd — probeer het later opnieuw.",
+  "tachoCardShare": "Kaartbestand delen"
 }

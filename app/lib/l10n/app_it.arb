@@ -753,5 +753,6 @@
   "tachoCardKeep": "Non estrarre la carta e non toccare il tachigrafo durante la lettura.",
   "tachoCardDone": "Carta letta: {kb} KB.",
   "tachoCardNotNow": "La carta si legge solo a veicolo fermo, con una sola carta conducente nel tachigrafo e non verso le 00:00 o le 12:00 UTC.",
-  "tachoCardFailed": "Lettura non riuscita. Il tachigrafo potrebbe aver già segnato la lettura sulla carta: riprova più tardi."
+  "tachoCardFailed": "Lettura non riuscita. Il tachigrafo potrebbe aver già segnato la lettura sulla carta: riprova più tardi.",
+  "tachoCardShare": "Condividi il file della carta"
 }

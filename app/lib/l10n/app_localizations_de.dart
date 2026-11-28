@@ -2979,4 +2979,7 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'Auslesen fehlgeschlagen. Der Fahrtenschreiber hat das Auslesen eventuell schon auf der Karte vermerkt — später erneut versuchen.';
+
+  @override
+  String get tachoCardShare => 'Kartendatei teilen';
 }

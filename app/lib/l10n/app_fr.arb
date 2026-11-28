@@ -753,5 +753,6 @@
   "tachoCardKeep": "Ne retirez pas la carte et ne touchez pas au tachygraphe pendant la lecture.",
   "tachoCardDone": "Carte lue : {kb} Ko.",
   "tachoCardNotNow": "La carte ne se lit qu’à l’arrêt, avec une seule carte conducteur dans le tachygraphe, et pas vers 00:00 ou 12:00 UTC.",
-  "tachoCardFailed": "Échec de la lecture. Le tachygraphe a peut-être déjà noté la lecture sur la carte — réessayez plus tard."
+  "tachoCardFailed": "Échec de la lecture. Le tachygraphe a peut-être déjà noté la lecture sur la carte — réessayez plus tard.",
+  "tachoCardShare": "Partager le fichier de la carte"
 }

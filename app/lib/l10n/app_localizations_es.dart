@@ -2968,4 +2968,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'No se pudo leer. Puede que el tacógrafo ya haya anotado la lectura en la tarjeta: inténtelo más tarde.';
+
+  @override
+  String get tachoCardShare => 'Compartir el archivo de la tarjeta';
 }

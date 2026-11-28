@@ -2957,4 +2957,7 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'Lettura non riuscita. Il tachigrafo potrebbe aver già segnato la lettura sulla carta: riprova più tardi.';
+
+  @override
+  String get tachoCardShare => 'Condividi il file della carta';
 }

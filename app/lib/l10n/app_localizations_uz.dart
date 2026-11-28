@@ -2961,4 +2961,7 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'Oʻqib boʻlmadi. Taxograf kartaga oʻqishni allaqachon belgilagan boʻlishi mumkin — keyinroq urinib koʻring.';
+
+  @override
+  String get tachoCardShare => 'Karta faylini ulashish';
 }
