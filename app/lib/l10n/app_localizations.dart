@@ -4652,6 +4652,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Считать не удалось. Тахограф мог уже отметить считывание на карте — повторите позже.'**
   String get tachoCardFailed;
+
+  /// Строка в панели журнала сборки разработчика: отправить последний считанный файл карты (.DDD) через «Поделиться»
+  ///
+  /// In ru, this message translates to:
+  /// **'Поделиться файлом карты'**
+  String get tachoCardShare;
 }
 
 class _AppLocalizationsDelegate

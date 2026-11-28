@@ -753,5 +753,6 @@
   "tachoCardKeep": "Karte nicht entnehmen und den Fahrtenschreiber nicht bedienen, solange ausgelesen wird.",
   "tachoCardDone": "Karte ausgelesen: {kb} KB.",
   "tachoCardNotNow": "Die Karte lässt sich nur im Stand auslesen, mit nur einer Fahrerkarte im Gerät und nicht um 00:00 oder 12:00 UTC.",
-  "tachoCardFailed": "Auslesen fehlgeschlagen. Der Fahrtenschreiber hat das Auslesen eventuell schon auf der Karte vermerkt — später erneut versuchen."
+  "tachoCardFailed": "Auslesen fehlgeschlagen. Der Fahrtenschreiber hat das Auslesen eventuell schon auf der Karte vermerkt — später erneut versuchen.",
+  "tachoCardShare": "Kartendatei teilen"
 }

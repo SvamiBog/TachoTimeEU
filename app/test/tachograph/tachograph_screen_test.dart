@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tachogo/features/export/report_exporter.dart';
 import 'package:tachogo/features/tachograph/tachograph_screen.dart';
 import 'package:tachogo/tachograph/exchange_log.dart';
 import 'package:tachogo/tachograph/tachograph_platform.dart';
@@ -13,11 +16,14 @@ import 'fake_tachograph_platform.dart';
 void main() {
   late FakeTachographPlatform platform;
 
-  /// [log] — журнал обмена на экране, как в сборке разработчика.
+  /// [log] — журнал обмена на экране, как в сборке разработчика;
+  /// [cardFile] — последний считанный файл карты.
   Future<void> pump(
     WidgetTester tester,
     FakeTachographPlatform p, {
     bool log = false,
+    String? cardFile,
+    ReportSharer? sharer,
   }) {
     platform = p;
     return pumpScreen(
@@ -26,6 +32,8 @@ void main() {
       overrides: [
         tachographPlatformProvider.overrideWithValue(p),
         tachographLogVisibleProvider.overrideWithValue(log),
+        tachographLastCardFileProvider.overrideWith((ref) async => cardFile),
+        if (sharer != null) reportSharerProvider.overrideWithValue(sharer),
         tachographLogProvider.overrideWithValue(
           ExchangeLog(now: () => DateTime.utc(2026, 9, 22, 12)),
         ),
@@ -229,6 +237,42 @@ void main() {
   });
 
   group('BT-12: журнал обмена на экране — сборка разработчика', () {
+    testWidgets('BT-21: карту уже считывали — «Поделиться файлом карты» '
+        'отдаёт файл байт в байт', (tester) async {
+      final dir = Directory.systemTemp.createTempSync('card');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final file = File('${dir.path}/card_20261128_135815.ddd')
+        ..writeAsBytesSync([0x05, 0x0E, 0x00, 0x00, 0x04, 1, 2, 3, 4]);
+      final sharer = _FakeSharer();
+      await pump(
+        tester,
+        FakeTachographPlatform(),
+        log: true,
+        cardFile: file.path,
+        sharer: sharer,
+      );
+      await tester.pump();
+      // Строка ниже видна — значит, и эта не под кнопкой внизу экрана
+      await tester.scrollUntilVisible(
+        find.text('Сообщить о проблеме'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+      await tester.tap(find.text('Поделиться файлом карты'));
+      await tester.pump();
+      expect(sharer.shared.single.fileName, 'card_20261128_135815.ddd');
+      expect(sharer.shared.single.bytes, file.readAsBytesSync());
+      await unmount(tester);
+    });
+
+    testWidgets('BT-21: карту не считывали — кнопки нет', (tester) async {
+      await pump(tester, FakeTachographPlatform(), log: true);
+      await tester.pump();
+      expect(find.text('Поделиться файлом карты'), findsNothing);
+      await unmount(tester);
+    });
+
     testWidgets('BT-21: подключено — «Считать карту» только по кнопке и '
         'после предупреждения про отметку на карте', (tester) async {
       await pump(tester, FakeTachographPlatform(), log: true);
@@ -335,4 +379,15 @@ void main() {
       await unmount(tester);
     });
   });
+}
+
+class _FakeSharer implements ReportSharer {
+  final shared = <({String fileName, Uint8List bytes})>[];
+
+  @override
+  Future<void> share({
+    required String fileName,
+    required Uint8List bytes,
+    required String mimeType,
+  }) async => shared.add((fileName: fileName, bytes: bytes));
 }

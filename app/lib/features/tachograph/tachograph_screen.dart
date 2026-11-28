@@ -5,6 +5,7 @@
 library;
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +24,7 @@ import 'package:tachogo/core/widgets/sections.dart';
 import 'package:tachogo/core/widgets/setting_rows.dart';
 import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/core/widgets/value_row_layout.dart';
+import 'package:tachogo/features/export/report_exporter.dart';
 import 'package:tachogo/features/more/problem_report.dart';
 import 'package:tachogo/features/tachograph/tachograph_controller.dart';
 import 'package:tachogo/tachograph/exchange_log.dart';
@@ -500,6 +502,7 @@ class _LogPanel extends ConsumerWidget {
     final connected = ref.watch(
       tachographControllerProvider.select((s) => s is TachoConnected),
     );
+    final cardFile = ref.watch(tachographLastCardFileProvider).value;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -523,6 +526,14 @@ class _LogPanel extends ConsumerWidget {
                 icon: Icons.sim_card_download_outlined,
                 title: l.tachoCardRead,
                 onTap: () => unawaited(_readCard(context, ref)),
+              ),
+            // Файл карты — разработчику для проверки разбора; фирме
+            // отправлять не предлагаем (решение 2026-11-26)
+            if (cardFile != null)
+              NavRow(
+                icon: Icons.ios_share,
+                title: l.tachoCardShare,
+                onTap: () => unawaited(_shareCard(ref, cardFile)),
               ),
             NavRow(
               icon: Icons.copy_outlined,
@@ -560,6 +571,18 @@ class _LogPanel extends ConsumerWidget {
       CardReadOutcome.failed => l.tachoCardFailed,
     };
     messenger?.showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  /// Файл карты байт в байт — в системное «Поделиться».
+  static Future<void> _shareCard(WidgetRef ref, String path) async {
+    final sharer = ref.read(reportSharerProvider);
+    // Файл карты — около 70 КБ: читаем сразу, без асинхронных шагов
+    final bytes = File(path).readAsBytesSync();
+    await sharer.share(
+      fileName: path.split(RegExp(r'[\\/]')).last,
+      bytes: bytes,
+      mimeType: 'application/octet-stream',
+    );
   }
 
   /// Весь журнал — в буфер обмена: вставить в сообщение разработчику.

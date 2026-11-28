@@ -2982,4 +2982,7 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'Nie udało się odczytać. Tachograf mógł już zapisać odczyt na karcie — spróbuj później.';
+
+  @override
+  String get tachoCardShare => 'Udostępnij plik karty';
 }

@@ -2947,4 +2947,7 @@ class AppLocalizationsKa extends AppLocalizations {
   @override
   String get tachoCardFailed =>
       'წაკითხვა ვერ მოხერხდა. ტაქოგრაფმა შეიძლება უკვე მონიშნა წაკითხვა ბარათზე — სცადეთ მოგვიანებით.';
+
+  @override
+  String get tachoCardShare => 'ბარათის ფაილის გაზიარება';
 }

@@ -59,6 +59,9 @@ final tachographDownloadClientProvider =
             // Тахограф читает карту (на его экране — анимация считывания):
             // после «подождите» ждём до 2 мин, 10 с не хватило (27.11.2026)
             pendingTimeout: const Duration(minutes: 2),
+            // Части идут подряд: 350 мс после своих кредитов здесь лишние,
+            // Tacho-Command ждал 100 мс (28.11.2026: 269 частей за 5 мин)
+            requestGap: const Duration(milliseconds: 150),
           ),
     );
 
@@ -80,6 +83,20 @@ final tachographCardStoreProvider =
         return file.path;
       },
     );
+
+/// Последний сохранённый файл карты; null — карту ещё не считывали.
+/// Обновление приложения файлы не стирает, удаление — стирает.
+final tachographLastCardFileProvider = FutureProvider<String?>((ref) async {
+  final root = await getApplicationDocumentsDirectory();
+  final dir = Directory('${root.path}/tachograph');
+  if (!dir.existsSync()) return null;
+  final files = [
+    for (final f in dir.listSync())
+      if (f is File && f.path.endsWith('.ddd')) f.path,
+  ]..sort();
+  // Имя — время считывания, поэтому последний по имени — самый новый
+  return files.isEmpty ? null : files.last;
+});
 
 final tachographSessionProvider =
     Provider<TachographSession Function(ItsPort port, ExchangeLog log)>(

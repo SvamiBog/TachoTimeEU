@@ -753,5 +753,6 @@
   "tachoCardKeep": "No saque la tarjeta ni toque el tacógrafo mientras se lee.",
   "tachoCardDone": "Tarjeta leída: {kb} KB.",
   "tachoCardNotNow": "La tarjeta solo se lee con el vehículo parado, con una sola tarjeta de conductor y no cerca de las 00:00 o 12:00 UTC.",
-  "tachoCardFailed": "No se pudo leer. Puede que el tacógrafo ya haya anotado la lectura en la tarjeta: inténtelo más tarde."
+  "tachoCardFailed": "No se pudo leer. Puede que el tacógrafo ya haya anotado la lectura en la tarjeta: inténtelo más tarde.",
+  "tachoCardShare": "Compartir el archivo de la tarjeta"
 }

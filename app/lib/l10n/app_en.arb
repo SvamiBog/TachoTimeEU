@@ -753,5 +753,6 @@
   "tachoCardKeep": "Don’t remove the card or touch the tachograph while it is being read.",
   "tachoCardDone": "Card read: {kb} KB.",
   "tachoCardNotNow": "The card can only be read when parked, with one driver card in the tachograph, and not around 00:00 or 12:00 UTC.",
-  "tachoCardFailed": "Reading failed. The tachograph may already have marked the read on the card — try again later."
+  "tachoCardFailed": "Reading failed. The tachograph may already have marked the read on the card — try again later.",
+  "tachoCardShare": "Share the card file"
 }

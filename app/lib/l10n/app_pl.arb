@@ -753,5 +753,6 @@
   "tachoCardKeep": "Nie wyjmuj karty i nie dotykaj tachografu podczas odczytu.",
   "tachoCardDone": "Karta odczytana: {kb} KB.",
   "tachoCardNotNow": "Kartę można odczytać tylko na postoju, gdy w tachografie jest jedna karta kierowcy, i nie około 00:00 i 12:00 UTC.",
-  "tachoCardFailed": "Nie udało się odczytać. Tachograf mógł już zapisać odczyt na karcie — spróbuj później."
+  "tachoCardFailed": "Nie udało się odczytać. Tachograf mógł już zapisać odczyt na karcie — spróbuj później.",
+  "tachoCardShare": "Udostępnij plik karty"
 }
