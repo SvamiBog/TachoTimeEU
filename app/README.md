@@ -59,7 +59,8 @@ data/
   countries/              — страны начала и конца смены (таблица shifts, ключ —
                             начало смены), коды тахографа
   journal/                — журнал режимов и считывания карты; complianceProvider —
-                            таймеры движка, пересчёт раз в секунду (clockProvider);
+                            таймеры движка, пересчёт раз в секунду, пока приложение
+                            на экране (clockProvider, appVisibleProvider);
                             journalProvider — журнал по неделям раз в минуту;
                             JournalEditRepository — слой ручных правок (Premium),
                             ручные смены, страны и заметки смен;

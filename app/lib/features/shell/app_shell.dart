@@ -13,7 +13,8 @@ import 'package:tachogo/features/settings/settings_screen.dart';
 enum AppTab { home, journal, settings, more }
 
 /// Bottom navigation "Home · Journal · Settings · More". Tabs live in an
-/// [IndexedStack]: switching keeps the scroll position and open screens.
+/// [IndexedStack]: switching keeps the scroll position and open screens. A tab
+/// is built when it is first opened, so the launch draws only the home screen.
 class AppShell extends StatefulWidget {
   const new({super.key});
 
@@ -25,6 +26,15 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   AppTab _tab = AppTab.home;
 
+  /// Вкладки, которые водитель уже открывал. Остальные не строятся: журнал
+  /// по неделям за всю историю и экраны настроек при запуске не нужны.
+  final Set<AppTab> _opened = {AppTab.home};
+
+  void _select(AppTab tab) => setState(() {
+    _tab = tab;
+    _opened.add(tab);
+  });
+
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
@@ -32,11 +42,17 @@ class _AppShellState extends State<AppShell> {
     return Scaffold(
       body: IndexedStack(
         index: _tab.index,
-        children: const [
-          HomeScreen(),
-          JournalScreen(),
-          SettingsScreen(),
-          MoreScreen(),
+        children: [
+          for (final tab in AppTab.values)
+            if (_opened.contains(tab))
+              switch (tab) {
+                AppTab.home => const HomeScreen(),
+                AppTab.journal => const JournalScreen(),
+                AppTab.settings => const SettingsScreen(),
+                AppTab.more => const MoreScreen(),
+              }
+            else
+              const SizedBox.shrink(),
         ],
       ),
       bottomNavigationBar: DecoratedBox(
@@ -45,7 +61,7 @@ class _AppShellState extends State<AppShell> {
         ),
         child: NavigationBar(
           selectedIndex: _tab.index,
-          onDestinationSelected: (i) => setState(() => _tab = AppTab.values[i]),
+          onDestinationSelected: (i) => _select(AppTab.values[i]),
           destinations: [
             NavigationDestination(
               icon: const Icon(Icons.home_outlined),

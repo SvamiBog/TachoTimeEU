@@ -1,6 +1,10 @@
 // Построение шкалы из записей режимов: сортировка, наложения, склейка
 // соседних записей одного режима, разрывы в данных.
 
+import 'dart:math';
+
+import 'package:tacho_engine/src/compliance_log.dart';
+import 'package:tacho_engine/src/time.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:test/test.dart';
 
@@ -194,6 +198,63 @@ void main() {
       expect(rests, hasLength(1));
       expect(rests.first.rest, minutes(540));
       expect(calc(periods, now).timeline.shifts, hasLength(2));
+    });
+  });
+
+  group('шкала: вождение за период', () {
+    // Вождение за период считается не по всем блокам, а от первого,
+    // который кончается после начала периода: это верно, пока блоки идут
+    // по времени и не накладываются.
+    test('блоки идут по времени без наложений, а вождение за период — как '
+        'полным перебором: случайные журналы с наложениями, открытыми '
+        'записями и часами, переведёнными назад', () {
+      final random = Random(561);
+      final origin = utc('2026-09-21 00:00');
+      DateTime at(int maxMinutes) =>
+          origin.add(Duration(minutes: random.nextInt(maxMinutes)));
+      for (var n = 0; n < 300; n++) {
+        final periods = [
+          for (var i = random.nextInt(60); i >= 0; i--)
+            () {
+              final start = at(20 * 24 * 60);
+              return ActivityPeriod(
+                mode: DriverMode.values[random.nextInt(4)],
+                start: start,
+                end: random.nextInt(20) == 0
+                    ? null
+                    : start.add(Duration(minutes: random.nextInt(600))),
+              );
+            }(),
+        ];
+        final now = at(22 * 24 * 60).subtract(day);
+        final timeline = analyzeTimeline(periods, now);
+        final blocks = timeline.blocks;
+        for (final (i, b) in blocks.indexed) {
+          expect(b.end.isBefore(b.start), isFalse, reason: '$b');
+          if (i > 0) {
+            expect(
+              b.start.isBefore(blocks[i - 1].end),
+              isFalse,
+              reason: '${blocks[i - 1]} … $b',
+            );
+          }
+        }
+        for (var k = 0; k < 20; k++) {
+          final from = at(21 * 24 * 60).subtract(day);
+          final to = from.add(Duration(minutes: random.nextInt(8 * 24 * 60)));
+          var expected = Duration.zero;
+          for (final b in blocks) {
+            if (b.mode == DriverMode.driving) {
+              expected += overlap(b.start, b.end, from, to);
+            }
+          }
+          expect(
+            drivingBetween(timeline, const [], from, to),
+            expected,
+            reason: 'журнал $n, $from → $to',
+          );
+        }
+      }
     });
   });
 }
