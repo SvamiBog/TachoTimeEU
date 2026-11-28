@@ -56,8 +56,9 @@ final tachographDownloadClientProvider =
             port,
             log: log,
             timeout: const Duration(seconds: 10),
-            // Тахограф готовит карту: после «подождите» — до 45 с
-            pendingTimeout: const Duration(seconds: 45),
+            // Тахограф читает карту (на его экране — анимация считывания):
+            // после «подождите» ждём до 2 мин, 10 с не хватило (27.11.2026)
+            pendingTimeout: const Duration(minutes: 2),
           ),
     );
 
