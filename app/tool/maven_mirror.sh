@@ -11,7 +11,8 @@
 # ставит зеркало перед репозиториями проекта; сборке, где проекту свои
 # репозитории запрещены (FAIL_ON_PROJECT_REPOS у сборки плагинов Flutter),
 # — в репозитории настроек. Чего на зеркале нет, Gradle
-# ищет дальше по списку проекта (google(), mavenCentral()). Robolectric
+# ищет дальше по списку проекта (google() и другие; сам Maven Central —
+# нет: 429 обрывал поиск). Robolectric
 # качает образ Android мимо Gradle — ему зеркало передаётся свойством
 # robolectric.dependency.repo.url. Проект и локальные сборки не меняются.
 #
@@ -24,6 +25,20 @@ mkdir -p "$init_dir"
 cat > "$init_dir/maven-central-mirror.gradle" <<'GRADLE'
 // Зеркало Maven Central у Google — первым (app/tool/maven_mirror.sh, CI-14)
 def mirror = 'https://maven-central.storage-download.googleapis.com/maven2/'
+// Сам Maven Central на раннере не спрашиваем: зеркало — его полная копия, а
+// он отвечает раннерам 429, и Gradle тогда бросает поиск, не дойдя до
+// следующих репозиториев (28.11.2026: движок Flutter из
+// download.flutter.io и диапазоны версий androidx.test). Репозиторий
+// остаётся в списке, но фильтр не пускает в него ни одну группу.
+def central = ['https://repo.maven.apache.org/maven2', 'https://repo1.maven.org/maven2']
+def muteCentral = { RepositoryHandler repos ->
+    repos.configureEach { repo ->
+        if (repo instanceof MavenArtifactRepository &&
+                central.contains(repo.url.toString().replaceAll('/+$', ''))) {
+            repo.content { excludeGroupByRegex '.*' }
+        }
+    }
+}
 def addMirror = { RepositoryHandler repos ->
     if (repos.findByName('MavenCentralMirror') == null) {
         def repo = repos.maven {
@@ -33,6 +48,7 @@ def addMirror = { RepositoryHandler repos ->
         repos.remove(repo)
         repos.addFirst(repo)
     }
+    muteCentral(repos)
 }
 // Сборка, где проекту свои репозитории нельзя (сборка плагинов Flutter:
 // FAIL_ON_PROJECT_REPOS), берёт зеркало из настроек
@@ -57,6 +73,9 @@ allprojects {
     if (projectRepos) {
         addMirror(buildscript.repositories)
         addMirror(repositories)
+    } else {
+        muteCentral(buildscript.repositories)
+        muteCentral(repositories)
     }
     tasks.withType(Test).configureEach {
         systemProperty 'robolectric.dependency.repo.url', mirror
