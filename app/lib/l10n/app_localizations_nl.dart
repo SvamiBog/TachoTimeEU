@@ -2962,4 +2962,37 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Kaartbestand delen';
+
+  @override
+  String get tachoReconcile => 'Vergelijken met het logboek';
+
+  @override
+  String get tachoReconcileTitle => 'Vergelijking met de kaart';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Dagen: $days · gelijk: $same · met verschillen: $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'De kaart gaat voor het logboek: die ziet de controleur. Het overnemen van de kaartgegevens in het logboek komt in de volgende versie.';
+
+  @override
+  String get tachoReconcileCard => 'Kaart';
+
+  @override
+  String get tachoReconcileSame => 'gelijk';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'verschil $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'Het TachoGo-logboek heeft geen regels voor de dagen op de kaart.';
+
+  @override
+  String get tachoReconcileError => 'Het kaartbestand kon niet worden gelezen.';
 }

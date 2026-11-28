@@ -754,5 +754,14 @@
   "tachoCardDone": "Karta odczytana: {kb} KB.",
   "tachoCardNotNow": "Kartę można odczytać tylko na postoju, gdy w tachografie jest jedna karta kierowcy, i nie około 00:00 i 12:00 UTC.",
   "tachoCardFailed": "Nie udało się odczytać. Tachograf mógł już zapisać odczyt na karcie — spróbuj później.",
-  "tachoCardShare": "Udostępnij plik karty"
+  "tachoCardShare": "Udostępnij plik karty",
+  "tachoReconcile": "Porównaj z dziennikiem",
+  "tachoReconcileTitle": "Porównanie z kartą",
+  "tachoReconcileSummary": "Dób: {days} · zgodnych: {same} · z różnicami: {diff}",
+  "tachoReconcileNote": "Karta jest ważniejsza niż dziennik: to ją widzi kontroler. Przeniesienie danych karty do dziennika będzie w następnej wersji.",
+  "tachoReconcileCard": "Karta",
+  "tachoReconcileSame": "zgodne",
+  "tachoReconcileDiff": "różnica {time}",
+  "tachoReconcileEmpty": "W dzienniku TachoGo nie ma wpisów za dni zapisane na karcie.",
+  "tachoReconcileError": "Nie udało się odczytać pliku karty."
 }

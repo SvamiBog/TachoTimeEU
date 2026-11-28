@@ -754,5 +754,14 @@
   "tachoCardDone": "Karte ausgelesen: {kb} KB.",
   "tachoCardNotNow": "Die Karte lässt sich nur im Stand auslesen, mit nur einer Fahrerkarte im Gerät und nicht um 00:00 oder 12:00 UTC.",
   "tachoCardFailed": "Auslesen fehlgeschlagen. Der Fahrtenschreiber hat das Auslesen eventuell schon auf der Karte vermerkt — später erneut versuchen.",
-  "tachoCardShare": "Kartendatei teilen"
+  "tachoCardShare": "Kartendatei teilen",
+  "tachoReconcile": "Mit dem Protokoll abgleichen",
+  "tachoReconcileTitle": "Abgleich mit der Karte",
+  "tachoReconcileSummary": "Tage: {days} · gleich: {same} · mit Abweichungen: {diff}",
+  "tachoReconcileNote": "Die Karte hat Vorrang vor dem Protokoll: Sie sieht der Kontrolleur. Das Übernehmen der Kartendaten ins Protokoll kommt mit der nächsten Version.",
+  "tachoReconcileCard": "Karte",
+  "tachoReconcileSame": "gleich",
+  "tachoReconcileDiff": "Abweichung {time}",
+  "tachoReconcileEmpty": "Im TachoGo-Protokoll gibt es keine Einträge für die Tage auf der Karte.",
+  "tachoReconcileError": "Die Kartendatei konnte nicht gelesen werden."
 }

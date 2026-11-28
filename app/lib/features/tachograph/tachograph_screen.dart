@@ -26,6 +26,7 @@ import 'package:tachogo/core/widgets/status_chip.dart';
 import 'package:tachogo/core/widgets/value_row_layout.dart';
 import 'package:tachogo/features/export/report_exporter.dart';
 import 'package:tachogo/features/more/problem_report.dart';
+import 'package:tachogo/features/tachograph/card_reconcile_screen.dart';
 import 'package:tachogo/features/tachograph/tachograph_controller.dart';
 import 'package:tachogo/tachograph/exchange_log.dart';
 import 'package:tachogo/tachograph/tachograph_platform.dart';
@@ -529,12 +530,18 @@ class _LogPanel extends ConsumerWidget {
               ),
             // Файл карты — разработчику для проверки разбора; фирме
             // отправлять не предлагаем (решение 2026-11-26)
-            if (cardFile != null)
+            if (cardFile != null) ...[
+              NavRow(
+                icon: Icons.compare_arrows,
+                title: l.tachoReconcile,
+                onTap: () => openCardReconcile(context, cardFile),
+              ),
               NavRow(
                 icon: Icons.ios_share,
                 title: l.tachoCardShare,
                 onTap: () => unawaited(_shareCard(ref, cardFile)),
               ),
+            ],
             NavRow(
               icon: Icons.copy_outlined,
               title: l.tachoLogCopy,

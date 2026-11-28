@@ -2964,4 +2964,37 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Karta faylini ulashish';
+
+  @override
+  String get tachoReconcile => 'Jurnal bilan solishtirish';
+
+  @override
+  String get tachoReconcileTitle => 'Karta bilan solishtirish';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Sutka: $days · mos: $same · farqli: $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'Karta jurnaldan ustun: uni inspektor koʻradi. Karta maʼlumotlarini jurnalga koʻchirish keyingi versiyada boʻladi.';
+
+  @override
+  String get tachoReconcileCard => 'Karta';
+
+  @override
+  String get tachoReconcileSame => 'mos';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'farq $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'TachoGo jurnalida kartadagi kunlar uchun yozuvlar yoʻq.';
+
+  @override
+  String get tachoReconcileError => 'Karta fayli oʻqilmadi.';
 }

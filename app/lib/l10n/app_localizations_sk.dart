@@ -2980,4 +2980,37 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Zdieľať súbor karty';
+
+  @override
+  String get tachoReconcile => 'Porovnať s denníkom';
+
+  @override
+  String get tachoReconcileTitle => 'Porovnanie s kartou';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Dní: $days · zhoda: $same · s rozdielmi: $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'Karta má prednosť pred denníkom: tú vidí kontrolór. Prenos údajov z karty do denníka príde v ďalšej verzii.';
+
+  @override
+  String get tachoReconcileCard => 'Karta';
+
+  @override
+  String get tachoReconcileSame => 'zhoda';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'rozdiel $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'Denník TachoGo nemá záznamy za dni, ktoré sú na karte.';
+
+  @override
+  String get tachoReconcileError => 'Súbor karty sa nepodarilo prečítať.';
 }

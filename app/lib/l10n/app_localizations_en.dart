@@ -2951,4 +2951,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Share the card file';
+
+  @override
+  String get tachoReconcile => 'Compare with the log';
+
+  @override
+  String get tachoReconcileTitle => 'Card vs. log';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Days: $days · matching: $same · with differences: $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'The card takes precedence over the log: it is what an inspector sees. Moving the card data into the log comes in the next version.';
+
+  @override
+  String get tachoReconcileCard => 'Card';
+
+  @override
+  String get tachoReconcileSame => 'matches';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'differs by $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'The TachoGo log has no entries for the days on the card.';
+
+  @override
+  String get tachoReconcileError => 'The card file could not be read.';
 }

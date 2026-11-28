@@ -2976,4 +2976,37 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Partajează fișierul cardului';
+
+  @override
+  String get tachoReconcile => 'Compară cu jurnalul';
+
+  @override
+  String get tachoReconcileTitle => 'Comparare cu cardul';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Zile: $days · identice: $same · cu diferențe: $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'Cardul are prioritate față de jurnal: pe el îl vede inspectorul. Mutarea datelor de pe card în jurnal va fi în versiunea următoare.';
+
+  @override
+  String get tachoReconcileCard => 'Card';
+
+  @override
+  String get tachoReconcileSame => 'identic';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'diferență $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'În jurnalul TachoGo nu există înregistrări pentru zilele de pe card.';
+
+  @override
+  String get tachoReconcileError => 'Fișierul cardului nu a putut fi citit.';
 }

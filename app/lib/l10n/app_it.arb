@@ -754,5 +754,14 @@
   "tachoCardDone": "Carta letta: {kb} KB.",
   "tachoCardNotNow": "La carta si legge solo a veicolo fermo, con una sola carta conducente nel tachigrafo e non verso le 00:00 o le 12:00 UTC.",
   "tachoCardFailed": "Lettura non riuscita. Il tachigrafo potrebbe aver già segnato la lettura sulla carta: riprova più tardi.",
-  "tachoCardShare": "Condividi il file della carta"
+  "tachoCardShare": "Condividi il file della carta",
+  "tachoReconcile": "Confronta con il registro",
+  "tachoReconcileTitle": "Confronto con la carta",
+  "tachoReconcileSummary": "Giorni: {days} · coincidono: {same} · con differenze: {diff}",
+  "tachoReconcileNote": "La carta prevale sul registro: è quella che vede l’ispettore. Il trasferimento dei dati della carta nel registro arriverà nella prossima versione.",
+  "tachoReconcileCard": "Carta",
+  "tachoReconcileSame": "coincide",
+  "tachoReconcileDiff": "differenza di {time}",
+  "tachoReconcileEmpty": "Il registro di TachoGo non ha voci per i giorni presenti sulla carta.",
+  "tachoReconcileError": "Impossibile leggere il file della carta."
 }

@@ -754,5 +754,14 @@
   "tachoCardDone": "Karta načtena: {kb} KB.",
   "tachoCardNotNow": "Kartu lze načíst jen na stání, s jednou kartou řidiče v tachografu a ne kolem 00:00 a 12:00 UTC.",
   "tachoCardFailed": "Načtení se nezdařilo. Tachograf už možná načtení zapsal na kartu — zkuste to později.",
-  "tachoCardShare": "Sdílet soubor karty"
+  "tachoCardShare": "Sdílet soubor karty",
+  "tachoReconcile": "Porovnat s deníkem",
+  "tachoReconcileTitle": "Porovnání s kartou",
+  "tachoReconcileSummary": "Dní: {days} · shoda: {same} · s rozdíly: {diff}",
+  "tachoReconcileNote": "Karta má přednost před deníkem: tu vidí kontrolor. Přenos dat z karty do deníku přijde v další verzi.",
+  "tachoReconcileCard": "Karta",
+  "tachoReconcileSame": "shoda",
+  "tachoReconcileDiff": "rozdíl {time}",
+  "tachoReconcileEmpty": "Deník TachoGo nemá záznamy za dny, které jsou na kartě.",
+  "tachoReconcileError": "Soubor karty se nepodařilo přečíst."
 }

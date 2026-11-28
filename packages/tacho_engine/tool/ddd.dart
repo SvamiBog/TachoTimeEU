@@ -21,10 +21,10 @@ library;
 
 import 'dart:io';
 
+import 'package:tacho_engine/card.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 
 import 'src/compare.dart';
-import 'src/ddd.dart';
 import 'src/fixture.dart';
 import 'src/violations.dart';
 

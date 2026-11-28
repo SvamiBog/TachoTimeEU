@@ -754,5 +754,14 @@
   "tachoCardDone": "Carte lue : {kb} Ko.",
   "tachoCardNotNow": "La carte ne se lit qu’à l’arrêt, avec une seule carte conducteur dans le tachygraphe, et pas vers 00:00 ou 12:00 UTC.",
   "tachoCardFailed": "Échec de la lecture. Le tachygraphe a peut-être déjà noté la lecture sur la carte — réessayez plus tard.",
-  "tachoCardShare": "Partager le fichier de la carte"
+  "tachoCardShare": "Partager le fichier de la carte",
+  "tachoReconcile": "Comparer avec le journal",
+  "tachoReconcileTitle": "Comparaison avec la carte",
+  "tachoReconcileSummary": "Jours : {days} · identiques : {same} · avec écarts : {diff}",
+  "tachoReconcileNote": "La carte prime sur le journal : c’est elle que voit le contrôleur. Le transfert des données de la carte dans le journal arrive dans la prochaine version.",
+  "tachoReconcileCard": "Carte",
+  "tachoReconcileSame": "identique",
+  "tachoReconcileDiff": "écart de {time}",
+  "tachoReconcileEmpty": "Le journal TachoGo n’a aucune entrée pour les jours présents sur la carte.",
+  "tachoReconcileError": "Le fichier de la carte n’a pas pu être lu."
 }

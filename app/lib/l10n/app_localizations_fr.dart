@@ -2977,4 +2977,38 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Partager le fichier de la carte';
+
+  @override
+  String get tachoReconcile => 'Comparer avec le journal';
+
+  @override
+  String get tachoReconcileTitle => 'Comparaison avec la carte';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Jours : $days · identiques : $same · avec écarts : $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'La carte prime sur le journal : c’est elle que voit le contrôleur. Le transfert des données de la carte dans le journal arrive dans la prochaine version.';
+
+  @override
+  String get tachoReconcileCard => 'Carte';
+
+  @override
+  String get tachoReconcileSame => 'identique';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'écart de $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'Le journal TachoGo n’a aucune entrée pour les jours présents sur la carte.';
+
+  @override
+  String get tachoReconcileError =>
+      'Le fichier de la carte n’a pas pu être lu.';
 }

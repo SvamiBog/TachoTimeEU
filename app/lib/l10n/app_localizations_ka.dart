@@ -2950,4 +2950,37 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'ბარათის ფაილის გაზიარება';
+
+  @override
+  String get tachoReconcile => 'ჟურნალთან შედარება';
+
+  @override
+  String get tachoReconcileTitle => 'ბარათთან შედარება';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'დღე-ღამე: $days · ემთხვევა: $same · განსხვავებით: $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'ბარათი ჟურნალზე მთავარია: მას ინსპექტორი ხედავს. ბარათის მონაცემების ჟურნალში გადატანა შემდეგ ვერსიაში იქნება.';
+
+  @override
+  String get tachoReconcileCard => 'ბარათი';
+
+  @override
+  String get tachoReconcileSame => 'ემთხვევა';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'სხვაობა $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'TachoGo-ს ჟურნალში ბარათზე არსებული დღეების ჩანაწერები არ არის.';
+
+  @override
+  String get tachoReconcileError => 'ბარათის ფაილი ვერ წაიკითხა.';
 }

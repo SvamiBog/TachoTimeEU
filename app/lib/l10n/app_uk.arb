@@ -754,5 +754,14 @@
   "tachoCardDone": "Картку зчитано: {kb} КБ.",
   "tachoCardNotNow": "Зчитати картку можна лише на стоянці, коли в тахографі одна картка водія, і не близько 00:00 та 12:00 UTC.",
   "tachoCardFailed": "Зчитати не вдалося. Тахограф міг уже позначити зчитування на картці — повторіть пізніше.",
-  "tachoCardShare": "Поділитися файлом картки"
+  "tachoCardShare": "Поділитися файлом картки",
+  "tachoReconcile": "Звірити з журналом",
+  "tachoReconcileTitle": "Звірка з карткою",
+  "tachoReconcileSummary": "Діб: {days} · збігається: {same} · з розбіжностями: {diff}",
+  "tachoReconcileNote": "Картка головніша за журнал: її бачить інспектор. Перенести дані картки в журнал можна буде в наступній версії.",
+  "tachoReconcileCard": "Картка",
+  "tachoReconcileSame": "збігається",
+  "tachoReconcileDiff": "розходиться на {time}",
+  "tachoReconcileEmpty": "У журналі TachoGo немає записів за дні, які є на картці.",
+  "tachoReconcileError": "Файл картки не прочитано."
 }

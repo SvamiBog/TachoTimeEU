@@ -6,12 +6,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:tacho_engine/card.dart';
 import 'package:tacho_engine/tacho_engine.dart';
 import 'package:test/test.dart';
 
 import '../../tool/ddd.dart' as cli;
 import '../../tool/src/compare.dart';
-import '../../tool/src/ddd.dart';
 import '../../tool/src/fixture.dart';
 import '../../tool/src/violations.dart';
 import '../helpers.dart';

@@ -754,5 +754,14 @@
   "tachoCardDone": "Kaart uitgelezen: {kb} KB.",
   "tachoCardNotNow": "De kaart kan alleen worden uitgelezen bij stilstand, met één bestuurderskaart in de tachograaf en niet rond 00:00 of 12:00 UTC.",
   "tachoCardFailed": "Uitlezen mislukt. De tachograaf heeft het uitlezen mogelijk al op de kaart genoteerd — probeer het later opnieuw.",
-  "tachoCardShare": "Kaartbestand delen"
+  "tachoCardShare": "Kaartbestand delen",
+  "tachoReconcile": "Vergelijken met het logboek",
+  "tachoReconcileTitle": "Vergelijking met de kaart",
+  "tachoReconcileSummary": "Dagen: {days} · gelijk: {same} · met verschillen: {diff}",
+  "tachoReconcileNote": "De kaart gaat voor het logboek: die ziet de controleur. Het overnemen van de kaartgegevens in het logboek komt in de volgende versie.",
+  "tachoReconcileCard": "Kaart",
+  "tachoReconcileSame": "gelijk",
+  "tachoReconcileDiff": "verschil {time}",
+  "tachoReconcileEmpty": "Het TachoGo-logboek heeft geen regels voor de dagen op de kaart.",
+  "tachoReconcileError": "Het kaartbestand kon niet worden gelezen."
 }

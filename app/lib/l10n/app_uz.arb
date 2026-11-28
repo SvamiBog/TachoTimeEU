@@ -754,5 +754,14 @@
   "tachoCardDone": "Karta oʻqildi: {kb} KB.",
   "tachoCardNotNow": "Kartani faqat toʻxtab turganda, taxografda bitta haydovchi kartasi boʻlganda va 00:00 hamda 12:00 UTC atrofida emas oʻqish mumkin.",
   "tachoCardFailed": "Oʻqib boʻlmadi. Taxograf kartaga oʻqishni allaqachon belgilagan boʻlishi mumkin — keyinroq urinib koʻring.",
-  "tachoCardShare": "Karta faylini ulashish"
+  "tachoCardShare": "Karta faylini ulashish",
+  "tachoReconcile": "Jurnal bilan solishtirish",
+  "tachoReconcileTitle": "Karta bilan solishtirish",
+  "tachoReconcileSummary": "Sutka: {days} · mos: {same} · farqli: {diff}",
+  "tachoReconcileNote": "Karta jurnaldan ustun: uni inspektor koʻradi. Karta maʼlumotlarini jurnalga koʻchirish keyingi versiyada boʻladi.",
+  "tachoReconcileCard": "Karta",
+  "tachoReconcileSame": "mos",
+  "tachoReconcileDiff": "farq {time}",
+  "tachoReconcileEmpty": "TachoGo jurnalida kartadagi kunlar uchun yozuvlar yoʻq.",
+  "tachoReconcileError": "Karta fayli oʻqilmadi."
 }

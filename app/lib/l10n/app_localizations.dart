@@ -4658,6 +4658,60 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Поделиться файлом карты'**
   String get tachoCardShare;
+
+  /// Строка в панели журнала сборки разработчика: открыть сверку последнего файла карты с журналом
+  ///
+  /// In ru, this message translates to:
+  /// **'Сверить с журналом'**
+  String get tachoReconcile;
+
+  /// Заголовок экрана сверки карты с журналом
+  ///
+  /// In ru, this message translates to:
+  /// **'Сверка с картой'**
+  String get tachoReconcileTitle;
+
+  /// Итог сверки: сколько суток сверено, сколько совпало и сколько с расхождениями
+  ///
+  /// In ru, this message translates to:
+  /// **'Суток: {days} · совпадает: {same} · с расхождениями: {diff}'**
+  String tachoReconcileSummary(int days, int same, int diff);
+
+  /// Пояснение под итогом сверки: карта главнее журнала; перенос данных карты — в следующей версии
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта главнее журнала: её видит инспектор. Перенести данные карты в журнал можно будет в следующей версии.'**
+  String get tachoReconcileNote;
+
+  /// Подпись полосы карты на экране сверки
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта'**
+  String get tachoReconcileCard;
+
+  /// Сутки на экране сверки: карта и журнал совпадают
+  ///
+  /// In ru, this message translates to:
+  /// **'совпадает'**
+  String get tachoReconcileSame;
+
+  /// Сутки на экране сверки: на сколько расходятся карта и журнал (часы:минуты)
+  ///
+  /// In ru, this message translates to:
+  /// **'расходится на {time}'**
+  String tachoReconcileDiff(String time);
+
+  /// Экран сверки: за дни карты в журнале нет записей
+  ///
+  /// In ru, this message translates to:
+  /// **'В журнале TachoGo нет записей за дни, которые есть на карте.'**
+  String get tachoReconcileEmpty;
+
+  /// Экран сверки: файл карты не удалось прочитать
+  ///
+  /// In ru, this message translates to:
+  /// **'Файл карты не прочитан.'**
+  String get tachoReconcileError;
 }
 
 class _AppLocalizationsDelegate

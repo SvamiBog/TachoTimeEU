@@ -754,5 +754,14 @@
   "tachoCardDone": "Tarjeta leída: {kb} KB.",
   "tachoCardNotNow": "La tarjeta solo se lee con el vehículo parado, con una sola tarjeta de conductor y no cerca de las 00:00 o 12:00 UTC.",
   "tachoCardFailed": "No se pudo leer. Puede que el tacógrafo ya haya anotado la lectura en la tarjeta: inténtelo más tarde.",
-  "tachoCardShare": "Compartir el archivo de la tarjeta"
+  "tachoCardShare": "Compartir el archivo de la tarjeta",
+  "tachoReconcile": "Comparar con el registro",
+  "tachoReconcileTitle": "Comparación con la tarjeta",
+  "tachoReconcileSummary": "Días: {days} · coinciden: {same} · con diferencias: {diff}",
+  "tachoReconcileNote": "La tarjeta prevalece sobre el registro: es la que ve el inspector. Pasar los datos de la tarjeta al registro llegará en la próxima versión.",
+  "tachoReconcileCard": "Tarjeta",
+  "tachoReconcileSame": "coincide",
+  "tachoReconcileDiff": "diferencia de {time}",
+  "tachoReconcileEmpty": "El registro de TachoGo no tiene entradas para los días de la tarjeta.",
+  "tachoReconcileError": "No se pudo leer el archivo de la tarjeta."
 }

@@ -2982,4 +2982,38 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Kartendatei teilen';
+
+  @override
+  String get tachoReconcile => 'Mit dem Protokoll abgleichen';
+
+  @override
+  String get tachoReconcileTitle => 'Abgleich mit der Karte';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Tage: $days · gleich: $same · mit Abweichungen: $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'Die Karte hat Vorrang vor dem Protokoll: Sie sieht der Kontrolleur. Das Übernehmen der Kartendaten ins Protokoll kommt mit der nächsten Version.';
+
+  @override
+  String get tachoReconcileCard => 'Karte';
+
+  @override
+  String get tachoReconcileSame => 'gleich';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'Abweichung $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'Im TachoGo-Protokoll gibt es keine Einträge für die Tage auf der Karte.';
+
+  @override
+  String get tachoReconcileError =>
+      'Die Kartendatei konnte nicht gelesen werden.';
 }

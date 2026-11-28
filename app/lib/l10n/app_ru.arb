@@ -2878,5 +2878,58 @@
   "tachoCardShare": "Поделиться файлом карты",
   "@tachoCardShare": {
     "description": "Строка в панели журнала сборки разработчика: отправить последний считанный файл карты (.DDD) через «Поделиться»"
+  },
+  "tachoReconcile": "Сверить с журналом",
+  "@tachoReconcile": {
+    "description": "Строка в панели журнала сборки разработчика: открыть сверку последнего файла карты с журналом"
+  },
+  "tachoReconcileTitle": "Сверка с картой",
+  "@tachoReconcileTitle": {
+    "description": "Заголовок экрана сверки карты с журналом"
+  },
+  "tachoReconcileSummary": "Суток: {days} · совпадает: {same} · с расхождениями: {diff}",
+  "@tachoReconcileSummary": {
+    "description": "Итог сверки: сколько суток сверено, сколько совпало и сколько с расхождениями",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "same": {
+        "type": "int"
+      },
+      "diff": {
+        "type": "int"
+      }
+    }
+  },
+  "tachoReconcileNote": "Карта главнее журнала: её видит инспектор. Перенести данные карты в журнал можно будет в следующей версии.",
+  "@tachoReconcileNote": {
+    "description": "Пояснение под итогом сверки: карта главнее журнала; перенос данных карты — в следующей версии"
+  },
+  "tachoReconcileCard": "Карта",
+  "@tachoReconcileCard": {
+    "description": "Подпись полосы карты на экране сверки"
+  },
+  "tachoReconcileSame": "совпадает",
+  "@tachoReconcileSame": {
+    "description": "Сутки на экране сверки: карта и журнал совпадают"
+  },
+  "tachoReconcileDiff": "расходится на {time}",
+  "@tachoReconcileDiff": {
+    "description": "Сутки на экране сверки: на сколько расходятся карта и журнал (часы:минуты)",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "1:30"
+      }
+    }
+  },
+  "tachoReconcileEmpty": "В журнале TachoGo нет записей за дни, которые есть на карте.",
+  "@tachoReconcileEmpty": {
+    "description": "Экран сверки: за дни карты в журнале нет записей"
+  },
+  "tachoReconcileError": "Файл карты не прочитан.",
+  "@tachoReconcileError": {
+    "description": "Экран сверки: файл карты не удалось прочитать"
   }
 }

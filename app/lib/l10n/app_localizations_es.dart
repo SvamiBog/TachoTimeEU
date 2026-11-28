@@ -2971,4 +2971,37 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Compartir el archivo de la tarjeta';
+
+  @override
+  String get tachoReconcile => 'Comparar con el registro';
+
+  @override
+  String get tachoReconcileTitle => 'Comparación con la tarjeta';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Días: $days · coinciden: $same · con diferencias: $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'La tarjeta prevalece sobre el registro: es la que ve el inspector. Pasar los datos de la tarjeta al registro llegará en la próxima versión.';
+
+  @override
+  String get tachoReconcileCard => 'Tarjeta';
+
+  @override
+  String get tachoReconcileSame => 'coincide';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'diferencia de $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'El registro de TachoGo no tiene entradas para los días de la tarjeta.';
+
+  @override
+  String get tachoReconcileError => 'No se pudo leer el archivo de la tarjeta.';
 }

@@ -754,5 +754,14 @@
   "tachoCardDone": "Card read: {kb} KB.",
   "tachoCardNotNow": "The card can only be read when parked, with one driver card in the tachograph, and not around 00:00 or 12:00 UTC.",
   "tachoCardFailed": "Reading failed. The tachograph may already have marked the read on the card — try again later.",
-  "tachoCardShare": "Share the card file"
+  "tachoCardShare": "Share the card file",
+  "tachoReconcile": "Compare with the log",
+  "tachoReconcileTitle": "Card vs. log",
+  "tachoReconcileSummary": "Days: {days} · matching: {same} · with differences: {diff}",
+  "tachoReconcileNote": "The card takes precedence over the log: it is what an inspector sees. Moving the card data into the log comes in the next version.",
+  "tachoReconcileCard": "Card",
+  "tachoReconcileSame": "matches",
+  "tachoReconcileDiff": "differs by {time}",
+  "tachoReconcileEmpty": "The TachoGo log has no entries for the days on the card.",
+  "tachoReconcileError": "The card file could not be read."
 }

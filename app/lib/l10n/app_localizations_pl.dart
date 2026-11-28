@@ -2985,4 +2985,37 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Udostępnij plik karty';
+
+  @override
+  String get tachoReconcile => 'Porównaj z dziennikiem';
+
+  @override
+  String get tachoReconcileTitle => 'Porównanie z kartą';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Dób: $days · zgodnych: $same · z różnicami: $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'Karta jest ważniejsza niż dziennik: to ją widzi kontroler. Przeniesienie danych karty do dziennika będzie w następnej wersji.';
+
+  @override
+  String get tachoReconcileCard => 'Karta';
+
+  @override
+  String get tachoReconcileSame => 'zgodne';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'różnica $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'W dzienniku TachoGo nie ma wpisów za dni zapisane na karcie.';
+
+  @override
+  String get tachoReconcileError => 'Nie udało się odczytać pliku karty.';
 }

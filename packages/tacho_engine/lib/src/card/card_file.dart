@@ -1,8 +1,8 @@
 /// Reads a driver card download file (.DDD) — the activity log only, without
-/// the name, card number or other personal data. Used for fixtures from real
-/// tachographs (ENG-20) and to compare the app's log with the card (DEV-03),
-/// `docs/testing.md`. Not part of the app: importing .DDD is open question 10
-/// of the PRD.
+/// the name, card number or other personal data. The app reads the card it
+/// downloads through the tachograph over Bluetooth and compares it with its
+/// log (`docs/research/bluetooth-its.md`); the beta tools build fixtures from
+/// real tachographs (ENG-20) and compare logs (DEV-03), `docs/testing.md`.
 ///
 /// Format — Regulation (EU) 2016/799, Annex 1C:
 /// - card download file (Appendix 7, "Card downloading"): consecutive blocks

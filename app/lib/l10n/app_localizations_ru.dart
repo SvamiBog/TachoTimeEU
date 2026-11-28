@@ -2975,4 +2975,37 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tachoCardShare => 'Поделиться файлом карты';
+
+  @override
+  String get tachoReconcile => 'Сверить с журналом';
+
+  @override
+  String get tachoReconcileTitle => 'Сверка с картой';
+
+  @override
+  String tachoReconcileSummary(int days, int same, int diff) {
+    return 'Суток: $days · совпадает: $same · с расхождениями: $diff';
+  }
+
+  @override
+  String get tachoReconcileNote =>
+      'Карта главнее журнала: её видит инспектор. Перенести данные карты в журнал можно будет в следующей версии.';
+
+  @override
+  String get tachoReconcileCard => 'Карта';
+
+  @override
+  String get tachoReconcileSame => 'совпадает';
+
+  @override
+  String tachoReconcileDiff(String time) {
+    return 'расходится на $time';
+  }
+
+  @override
+  String get tachoReconcileEmpty =>
+      'В журнале TachoGo нет записей за дни, которые есть на карте.';
+
+  @override
+  String get tachoReconcileError => 'Файл карты не прочитан.';
 }

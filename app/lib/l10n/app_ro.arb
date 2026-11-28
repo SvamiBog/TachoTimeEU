@@ -754,5 +754,14 @@
   "tachoCardDone": "Card citit: {kb} KB.",
   "tachoCardNotNow": "Cardul se poate citi doar în staționare, cu un singur card de șofer în tahograf și nu în jurul orelor 00:00 și 12:00 UTC.",
   "tachoCardFailed": "Citirea a eșuat. Este posibil ca tahograful să fi notat deja citirea pe card — încercați mai târziu.",
-  "tachoCardShare": "Partajează fișierul cardului"
+  "tachoCardShare": "Partajează fișierul cardului",
+  "tachoReconcile": "Compară cu jurnalul",
+  "tachoReconcileTitle": "Comparare cu cardul",
+  "tachoReconcileSummary": "Zile: {days} · identice: {same} · cu diferențe: {diff}",
+  "tachoReconcileNote": "Cardul are prioritate față de jurnal: pe el îl vede inspectorul. Mutarea datelor de pe card în jurnal va fi în versiunea următoare.",
+  "tachoReconcileCard": "Card",
+  "tachoReconcileSame": "identic",
+  "tachoReconcileDiff": "diferență {time}",
+  "tachoReconcileEmpty": "În jurnalul TachoGo nu există înregistrări pentru zilele de pe card.",
+  "tachoReconcileError": "Fișierul cardului nu a putut fi citit."
 }
